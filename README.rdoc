@@ -1,0 +1,23 @@
+== ruby-opengl
+
+ruby-opengl is a Ruby extension for the OpenGL, GLU and GLUT libraries
+using SWIG.  Currently, it compiles and runs on Mac OS X.
+
+=== Build on Mac OS X
+
+The current build is manual, and we intend to update to Rake real soon
+now.  To build:
+* cd ext/gl
+* ./build.sh
+* cd ../glut
+* ./build.sh
+
+=== Running the tests
+
+Right now, the tests directory contains just a handful of ruby scripts that
+do a few simple OpenGL and GLUT calls.  <tt>smooth.rb</tt> does not yet
+work, as I haven't added a few of the OpenGL routines to the swig file.
+
+Both <tt>test.rb</tt> and <tt>plane.rb</tt> run on the Mac with the
+bindings.  You can type <tt>ESC</tt> to quit either program.
+
