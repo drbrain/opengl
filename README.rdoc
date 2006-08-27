@@ -1,16 +1,23 @@
-== ruby-opengl
+= ruby-opengl
 
-ruby-opengl is a Ruby extension for the OpenGL, GLU and GLUT libraries
-using SWIG.  Currently, it compiles and runs on Mac OS X.
+ruby-opengl[http://rubyforge.org/projects/ruby-opengl/] is a Ruby extension
+for the OpenGL, GLU and GLUT libraries using SWIG.  Currently, it compiles
+and runs on Mac OS X.  
+
+== Building ruby-opengl
+
+=== Pre-requisites
+
+SWIG[http://www.swig.org/] must be installed on the build machine.
 
 === Build on Mac OS X
 
 The current build is manual, and we intend to update to Rake real soon
 now.  To build:
-* cd ext/gl
-* ./build.sh
-* cd ../glut
-* ./build.sh
+1. <tt>cd ext/gl</tt>
+2. <tt>./build.sh</tt>
+3. <tt>cd ../glut</tt>
+4. <tt>./build.sh</tt>
 
 === Running the tests
 

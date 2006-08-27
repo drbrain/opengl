@@ -1,0 +1,43 @@
+#-*-ruby-*-
+#--
+# Copyright 2006 by Peter McLain
+# All rights reserved.
+# See MIT-LICENSE for permissions.
+#++
+
+require 'rake/clean'
+require 'rbconfig'
+
+case RUBY_PLATFORM
+when /darwin/
+    extconf_args = "--with-ldflags='-framework OpenGL'"
+    # Don't understand why swig doesn't define this...
+    swig_args = "-DSWIGMAC"
+else
+    extconf_args = ""
+end
+
+# The module we are trying to build
+ext_name = 'gl'
+# The library name, e.g., "gl.bundle" or "gl.so"
+ext = "#{ext_name}.#{Config::CONFIG['DLEXT']}"
+
+CLEAN.include('*_wrap.*', 'rbogl.o')
+CLOBBER.include('Makefile', "*.#{Config::CONFIG['DLEXT']}")
+
+# This rule tells rake how to use swig to make foo_wrap.c from foo.i
+rule '.c' => [ proc { |tn| tn.sub(/_wrap\.[^.]+$/, '.i') } ] do |t|
+    sh "swig #{swig_args} -ruby #{t.source}"
+end
+
+task :default => [ ext ]
+
+# we create the makefile using mkmf, but mkmf doesn't want to work unless
+# glut_wrap.c exists, so...
+file 'Makefile' => [ "#{ext_name}_wrap.c", 'extconf.rb' ] do |t|
+    ruby "extconf.rb #{extconf_args}"
+end
+
+file ext => [ 'Makefile', "#{ext_name}_wrap.c" ] do |t|
+    sh 'make'
+end
