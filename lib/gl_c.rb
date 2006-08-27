@@ -1,7 +1,19 @@
-# This is based on the ruby-opengl code from the old ruby-opengl project:
+# Copyright (C) 2006 Peter McLain
 #
+# This program is distributed under the terms of the MIT license.
+# See the included MIT-LICENSE file for the terms of this license.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
 # This module provides access to the GL and GLU methods and constants
-# in the customary C way.
+# in the way that they were available in previous versions of ruby-opengl.
 #
 # Thanks to Ilmari Heikkinen for this code, and to Bill Kelly for a
 # previous version.
@@ -31,9 +43,3 @@ module GL
         end
     end
 end
-
-## Usage:
-# require 'opengl_c'
-# OpenGL.glFooBar( OpenGL::GL_FOO_BAR )
-# include OpenGL
-# glFooBar( GL_FOO_BAR )
