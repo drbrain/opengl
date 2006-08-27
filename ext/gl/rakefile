@@ -15,6 +15,7 @@ when /darwin/
     swig_args = "-DSWIGMAC"
 else
     extconf_args = ""
+    swig_args = "-I/usr/include"
 end
 
 # The module we are trying to build

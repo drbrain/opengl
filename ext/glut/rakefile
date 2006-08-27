@@ -15,12 +15,15 @@ when /darwin/
     swig_args = "-DSWIGMAC"
 else
     extconf_args = ""
+    swig_args = "-I/usr/include"
 end
 
 # The module we are trying to build
 ext_name = 'glut'
 # The library name, e.g., "gl.bundle" or "gl.so"
 ext = "#{ext_name}.#{Config::CONFIG['DLEXT']}"
+
+puts "=== ext: #{ext}"
 
 CLEAN.include('*_wrap.*')
 CLOBBER.include('Makefile', "*.#{Config::CONFIG['DLEXT']}")

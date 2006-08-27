@@ -22,6 +22,6 @@
 #ifdef SWIGMAC
 %include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
 #else
-%include "GL/glut.h"
+%include <GL/glut.h>
 #endif
 

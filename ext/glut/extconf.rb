@@ -5,4 +5,4 @@
 # See MIT-LICENSE for permissions.
 #++
 require 'mkmf'
-create_makefile('glut')
+create_makefile('GLUT')
