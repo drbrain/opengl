@@ -24,8 +24,17 @@ reshape = Proc.new {|w, h|
   GL.glTranslate(0, -h, 0)
 }
 
+# Keyboard handler to exit when ESC is typed
+keyboard = lambda do |key, x, y|
+    case(key)
+    when 27
+        exit(0)
+    end
+end
+
 GLUT.glutInit
 a =  GLUT.glutCreateWindow("single triangle");
 GLUT.glutDisplayFunc(disp);
 GLUT.glutReshapeFunc(reshape);
+GLUT.glutKeyboardFunc( keyboard )
 GLUT.glutMainLoop;
