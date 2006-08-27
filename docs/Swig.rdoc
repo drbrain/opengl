@@ -1,0 +1,50 @@
+= Design Notes
+
+This document has notes on the design of the ruby-opengl SWIG
+implementation. 
+
+=== Design Decisions
+
+This section outlines a few design decisions.
+
+* Try to remain source code compatible with Yoshi's old way, unless there
+  is a compelling reason not to.  Some of the consequences of that:
+
+  * Have nice non-type specific methods in addition to the type-specific
+    ones (e.g., allow glMaterial(...) as well as glMaterialiv(...),
+    glMaterialfv(...). etc.).
+
+=== Code Name Conventions
+
+There are sometimes a lot of dots to connect to get from Ruby to libGL.
+This is a sketch of that, with naming conventions.  The example is from
+this line of ruby to libGL:
+  glVertex(1,2,3)
+
+OpenGL doesn't have a method <tt>glVertex(...)</tt>, it has a whole pile of
+type specific ones (<tt>glVertex2d()</tt>, <tt>glVertex2dv()</tt>,
+<tt>glVertex2f()</tt>,...).  Since ruby is not explicitly typed, its not
+very ruby-esqe to have to remember all of those.  So Yoshi added a single
+untyped method, <tt>glVertex(...)</tt> that examines its parameters, and
+then figures out the correct typed version to call.
+
+* In Ruby: glVertex(x,y,z)
+* In gl_untyped.i, we have <tt>rb_define_module_function(mGl, "Vertex",
+  gl_Vertex, -1);</tt>, which registers the c-function <tt>gl_Vertex</tt>
+  to be available in ruby as <tt>glVertex</tt>.
+* In gl_untyped.i, the code for <tt>gl_Vertex()</tt> (from Yoshi, and
+  tweaked by us for SWIG) examines the number of parameters and then calls
+  the appropriate SWIG generated <tt>_wrap_glVertex2d()</tt>.  It passes
+  the ruby flavor of args, since <tt>_wrap_glVertex2d()</tt> is a swig
+  wrapper "expecting" to be called by ruby.
+* In <tt>gl_wrap.c</tt>, we have the SWIG auto-generated wrapper that
+  accepts Ruby flavored params, does the parameter marshalling from ruby to
+  C, and then calls into the the OpenGL library function
+  <tt>glVertex(...)</tt>.
+
+So there are several layers of code, and to keep them all straight, we
+should be consistent in the naming.  Here are some rules:
+* <tt>_wrap_*</tt> is reserved for a SWIG generated code.
+* <tt>glFoo()</tt> is reserved for the libGL entry point
+* <tt>gl_Foo()</tt> is reserved for Our/Yoshi helper function defined in
+  one of the swig <tt>.i</tt> files.
