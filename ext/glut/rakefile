@@ -35,6 +35,8 @@ end
 
 task :default => [ ext ]
 
+file 'glut_wrap.c' => %w( glut.i glut_init.i glut_callbacks.i )
+
 # we create the makefile using mkmf, but mkmf doesn't want to work unless
 # glut_wrap.c exists, so...
 file 'Makefile' => [ "#{ext_name}_wrap.c", 'extconf.rb' ] do |t|

@@ -33,6 +33,8 @@ end
 
 task :default => [ ext ]
 
+file 'gl_wrap.c' => %w( gl.i gl_untyped.i )
+
 # we create the makefile using mkmf, but mkmf doesn't want to work unless
 # glut_wrap.c exists, so...
 file 'Makefile' => [ "#{ext_name}_wrap.c", 'extconf.rb' ] do |t|

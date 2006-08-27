@@ -161,4 +161,5 @@ rb_define_module_function(mGL, "glNormal", gl_Normal, -1);
 /* rb_define_module_function(mGL, "Translated", gl_Translated, 3);*/
 rb_define_module_function(mGL, "glTranslate", _wrap_glTranslated, -1);
 rb_define_module_function(mGL, "glScale", _wrap_glScaled, -1);
+rb_define_module_function(mGL, "glColor", _wrap_glColor3d, -1);
 %}
