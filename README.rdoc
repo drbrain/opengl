@@ -1,8 +1,26 @@
 = ruby-opengl
 
 ruby-opengl[http://rubyforge.org/projects/ruby-opengl/] is a Ruby extension
-for the OpenGL, GLU and GLUT libraries using SWIG.  Currently, it compiles
-and runs on Mac OS X.  
+for the OpenGL, GLU and GLUT libraries using SWIG.
+
+== Status
+
+Currently, ruby-opengl:
+* Compiles and runs on Mac OS X.
+* Compiles on Linux, but doesn't run (yet)
+
+== Layout
+
+The directory structure is:
+
+    docs/
+        Contains documentation for the project.
+    ext/
+        Contains the SWIG files, build files and other miscellaneous files
+        needed to compile the ruby extensions for OpenGL and GLUT.
+    test/
+        Contains sample ruby files that make OpenGL and GLUT calls.  No
+        real tests so far.
 
 == Building ruby-opengl
 
@@ -13,9 +31,9 @@ SWIG[http://www.swig.org/] must be installed on the build machine.
 === Build on Mac OS X
 
 The current build is still not great.
-* Need to make it hierarchical.
-* Need to remove the duplication.
-* Haven't tested on any platform besides Mac OS X
+* Need to make the rake build hierarchical.
+* Need to remove duplication in the rakefiles.
+* Haven't tested on any platform besides Mac OS X.
 
 To build:
 1. <tt>cd ext/gl</tt>
@@ -32,9 +50,26 @@ the super-interesting OpenGL program.
 === Running the tests
 
 Right now, the tests directory contains just a handful of ruby scripts that
-do a few simple OpenGL and GLUT calls.  <tt>smooth.rb</tt> does not yet
-work, as I haven't added a few of the OpenGL routines to the swig file.
+do a few simple OpenGL and GLUT calls.  E.g., to run the <tt>plane.rb</tt>
+test:
 
-Both <tt>test.rb</tt> and <tt>plane.rb</tt> run on the Mac with the
-bindings.  You can type <tt>ESC</tt> to quit either program.
+  $ ruby plane.rb
 
+You can type <tt>ESC</tt> to quit the programs.
+
+== Roadmap
+
+Most people want to just download an OpenGL binding, install, and be done
+with it.  The plan is to deliver OS/Arch specific gems with the extensions
+pre-compiled and everything ready to go.  We aren't there yet.
+
+In the meantime, you have to install a few tools, compile and install the
+extension, before it will work.
+
+== TODO
+
+* Make the rake build hierarchical
+* Rename "ext" to "swig", and only put the built extensions in ext
+  (separate the build env from the build products)
+* Get the documentation going
+* Add the ESC keyboard handler to smooth.rb
