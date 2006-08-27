@@ -2,14 +2,11 @@
  * Last edit by previous maintainer:
  * 2003/08/17 03:46:15, yoshi
  *
- * $Date: 2006/07/09 02:31:19 $
- * $Author: john $
- *
  * Copyright (C) 1999 - 2005 Yoshi <yoshi@giganet.net>
  * Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
  *
  * This program is distributed under the terms of the MIT license.
- * See the included COPYRIGHT file for the terms of this license.
+ * See the included MIT-LICENSE file for the terms of this license.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF

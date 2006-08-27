@@ -1,4 +1,4 @@
-# Copyright (C) 2006 Peter McLain
+# Copyright (C) 2006 Peter McLain <peter.mclain@gmail.com>
 #
 # This program is distributed under the terms of the MIT license.
 # See the included MIT-LICENSE file for the terms of this license.

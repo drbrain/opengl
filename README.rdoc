@@ -3,6 +3,9 @@
 ruby-opengl[http://rubyforge.org/projects/ruby-opengl/] is a Ruby extension
 for the OpenGL, GLU and GLUT libraries using SWIG.
 
+It is licensed under the MIT license. Please see the included MIT-LICENSE
+file for the terms of the license.
+
 == Status: Pre-Alpha
 
 Currently, ruby-opengl:
