@@ -31,6 +31,7 @@ rule '.c' => [ proc { |tn| tn.sub(/_wrap\.[^.]+$/, '.i') } ] do |t|
     sh "swig #{swig_args} -ruby #{t.source}"
 end
 
+desc "Build the GL ruby extension"
 task :default => [ ext ]
 
 file 'gl_wrap.c' => %w( gl.i gl_untyped.i )

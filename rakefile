@@ -16,8 +16,13 @@
 
 SUB_PROJECTS = [ "ext/gl", "ext/glut" ]
 
+desc "Build the GL and GLUT extensions"
 task :default do; sub_rake; end
+
+desc "Clean the GL and GLUT extensions"
 task :clean   do; sub_rake("clean"); end
+
+desc "Clobber the GL and GLUT extensions"
 task :clobber do; sub_rake("clobber"); end
 
 # Helper method to run a target in each of my sub-projects

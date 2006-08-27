@@ -23,8 +23,6 @@ ext_name = 'glut'
 # The library name, e.g., "gl.bundle" or "gl.so"
 ext = "#{ext_name}.#{Config::CONFIG['DLEXT']}"
 
-puts "=== ext: #{ext}"
-
 CLEAN.include('*_wrap.*')
 CLOBBER.include('Makefile', "*.#{Config::CONFIG['DLEXT']}")
 
@@ -33,6 +31,7 @@ rule '.c' => [ proc { |tn| tn.sub(/_wrap\.[^.]+$/, '.i') } ] do |t|
     sh "swig #{swig_args} -ruby #{t.source}"
 end
 
+desc "Build the GLUT ruby extension"
 task :default => [ ext ]
 
 file 'glut_wrap.c' => %w( glut.i glut_init.i glut_callbacks.i )
