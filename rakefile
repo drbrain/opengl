@@ -1,0 +1,33 @@
+
+#-*-ruby-*-
+#--
+# Copyright 2006 by Peter McLain
+# All rights reserved.
+# See MIT-LICENSE for permissions.
+#++
+
+# This is a quick and dirty rake file to build from the top level.  This
+# will do until I figure out the rake way to handle hierarchichal builds.
+#
+# TODO:
+#   * This needs namespaces?
+#   * error checking/exceptions
+#   * Dependencies...
+
+SUB_PROJECTS = [ "ext/gl", "ext/glut" ]
+
+task :default do; sub_rake; end
+task :clean   do; sub_rake("clean"); end
+task :clobber do; sub_rake("clobber"); end
+
+# Helper method to run a target in each of my sub-projects
+def sub_rake(target="default")
+    SUB_PROJECTS.each do |d|
+        puts "\n=== running #{target} in #{d}"
+        save_dir = Dir.pwd
+        cd d
+        sh "rake #{target}"
+        cd save_dir
+    end
+end
+
