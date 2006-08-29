@@ -2,8 +2,8 @@ require "../ext/gl/GL"
 require "../ext/glut/GLUT"
 require "rational"
 
-require "../lib/gl_c"
-require "../lib/glut_c"
+require "../lib/gl_prev"
+require "../lib/glut_prev"
 
 RAMPSIZE=16
 RAMP1START=32
