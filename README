@@ -1,77 +1,101 @@
-= ruby-opengl
+ruby-opengl
+===========
 
-ruby-opengl[http://rubyforge.org/projects/ruby-opengl/] is a Ruby extension
-for the OpenGL, GLU and GLUT libraries using SWIG.
+[ruby-opengl][] consists of Ruby extension modules that are bindings for
+the [OpenGL][], GLU, and [GLUT][] libraries. They are generated with the
+help of [SWIG][]. ruby-opengl is:
 
-It is licensed under the MIT license. Please see the included MIT-LICENSE
+* under heavy development,
+* intended to be a replacement for [Yoshi's ruby-opengl][], and
+* will be a continuation of the now halted recent project of the
+  same name ([halted ruby-opengl][]).
+
+It's licensed under the MIT license. Please see the included MIT-LICENSE
 file for the terms of the license.
 
-== Status: Pre-Alpha
 
-Currently, ruby-opengl:
+[ruby-opengl]: http://rubyforge.org/projects/ruby-opengl/
+[OpenGL]: http://www.opengl.org/
+[GLUT]: http://www.opengl.org/documentation/specs/glut/spec3/spec3.html
+[SWIG]: http://www.swig.org/
+
+[Yoshi's ruby-opengl]: http://www2.giganet.net/~yoshi/
+[halted ruby-opengl]: http://www.simisen.com/cgi-bin/jmg/ruby-opengl.rb
+
+
+Status: Pre-Alpha
+-----------------
+
 * Compiles and runs on Mac OS X.
-* Compiles on Linux, but doesn't run (yet)
-* Very few of the opengl calls have been excercised, let alone tested.  I
+* Compiles on GNU/Linux, but doesn't run (yet).
+* Very few of the OpenGL calls have been excercised, let alone tested. I
   expect that many of them will run fine.
-* There are several of the convenience wrapper functions that Yoshi wrote
+* Several of the convenience wrapper functions that Yoshi wrote
   that have not yet been ported.
 * No thought has been directed toward performance.
 
-== Layout
+
+Code layout
+-----------
 
 The directory structure is:
 
-    docs/
-        Contains documentation for the project.
-    ext/
-        Contains the SWIG files, build files and other miscellaneous files
-        needed to compile the ruby extensions for OpenGL and GLUT.
-    lib/
-        Ruby files that provide glue code to run programs written in the
-        naming style of Yoshi's code.
-    test/
-        Contains sample ruby files that make OpenGL and GLUT calls.  No
-        real tests so far.
+* `docs/` -- Contains documentation for the project.
+* `ext/` -- Contains the SWIG files, build files and other miscellaneous
+  files needed to compile the ruby extensions for OpenGL and GLUT.
+* `lib/` -- Ruby files that provide glue code to run programs written in
+  the naming style of Yoshi's code.
+* `test/` -- Contains sample ruby files that make OpenGL and GLUT calls.
+  No real tests so far.
 
-== Building ruby-opengl
 
-=== Pre-requisites
+Building ruby-opengl
+--------------------
 
-SWIG[http://www.swig.org/] must be installed on the build machine.  I'm
-using the fink version of swig on my mac:
 
-  $ swig -version
+### Pre-requisites ###
 
-  SWIG Version 1.3.20
-  Copyright (c) 1995-1998
-  University of Utah and the Regents of the University of California
-  Copyright (c) 1998-2003
-  University of Chicago
-  Compiled with g++-3.3 [powerpc-apple-darwin8.3.0]
+SWIG must be installed on the build machine. I'm using the fink version
+of swig on my mac:
 
-  Please see http://www.swig.org for reporting bugs and further information
+    $ swig -version
 
-=== Build on Mac OS X
+    SWIG Version 1.3.20
+    Copyright (c) 1995-1998
+    University of Utah and the Regents of the University of California
+    Copyright (c) 1998-2003
+    University of Chicago
+    Compiled with g++-3.3 [powerpc-apple-darwin8.3.0]
+
+Please see <http://www.swig.org> for reporting bugs and further information
+about SWIG.
+
+
+### Build on Mac OS X ###
 
 The current build is still not great.
 * Need to make the rake build hierarchical, in a rake-like manner.
 * Need to remove duplication in the rakefiles.
 * Haven't tested on any platform besides Mac OS X.
 
-To build, just run <tt>rake</tt> at the top level.  This will do everything
+To build, just run `rake` at the top level.  This will do everything
 necessary to build both the OpenGL and GLUT bindings for ruby.  The top
-level +rakefile+ calls down to <tt>ext/gl/rakefile</tt> and
-<tt>ext/glut/rakefile</tt> to do the real work.
+level `rakefile` calls down to `ext/gl/rakefile` and
+`ext/glut/rakefile` to do the real work.
 
-=== Testing / Running
+
+### Testing / Running ###
 
 To run a sample file:
-  $ cd test
-  $ ruby plane.rb
 
-Just hit <tt>ESC</tt> to exit the super-interesting OpenGL program.
+    $ cd test
+    $ ruby plane.rb
 
-== Roadmap
+Just hit ESC to exit the super-interesting OpenGL program.
+
+
+Roadmap
+-------
 
 Most people want to just download an OpenGL binding, install, and be done
 with it.  The plan is to deliver OS/Arch specific gems with the extensions
@@ -80,10 +104,19 @@ pre-compiled and everything ready to go.  We aren't there yet.
 In the meantime, you have to install a few tools, compile and install the
 extension, before it will work.
 
-== TODO
+
+TODO
+----
 
 * Make the rake build hierarchical
 * Rename "ext" to "swig", and only put the built extensions in ext
   (separate the build env from the build products)
 * Get the documentation going
 * Add the ESC keyboard handler to smooth.rb
+
+
+Links
+-----
+
+* [development notes](./development_notes.html)
+* [swig](./swig.html)

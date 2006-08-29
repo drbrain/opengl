@@ -1,27 +1,31 @@
-= Development Notes
+Development Notes
+=================
 
-This document is a cleaned up journal of steps I took to get from zero to
-hello world using GLUT and OpenGL.
+This document is a cleaned up journal of steps I (Peter) took to get from
+zero to hello world using GLUT and OpenGL.
 
-== Overview
+
+Overview
+--------
 
 One day, sitting at work, I needed to write a few tests for some shaders.
-I decided to try it in ruby, so I needed an OpenGL binding for ruby.  I
+I decided to try it in Ruby, so I needed an OpenGL binding for Ruby.  I
 googled around a bit and found a few, but the ones I found were either
+
 * Defunct projects
 * Funct, but still old and didn't support shaders
 * Embedded in much larger systems that I didn't want to bother with (e.g.,
   FXRuby).
 
 In my google-ing, I found
-http://www.simisen.com/cgi-bin/jmg/ruby-opengl.rb, which was a
+<http://www.simisen.com/cgi-bin/jmg/ruby-opengl.rb>, which was a
 re-incarnation of Yoshi's original work here:
-http://www2.giganet.net/~yoshi/.  I tried it, and got the hello world
+<http://www2.giganet.net/~yoshi/>.  I tried it, and got the hello world
 OpenGL programs running, but when I tried to use shaders, the appropriate
 OpenGL calls weren't available.  I dug around a bit and found out that the
-old port was done on OpenGL 1.2, i.e., it was quite old.
+old port was done on OpenGL 1.2 -- i.e., it was quite old.
 
-I'd been looking for an excuse to get into ruby, rake, etc., so I took this
+I'd been looking for an excuse to get into Ruby, Rake, etc., so I took this
 as an opportunity to accomplish that goal.  I suppose I could have dug
 deeper into FXRuby, or one of the other projects that seems to wrap OpenGL
 in someway or other, but I don't think I'd learn as much.
@@ -31,232 +35,252 @@ popular way to produce a C wrapper for a scripting language, so I'll
 learn/use that.  There are a lot of other attempts at wrapping OpenGL that
 provide material to read and borrow.  Most of them seem to have target
 language specific tweaks, so I can't simply borrow them wholesale (i.e., I
-can't simply grab PyOpenGL's <tt>.i</tt> file(s) and run <tt>swig -ruby
-whatever.i</tt> and have it work), I'll have to make my own ruby tweaks (at
-least that's my limited understanding at thist point).
+can't simply grab PyOpenGL's `.i` file(s) and run
+`swig -ruby whatever.i` and have it work), I'll have to make my own
+ruby tweaks (at least that's my limited understanding at thist point).
 
 Since I don't want to bother with the window level of programming, I'll
-need Glut as well as OpenGL.  So my opengl package will have several
+need GLUT as well as OpenGL.  So my OpenGL package will have several
 sub-modules.  I'll take my interface building strategy from:
-http://www.swig.org/papers/TclTutorial98/TclTutorial98.pdf
+<http://www.swig.org/papers/TclTutorial98/TclTutorial98.pdf>
 
 * Step 1: Write a separate swig interface file for each OpenGL header file
-  we include: <tt>gl.h</tt>, <tt>glut.h</tt>
+  we include: `gl.h`, `glut.h`
 * Step 2: Combine them into a single swig module called opengl:
-    %module opengl
-    %include gl.i
-    %include glut.i
 
-== Step Zero: Basics: Build
+        %module opengl
+        %include gl.i
+        %include glut.i
+
+
+Step Zero: Basics: Build
+------------------------
 
 Since I'm trying to write a C-Extension to ruby, I want to get the
 infrastructure to compile and package the extension done.  Following the
-pickaxe book, I'll use +mkmf+.
+pickaxe book, I'll use `mkmf`.
 
-+mkrf+ is a new gem that is based on Rake rather than crufty old Make.  I'd
-use it, but (A) I'm on a Mac and I need to pass <tt>-framework GLUT</tt>
-etc. and (B) +mkrf+ is still pretty new and I didn't see a way of using it.
+`mkrf` is a new gem that is based on Rake rather than crufty old Make.  I'd
+use it, but (A) I'm on a Mac and I need to pass `-framework GLUT`
+etc. and (B) `mkrf` is still pretty new and I didn't see a way of using it.
 So, instead of solving that problem too, I'll just get everything working
-with +mkmf+ and then tackle using rake at some other time.
+with `mkmf` and then tackle using rake at some other time.
 
-=== Create the <tt>extconf.rb</tt>
 
-The Makefile that compiles a <tt>.c</tt> file into a ruby extension is
-created using +mkmf+ via the <tt>extconf.rb</tt> file:
+### Create the `extconf.rb` ###
 
-  require 'mkmf'
-  create_makefile('glut')
+The Makefile that compiles a `.c` file into a ruby extension is
+created using `mkmf` via the `extconf.rb` file:
+
+    require 'mkmf'
+    create_makefile('glut')
 
 RxINC: Perhaps I'm dense, but I can't find a satisfactory way to pass
-<tt>"-framework GLUT'</tt> (required to link on Mac OS X) into the
-Makefile.  I think I should be able to add it into the <tt>extconf.rb</tt>,
-but I don't think +mkmf+ allows me to do that.  So, I have to generate the
+`-framework GLUT` (required to link on Mac OS X) into the
+Makefile.  I think I should be able to add it into the `extconf.rb`,
+but I don't think `mkmf` allows me to do that.  So, I have to generate the
 makefile this way:
 
-  ruby extconf.rb --with-ldflags='-framework GLUT'
+    ruby extconf.rb --with-ldflags='-framework GLUT'
 
 This is unsatisfying because I'd like to code that up so you don't have to
-tell anyone in +README+ "If you're on a Mac, then create the makefile
+tell anyone in `README`: "If you're on a Mac, then create the makefile
 *this* way...".
 
-=== Create a bash script to do the build
+
+### Create a bash script to do the build ###
 
 Since this seems to be a multi-step process, I'll create a bash script for
 now (I really should have one rake file that does it all...).  But, in the
 interests of actually getting on with the OpenGL and SWIG aspects, I'll
-just hack this <tt>build.sh</tt>:
+just hack this `build.sh`:
 
-  #!/bin/bash -x
+    #!/bin/bash -x
 
-  GENERATED_FILES="Makefile glut_wrap.c glut_wrap.o glut.bundle"
+    GENERATED_FILES="Makefile glut_wrap.c glut_wrap.o glut.bundle"
 
-  # Clean all the junk out
-  rm -f $GENERATED_FILES
+    # Clean all the junk out
+    rm -f $GENERATED_FILES
 
-  # Use SWIG to automatically generate a glut_wrap.c file from GL/glut.h.
-  # This has to come before the extconf line, since mkmf won't make a target
-  # for glut unless there is a glut_wrap.c file lying around....
-  swig -ruby glut.i
+    # Use SWIG to automatically generate a glut_wrap.c file from GL/glut.h.
+    # This has to come before the extconf line, since mkmf won't make a target
+    # for glut unless there is a glut_wrap.c file lying around....
+    swig -ruby glut.i
 
-  # Generate the makefile that will compile glut_wrap.c into a ruby
-  # extension (glut.bundle for the Mac)
-  ruby extconf.rb --with-ldflags='-framework GLUT'
+    # Generate the makefile that will compile glut_wrap.c into a ruby
+    # extension (glut.bundle for the Mac)
+    ruby extconf.rb --with-ldflags='-framework GLUT'
 
-  # Now compile it up into a bundle
-  make
+    # Now compile it up into a bundle
+    make
 
-== Step One: Get a simple <tt>glut.i</tt> working
+
+Step One: Get a simple `glut.i` working
+---------------------------------------
 
 Start with the simplest swig file I can think of...
 
-  %module glut
-  %{
-  #include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
-  %}
-  %include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
+    %module glut
+    %{
+    #include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
+    %}
+    %include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
 
 ...and see what fails:
-  $ ./build.sh && ruby -rglut -e 'Glut.glutInit(1, [])'
-  ...
-  -e:1:in `glutInit': wrong argument type Fixnum (expected Data) (TypeError)
-          from -e:1
 
-Notes about <tt>glut.i</tt>
-* <tt>%module glut</tt> defines the name of the ruby extension.  SWIG will
+    $ ./build.sh && ruby -rglut -e 'Glut.glutInit(1, [])'
+    ...
+    -e:1:in `glutInit': wrong argument type Fixnum (expected Data) (TypeError)
+            from -e:1
+
+Notes about `glut.i`
+* `%module glut` defines the name of the ruby extension.  SWIG will
   capitalize the module name so that the ruby module is named
-  <tt>Glut</tt>.
-* SWIG copies the code between the <tt>%{...%}</tt> verbatim into the
-  glut_wrap.c output file.  Since we need to <tt>#include "...glut.h"<tt>
-  in <tt>glut_wrap.c</tt>, this is the mechanism to do that.
-* The <tt>%include "/System/.../glut.h</tt> tells SWIG to analyze
-  <tt>glut.h</tt> and to generate wrapper functions for all of the C
-  functions declared in <tt>glut.h</tt>.  I.e., this is what causes SWIG to
+  `Glut`.
+* SWIG copies the code between the `%{...%}` verbatim into the
+  glut_wrap.c output file.  Since we need to `#include "...glut.h"`
+  in `glut_wrap.c`, this is the mechanism to do that.
+* The `%include "/System/.../glut.h` tells SWIG to analyze
+  `glut.h` and to generate wrapper functions for all of the C
+  functions declared in `glut.h`.  I.e., this is what causes SWIG to
   do its work.
 
-== Step Two: Deal with <tt>glutInit</tt>
 
-At this point, the +glut+ extension compiled, but when I tried to run a
+Step Two: Deal with `glutInit`
+-------------------------------------
+
+At this point, the `glut` extension compiled, but when I tried to run a
 ruby program against it,  it generated an error:
-  $ ruby -rglut -e 'Glut.glutInit(1, [])'
-  ...
-  -e:1:in `glutInit': wrong argument type Fixnum (expected Data) (TypeError)
-          from -e:1
+
+    $ ruby -rglut -e 'Glut.glutInit(1, [])'
+    ...
+    -e:1:in `glutInit': wrong argument type Fixnum (expected Data) (TypeError)
+            from -e:1
 
 After poking around a bit, I isolated the problem to the way SWIG handles
-pointers.  The declaration for +glutInit+, from <tt>glut.h</tt>, is:
-  extern void APIENTRY glutInit(int *argcp, char **argv);
+pointers.  The declaration for `glutInit`, from `glut.h`, is:
 
-It takes a pointer to an +int+ so that it can consume any parameters passed
-in the command line that are Glut specific and return a smaller +ARGV+
+    extern void APIENTRY glutInit(int *argcp, char **argv);
+
+It takes a pointer to an `int` so that it can consume any parameters passed
+in the command line that are Glut specific and return a smaller `ARGV`
 array to the real program, minus the Glut parameters.
 
 The problem is that SWIG can't know in general how many ints are hiding
-behind an <tt>int *</tt> (or any other pointer...) so it just wraps up the
-pointer as +T_DATA+ and lets ruby deal with it as an opaque pile of memory
+behind an `int *` (or any other pointer...) so it just wraps up the
+pointer as `T_DATA` and lets ruby deal with it as an opaque pile of memory
 that could be passed from C into ruby and back out into C unscathed.
 
 The plan to deal with this is to write our own, nice, ruby friendly
-<tt>glutInit( ARGV )</tt> in C that does the translations between C and
+`glutInit( ARGV )` in C that does the translations between C and
 Ruby.  This seems to be what Yoshi did in the original port.  It is also
-the approach taken by PyOpenGL (see <tt>GLUT.i</tt>).  So, we'll try it
+the approach taken by PyOpenGL (see `GLUT.i`).  So, we'll try it
 here.
 
-=== Strategy One: Use <tt>cpointer.i</tt>
+
+### Strategy One: Use `cpointer.i` ###
 
 SWIG has some pre-defined macros to wrap pointers.  This allows you to
 create a "pointer" in the script language and then pass it into the
 method.  E.g., if the C looks like:
 
-  void glutInit( int *argc )
+    void glutInit( int *argc )
 
-and in your <tt>foo.i</tt> you do:
-  %module foo
-  %include "cpointer.i"
-  %pointer_functions( int, intp);
-  void glutInit( int *argc )
+and in your `foo.i` you do:
+
+    %module foo
+    %include "cpointer.i"
+    %pointer_functions( int, intp);
+    void glutInit( int *argc )
 
 Then in your ruby you'd do:
-  import 'foo'
-  x = Foo.new_intp          # create an empty "int pointer" (int *x)
-  Foo.intp_assign( x, 3 )   # Assign 3 as the value of the "pointer" (*x = 3)
-  Foo.glutInit( x )         # Now call with the pointer
+
+    import 'foo'
+    x = Foo.new_intp          # create an empty "int pointer" (int *x)
+    Foo.intp_assign( x, 3 )   # Assign 3 as the value of the "pointer" (*x = 3)
+    Foo.glutInit( x )         # Now call with the pointer
 
 This was an interesting sideline, but isn't the long term solution.  I'll
 abandon this.
 
-=== Strategy Two: Write my own Glut Init Wrapper
+
+### Strategy Two: Write my own Glut Init Wrapper ###
 
 This is the strategy that Yoshi took, and the one that seems popular in
 other bindings.  So, in part A, I'll try to figure out how to get my own
-implementation of glutInit into the <tt>glut_wrap.c</tt> file, and then
+implementation of glutInit into the `glut_wrap.c` file, and then
 I'll deal with doing the right thing.
 
-==== A: Write my own Hello World from <tt>glutInit</tt>
+
+#### A: Write my own Hello World from `glutInit` ####
 
 After a few false starts, this is what I came up with:
 
-* Use <tt>%ignore</tt> to tell SWIG to not auto-wrap <tt>glutInit</tt>.
-* Write my own <tt>_wrap_glutInit()</tt> (using Yoshi's as a start) that
-  will eventuall call into the real <tt>glutInit( int *, char ** )</tt>.
+* Use `%ignore` to tell SWIG to not auto-wrap `glutInit`.
+* Write my own `_wrap_glutInit()` (using Yoshi's as a start) that
+  will eventuall call into the real `glutInit( int *, char ** )`.
 * Register my wrap glut init into the ruby module.
 
-Here is the <tt>glut.i</tt> file
+Here is the `glut.i` file
 
-  %module glut
+    %module glut
 
-  %{
-  #include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
-  %}
+    %{
+    #include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
+    %}
 
-  %{
-  /*
-   * This is the function that will be registered in the Ruby module as
-   * "glutInit".  Its job is to mess with the Ruby ARGV and pass it on to
-   * the real glutInit(int *, char **) in the glut library.
-   */
-  static VALUE _wrap_glutInit()
-  {
-    printf( "Hello from _wrap_glut_Init\n" );
-    return Qnil; /* Qnil is from ruby.h and is the C version of nil */
-  }
-  %}
-
-  %init %{
+    %{
     /*
-     * We need to register our hand-written glut init function so that a Ruby
-     * program can call Glut.glutInit()
+     * This is the function that will be registered in the Ruby module as
+     * "glutInit".  Its job is to mess with the Ruby ARGV and pass it on to
+     * the real glutInit(int *, char **) in the glut library.
      */
-    rb_define_module_function(mGlut, "glutInit", _wrap_glutInit, -1);
-  %}
+    static VALUE _wrap_glutInit()
+    {
+      printf( "Hello from _wrap_glut_Init\n" );
+      return Qnil; /* Qnil is from ruby.h and is the C version of nil */
+    }
+    %}
 
-  /*
-   * We don't want SWIG to emit anything for the glutInit(int *, char **)
-   * function it finds in glut.h, since we deal with that above.
-   */
-  %ignore glutInit;
+    %init %{
+      /*
+       * We need to register our hand-written glut init function so that a Ruby
+       * program can call Glut.glutInit()
+       */
+      rb_define_module_function(mGlut, "glutInit", _wrap_glutInit, -1);
+    %}
 
-  /* Tell SWIG to generate wrappers for glut.h */
-  %include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
+    /*
+     * We don't want SWIG to emit anything for the glutInit(int *, char **)
+     * function it finds in glut.h, since we deal with that above.
+     */
+    %ignore glutInit;
+
+    /* Tell SWIG to generate wrappers for glut.h */
+    %include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
 
 And now build and run it:
-  $ ./build.sh && ruby -rglut -e Glut.glutInit
-  ...
-  Hello from _wrap_glut_Init
 
-==== B: Get glutInit doing something useful
+    $ ./build.sh && ruby -rglut -e Glut.glutInit
+    ...
+    Hello from _wrap_glut_Init
 
-Now we just need to get +glutInit+ to do something useful.  I'll just take
-Yoshi's code and use that for now.  I'll also put all of the +glutInit+
-stuff into a separate <tt>glut_init.i</tt> file and <tt>%include</tt> it
-into the <tt>glut.i</tt> file.
+
+#### B: Get glutInit doing something useful ####
+
+Now we just need to get `glutInit` to do something useful.  I'll just take
+Yoshi's code and use that for now.  I'll also put all of the `glutInit`
+stuff into a separate `glut_init.i` file and `%include` it
+into the `glut.i` file.
 
 After figuring out a few name clashes and one or two other tweaks for the
-SWIG enivronment, there is a working <tt>glut_init</tt> (see
-<tt>ext/glut/glut_init.i</tt>)
+SWIG enivronment, there is a working `glut_init` (see
+`ext/glut/glut_init.i`)
 
 RxINC: add explanation of Yoshi's approach
 
-=== Step Two: Figure out callbacks.
+
+### Step Two: Figure out callbacks. ###
 
 Glut uses callbacks into user code for the major points in the OpenGL
 lifecycle (display, reshape, etc.).  SWIG doesn't support callbacks into
@@ -265,6 +289,6 @@ script code, so we'll have to figure out a different way to deal with that.
 Again, I borrowed Yoshi's approach, which defines a few CPP macros to
 create a C function for a callback, register it in a small registry of
 callbacks and some helper functions so that you can invoke the callback.
-See <tt>ext/glut/glut_callbacks.i</tt> for the code.
+See `ext/glut/glut_callbacks.i` for the code.
 
 RxINC: add more detailed explanation of Yoshi's approach
