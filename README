@@ -70,7 +70,7 @@ of swig on my mac:
 On Ubuntu, aside from Ruby and the Rake gem, you'll need the following
 packages:
 
-* `swig` (you might also want `swig swig-doc swig-examples` too)
+* `swig` (you might also want `swig-doc swig-examples` too)
 * `libgl1-mesa libgl1-mesa-dri libglu1-mesa freeglut3`
 * `libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev`
 
@@ -79,9 +79,10 @@ Please see <http://www.swig.org> for reporting bugs and further information
 about SWIG.
 
 
-### Build on Mac OS X ###
+### Build instructions ###
 
-The current build is still not great.
+The current build is still not great. Some TODO's:
+
 * Need to make the rake build hierarchical, in a rake-like manner.
 * Need to remove duplication in the rakefiles.
 * Haven't tested on any platform besides Mac OS X.
