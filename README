@@ -67,6 +67,14 @@ of swig on my mac:
     University of Chicago
     Compiled with g++-3.3 [powerpc-apple-darwin8.3.0]
 
+On Ubuntu, aside from Ruby and the Rake gem, you'll need the following
+packages:
+
+* `swig` (you might also want `swig swig-doc swig-examples` too)
+* `libgl1-mesa libgl1-mesa-dri libglu1-mesa freeglut3`
+* `libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev`
+
+
 Please see <http://www.swig.org> for reporting bugs and further information
 about SWIG.
 
