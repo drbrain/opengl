@@ -23,7 +23,7 @@ when /darwin/
     # Don't understand why swig doesn't define this...
     swig_args = "-DSWIGMAC"
 else
-    extconf_args = ""
+    extconf_args = "--with-ldflags='-lGL -lGLU -lglut'"
     swig_args = "-I/usr/include"
 end
 
