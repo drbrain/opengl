@@ -14,7 +14,14 @@
 # RxINC: This should really only require/include GL and GLU, but we
 # currently have GLUT instead of GLU, so, to test the concept, we'll
 # include GLUT.
-require '../ext/gl/GL'
-require '../ext/glut/GLUT'
+#
+# RxINC: The hard-coded ../ext/gl... is ok for dev, but wrong for
+# installation.
+
+ext_dir = File.join(File.dirname(__FILE__), '..', 'ext')
+
+require "#{ext_dir}/gl/GL"
+require "#{ext_dir}/glut/GLUT"
+
 include GL
 include GLUT
