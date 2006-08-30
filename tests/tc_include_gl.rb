@@ -12,8 +12,15 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+
+if __FILE__ == $0
+    # If we are being called from the command line, e.g., ruby foo.rb, then
+    # fixup the load path so we can find the OpenGL extension libs
+    $: << File.join(File.dirname(__FILE__), '..', 'ext')
+end
+
 require 'test/unit'
-require '../ext/gl/GL'
+require 'gl/GL'
 include GL
 
 # Test that an include of GL forces makes the OpenGL namespace available in
