@@ -31,4 +31,6 @@
 %include <GL/gl.h>
 #endif
 
+#ifdef RBOGL_UNTYPED
 %include "gl_untyped.i"
+#endif

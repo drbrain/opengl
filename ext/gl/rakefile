@@ -27,6 +27,12 @@ else
     swig_args = "-I/usr/include"
 end
 
+# Add swig parameters passed in via "rake VAR=VALUE"
+# The currently known parameters are:
+#
+#  RBOGL_UNTYPED:  If set, then include the gl_untyped.i file
+swig_args << " -DRBOGL_UNTYPED" if ENV['RBOGL_UNTYPED']
+
 # The module we are trying to build
 ext_name = 'gl'
 # The library name, e.g., "gl.bundle" or "gl.so"
