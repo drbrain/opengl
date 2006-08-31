@@ -22,7 +22,7 @@
 %}
 #else
 %header %{
-#include <GL/glut.h>
+#include <GL/freeglut_std.h>
 %}
 #endif
 
@@ -32,6 +32,5 @@
 #ifdef SWIGMAC
 %include "/System/Library/Frameworks/GLUT.framework/Headers/glut.h"
 #else
-%include <GL/glut.h>
+%include <GL/freeglut_std.h>
 #endif
-
