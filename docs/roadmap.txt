@@ -1,0 +1,33 @@
+Roadmap
+=======
+
+This is a pre-alpha project, and we're still currently experimenting
+with a number of different ideas and plans.
+
+Possible current plan
+---------------------
+
+Most people want to just download an OpenGL binding, install, and be done
+with it.  We may deliver OS/Arch specific gems with the extensions
+pre-compiled and everything ready to go.  We aren't there yet.
+
+In the meantime, you have to install a few tools, compile and install the
+extension, before it will work.
+
+
+Another possible current plan
+-----------------------------
+
+After some more experimentation, we may scrap the idea of using
+SWIG and go back to developing
+[ruby-opengl 0.34pre2](http://www.simisen.com/cgi-bin/jmg/ruby-opengl.rb).
+
+
+Yet another possible current plan
+---------------------------------
+
+We're looking seriously at maybe using
+[rubygl](http://rubyforge.org/projects/rubygl/) instead. rubygl has a
+number of very nice "rubyish" features. Although they make it less like
+the C API with which everyone is already familiar, they add that special
+Ruby magic. :)

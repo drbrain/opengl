@@ -1,0 +1,55 @@
+Building ruby-opengl
+====================
+
+
+Pre-requisites
+--------------
+
+SWIG must be installed on the build machine. I'm using the fink version
+of swig on my mac:
+
+    $ swig -version
+
+    SWIG Version 1.3.20
+    Copyright (c) 1995-1998
+    University of Utah and the Regents of the University of California
+    Copyright (c) 1998-2003
+    University of Chicago
+    Compiled with g++-3.3 [powerpc-apple-darwin8.3.0]
+
+On Ubuntu, aside from Ruby and the Rake gem, you'll need the following
+packages:
+
+* `swig` (you might also want `swig-doc swig-examples` too)
+* `libgl1-mesa libgl1-mesa-dri libglu1-mesa freeglut3`
+* `libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev`
+
+
+Please see <http://www.swig.org> for reporting bugs and further information
+about SWIG.
+
+
+Build instructions
+------------------
+
+The current build is still not great. Some TODO's:
+
+* Need to make the rake build hierarchical, in a rake-like manner.
+* Need to remove duplication in the rakefiles.
+* Haven't tested on any platform besides Mac OS X.
+
+To build, just run `rake` at the top level.  This will do everything
+necessary to build both the OpenGL and GLUT bindings for ruby.  The top
+level `rakefile` calls down to `ext/gl/rakefile` and
+`ext/glut/rakefile` to do the real work.
+
+
+Testing / Running
+-----------------
+
+To run a sample file:
+
+    $ cd test
+    $ ruby plane.rb
+
+Just hit ESC to exit the super-interesting OpenGL program.
