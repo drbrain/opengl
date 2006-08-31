@@ -27,8 +27,15 @@ require 'rake/testtask'
 Rake::TestTask.new do |t|
     t.libs << 'tests'
     t.libs << 'ext'
-    t.test_files = FileList['tests/tc_*.rb']
-    t.verbose = true
+    fl = FileList['tests/tc_*.rb']
+    # These tests play with the namespace and mess things up
+    # for the other tests, so we'll have to run them separately
+    fl.exclude('tests/tc_include_gl.rb')
+    fl.exclude('tests/tc_require_gl.rb')
+    fl.exclude('tests/tc_opengl_namespace.rb')
+
+    t.test_files = fl
+    #t.verbose = true
 end
 
 SUB_PROJECTS = [ "ext/gl", "ext/glut" ]
