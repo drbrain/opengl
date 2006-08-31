@@ -110,7 +110,7 @@ WINDOW_CALLBACK_SETUP(MotionFunc);
 WINDOW_CALLBACK_SETUP(PassiveMotionFunc);
 WINDOW_CALLBACK_SETUP(EntryFunc);
 WINDOW_CALLBACK_SETUP(VisibilityFunc);
-
+WINDOW_CALLBACK_SETUP(KeyboardUpFunc);
 
 /*
 WINDOW_CALLBACK_SETUP(SpecialFunc);
@@ -212,6 +212,19 @@ int state;
         rb_funcall(func, callId, 1, INT2NUM(state));
 }
 
+
+static void
+glut_KeyboardUpFuncCallback(key, x, y)
+unsigned char key;
+int x,y;
+{
+    VALUE func;
+    func = rb_ary_entry(KeyboardUpFunc, glutGetWindow());
+    if (!NIL_P(func))
+        rb_funcall(func, callId, 3, INT2FIX(key), INT2FIX(x), INT2FIX(y));
+}
+
+
 %}
 
 %init %{
@@ -223,7 +236,7 @@ int state;
   WINDOW_CALLBACK_DEFINE(PassiveMotionFunc);
   WINDOW_CALLBACK_DEFINE(EntryFunc);
   WINDOW_CALLBACK_DEFINE(VisibilityFunc);
-
+  WINDOW_CALLBACK_DEFINE(KeyboardUpFunc);
 
   callId = rb_intern("call");
 %}
@@ -237,3 +250,4 @@ int state;
 %ignore glutPassiveMotionFunc;
 %ignore glutEntryFunc;
 %ignore glutVisibilityFunc;
+%ignore glutKeyboardUpFunc;
