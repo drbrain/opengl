@@ -25,19 +25,76 @@ require 'glut/GLUT'
 include GL
 include GLUT
 
+
+# Yet to test
+
+# glVertex2dv
+# glVertex2fv
+# glVertex2iv
+# glVertex2sv
+
+# glVertex3dv
+# glVertex3fv
+# glVertex3iv
+# glVertex3sv
+
+# glVertex4dv
+# glVertex4fv
+# glVertex4iv
+# glVertex4sv
+
 class GlVertexTest < Test::Unit::TestCase
 
-    # Test the glVertex2{dfs} calls
+
+    # Test the existence of
+    #   glVertex2d
+    #   glVertex2f
+    #   glVertex2i
+    #   glVertex2s
     def test_gl_vertex2x
         one_time_glut_init
-        %w( glVertex2d glVertex2f glVertex2s ).each do |s|
-            begin
-                puts "\n=== Running with: #{s}"
-                run_with(s)
-            rescue StopGlutMain
-                # Ignore
-            end
-        end
+        # These parameters define a small box
+        params = [
+            [-1.5, -1.5],
+            [-1.5,  1.5],
+            [ 1.5,  1.5],
+            [ 1.5, -1.5]
+        ]
+        run_with(%w( glVertex2d glVertex2f glVertex2i glVertex2s ), params)
+    end
+
+    # Test the existence of
+    #   glVertex3d
+    #   glVertex3f
+    #   glVertex3i
+    #   glVertex3s
+    def test_gl_vertex3x
+        one_time_glut_init
+        # These parameters define a small box
+        params = [
+            [-1.5, -1.5, 0],
+            [-1.5,  1.5, 0],
+            [ 1.5,  1.5, 0],
+            [ 1.5, -1.5, 0]
+        ]
+        run_with(%w( glVertex3d glVertex3f glVertex3i glVertex3s ), params)
+    end
+
+    # Test the existence of
+    #   glVertex4d
+    #   glVertex4f
+    #   glVertex4i
+    #   glVertex4s
+    def test_gl_vertex4x
+        one_time_glut_init
+        # These parameters define a small box
+        params = [
+            [-1.5, -1.5, 0, 1],
+            [-1.5,  1.5, 0, 1],
+            [ 1.5,  1.5, 0, 1],
+            [ 1.5, -1.5, 0, 1]
+        ]
+        run_with(%w( glVertex4d glVertex4f glVertex4i glVertex4s ), params)
     end
 
     def one_time_glut_init
@@ -55,30 +112,61 @@ class GlVertexTest < Test::Unit::TestCase
         glOrtho(-10, 10, -10, 10, -10, 10)
     end
 
-    def run_with(gl_vertex_method)
-        display = lambda do
-            glColor3f( 1.0, 1.0, 1.0 )
+    # Run several related tests.  gl_vertex_methods, is an array of method
+    # names that are appropriate to run against the arity of params.  E.g.,
+    # if gl_vertex_methods was ["glVertex2f", "glVertex2d", ... ] and
+    # params was [ [-1.5, -1.5], [-1.5, 1.5], [ 1.5, 1.5], [ 1.5, -1.5] ],
+    # then calling run_with(gl_vertex_methods, params) would be equivalent
+    # to running the following test cases:
+    #
+    #   glBegin(GL_POLYGON)
+    #     glVertex2f(-1.5, -1.5)
+    #     glVertex2f(-1.5,  1.5)
+    #     glVertex2f( 1.5,  1.5)
+    #     glVertex2f( 1.5, -1.5)
+    #   glEnd
+    #   ...
+    #   glBegin(GL_POLYGON)
+    #     glVertex2d(-1.5, -1.5)
+    #     glVertex2d(-1.5,  1.5)
+    #     glVertex2d( 1.5,  1.5)
+    #     glVertex2d( 1.5, -1.5)
+    #   glEnd
+    #
+    def run_with(gl_vertex_methods, params)
+        gl_vertex_methods.each do |mn|
+            display = lambda do
+                glColor3f( 1.0, 1.0, 1.0 )
 
-            glBegin( GL_POLYGON )
-                send(gl_vertex_method, -1.5, -1.5 )
-                send(gl_vertex_method, -1.5,  1.5 )
-                send(gl_vertex_method,  1.5,  1.5 )
-                send(gl_vertex_method,  1.5, -1.5 )
-            glEnd
-            glFlush
-        end
+                glBegin(GL_POLYGON)
+                # The send(...) basically do something like:
+                #   glVertex2d( -1.5, -1.5 )
+                # or
+                #   glVertex3d( -1.5, -1.5, 0 )
+                # or
+                #   glVertex4f( -1.5, -1.5, 0, 1 )
+                #
+                params.each {|p| send(mn, *p)}
+                glEnd
+                glFlush
+            end
 
-        keyboard = lambda do |key, x, y|
-            case(key)
-            when 27
-                raise StopGlutMain.new
+            keyboard = lambda do |key, x, y|
+                case(key)
+                when 27
+                    raise StopGlutMain.new
+                end
+            end
+            glutCreateWindow("#{__FILE__} : #{mn}");
+            init
+            glutDisplayFunc(display);
+            glutKeyboardFunc(keyboard)
+            begin
+                glutMainLoop;
+            rescue StopGlutMain
+                # Ignore
             end
         end
-        glutCreateWindow("#{__FILE__} : #{gl_vertex_method}");
-        init
-        glutDisplayFunc(display);
-        glutKeyboardFunc(keyboard)
-        glutMainLoop;
     end
 end
 
