@@ -58,9 +58,9 @@ reshape = Proc.new {|w, h|
    GL.Viewport(0, 0,  w,  h);
    GL.MatrixMode(GL::PROJECTION);
    GL.LoadIdentity();
-   if (w <= h) 
+   if (w <= h)
       GLU.Ortho2D(-1.0, 1.0, -h.to_f/w.to_f, h.to_f/w.to_f);
-   else 
+   else
       GLU.Ortho2D(w.to_f/h.to_f, w.to_f/h.to_f, -1.0, 1.0);
    end
    GL.MatrixMode(GL::MODELVIEW);
@@ -72,22 +72,22 @@ keyboard = Proc.new {|key, x, y|
       when 'r'[0]
          $rotAngle += 20
          $rotAngle = 0 if ($rotAngle >= 360)
-         GLUT.PostRedisplay();	
+         GLUT.PostRedisplay();
       when 'R'[0]
          $rotAngle -= 20
          $rotAngle = 360 if ($rotAngle <= 0)
-         GLUT.PostRedisplay();	
+         GLUT.PostRedisplay();
       when 27
          exit(0);
    end
 }
 
 #  Main Loop
-#  Open window with initial window size, title bar, 
+#  Open window with initial window size, title bar,
 #  color index display mode, and handle input events.
 #
    GLUT.Init
-   GLUT.InitDisplayMode (GLUT::SINGLE | GLUT::INDEX);
+   GLUT.InitDisplayMode(GLUT::SINGLE | GLUT::INDEX);
    GLUT.InitWindowSize(200, 200);
    GLUT.CreateWindow($0);
    myinit
