@@ -35,7 +35,7 @@ Requirements
   follow the standard C-like syntax that OpenGL programmers are used to,
   and that most OpenGL examples are published in. Something like:
 
-    require 'GL/gl'
+    require 'gl'
 
     Gl.glBegin( Gl::GL_POLYGON )
       Gl.glVertex2d( 0, 0 )
@@ -46,7 +46,7 @@ Requirements
 
   Or:
 
-    require 'GL/gl'
+    require 'gl'
     include Gl
 
     glBegin( GL_POLYGON )
@@ -69,12 +69,13 @@ Requirements
       real-estate seems nice).
 
 * It shall be possible to check out the project from svn, compile and test
-  on the following platforms: Mac OS X, GNU/Linux, Windows/XP
+  on the following platforms: Mac OS X, GNU/Linux. MS Windows operating
+  systems may also be supported in the future.
 
 * Provide backwards compatiblity for the older ruby-opengl function and
   constant naming style (possibly in a layer built on top of the Base layers).
-  The support should be as minimally invasive as possible, perhaps just:
-  `require 'prev_gl'`.
+  The support should be as minimally invasive as possible, perhaps via:
+  `require 'gl_prev'`, `require 'glu_prev'`, and `require 'glut_prev'`.
 
 * The project will make a number of pre-compiled extensions available as gems.
 
@@ -87,8 +88,7 @@ Requirements
 * All project documentation will be in Markdown format in files that end in
   .txt
 
-* Do we need to track versions of OpenGL?  Perhaps we need a 1.x and 2.x
-  streams?
+* The project will make some efforts to track versions of OpenGL.
 
 
 ### Things in the future
@@ -110,6 +110,7 @@ try:
 Design
 ------
 
+We will continue on with Yoshi's original recipe. `:)`
 
 
 Implementation
@@ -122,33 +123,6 @@ The build environment should:
 * use rake
 * minimize the number of tools needed (try to only use rake)
 
-
-### The SWIG issue
-
-When the ruby-opengl project re-started, Peter decided to try SWIG, as it
-seemed easier than doing everything by hand.  After some experience, we
-began to question whether SWIG was necessary/helpful for a project of this
-nature.  The current leaning is that people want to abandon SWIG and go
-back to maintaining the binding files by hand.  This section outlines some
-of the reasons for that:
-
-Pro-SWIG:
-
-* Could use the .i files for another project, perhaps (OTOH, we couldn't
-  use previous .i files on this project...)
-
-* It's supposed to require less manual coding.
-
-Con-SWIG:
-
-* yet another tool to learn
-
-* OpenGL isn't really all that big
-
-* OpenGL doesn't change a lot
-
-* A lot of boilerplate and overhead in the generated files because SWIG is
-  a general tool.
 
 
 Roadmap
@@ -164,7 +138,3 @@ Roadmap
 * Get BaseGLUT implemented (because it's used for testing).
 
 * Get BaseGLU implemented.
-
-* Publish a history.txt document that describes the history of ruby-opengl
-  starting with Yoshi, through John's web-site, and then to the current
-  RubyForge project.
