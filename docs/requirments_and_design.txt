@@ -8,6 +8,7 @@ The content of this document was gleaned from the postings on the
 ruby-opengl-dev list and internal notes from John G., Peter M., Vo Minh Thu,
 and Robert K.
 
+
 Requirements
 ------------
 
@@ -18,9 +19,7 @@ Requirements
   *BaseGLUT* (the "Base Modules").
 
   Note: "BaseGL" etc. are not the names that appear in the code -- they are
-  just handles so we can write about them in documents like this one.  The
-  actual namespace names, e.g.,  "GL" vs. "Gl".  will require further
-  dicussion.
+  just handles so we can write about them in documents like this one.
 
 * The Base Modules shall be separately loadable.
 
@@ -32,25 +31,25 @@ Requirements
 
 * Base Module syntax shall closely follow the standard C-syntax.
 
-  The syntax for a ruby program that uses the base modules, shall closely
+  The syntax for a Ruby program that uses the base modules, shall closely
   follow the standard C-like syntax that OpenGL programmers are used to,
   and that most OpenGL examples are published in. Something like:
 
     require 'GL/gl'
 
-    GL.glBegin(GL::GL_POLYGON)
-      GL.glVertex2d( 0, 0 )
-      GL.glVertex2d( 0, 1 )
-      GL.glVertex2d( 1, 1 )
-      GL.glVertex2d( 1, 0 )
-   GL.glEnd
+    Gl.glBegin( Gl::GL_POLYGON )
+      Gl.glVertex2d( 0, 0 )
+      Gl.glVertex2d( 0, 1 )
+      Gl.glVertex2d( 1, 1 )
+      Gl.glVertex2d( 1, 0 )
+    Gl.glEnd
 
   Or:
 
     require 'GL/gl'
-    include 'GL'
+    include Gl
 
-    glBegin(GL_POLYGON)
+    glBegin( GL_POLYGON )
       glVertex2d( 0, 0 )
       glVertex2d( 0, 1 )
       glVertex2d( 1, 1 )
@@ -64,7 +63,7 @@ Requirements
     * Makes it easier to port OpenGL programs to/from ruby-opengl.
     * The current OpenGL documentation more naturally fits ruby-opengl.
     * Putting "gl", "glu" and "glut" in front of all the names (i.e.,
-      following the C-liek syntax) leaves common variable names open for
+      following the C-like syntax) leaves common variable names open for
       the programmers (e.g., "vertex", "color" etc. are popular topics in
       3D programming, so not robbing the ruby namespace of such valuable
       real-estate seems nice).
@@ -72,14 +71,15 @@ Requirements
 * It shall be possible to check out the project from svn, compile and test
   on the following platforms: Mac OS X, GNU/Linux, Windows/XP
 
-* Provide backwards compatiblity for script 0.34 pre2 (possibly in a layer
-  built on top of the Base layers).  The support should be as minimally
-  invasive as possible, perhaps just: require 'prev_gl'
+* Provide backwards compatiblity for the older ruby-opengl function and
+  constant naming style (possibly in a layer built on top of the Base layers).
+  The support should be as minimally invasive as possible, perhaps just:
+  `require 'prev_gl'`.
 
-* The project will make pre-compiled extensions available as gems
+* The project will make a number of pre-compiled extensions available as gems.
 
-* The project will make a development environment suitable for porting to
-  other platforms available via checkout from the svn repository
+* The project will supply source code and build scripts (via svn checkout)
+  conducive to straightforward porting to other platforms.
 
 * There shall be a test suite that exercises each call in each of the Base
   modules.
@@ -104,6 +104,8 @@ try:
   glVertex that examines its arguments and calls the appropriate
   glVertex{234}{fisdv} call in BaseGL.
 
+* Possibly switch from mkmf to mkrf.
+
 
 Design
 ------
@@ -113,10 +115,11 @@ Design
 Implementation
 --------------
 
-### The build environment
+### Build environment
 
-* should use rake
+The build environment should:
 
+* use rake
 * minimize the number of tools needed (try to only use rake)
 
 
