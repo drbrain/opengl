@@ -214,6 +214,6 @@ VALUE allocate_buffer_with_string( int size )
 /* -------------------------------------------------------------------- */
 void Init_opengl()
 {
-  Init_GL();
+  InitializeGL();
   /* RxINC: InitializeGLU(); */
 }
