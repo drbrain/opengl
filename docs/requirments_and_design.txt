@@ -1,33 +1,34 @@
 ruby-opengl requirements, design and specs
 ==========================================
 
-This document records the requirements, high-level design and the
+This document records the requirements, high-level design, and the
 specifications for the ruby-opengl project.
 
 The content of this document was gleaned from the postings on the
-ruby-opengl-dev list and internal notes from John G. Peter M. Vo Minh Thu
+ruby-opengl-dev list and internal notes from John G., Peter M., Vo Minh Thu,
 and Robert K.
 
 Requirements
 ------------
 
-* Ruby-opengl is a ruby extension library for OpenGL and related APIs.
+* ruby-opengl is a Ruby extension library which wraps the OpenGL, GLU,
+  and GLUT libraries.
 
-* ruby-opengl shall provide three base modules: BaseGL, BaseGLU and
-  BaseGLUT (the "Base Modules").
+* ruby-opengl shall provide three base modules: *BaseGL*, *BaseGLU*, and
+  *BaseGLUT* (the "Base Modules").
 
-  Note: "BaseGL" etc. are not the names that appear in the code, they are
+  Note: "BaseGL" etc. are not the names that appear in the code -- they are
   just handles so we can write about them in documents like this one.  The
   actual namespace names, e.g.,  "GL" vs. "Gl".  will require further
   dicussion.
 
 * The Base Modules shall be separately loadable.
 
-* BaseGL shall not depend on any of the other modules.
+* BaseGL shall not depend on any of the other Ruby modules.
 
 * BaseGLU shall depend on, at most, BaseGL.
 
-* BaseGLUT shall depend on, at most, BaseGL.
+* BaseGLUT shall depend on, at most, BaseGLU and BaseGL.
 
 * Base Module syntax shall closely follow the standard C-syntax.
 
@@ -54,11 +55,11 @@ Requirements
       glVertex2d( 0, 1 )
       glVertex2d( 1, 1 )
       glVertex2d( 1, 0 )
-   glEnd
+    glEnd
 
   The rationale for adopting the C-like syntax is:
     * Makes it familiar to OpenGL programmers.
-    * Removes the burden of learning OpenGL plus some ruby-isms, just to
+    * Removes the burden of learning OpenGL plus some Ruby-isms, just to
       get started.
     * Makes it easier to port OpenGL programs to/from ruby-opengl.
     * The current OpenGL documentation more naturally fits ruby-opengl.
@@ -69,7 +70,7 @@ Requirements
       real-estate seems nice).
 
 * It shall be possible to check out the project from svn, compile and test
-  on the following platforms: Mac OS X, Linux, Windows/XP
+  on the following platforms: Mac OS X, GNU/Linux, Windows/XP
 
 * Provide backwards compatiblity for script 0.34 pre2 (possibly in a layer
   built on top of the Base layers).  The support should be as minimally
@@ -80,14 +81,15 @@ Requirements
 * The project will make a development environment suitable for porting to
   other platforms available via checkout from the svn repository
 
-* There shall be a test suite that excercises each call in each of the Base
+* There shall be a test suite that exercises each call in each of the Base
   modules.
 
 * All project documentation will be in Markdown format in files that end in
   .txt
 
-* Do we need to track versions of OpenGL?  Perhpas we need a 1.x and 2.x
+* Do we need to track versions of OpenGL?  Perhaps we need a 1.x and 2.x
   streams?
+
 
 ### Things in the future
 
@@ -106,57 +108,60 @@ try:
 Design
 ------
 
+
+
 Implementation
 --------------
 
 ### The build environment
 
-* Should use rake
+* should use rake
 
-* Minimize the tools (try to only use rake)
+* minimize the number of tools needed (try to only use rake)
+
 
 ### The SWIG issue
 
 When the ruby-opengl project re-started, Peter decided to try SWIG, as it
 seemed easier than doing everything by hand.  After some experience, we
 began to question whether SWIG was necessary/helpful for a project of this
-nature.   The current leaning is that people want to abandon SWIG and go
-back to maintaining the binding files by hand.   This section outlines some
+nature.  The current leaning is that people want to abandon SWIG and go
+back to maintaining the binding files by hand.  This section outlines some
 of the reasons for that:
 
 Pro-SWIG:
 
-* Could use the .i files for another project, perhaps (otoh, we couldn't
+* Could use the .i files for another project, perhaps (OTOH, we couldn't
   use previous .i files on this project...)
 
-* Supposed to be less manual
+* It's supposed to require less manual coding.
 
 Con-SWIG:
 
-* Yet another tool to learn
+* yet another tool to learn
 
 * OpenGL isn't really all that big
 
 * OpenGL doesn't change a lot
 
-* A lot of boiler plate and overhead in the generated files because SWIG is
+* A lot of boilerplate and overhead in the generated files because SWIG is
   a general tool.
 
 
 Roadmap
 -------
 
-* Prototype the minimum necessary to get an OpengGLHelloWorld workging, so
-  we can play with
+* Prototype the minimum necessary to get an OpenGLHelloWorld working, so
+  we can play with it.
 
-* Get basic build up and running
+* Get basic build up and running.
 
-* Get BaseGL implemented
+* Get BaseGL implemented.
 
-* Get BaseGLUT implemented (because its used for testing)
+* Get BaseGLUT implemented (because it's used for testing).
 
-* Get BaseGLU implemented
+* Get BaseGLU implemented.
 
 * Publish a history.txt document that describes the history of ruby-opengl
-  starting with Yoshi, through John's web-site and then to the current
-  ruby-forge project.
+  starting with Yoshi, through John's web-site, and then to the current
+  RubyForge project.
