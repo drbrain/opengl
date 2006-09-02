@@ -14,48 +14,39 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-# This is a quick and dirty rake file to build from the top level.  This
-# will do until I figure out the rake way to handle hierarchichal builds.
-#
-# TODO:
-#   * This needs namespaces?
-#   * error checking/exceptions
-#   * Dependencies...
+require 'rake/clean'
+require 'rbconfig'
 
-require 'rake/testtask'
+$INCLUDES = "-I#{Config::CONFIG['archdir']}"
+$CFLAGS = "#{Config::CONFIG['CFLAGS']}"
+$LDFLAGS = '-lruby'
 
-Rake::TestTask.new do |t|
-    t.libs << 'tests'
-    t.libs << 'ext'
-    fl = FileList['tests/tc_*.rb']
-    # These tests play with the namespace and mess things up
-    # for the other tests, so we'll have to run them separately
-    fl.exclude('tests/tc_include_gl.rb')
-    fl.exclude('tests/tc_require_gl.rb')
-    fl.exclude('tests/tc_opengl_namespace.rb')
-
-    t.test_files = fl
-    #t.verbose = true
+case RUBY_PLATFORM
+when /darwin/
+    $INCLUDES << ' -F/System/Library/Frameworks'
+    $LDFLAGS << ' -framework GLUT -framework OpenGL'
+else
+    #
 end
 
-SUB_PROJECTS = [ "ext/gl", "ext/glut" ]
+GL_LIB = "ext/gl/gl.#{Config::CONFIG['DLEXT']}"
 
-desc "Build the GL and GLUT extensions"
-task :default do; sub_rake; end
+LIBS = GL_LIB
 
-desc "Clean the GL and GLUT extensions"
-task :clean   do; sub_rake("clean"); end
+CLEAN.include( '**/*.o', LIBS )
 
-desc "Clobber the GL and GLUT extensions"
-task :clobber do; sub_rake("clobber"); end
+task :default => [ LIBS ]
 
-# Helper method to run a target in each of my sub-projects
-def sub_rake(target="default")
-    SUB_PROJECTS.each do |d|
-        puts "\n=== running #{target} in #{d}"
-        save_dir = Dir.pwd
-        cd d
-        sh "rake #{target}"
-        cd save_dir
-    end
+rule '.o' => '.c' do |t|
+    cmd = "cc #{$INCLUDES} #{$CFLAGS} -c -o #{t.name} #{t.source}"
+    puts "============== #{cmd}"
+    sh cmd
 end
+
+file GL_LIB => [ 'ext/gl/gl.o', 'ext/common/rbogl.o' ] do |t|
+    cmd = "#{Config::CONFIG['LDSHARED']} #{$LDFLAGS} #{$CFLAGS} -o #{t.name} #{t.prerequisites.join(' ')}"
+    puts "============== #{cmd}"
+    sh cmd
+end
+    
+file 'ext/common/rbogl.o' => [ 'ext/common/rbogl.h' ]
