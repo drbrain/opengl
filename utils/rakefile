@@ -3,14 +3,23 @@ require 'rake/clean'
 CLEAN.include( '*_init.c', '*_wrap.c')
 #CLOBBER.include()
 
+$INCLUDES = "-I#{Config::CONFIG['archdir']}"
+$CFLAGS   = "#{Config::CONFIG['CFLAGS']}"
+$LDFLAGS  = "-l#{Config::CONFIG["RUBY_SO_NAME"]}"
+$LDCMD    = "#{Config::CONFIG['LDSHARED']}"
+$HEADERS  = [ "'<ruby.h>'" ]
 case RUBY_PLATFORM
 when /darwin/
     glut_h = '/System/Library/Frameworks/GLUT.framework/Headers/glut.h'
+    $HEADERS << "'<GLUT/glut.h>'"
 else
     glut_h = '/usr/include/GL/glut.h'
+    $HEADERS << "'<GL/glut.h>'"
+    $INCLUDES << ' -L/usr/lib'
+    $LDFLAGS  << ' -lglut -lGL' # must not be for all targets
 end
 
-task :default => [ 'glut_init.o', 'glut_wrap.o' ]
+task :default => [ 'glut_wrap.o' ]
 
 rule '.o' => '.c' do |t|
     cmd = "cc #{$INCLUDES} #{$CFLAGS} -c -o #{t.name} #{t.source}"
@@ -19,11 +28,11 @@ rule '.o' => '.c' do |t|
 end
 
 file 'glut_init.c' => [ 'mkwrap.rb' ] do
-  ruby "mkwrap.rb #{glut_h}"
+  ruby "mkwrap.rb #{glut_h} #{$HEADERS.join(' ')}"
 end
 
 file 'glut_wrap.c' => [ 'mkwrap.rb' ] do
-  ruby "mkwrap.rb #{glut_h}"
+  ruby "mkwrap.rb #{glut_h} #{$HEADERS.join(' ')}"
 end
 
 # Local Variables: ***

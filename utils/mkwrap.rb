@@ -246,8 +246,9 @@ end
 # functions, an _wrap.c and an _init.c file.
 class Wrapper
     # Create a new Wrapper object, using the +source+ file as input
-    def initialize( source )
+    def initialize( source, *headers )
         @source = source
+        @headers = headers
         base = File.basename( @source, '.h' )
         @file_wrap_func_name = base + "_wrap.c"
         @file_init_func_name = base + "_init.c"
@@ -285,8 +286,7 @@ class Wrapper
     # preamble for it
     def create_wrap_func
         f = File.new( @file_wrap_func_name, 'w' )
-        f << "#include <GL/glut.h>\n"
-        f << "#include <ruby.h>\n\n"
+        @headers.each {|h| f << "#include #{h}\n"}
         return f
     end
 
@@ -334,7 +334,7 @@ class Wrapper
 end
 
 if __FILE__ == $0
-    wrapper = Wrapper.new( ARGV[0] )
+    wrapper = Wrapper.new( *ARGV )
     wrapper.generate
 end
 # Local Variables: ***
