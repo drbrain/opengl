@@ -27,7 +27,8 @@ when /darwin/
     $LDFLAGS << ' -framework GLUT -framework OpenGL'
     $LDCMD = 'cc -bundle'
 else
-    # Add special values for other platforms as-needed.
+    # GNU/Linux.
+    $LDFLAGS = " #{Config::CONFIG['prefix']}/lib/libruby-static.a "
 end
 
 GL_LIB   = "ext/gl.#{Config::CONFIG['DLEXT']}"
