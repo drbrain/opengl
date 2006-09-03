@@ -245,7 +245,18 @@ end
 # for.  The wrapper object will parse the .h file and generate two
 # functions, an _wrap.c and an _init.c file.
 class Wrapper
-    # Create a new Wrapper object, using the +source+ file as input
+    # Create a new Wrapper object, using the +source+ file as input.  Any
+    # +headers+ passed in will be #included into the resulting wrapper
+    # files.
+    #
+    # E.g., Wrapper.new( "./foo.h", "<ruby.h>", "<GL/gl.h>" )
+    #
+    # Will generate wrappers for the functions and constants in foo.h and
+    # the foo_wrap.c and foo_init.c files will have the following include
+    # directives:
+    #    #include <ruby.h>
+    #    #include <GL/gl.h>
+    #
     def initialize( source, *headers )
         @source = source
         @headers = headers
@@ -334,6 +345,19 @@ class Wrapper
 end
 
 if __FILE__ == $0
+    # If run from the command line, then pass all parameters into the
+    # wrapper constructor.  The first parameter is the full path to the .h
+    # file to process.  The rest of the optional parameters are a list of
+    # files to #include in the generated files.
+    #
+    # E.g., ./mkwrap.rb ./foo.h '<ruby.h>' '<GL/gl.h>'
+    #
+    # Will generate wrappers for the functions and constants in foo.h and
+    # the foo_wrap.c and foo_init.c files will have the following include
+    # directives:
+    #    #include <ruby.h>
+    #    #include <GL/gl.h>
+    #
     wrapper = Wrapper.new( *ARGV )
     wrapper.generate
 end
