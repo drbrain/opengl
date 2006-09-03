@@ -3,7 +3,7 @@ require 'test/unit'
 class MkwrapTest < Test::Unit::TestCase
   def test_mkwrap
     # Run mkwrap on the test file
-    system "./mkwrap ./test.h test"
+    system "./mkwrap.rb ./test.h test"
 
     # Now check the output for certain features
     wrapper = File.open( 'test_wrap.c' ).read
@@ -11,7 +11,7 @@ class MkwrapTest < Test::Unit::TestCase
 
     wrapper_expected = [
       'rbgl_glutCopyColormap (VALUE self, VALUE win)',
-      'rbgl_glutSetColor (VALUE self, VALUE a, VALUE red VALUE green VALUE blue)',
+      'rbgl_glutSetColor (VALUE self, VALUE _a1, VALUE red, VALUE green, VALUE blue)',
       ]
     wrapper_expected.each {|e| assert_in_source( wrapper, e ) }
   end

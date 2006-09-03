@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby -w
+#!/usr/bin/env ruby
 #
 # Copyright (C) 2006 Vo Minh Thu <noteed@gmail.com>
 # Copyright (C) 2006 Peter McLain
@@ -83,7 +83,7 @@ class HFunction
         regexp = Regexp.new( '^' + regexp_as_string + '\s*,?\s*' )
         if @string.sub!( regexp, '' )
             puts "parsing #{symbol}" if $debug
-            @current << arg( symbol, $1 )
+            @current << arg( symbol, $1 == "" ? "_a#{@increment += 1}" : $1 )
         end
     end
 
@@ -91,6 +91,7 @@ class HFunction
     # the whole string is consumed.
     def HFunction.parse( string )
         puts "string received : |#@string|" if $debug
+        @increment = 0 # value used to generate variable name, e.g. _a1, _a2
         @string  = string.strip # string representation; will be consumed
                                 # in-place
         @current = []           # Arg array representation;
@@ -114,7 +115,7 @@ class HFunction
             elsif try? :char          , 'char\s+(\w+)'
             elsif try? :uint          , 'unsigned\s+int\s+(\w+)'
             elsif try? :int_p         , 'int\s*\*\s*(\w+)'
-            elsif try? :int           , 'int\s+(\w+)'
+            elsif try? :int           , 'int\s*(\w*)'
             elsif try? :void_p        , 'void\s*\*\s*(\w+)'
             elsif try? :void          , 'void'
             else
