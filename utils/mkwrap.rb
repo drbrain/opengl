@@ -249,20 +249,20 @@ class Wrapper
     # +headers+ passed in will be #included into the resulting wrapper
     # files.
     #
-    # E.g., Wrapper.new( "./foo.h", "<ruby.h>", "<GL/gl.h>" )
+    # E.g., Wrapper.new( "./foo.h", "bar", "<ruby.h>", "<GL/gl.h>" )
     #
-    # Will generate wrappers for the functions and constants in foo.h and
-    # the foo_wrap.c and foo_init.c files will have the following include
+    # Will generate wrappers for the functions and constants in foo.h.
+    # The bar_wrap.c (but not bar_init.c) file will have the following include
     # directives:
     #    #include <ruby.h>
     #    #include <GL/gl.h>
     #
-    def initialize( source, *headers )
-        @source = source
+    def initialize( source, name, *headers )
+        @source  = source
         @headers = headers
         base = File.basename( @source, '.h' )
-        @file_wrap_func_name = base + "_wrap.c"
-        @file_init_func_name = base + "_init.c"
+        @file_wrap_func_name = name + "_wrap.c"
+        @file_init_func_name = name + "_init.c"
         @functions_count, @constants_count, @line_count = 0,0,0
     end
 
@@ -347,13 +347,14 @@ end
 if __FILE__ == $0
     # If run from the command line, then pass all parameters into the
     # wrapper constructor.  The first parameter is the full path to the .h
-    # file to process.  The rest of the optional parameters are a list of
+    # file to process.  The second is the basename of the generated files.
+    # The rest of the optional parameters are a list of
     # files to #include in the generated files.
     #
-    # E.g., ./mkwrap.rb ./foo.h '<ruby.h>' '<GL/gl.h>'
+    # E.g., ./mkwrap.rb ./foo.h bar '<ruby.h>' '<GL/gl.h>'
     #
     # Will generate wrappers for the functions and constants in foo.h and
-    # the foo_wrap.c and foo_init.c files will have the following include
+    # the bar_wrap.c (but not bar_init.c) file will have the following include
     # directives:
     #    #include <ruby.h>
     #    #include <GL/gl.h>
