@@ -274,12 +274,21 @@ end
 # TODO
 # change this to glut.h and search if it #include freeglut_std.h
 # or test if freeglut_std.h exists.
-header_file  = 'GL/freeglut_std.h'
 wrapper_file = 'glut_wrapper.c'
 
 # For the moment, this is only used to find the include directory.
 require 'rbconfig'
-include_dir = Config::CONFIG['includedir']
+
+case RUBY_PLATFORM
+when /darwin/
+    include_dir = '/System/Library/Frameworks/GLUT.framework/Headers'
+    header_file = 'glut.h'
+    glut_include = '<GLUT/glut.h>'
+else
+    # For the moment, this is only used to find the include directory.
+    include_dir = Config::CONFIG['includedir']
+    header_file  = 'GL/freeglut_std.h'
+end
 
 # Process each line of the file; the fact that some lines
 # are not 'interesting' is handled in the process method.
@@ -298,3 +307,8 @@ $file_init_func.close
 puts "#$functions_count functions wrapped."
 puts "#$constants_count constants wrapped."
 puts "Source file line count : #$line_count."
+
+
+# Local Variables: ***
+# ruby-indent-level: 4 ***
+# End: ***
