@@ -12,6 +12,7 @@ class MkwrapTest < Test::Unit::TestCase
     wrapper_expected = [
       'rbgl_glutCopyColormap (VALUE self, VALUE win)',
       'rbgl_glutSetColor (VALUE self, VALUE _a1, VALUE red, VALUE green, VALUE blue)',
+      'rbgl_glutCreateMenu (VALUE self, ????)',
       ]
     wrapper_expected.each {|e| assert_in_source( wrapper, e ) }
   end
