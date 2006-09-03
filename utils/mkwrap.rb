@@ -272,10 +272,6 @@ def process( line )
     $line_count += 1
 end
 
-# TODO
-# change this to glut.h and search if it #include freeglut_std.h
-# or test if freeglut_std.h exists.
-wrapper_file = 'glut_wrapper.c'
 
 # For the moment, this is only used to find the include directory.
 require 'rbconfig'
@@ -286,8 +282,9 @@ when /darwin/
     header_file = 'glut.h'
     glut_include = '<GLUT/glut.h>'
 else
-    # For the moment, this is only used to find the include directory.
     include_dir = Config::CONFIG['includedir']
+    # TODO: change this to glut.h and search if it #include freeglut_std.h
+    # or test if freeglut_std.h exists.
     header_file  = 'GL/freeglut_std.h'
 end
 
