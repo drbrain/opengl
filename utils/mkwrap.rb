@@ -1,6 +1,7 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby -w
 #
 # Copyright (C) 2006 Vo Minh Thu <noteed@gmail.com>
+# Copyright (C) 2006 Peter McLain
 #
 # This program is distributed under the terms of the MIT license.
 # See the included MIT-LICENSE file for the terms of this license.
@@ -23,13 +24,20 @@
 # #define VAL_FLT VALUE
 # so we know what's behind a VALUE.
 
+# NOTES from pbm:
+#
+#  * Moved try? and parse into class HFunction
+#  * Added wrapper to create an object for each file we're parsing
+#  * Reduced globals by moving them into the proper classes
+#
+$debug = nil
 
-# Arg is just a 2-tuple (what's the correct word ?) representing an
-# argument in a c function prototype (or declaration -- need to check
-# the correct word).
+# Arg is a pair representing the name and type from an argument in a C
+# function declaration.  It knows how to convert the C type into a ruby
+# type.
 class Arg
     attr_accessor :type, :name
-    
+
     def initialize( type, name )
         @type = type
         @name = name
@@ -52,67 +60,11 @@ class Arg
         end
     end
 end
+
 # Convenience Arg constructor.
 def arg( type, name )
     Arg.new type, name
 end
-
-
-# Try to parse the beginning of the string.
-# symbol is the symbol that will be pushed on the Arg array
-# representation if the original string matches the regexp_as_string
-# (which is slightly expanded to account for comma in the origianl string).
-# Warning : bad coding : the @string variable is used with side-effect :
-# it is initialized by the 'parse' method (see just bellow).
-def try?( symbol, regexp_as_string )
-    regexp = Regexp.new( '^' + regexp_as_string + '\s*,?\s*' )
-    if @string.sub!( regexp, '' )
-        puts "parsing #{symbol}" if $debug
-        @current << arg( symbol, $1 )
-    end
-end
-
-# Try repeatedly to consume a bit of the original string, until
-# the whole string is consumed.
-def parse( string )
-    puts "string received : |#@string|" if $debug
-    @string  = string.strip # string representation; will be consumed in-place
-    @current = []           # Arg array representation;
-                            # it will grow as the string is consumed
-    
-    continue = true
-    # Repeat until the string is completly consumed or
-    # nothing matches.
-    while @string != "" && continue
-        if    try? :callback      , 'void\s*\(\s*\*\s*\w+\)\s*\((.*)\)'
-            
-        elsif try? :glenum        , 'GLenum\s+(\w+)'
-        elsif try? :gldouble      , 'GLdouble\s+(\w+)'
-        elsif try? :glfloat       , 'GLfloat\s+(\w+)'
-        elsif try? :glint         , 'GLint\s+(\w+)'
-            
-        elsif try? :char_pp       , 'char\s*\*\s*\*\s*(\w+)'
-        elsif try? :const_uchar_p , 'const\s+unsigned\s+char\s*\*\s*(\w+)'
-        elsif try? :const_char_p  , 'const\s+char\s*\*\s*(\w+)'
-        elsif try? :char_p        , 'char\s*\*\s*(\w+)'
-        elsif try? :char          , 'char\s+(\w+)'
-        elsif try? :uint          , 'unsigned\s+int\s+(\w+)'
-        elsif try? :int_p         , 'int\s*\*\s*(\w+)'
-        elsif try? :int           , 'int\s+(\w+)'
-        elsif try? :void_p        , 'void\s*\*\s*(\w+)'
-        elsif try? :void          , 'void'
-        else
-            # nothing matches; abort (the string isn't completely consumed)
-            continue = nil
-        end
-        puts "remains : |#@string|" if $debug
-    end
-    # Show an error if the string is not completely consumed.
-    puts "ERR : parse failed" if @string != ""
-
-    @current
-end
-
 
 # HFunction must have its name rewritten; it's ugly :)
 # HFunction is the in-this-script representation of a
@@ -121,18 +73,74 @@ class HFunction
     # This is used to match a c function we want to generate code for.
     FreeglutMatcher = /.*(void|int).*(glut[A-Z][^(]*)\s*\((.*)\)\s*;/
 
+    # Try to parse the beginning of the string.  symbol is the symbol that
+    # will be pushed on the Arg array representation if the original string
+    # matches the regexp_as_string (which is slightly expanded to account
+    # for comma in the origianl string).  Warning : bad coding : the
+    # @string variable is used with side-effect : it is initialized by the
+    # 'parse' method (see just bellow).
+    def HFunction.try?( symbol, regexp_as_string )
+        regexp = Regexp.new( '^' + regexp_as_string + '\s*,?\s*' )
+        if @string.sub!( regexp, '' )
+            puts "parsing #{symbol}" if $debug
+            @current << arg( symbol, $1 )
+        end
+    end
+
+    # Try repeatedly to consume a bit of the original string, until
+    # the whole string is consumed.
+    def HFunction.parse( string )
+        puts "string received : |#@string|" if $debug
+        @string  = string.strip # string representation; will be consumed
+                                # in-place
+        @current = []           # Arg array representation;
+                                # it will grow as the string is consumed
+
+        continue = true
+        # Repeat until the string is completly consumed or
+        # nothing matches.
+        while @string != "" && continue
+            if    try? :callback      , 'void\s*\(\s*\*\s*\w+\)\s*\((.*)\)'
+
+            elsif try? :glenum        , 'GLenum\s+(\w+)'
+            elsif try? :gldouble      , 'GLdouble\s+(\w+)'
+            elsif try? :glfloat       , 'GLfloat\s+(\w+)'
+            elsif try? :glint         , 'GLint\s+(\w+)'
+
+            elsif try? :char_pp       , 'char\s*\*\s*\*\s*(\w+)'
+            elsif try? :const_uchar_p , 'const\s+unsigned\s+char\s*\*\s*(\w+)'
+            elsif try? :const_char_p  , 'const\s+char\s*\*\s*(\w+)'
+            elsif try? :char_p        , 'char\s*\*\s*(\w+)'
+            elsif try? :char          , 'char\s+(\w+)'
+            elsif try? :uint          , 'unsigned\s+int\s+(\w+)'
+            elsif try? :int_p         , 'int\s*\*\s*(\w+)'
+            elsif try? :int           , 'int\s+(\w+)'
+            elsif try? :void_p        , 'void\s*\*\s*(\w+)'
+            elsif try? :void          , 'void'
+            else
+                # nothing matches; abort (the string isn't completely consumed)
+                continue = nil
+            end
+            puts "remains : |#@string|" if $debug
+        end
+        # Show an error if the string is not completely consumed.
+        puts "ERR : parse failed" if @string != ""
+
+        @current
+    end
+
     def initialize( return_type, function_name, arguments )
         @return_type   = return_type
         @function_name = function_name
         @arguments     = arguments
     end
-    
+
     # Try to construct a new HFunction instance by matching
     # against an arbitrary string.
     def HFunction.construct?( string )
         md = FreeglutMatcher.match( string )
         return nil if not md
-        
+
         return_type, function_name, arguments = md.captures
         if $debug
             puts "#{string}"
@@ -146,7 +154,7 @@ class HFunction
         # convert arguments from string representation to
         # Arg array representation
         arguments = parse arguments
-        
+
         HFunction.new( return_type, function_name, arguments )
     end
 
@@ -233,80 +241,102 @@ class HConstant
     end
 end
 
-# number of line of the source file
-$line_count = 0
-
-# I think we can handle the whole thing in one pass, by
-# writing the different things in different files before
-# merging them. (Ok, merge them is a second pass...)
-$functions_count = 0
-$constants_count = 0
-# don't forget to close these...
-$file_wrap_func = File.new( 'wrap_func.c', 'w' )
-$file_init_func = File.new( 'init_func.c', 'w' )
-
-$file_wrap_func << "#include <GL/glut.h>\n"
-$file_wrap_func << "#include <ruby.h>\n\n"
-
-$file_init_func << "void\nInit_glut()\n{\n    VALUE module = rb_define_module(\"Glut\");\n\n"
-
-# process works as follow :
-# * it tries to match against a function or a constant
-# * if it matches, it generates the wrapper code and the
-#   initialization code.
-def process( line )
-    function = HFunction.construct?( line )
-    constant = HConstant.construct?( line ) unless function
-    if function
-        $functions_count += 1
-
-        # once the HFunction is constructed, we have two
-        # things to do : write the wrapping c code and write
-        # the module initialization code.
-        function.write_wrap $file_wrap_func
-        function.write_init $file_init_func
-        
-    elsif constant
-        $constants_count += 1
+# A Wrapper represents a single .h file that we want to generate ruby code
+# for.  The wrapper object will parse the .h file and generate two
+# functions, an _wrap.c and an _init.c file.
+class Wrapper
+    # Create a new Wrapper object, using the +source+ file as input
+    def initialize( source )
+        @source = source
+        base = File.basename( @source, '.h' )
+        @file_wrap_func_name = base + "_wrap.c"
+        @file_init_func_name = base + "_init.c"
+        @functions_count, @constants_count, @line_count = 0,0,0
     end
-    $line_count += 1
-end
 
+    # Generate the output files into the current directory
+    def generate()
+        puts "Start processing #{@source} ..."
 
-# For the moment, this is only used to find the include directory.
-require 'rbconfig'
+        # don't forget to close these...
+        @file_wrap_func = create_wrap_func
+        @file_init_func = create_init_func
 
-case RUBY_PLATFORM
-when /darwin/
-    include_dir = '/System/Library/Frameworks/GLUT.framework/Headers'
-    header_file = 'glut.h'
-    glut_include = '<GLUT/glut.h>'
-else
-    include_dir = Config::CONFIG['includedir']
-    # TODO: change this to glut.h and search if it #include freeglut_std.h
-    # or test if freeglut_std.h exists.
-    header_file  = 'GL/freeglut_std.h'
-end
+        File.open( @source ) do |f|
+            f.each {|l| process( l )}
+        end
 
-# Process each line of the file; the fact that some lines
-# are not 'interesting' is handled in the process method.
-File.open( File.join( include_dir, header_file ) ) do |f|
-    puts "Start processing #{f.path} ..."
-    f.each do |l|
-        process l
+        close_wrap_func
+        close_init_func
+
+        print_stats
     end
+
+    private
+
+    # Print statistics on the run
+    def print_stats
+        puts "#@functions_count functions wrapped."
+        puts "#@constants_count constants wrapped."
+        puts "Source file line count : #@line_count."
+    end
+
+    # Create the file to hold the wrapper functions and generate the
+    # preamble for it
+    def create_wrap_func
+        f = File.new( @file_wrap_func_name, 'w' )
+        f << "#include <GL/glut.h>\n"
+        f << "#include <ruby.h>\n\n"
+        return f
+    end
+
+    # Create the file to hold the init functions and generate the
+    # preamble for it
+    def create_init_func
+        f = File.new( @file_init_func_name, 'w' )
+        f << "void\nInit_glut()\n{\n    VALUE module = rb_define_module(\"Glut\");\n\n"
+        return f
+    end
+
+    # Close the wrap file after adding any closing code
+    def close_wrap_func
+        @file_wrap_func.close
+    end
+
+    # Close the init file after adding any closing code
+    def close_init_func
+        @file_init_func << "}\n"
+        @file_init_func.close
+    end
+
+    # process works as follow :
+    # * it tries to match against a function or a constant
+    # * if it matches, it generates the wrapper code and the
+    #   initialization code.
+    def process( line )
+        function = HFunction.construct?( line )
+        constant = HConstant.construct?( line ) unless function
+        if function
+            @functions_count += 1
+
+            # once the HFunction is constructed, we have two
+            # things to do : write the wrapping c code and write
+            # the module initialization code.
+            function.write_wrap @file_wrap_func
+            function.write_init @file_init_func
+
+        elsif constant
+            @constants_count += 1
+        end
+        @line_count += 1
+    end
+
 end
 
-$file_init_func << "}\n"
- 
-$file_wrap_func.close
-$file_init_func.close
-
-puts "#$functions_count functions wrapped."
-puts "#$constants_count constants wrapped."
-puts "Source file line count : #$line_count."
-
-
+if __FILE__ == $0
+    wrapper = Wrapper.new( ARGV[0] )
+    wrapper.generate
+end
 # Local Variables: ***
 # ruby-indent-level: 4 ***
 # End: ***
