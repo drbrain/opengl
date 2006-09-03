@@ -1,7 +1,18 @@
 #!/usr/bin/env ruby
 #
 # Copyright (C) 2006 Vo Minh Thu <noteed@gmail.com>
-# 
+#
+# This program is distributed under the terms of the MIT license.
+# See the included MIT-LICENSE file for the terms of this license.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 # This script generates glut_wrapper.c from GL/freeglut_std.h.
 # It is part of the ruby-opengl developer toolbelt.
 
@@ -264,12 +275,21 @@ end
 # TODO
 # change this to glut.h and search if it #include freeglut_std.h
 # or test if freeglut_std.h exists.
-header_file  = 'GL/freeglut_std.h'
 wrapper_file = 'glut_wrapper.c'
 
 # For the moment, this is only used to find the include directory.
 require 'rbconfig'
-include_dir = Config::CONFIG['includedir']
+
+case RUBY_PLATFORM
+when /darwin/
+    include_dir = '/System/Library/Frameworks/GLUT.framework/Headers'
+    header_file = 'glut.h'
+    glut_include = '<GLUT/glut.h>'
+else
+    # For the moment, this is only used to find the include directory.
+    include_dir = Config::CONFIG['includedir']
+    header_file  = 'GL/freeglut_std.h'
+end
 
 # Process each line of the file; the fact that some lines
 # are not 'interesting' is handled in the process method.
@@ -288,3 +308,8 @@ $file_init_func.close
 puts "#$functions_count functions wrapped."
 puts "#$constants_count constants wrapped."
 puts "Source file line count : #$line_count."
+
+
+# Local Variables: ***
+# ruby-indent-level: 4 ***
+# End: ***
