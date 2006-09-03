@@ -247,7 +247,7 @@ end
 class Wrapper
     # Create a new Wrapper object, using the +source+ file as input.  Any
     # +headers+ passed in will be #included into the resulting wrapper
-    # files.
+    # files.  Output files are named by pre-pending +bar+ to them.
     #
     # E.g., Wrapper.new( "./foo.h", "bar", "<ruby.h>", "<GL/gl.h>" )
     #
@@ -351,7 +351,7 @@ if __FILE__ == $0
     # The rest of the optional parameters are a list of
     # files to #include in the generated files.
     #
-    # E.g., ./mkwrap.rb ./foo.h bar '<ruby.h>' '<GL/gl.h>'
+    # E.g., ./mkwrap.rb ./foo.h bar foo '<ruby.h>' '<GL/gl.h>'
     #
     # Will generate wrappers for the functions and constants in foo.h and
     # the bar_wrap.c (but not bar_init.c) file will have the following include
