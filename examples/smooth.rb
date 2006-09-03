@@ -1,5 +1,7 @@
-require "../ext/gl/GL"
-require "../ext/glut/GLUT"
+require "../ext/gl"
+require "../ext/glut"
+require '../lib/opengl_c'
+require '../lib/glut_c'
 
 STDOUT.sync=TRUE
 disp = Proc.new {
