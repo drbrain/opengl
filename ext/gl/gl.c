@@ -3290,7 +3290,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 
 static VALUE mOGL;
 
-void InitializeGL()
+void Init_gl()
 {
     mOGL = rb_define_module("GL");
     rb_define_module_function(mOGL, "ClearIndex", gl_ClearIndex, 1);

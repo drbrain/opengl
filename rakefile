@@ -34,7 +34,8 @@ GL_LIB   = "ext/gl/gl.#{Config::CONFIG['DLEXT']}"
 GLUT_LIB = "ext/glut/glut.#{Config::CONFIG['DLEXT']}"
 LIBS = [ GL_LIB, GLUT_LIB ]
 
-CLEAN.include( '**/*.o', LIBS )
+CLEAN.include( '**/*.o' )
+CLOBBER.include( LIBS )
 
 desc "Create #{LIBS}"
 task :default => LIBS
@@ -63,4 +64,4 @@ file GLUT_LIB => [ 'ext/glut/glut.o' ] do |t|
 end
 
     
-file 'ext/common/rbogl.o' => [ 'ext/common/rbogl.h' ]
+file 'ext/common/rbogl.o' => [ 'ext/common/rbogl.h', 'ext/common/rbogl.c' ]

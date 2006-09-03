@@ -11,8 +11,10 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require '../ext/glut/GLUT'
-require '../ext/gl/GL'
+require '../ext/glut/glut'
+require '../ext/gl/gl'
+require '../lib/opengl_c'
+require '../lib/glut_c'
 
 class GlutTest
 
