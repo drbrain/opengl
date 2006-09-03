@@ -20,7 +20,7 @@
 #ifndef _RBOGL_H_
 #define _RBOGL_H_
 
-#include "ruby.h"
+#include <ruby.h>
 
 typedef struct RArray RArray;
 

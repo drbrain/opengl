@@ -2,9 +2,6 @@
  * Last edit by previous maintainer:
  * 2004/03/02 01:13:06, yoshi
  *
- * $Date: 2006/07/11 03:37:13 $
- * $Author: john $
- *
  * Copyright (C) 1999 - 2005 Yoshi <yoshi@giganet.net>
  * Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
  *
@@ -36,7 +33,7 @@
 #include <GL/glut.h>
 #endif
 
-#include "ruby.h"
+#include <ruby.h>
 
 static int callId; /* 'call' method id */
 

@@ -32,7 +32,7 @@
 #include <GL/glu.h>
 #endif
 
-#include "../common/rbogl.h"
+#include <rbogl.h>
 
 #ifdef WIN32
 typedef void (CALLBACK*(VOIDFUNC))();
