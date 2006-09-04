@@ -16,6 +16,8 @@ case RUBY_PLATFORM
 when /darwin/
     glut_h = '/System/Library/Frameworks/GLUT.framework/Headers/glut.h'
     $HEADERS << "'<GLUT/glut.h>'"
+    $LDCMD = 'cc -bundle'
+    $LDFLAGS << ' -framework GLUT'
 else
     glut_h = '/usr/include/GL/freeglut_std.h'
     glut_h = '/usr/include/GL/glut.h' unless File.exist?( glut_h )
@@ -24,7 +26,7 @@ else
     $LDFLAGS  << ' -lglut -lGL' # must not be for all targets
 end
 
-task :default => [ 'glut_wrap.o', 'glut_init.o' ]
+task :default => [ "glut.#{Config::CONFIG['DLEXT']}" ]
 
 rule '.o' => '.c' do |t|
     cmd = "cc #{$INCLUDES} #{$CFLAGS} -c -o #{t.name} #{t.source}"
@@ -32,6 +34,18 @@ rule '.o' => '.c' do |t|
     sh cmd
 end
 
+file "glut.#{Config::CONFIG['DLEXT']}" => [ 'glut.o' ] do |t|
+    cmd = "#{$LDCMD} #{$LDFLAGS} #{$CFLAGS} -o #{t.name} #{t.prerequisites.join(' ')}"
+    puts "============== #{cmd}"
+    sh cmd
+end
+
+file 'glut.c' => [ 'glut_wrap.c', 'glut_init.c' ] do |t|
+    sh "cat #{t.prerequisites.join(' ')} > glut.c"
+end
+
+# Its not right to have two tasks that do the ruby mkwrap...
+# Perhaps a new :mkwrap task and then these two depend on it
 file 'glut_init.c' => [ 'mkwrap.rb' ] do
     ruby "mkwrap.rb #{glut_h} glut #{$HEADERS.join(' ')}"
 end
