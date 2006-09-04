@@ -33,11 +33,11 @@ rule '.o' => '.c' do |t|
 end
 
 file 'glut_init.c' => [ 'mkwrap.rb' ] do
-  ruby "mkwrap.rb #{glut_h} glut #{$HEADERS.join(' ')}"
+    ruby "mkwrap.rb #{glut_h} glut #{$HEADERS.join(' ')}"
 end
 
 file 'glut_wrap.c' => [ 'mkwrap.rb' ] do
-  ruby "mkwrap.rb #{glut_h} glut #{$HEADERS.join(' ')}"
+    ruby "mkwrap.rb #{glut_h} glut #{$HEADERS.join(' ')}"
 end
 
 # Local Variables: ***
