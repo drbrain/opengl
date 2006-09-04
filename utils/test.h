@@ -3,8 +3,9 @@
  * have given trouble in the past.
  */
 
-/* This one is an easy one and is just here to test the test code... */
+/* These are easy ones */
 extern void APIENTRY glutCopyColormap(int win);
+extern int APIENTRY glutFoo(void (* foo)(int));
 
 /*
  * The following are from the mac glut.h

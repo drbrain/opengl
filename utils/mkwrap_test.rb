@@ -10,9 +10,13 @@ class MkwrapTest < Test::Unit::TestCase
     wrapper.each {|l| puts "=== #{l}"}
 
     wrapper_expected = [
+      # These are some standard ones
       'rbgl_glutCopyColormap (VALUE self, VALUE win)',
+      'rbgl_glutFoo (VALUE self, VALUE callback)',
+
+      # These were the problem ones on the mac version of glut.h
       'rbgl_glutSetColor (VALUE self, VALUE _a1, VALUE red, VALUE green, VALUE blue)',
-      'rbgl_glutCreateMenu (VALUE self, ????)',
+      'rbgl_glutCreateMenu (VALUE self, VALUE callback)',
       ]
     wrapper_expected.each {|e| assert_in_source( wrapper, e ) }
   end

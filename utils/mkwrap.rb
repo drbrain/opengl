@@ -101,7 +101,8 @@ class HFunction
         # Repeat until the string is completly consumed or
         # nothing matches.
         while @string != "" && continue
-            if    try? :callback      , 'void\s*\(\s*\*\s*\w+\)\s*\((.*)\)'
+            if    try? :callback      , 'void\s*\(\s*\*\s*(\w+)?\)\s*\((.*)\)'
+#            if    try? :callback      , 'void\s*\(\s*\*\s*\w+\)\s*\((.*)\)'
 
             elsif try? :glenum        , 'GLenum\s+(\w+)'
             elsif try? :gldouble      , 'GLdouble\s+(\w+)'
