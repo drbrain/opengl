@@ -1,5 +1,5 @@
-ruby-opengl requirements, design and specs
-==========================================
+Requirements, design, and specs
+===============================
 
 This document records the requirements, high-level design, and the
 specifications for the ruby-opengl project.
@@ -35,26 +35,26 @@ Requirements
   follow the standard C-like syntax that OpenGL programmers are used to,
   and that most OpenGL examples are published in:
 
-    require 'gl'
+        require 'gl'
 
-    Gl.glBegin( Gl::GL_POLYGON )
-      Gl.glVertex2d( 0, 0 )
-      Gl.glVertex2d( 0, 1 )
-      Gl.glVertex2d( 1, 1 )
-      Gl.glVertex2d( 1, 0 )
-    Gl.glEnd
+        Gl.glBegin( Gl::GL_POLYGON )
+          Gl.glVertex2d( 0, 0 )
+          Gl.glVertex2d( 0, 1 )
+          Gl.glVertex2d( 1, 1 )
+          Gl.glVertex2d( 1, 0 )
+        Gl.glEnd
 
   Or:
 
-    require 'gl'
-    include Gl
+        require 'gl'
+        include Gl
 
-    glBegin( GL_POLYGON )
-      glVertex2d( 0, 0 )
-      glVertex2d( 0, 1 )
-      glVertex2d( 1, 1 )
-      glVertex2d( 1, 0 )
-    glEnd
+        glBegin( GL_POLYGON )
+          glVertex2d( 0, 0 )
+          glVertex2d( 0, 1 )
+          glVertex2d( 1, 1 )
+          glVertex2d( 1, 0 )
+        glEnd
 
   The rationale for adopting the C-like syntax is:
     * Makes it familiar to OpenGL programmers.
@@ -67,6 +67,7 @@ Requirements
       the programmers (e.g., "vertex", "color" etc. are popular topics in
       3D programming, so not robbing the ruby namespace of such valuable
       real-estate seems nice).
+
 
 * It shall be possible to check out the project from svn, compile and test
   on the following platforms: Mac OS X, GNU/Linux. MS Windows operating
@@ -85,8 +86,16 @@ Requirements
 * There shall be a test suite that exercises each call in each of the Base
   modules.
 
+* There shall be tools supplied which can:
+
+    * generate source code from existing OpenGL/GLUT header files which,
+      probably with some fine-tuning, can be used to update the module.
+
+    * show differences in coverage between ruby-opengl and a given set
+      of OpenGL/GLUT header files.
+
 * All project documentation will be in Markdown format in files that end in
-  .txt
+  `.txt`.
 
 * The project will make some efforts to track versions of OpenGL.
 
