@@ -30,17 +30,94 @@
 #  * Added wrapper to create an object for each file we're parsing
 #  * Reduced globals by moving them into the proper classes
 #
+
+# TODO rb_intern("call") could be done only once as in Yoshi's code.
+# TODO remove write_callback and do its job inside write_wrap.
+# TODO the handling of the :void argument is messy : we shoudn't add it to
+#      the argument list and it will be cleaner.
+
 $debug = nil
+
+# Parser
+class Parser
+    def initialize( string )
+        puts "string received : |#@string|" if $debug
+        @increment = 0 # value used to generate variable name, e.g. _a1, _a2
+        @string  = string.strip # string representation; will be consumed
+                                # in-place
+        @current = []           # Arg array representation;
+                                # it will grow as the string is consumed
+    end
+
+    # Try to parse the beginning of the string.  symbol is the symbol that
+    # will be pushed on the Arg array representation if the original string
+    # matches the regexp_as_string (which is slightly expanded to account
+    # for comma in the origianl string).  Warning : the
+    # @string variable is used with side-effect : it is initialized by the
+    # 'parse' method (see just below).
+    def try?( symbol, regexp_as_string )
+        regexp = Regexp.new( '^' + regexp_as_string + '\s*,?\s*' )
+        if @string.sub!( regexp, '' )
+            puts "parsing #{symbol}" if $debug
+
+            # handle callback; $2 has the string arguments
+            args = []
+            if symbol == :callback && $2 != ""
+                parser = Parser.new( $2 )
+                args = parser.parse
+            end
+            @current << arg( symbol, $1 == "" ? "_a#{@increment += 1}" : $1, args )
+        end
+    end
+
+    # Try repeatedly to consume a bit of the original string, until
+    # the whole string is consumed.
+    def parse
+        continue = true
+        # Repeat until the string is completly consumed or
+        # nothing matches.
+        while @string != "" && continue
+            if    try? :callback      , 'void\s*\(\s*\*\s*(\w*)\)\s*\((.*)\)'
+
+            elsif try? :glenum        , 'GLenum\s*(\w*)'
+            elsif try? :gldouble      , 'GLdouble\s*(\w*)'
+            elsif try? :glfloat       , 'GLfloat\s*(\w*)'
+            elsif try? :glint         , 'GLint\s*(\w*)'
+
+            elsif try? :char_pp       , 'char\s*\*\s*\*\s*(\w*)'
+            elsif try? :const_uchar_p , 'const\s+unsigned\s+char\s*\*\s*(\w*)'
+            elsif try? :const_char_p  , 'const\s+char\s*\*\s*(\w*)'
+            elsif try? :char_p        , 'char\s*\*\s*(\w*)'
+            elsif try? :uchar         , 'unsigned\s+char\s*(\w*)'
+            elsif try? :char          , 'char\s*(\w*)'
+            elsif try? :uint          , 'unsigned\s+int\s*(\w*)'
+            elsif try? :int_p         , 'int\s*\*\s*(\w*)'
+            elsif try? :int           , 'int\s*(\w*)'
+            elsif try? :void_p        , 'void\s*\*\s*(\w*)'
+            elsif try? :void          , 'void'
+            else
+                # nothing matches; abort (the string isn't completely consumed)
+                continue = nil
+            end
+            puts "remains : |#@string|" if $debug
+        end
+        # Show an error if the string is not completely consumed.
+        puts "ERR : parse failed" if @string != ""
+
+        @current
+    end
+end
 
 # Arg is a pair representing the name and type from an argument in a C
 # function declaration.  It knows how to convert the C type into a ruby
-# type.
+# type. When the :type is callback, has also its arguments
 class Arg
-    attr_accessor :type, :name
+    attr_accessor :type, :name, :args
 
-    def initialize( type, name )
+    def initialize( type, name, args )
         @type = type
         @name = name
+        @args = args
     end
 
     def count
@@ -49,6 +126,7 @@ class Arg
 
     def to_conversion_str
         case type
+        when :callback      then "callback"
         when :glenum        then "(GLenum)NUM2INT(#@name)"
         when :gldouble      then "(GLdouble)NUM2DBL(#@name)"
         when :glfloat       then "(GLfloat)NUM2DBL(#@name)"
@@ -63,14 +141,30 @@ class Arg
             "TODO #{type}"
         end
     end
+    def type_str
+        case type
+        when :callback      then "callback_type"
+        when :glenum        then "GLenum "
+        when :gldouble      then "GLdouble "
+        when :glfloat       then "GLfloat "
+        when :glint         then "GLint "
+        when :const_uchar_p then "const unsigned char * "
+        when :const_char_p  then "const cahr * "
+        when :uint          then "unsigned int "
+        when :int           then "int "
+        when :uchar         then "unsigned char "
+        when :char          then "char "
+        when :void_p        then "void * "
+        end
+    end
     def to_s
-        "#{@type} : #{@name}"
+        "type: #{@type}, name:#{@name}, args:#@args"
     end
 end
 
 # Convenience Arg constructor.
-def arg( type, name )
-    Arg.new type, name
+def arg( type, name, args )
+    Arg.new type, name, args
 end
 
 # HFunction must have its name rewritten; it's ugly :)
@@ -80,69 +174,12 @@ class HFunction
     # This is used to match a c function we want to generate code for.
     FreeglutMatcher = /.*(void|int).*(glut[A-Z][^(]*)\s*\((.*)\)\s*;/
 
-    # Try to parse the beginning of the string.  symbol is the symbol that
-    # will be pushed on the Arg array representation if the original string
-    # matches the regexp_as_string (which is slightly expanded to account
-    # for comma in the origianl string).  Warning : bad coding : the
-    # @string variable is used with side-effect : it is initialized by the
-    # 'parse' method (see just below).
-    def HFunction.try?( symbol, regexp_as_string )
-        regexp = Regexp.new( '^' + regexp_as_string + '\s*,?\s*' )
-        if @string.sub!( regexp, '' )
-            puts "parsing #{symbol}" if $debug
-            @current << arg( symbol, $1 == "" ? "_a#{@increment += 1}" : $1 )
-        end
-    end
-
-    # Try repeatedly to consume a bit of the original string, until
-    # the whole string is consumed.
-    def HFunction.parse( string )
-        puts "string received : |#@string|" if $debug
-        @increment = 0 # value used to generate variable name, e.g. _a1, _a2
-        @string  = string.strip # string representation; will be consumed
-                                # in-place
-        @current = []           # Arg array representation;
-                                # it will grow as the string is consumed
-
-        continue = true
-        # Repeat until the string is completly consumed or
-        # nothing matches.
-        while @string != "" && continue
-            if    try? :callback      , 'void\s*\(\s*\*\s*(\w+)?\)\s*\((.*)\)'
-#            if    try? :callback      , 'void\s*\(\s*\*\s*\w+\)\s*\((.*)\)'
-
-            elsif try? :glenum        , 'GLenum\s+(\w+)'
-            elsif try? :gldouble      , 'GLdouble\s+(\w+)'
-            elsif try? :glfloat       , 'GLfloat\s+(\w+)'
-            elsif try? :glint         , 'GLint\s+(\w+)'
-
-            elsif try? :char_pp       , 'char\s*\*\s*\*\s*(\w+)'
-            elsif try? :const_uchar_p , 'const\s+unsigned\s+char\s*\*\s*(\w+)'
-            elsif try? :const_char_p  , 'const\s+char\s*\*\s*(\w+)'
-            elsif try? :char_p        , 'char\s*\*\s*(\w+)'
-            elsif try? :char          , 'char\s+(\w+)'
-            elsif try? :uint          , 'unsigned\s+int\s+(\w+)'
-            elsif try? :int_p         , 'int\s*\*\s*(\w+)'
-            elsif try? :int           , 'int\s*(\w*)'
-            elsif try? :void_p        , 'void\s*\*\s*(\w+)'
-            elsif try? :void          , 'void'
-            else
-                # nothing matches; abort (the string isn't completely consumed)
-                continue = nil
-            end
-            puts "remains : |#@string|" if $debug
-        end
-        # Show an error if the string is not completely consumed.
-        puts "ERR : parse failed" if @string != ""
-
-        @current
-    end
 
     def initialize( return_type, function_name, arguments )
         @return_type   = return_type
         @function_name = function_name
         @arguments     = arguments
-        puts self.to_s
+        puts self.to_s if $debug
     end
 
     def to_s
@@ -154,6 +191,50 @@ class HFunction
         n = @arguments.inject(0)  do |count, arg|
             arg.type == :void ? count : count + 1
         end
+    end
+
+    def has_callback?
+        # Iterate over the arguments to find if there's a callback.
+        # We could instead add an attribute.
+        @arguments.detect { |a| a.type == :callback }
+    end
+
+    def callback_name
+        @function_name.downcase.sub /^glut/, ''
+    end
+
+    def callback_num_args
+        callback = has_callback?
+        l = callback.args.length
+        l == 1 && callback.args[0] == :void ? 0 : l
+    end
+
+    def callback_args_type
+        callback = has_callback?
+        s = callback.args.inject('') do |str, arg|
+            str += "#{arg.type_str} #{arg.name}, "
+        end
+        s.chop!.chop! unless s == ''
+    end
+
+    def callback_args
+        callback = has_callback?
+        callback.args.inject('') do |str, arg|
+            str += ", #{arg.name}" unless arg.type == :void
+        end
+    end
+
+    def args_string
+        s = @arguments.inject('') do |str, a|
+            str += "#{a.to_conversion_str}, "
+        end
+        s.chop!.chop! unless s == ''
+    end
+
+    def args_type
+            s = @arguments.inject('') do |str, a|
+                str += ", VALUE #{a.type == :callback ? 'callback' : a.name}"
+            end
     end
 
     # Try to construct a new HFunction instance by matching
@@ -174,13 +255,18 @@ class HFunction
 
         # convert arguments from string representation to
         # Arg array representation
-        arguments = parse arguments
+        parser = Parser.new( arguments )
+        arguments = parser.parse
 
         HFunction.new( return_type, function_name, arguments )
     end
 
     # Write the c wrapper code in file.
     def write_wrap( file )
+
+        # let write_callback do the job if it has a callback
+        return if has_callback?
+        
         string = ''
         if @function_name == 'glutInit' # TODO
             string = <<END
@@ -208,20 +294,14 @@ END
                     string += "    return INT2NUM (#@function_name ());\n"
                 end
             else
-                @arguments.each do |a|
-                    string += ", VALUE #{a.type == :callback ? 'callback' : a.name}"
-                end
+                string += args_type
                 string += ")\n{\n    "
                 if @return_type == :void
                     string += "#@function_name ("
                 else
                     string += "return INT2NUM (#@function_name("
                 end
-                @arguments.each do |a|
-                    string += "#{a.type == :callback ? 'callback' : a.to_conversion_str}, "
-                end
-                string.chop!
-                string.chop! # this is ugly...
+                string += args_string
                 string += ")" if @return_type != :void
                 string += ");\n"
             end
@@ -240,11 +320,37 @@ END
     rb_define_module_function (module, "glutInit", rbgl_glutInit, 0);
 END
         else
-            # check for the correct value (here, @arguments.length - 1)
             string = <<END
     rb_define_module_function (module, "#@function_name", rbgl_#@function_name, #{num_args});
 END
         end
+        file << string
+    end
+
+    # Possibly write the c callback wrapper in file.
+    def write_callback( file )
+        callback = has_callback?
+        return unless callback
+
+        string = <<END
+static VALUE #{callback_name}_callbacks = Qnil;
+
+static void
+call_#{callback_name}_callback (#{callback_args_type})
+{
+	VALUE callback = rb_ary_entry (#{callback_name}_callbacks, glutGetWindow ());
+	if (!NIL_P (callback)) rb_funcall (callback, rb_intern("call"), #{callback_num_args}#{callback_args});
+}
+
+static VALUE
+rbgl_#{@function_name} (VALUE self#{args_type})
+{
+	rb_ary_store ( #{callback_name}_callbacks, glutGetWindow (), callback);
+	#{@function_name} (#{args_string});
+	return Qnil;
+}
+
+END
         file << string
     end
 end
@@ -295,6 +401,7 @@ class Wrapper
         base = File.basename( @source, '.h' )
         @file_wrap_func_name = name + "_wrap.c"
         @file_init_func_name = name + "_init.c"
+        @file_callbacks_name = name + "_callbacks.c"
         @functions_count, @constants_count, @line_count = 0,0,0
     end
 
@@ -305,13 +412,15 @@ class Wrapper
         # don't forget to close these...
         @file_wrap_func = create_wrap_func
         @file_init_func = create_init_func
-
+        @file_callbacks = create_callbacks
+        
         File.open( @source ) do |f|
             f.each {|l| process( l )}
         end
 
         close_wrap_func
         close_init_func
+        close_callbacks
 
         print_stats
     end
@@ -341,6 +450,13 @@ class Wrapper
         return f
     end
 
+    # Create the file to hold the callback wrappers and generate the
+    # preamble for it
+    def create_callbacks
+        f = File.new( @file_callbacks_name, 'w' )
+        return f
+    end
+
     # Close the wrap file after adding any closing code
     def close_wrap_func
         @file_wrap_func.close
@@ -352,6 +468,11 @@ class Wrapper
         @file_init_func.close
     end
 
+    # Close the callback file after adding any closing code
+    def close_callbacks
+        @file_callbacks.close
+    end
+    
     # process works as follow :
     # * it tries to match against a function or a constant
     # * if it matches, it generates the wrapper code and the
@@ -366,6 +487,7 @@ class Wrapper
             # the module initialization code.
             function.write_wrap @file_wrap_func
             function.write_init @file_init_func
+            function.write_callback @file_callbacks
 
         elsif (constant = HConstant.construct?( line ))
             @constants_count += 1
@@ -373,7 +495,6 @@ class Wrapper
         end
         @line_count += 1
     end
-
 end
 
 if __FILE__ == $0
@@ -394,6 +515,7 @@ if __FILE__ == $0
     wrapper = Wrapper.new( *ARGV )
     wrapper.generate
 end
+
 # Local Variables: ***
 # ruby-indent-level: 4 ***
 # End: ***

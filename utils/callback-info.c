@@ -64,7 +64,7 @@ call_display_callback (void)
 {
 	/* find the approriate callback */
 	VALUE callback = rb_ary_entry (display_callbacks, glutGetWindow ());
-	/* call it */
+	/* call it, passing the arguments if needed */
 	if (!NIL_P (callback)) rb_funcall (callback, callId, 0);
 }
 
@@ -84,7 +84,8 @@ rbgl_glutDisplayFunc (VALUE self, VALUE callback)
 	rb_ary_store ( display_callbacks, glutGetWindow (), callback);
 	/* register call_display_callback as the c callback */
 	/* FIXME I believe it can be done only once, at initialization
-	 *       (with callId).
+	 *       (with callId or at window creation).
+	 */
 	glutDisplayFunc (call_display_callback);
 	return Qnil;
 }

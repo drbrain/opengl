@@ -14,3 +14,11 @@ extern int APIENTRY glutFoo(void (* foo)(int));
  */
 extern void APIENTRY glutSetColor(int, GLfloat red, GLfloat green, GLfloat blue);
 extern int APIENTRY glutCreateMenu(void (*)(int));
+
+/*
+ * From freeglut_std.h
+ * TODO add glutTimerFunc to mkwrap_test.rb
+ */
+FGAPI void    FGAPIENTRY glutKeyboardFunc( void (* callback)( unsigned char, int, int ) );
+FGAPI void    FGAPIENTRY glutTimerFunc( unsigned int time, void (* callback)( int ), int value );
+
