@@ -43,6 +43,10 @@ class Arg
         @name = name
     end
 
+    def count
+        return type == "void" ? 0 : 1
+    end
+
     def to_conversion_str
         case type
         when :glenum        then "(GLenum)NUM2INT(#@name)"
@@ -58,6 +62,9 @@ class Arg
             puts "ERR : Arg.to_conversion_str can't handle |#{type}|"
             "TODO #{type}"
         end
+    end
+    def to_s
+        "#{@type} : #{@name}"
     end
 end
 
@@ -78,7 +85,7 @@ class HFunction
     # matches the regexp_as_string (which is slightly expanded to account
     # for comma in the origianl string).  Warning : bad coding : the
     # @string variable is used with side-effect : it is initialized by the
-    # 'parse' method (see just bellow).
+    # 'parse' method (see just below).
     def HFunction.try?( symbol, regexp_as_string )
         regexp = Regexp.new( '^' + regexp_as_string + '\s*,?\s*' )
         if @string.sub!( regexp, '' )
@@ -135,6 +142,18 @@ class HFunction
         @return_type   = return_type
         @function_name = function_name
         @arguments     = arguments
+        puts self.to_s
+    end
+
+    def to_s
+        "#{@return_type} #{@function_name} (#{@arguments.join(', ')})"
+    end
+
+    def num_args
+        # We don't want to count void as part of our argument count.
+        n = @arguments.inject(0)  do |count, arg|
+            arg.type == :void ? count : count + 1
+        end
     end
 
     # Try to construct a new HFunction instance by matching
@@ -223,9 +242,7 @@ END
         else
             # check for the correct value (here, @arguments.length - 1)
             string = <<END
-    rb_define_module_function (module, "#@function_name",
-            rbgl_#@function_name,
-            #{@arguments.length - 1});
+    rb_define_module_function (module, "#@function_name", rbgl_#@function_name, #{num_args});
 END
         end
         file << string
@@ -253,7 +270,7 @@ class HConstant
             return nil
         end
     end
-    
+
 end
 
 # A Wrapper represents a single .h file that we want to generate ruby code
@@ -340,7 +357,7 @@ class Wrapper
     # * if it matches, it generates the wrapper code and the
     #   initialization code.
     def process( line )
-        
+
         if (function = HFunction.construct?( line ))
             @functions_count += 1
 
