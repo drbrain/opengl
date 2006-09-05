@@ -141,6 +141,16 @@ class Arg
             "TODO #{type}"
         end
     end
+    def to_conversion_str2 # TODO rename
+        case type
+        when :uchar           then "INT2NUM(#@name)" # or INT2FIX ?
+        when :uint           then "INT2NUM(#@name)"
+        when :int           then "INT2NUM(#@name)"
+        else
+            puts "ERR : Arg.to_conversion_str2 can't handle |#{type}|"
+            "TODO #{type}"
+        end
+    end
     def type_str
         case type
         when :callback      then "callback_type"
@@ -220,13 +230,13 @@ class HFunction
     def callback_args
         callback = has_callback?
         callback.args.inject('') do |str, arg|
-            str += ", #{arg.name}" unless arg.type == :void
+            str += ", #{arg.to_conversion_str2}" unless arg.type == :void
         end
     end
 
     def args_string
         s = @arguments.inject('') do |str, a|
-            str += "#{a.to_conversion_str}, "
+            str += "#{a.type == :callback ? "call_" + callback_name + "_callback" : a.to_conversion_str}, "
         end
         s.chop!.chop! unless s == ''
     end
@@ -323,6 +333,14 @@ END
             string = <<END
     rb_define_module_function (module, "#@function_name", rbgl_#@function_name, #{num_args});
 END
+            callback = has_callback?
+            if callback
+                # FIXME make it a module global, not a global
+                string += <<END
+    rb_global_variable(&#{callback_name}_callbacks);
+    #{callback_name}_callbacks = rb_ary_new();
+END
+            end
         end
         file << string
     end
@@ -338,15 +356,19 @@ static VALUE #{callback_name}_callbacks = Qnil;
 static void
 call_#{callback_name}_callback (#{callback_args_type})
 {
+        printf ("calling   : call_#{callback_name}_callback\\n");
 	VALUE callback = rb_ary_entry (#{callback_name}_callbacks, glutGetWindow ());
 	if (!NIL_P (callback)) rb_funcall (callback, rb_intern("call"), #{callback_num_args}#{callback_args});
+        printf ("returning : call_#{callback_name}_name\\n");
 }
 
 static VALUE
 rbgl_#{@function_name} (VALUE self#{args_type})
 {
+        printf ("calling   : rbgl_#{@function_name}\\n");
 	rb_ary_store ( #{callback_name}_callbacks, glutGetWindow (), callback);
 	#{@function_name} (#{args_string});
+        printf ("returning : rbgl_#{@function_name}\\n");
 	return Qnil;
 }
 
@@ -439,6 +461,8 @@ class Wrapper
     def create_wrap_func
         f = File.new( @file_wrap_func_name, 'w' )
         @headers.each {|h| f << "#include #{h}\n"}
+        # only for testing :
+        f << "#include <stdio.h>\n\n"
         return f
     end
 
