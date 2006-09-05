@@ -356,19 +356,19 @@ static VALUE #{callback_name}_callbacks = Qnil;
 static void
 call_#{callback_name}_callback (#{callback_args_type})
 {
-        printf ("calling   : call_#{callback_name}_callback\\n");
+        /* printf ("calling   : call_#{callback_name}_callback\\n"); */
 	VALUE callback = rb_ary_entry (#{callback_name}_callbacks, glutGetWindow ());
 	if (!NIL_P (callback)) rb_funcall (callback, rb_intern("call"), #{callback_num_args}#{callback_args});
-        printf ("returning : call_#{callback_name}_name\\n");
+        /* printf ("returning : call_#{callback_name}_name\\n"); */
 }
 
 static VALUE
 rbgl_#{@function_name} (VALUE self#{args_type})
 {
-        printf ("calling   : rbgl_#{@function_name}\\n");
+        /* printf ("calling   : rbgl_#{@function_name}\\n"); */
 	rb_ary_store ( #{callback_name}_callbacks, glutGetWindow (), callback);
 	#{@function_name} (#{args_string});
-        printf ("returning : rbgl_#{@function_name}\\n");
+        /* printf ("returning : rbgl_#{@function_name}\\n"); */
 	return Qnil;
 }
 
