@@ -369,7 +369,7 @@ class HConstant
     def HConstant.construct?( string )
         if string =~ /#define\s+(GLUT.\w+)\s+(.+)/
             puts "Found Constant: #{$1}  Value: #{$2}" if $debug
-            code = "rb_define_const(module, \"#{$1}\", INT2NUM(#{$2}));\n"
+            code = "    rb_define_const(module, \"#{$1}\", INT2NUM(#{$2}));\n"
             return HConstant.new( code )
         else
             puts "NO CONSTANT: #{string}" if $debug
