@@ -42,4 +42,5 @@ Con-SWIG:
   a general tool.
 
 
-In September 2006, we stopped using SWIG.
+In September 2006, we stopped using SWIG. Thu and Peter began fine tuning
+Thu's original `utils/mkwrap.rb` script.

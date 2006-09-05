@@ -33,7 +33,7 @@ Requirements
 
   The syntax for a Ruby program that uses the base modules, shall closely
   follow the standard C-like syntax that OpenGL programmers are used to,
-  and that most OpenGL examples are published in. Something like:
+  and that most OpenGL examples are published in:
 
     require 'gl'
 
@@ -118,23 +118,7 @@ Implementation
 
 ### Build environment
 
-The build environment should:
+The build environment will:
 
-* use rake
-* minimize the number of tools needed (try to only use rake)
-
-
-
-Roadmap
--------
-
-* Prototype the minimum necessary to get an OpenGLHelloWorld working, so
-  we can play with it.
-
-* Get basic build up and running.
-
-* Get BaseGL implemented.
-
-* Get BaseGLUT implemented (because it's used for testing).
-
-* Get BaseGLU implemented.
+* use rake (and probably also mkrf)
+* minimize the number of additional tools required
