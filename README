@@ -48,5 +48,5 @@ The directory structure is:
   the naming style of Yoshi's code.
 * `test/` -- Contains sample ruby files that make OpenGL and GLUT calls.
   No real tests so far.
-# `utils` -- some under-construction utility scripts to help generate
+* `utils` -- some under-construction utility scripts to help generate
   extension module source from GL header files.
