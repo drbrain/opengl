@@ -235,12 +235,25 @@ end
 # TODO
 # HConstant represents a c constant we want to generate code for.
 class HConstant
-    FreeglutMatcher = /tulg/
+
+    def initialize(code)
+        @code = code
+    end
+    def write_init(file)
+        file << @code
+    end
 
     def HConstant.construct?( string )
-        md = FreeglutMatcher.match( string )
-        return nil if not md
+        if string =~ /#define\s+(GLUT.\w+)\s+(.+)/
+            puts "Found Constant: #{$1}  Value: #{$2}" if $debug
+            code = "rb_define_const(module, \"#{$1}\", INT2NUM(#{$2}));\n"
+            return HConstant.new( code )
+        else
+            puts "NO CONSTANT: #{string}" if $debug
+            return nil
+        end
     end
+    
 end
 
 # A Wrapper represents a single .h file that we want to generate ruby code
@@ -327,9 +340,8 @@ class Wrapper
     # * if it matches, it generates the wrapper code and the
     #   initialization code.
     def process( line )
-        function = HFunction.construct?( line )
-        constant = HConstant.construct?( line ) unless function
-        if function
+        
+        if (function = HFunction.construct?( line ))
             @functions_count += 1
 
             # once the HFunction is constructed, we have two
@@ -338,8 +350,9 @@ class Wrapper
             function.write_wrap @file_wrap_func
             function.write_init @file_init_func
 
-        elsif constant
+        elsif (constant = HConstant.construct?( line ))
             @constants_count += 1
+            constant.write_init @file_init_func
         end
         @line_count += 1
     end
