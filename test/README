@@ -4,10 +4,10 @@ ruby-opengl tests
 This directory contains the unit tests for ruby-opengl.  You should be able
 to run the tests either directly:
 
-  ruby tc_gl_vertex.rb
+    ruby tc_gl_vertex.rb
 
 or by using the rake in the parent directory
 
-  rake test                      # to run all tests
-  rake test TEST=tc_gl_vertex.rb # Run just one test
+    rake test                      # to run all tests
+    rake test TEST=tc_gl_vertex.rb # Run just one test
 
