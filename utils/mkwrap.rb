@@ -32,7 +32,6 @@
 #
 
 # TODO rb_intern("call") could be done only once as in Yoshi's code.
-# TODO use String#joint, not String#inject for some things...
 
 $debug = nil
 
@@ -82,7 +81,11 @@ class Parser
             elsif try? :glenum        , 'GLenum\s*(\w*)'
             elsif try? :gldouble      , 'GLdouble\s*(\w*)'
             elsif try? :glfloat       , 'GLfloat\s*(\w*)'
+            elsif try? :gluint        , 'GLuint\s*(\w*)'
+            elsif try? :glint_p       , 'GLint\s*\*\s*(\w*)'
             elsif try? :glint         , 'GLint\s*(\w*)'
+            elsif try? :glshort       , 'GLshort\s*(\w*)'
+            elsif try? :glsizei       , 'GLsizei\s*(\w*)'
 
             elsif try? :char_pp       , 'char\s*\*\s*\*\s*(\w*)'
             elsif try? :const_uchar_p , 'const\s+unsigned\s+char\s*\*\s*(\w*)'
@@ -102,7 +105,7 @@ class Parser
             puts "remains : |#@string|" if $debug
         end
         # Show an error if the string is not completely consumed.
-        puts "ERR : parse failed" if @string != ""
+        puts "ERR : parse failed on |#@string|" if @string != ""
 
         @current
     end
@@ -130,7 +133,11 @@ class Arg
         when :glenum        then "(GLenum)NUM2INT(#@name)"
         when :gldouble      then "(GLdouble)NUM2DBL(#@name)"
         when :glfloat       then "(GLfloat)NUM2DBL(#@name)"
+        when :gluint        then "(GLuint)NUM2UINT(#@name)"
+        when :glint_p       then "TODO"
         when :glint         then "(GLint)NUM2INT(#@name)"
+        when :glshort       then "(GLshort)NUM2INT(#@name)"
+        when :glsizei       then "(GLsizei)NUM2INT(#@name)"
         when :const_uchar_p then "(unsigned char *)StringValuePtr(#@name)"
         when :const_char_p  then "StringValuePtr(#@name)"
         when :uint          then "NUM2UINT(#@name)"
@@ -157,7 +164,10 @@ class Arg
         when :glenum        then "GLenum "
         when :gldouble      then "GLdouble "
         when :glfloat       then "GLfloat "
+        when :gluint        then "GLuint "
         when :glint         then "GLint "
+        when :glshort       then "GLshort "
+        when :glsizei       then "GLsizei "
         when :const_uchar_p then "const unsigned char * "
         when :const_char_p  then "const cahr * "
         when :uint          then "unsigned int "
@@ -182,7 +192,14 @@ end
 # c function we want to generate code for.
 class HFunction
     # This is used to match a c function we want to generate code for.
-    FreeglutMatcher = /.*(void|int).*(glut[A-Z][^(]*)\s*\((.*)\)\s*;/
+    @@matcher = /.*(void|int).*(glut[A-Z][^(]*)\s*\((.*)\)\s*;/
+    @@ignore = []
+    def HFunction.matcher=( re )
+        @@matcher = re
+    end
+    def HFunction.ignore( a )
+        @@ignore << a
+    end
 
 
     def initialize( return_type, function_name, arguments )
@@ -246,7 +263,7 @@ class HFunction
     # Try to construct a new HFunction instance by matching
     # against an arbitrary string.
     def HFunction.construct?( string )
-        md = FreeglutMatcher.match( string )
+        md = @@matcher.match( string )
         return nil if not md
 
         return_type, function_name, arguments = md.captures
@@ -277,7 +294,7 @@ class HFunction
         end
         
         str = ''
-        if @function_name == 'glutInit' # TODO
+        if @function_name == 'glutInit'
             str = <<END
 static VALUE
 rbgl_glutInit (VALUE self)
@@ -359,6 +376,15 @@ end
 
 # HConstant represents a c constant we want to generate code for.
 class HConstant
+    
+    @@matcher = /#define\s+(GLUT.\w+)\s+(.+)/
+    @@ignore = []
+    def HConstant.matcher=( re )
+        @@matcher = re
+    end
+    def HConstant.ignore( a )
+        @@ignore << a
+    end
 
     def initialize(code)
         @code = code
@@ -369,7 +395,7 @@ class HConstant
 
     # FIXME ask Peter why is there a dot between GLUT and \w+ in the regexp.
     def HConstant.construct?( string )
-        if string =~ /#define\s+(GLUT.\w+)\s+(.+)/
+        if string =~ @@matcher && (not @@ignore.include?( $1 ))
             puts "Found Constant: #{$1}  Value: #{$2}" if $debug
             code = "    rb_define_const(module, \"#{$1}\", INT2NUM(#{$2}));\n"
             return HConstant.new( code )
@@ -400,6 +426,7 @@ class Wrapper
     def initialize( source, name, *headers )
         @source  = source
         @headers = headers
+        @name    = name
         @file_wrap_func_name = name + "_wrap.c"
         @file_init_func_name = name + "_init.c"
         @functions_count, @constants_count, @line_count = 0,0,0
@@ -446,7 +473,7 @@ class Wrapper
     # preamble for it
     def create_init_func
         f = File.new( @file_init_func_name, 'w' )
-        f << "void\nInit_glut()\n{\n    VALUE module = rb_define_module(\"Glut\");\n\n"
+        f << "void\nInit_#@name()\n{\n    VALUE module = rb_define_module(\"#{@name.capitalize}\");\n\n"
         return f
     end
 
@@ -491,7 +518,7 @@ if __FILE__ == $0
     # The rest of the optional parameters are a list of
     # files to #include in the generated files.
     #
-    # E.g., ./mkwrap.rb ./foo.h bar foo '<ruby.h>' '<GL/gl.h>'
+    # E.g., ./mkwrap.rb ./foo.h bar '<ruby.h>' '<GL/gl.h>'
     #
     # Will generate wrappers for the functions and constants in foo.h and
     # the bar_wrap.c (but not bar_init.c) file will have the following include
