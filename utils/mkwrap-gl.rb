@@ -27,6 +27,7 @@ HFunction.ignore /v$/
 HFunction.ignore /ARB$/
 HFunction.ignore /MESA$/
 HFunction.ignore /ATI$/
+HFunction.ignore /TransposeMatrix/
 
 class GlFunc < HFunction
 

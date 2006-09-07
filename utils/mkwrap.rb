@@ -78,14 +78,21 @@ class Parser
         while @string != "" && continue
             if    try? :callback      , 'void\s*\(\s*\*\s*(\w*)\)\s*\((.*)\)'
 
+            elsif try? :glboolean     , 'GLboolean\s*(\w*)'
+            elsif try? :glbitfield    , 'GLbitfield\s*(\w*)'
             elsif try? :glenum        , 'GLenum\s*(\w*)'
             elsif try? :gldouble      , 'GLdouble\s*(\w*)'
             elsif try? :glfloat       , 'GLfloat\s*(\w*)'
             elsif try? :gluint        , 'GLuint\s*(\w*)'
             elsif try? :glint_p       , 'GLint\s*\*\s*(\w*)'
             elsif try? :glint         , 'GLint\s*(\w*)'
+            elsif try? :glubyte       , 'GLubyte\s*(\w*)'
+            elsif try? :glbyte        , 'GLbyte\s*(\w*)'
+            elsif try? :glushort      , 'GLushort\s*(\w*)'
             elsif try? :glshort       , 'GLshort\s*(\w*)'
             elsif try? :glsizei       , 'GLsizei\s*(\w*)'
+            elsif try? :glclampf      , 'GLclampf\s*(\w*)'
+            elsif try? :glclampd      , 'GLclampd\s*(\w*)'
 
             elsif try? :char_pp       , 'char\s*\*\s*\*\s*(\w*)'
             elsif try? :const_uchar_p , 'const\s+unsigned\s+char\s*\*\s*(\w*)'
@@ -130,14 +137,21 @@ class Arg
     def to_conversion_str
         case type
         when :callback      then "callback"
+        when :glbitfield    then "(GLbitfield)NUM2UINT(#@name)"
+        when :glboolean     then "(GLboolean)NUM2INT(#@name)"
         when :glenum        then "(GLenum)NUM2INT(#@name)"
         when :gldouble      then "(GLdouble)NUM2DBL(#@name)"
         when :glfloat       then "(GLfloat)NUM2DBL(#@name)"
         when :gluint        then "(GLuint)NUM2UINT(#@name)"
         when :glint_p       then "TODO"
         when :glint         then "(GLint)NUM2INT(#@name)"
+        when :glushort      then "(GLushort)NUM2UINT(#@name)"
         when :glshort       then "(GLshort)NUM2INT(#@name)"
+        when :glubyte       then "(GLubyte)NUM2UINT(#@name)"
+        when :glbyte        then "(GLbyte)NUM2INT(#@name)"
         when :glsizei       then "(GLsizei)NUM2INT(#@name)"
+        when :glclampf      then "(GLclampf)NUM2DBL(#@name)"
+        when :glclampd      then "(GLclampd)NUM2DBL(#@name)"
         when :const_uchar_p then "(unsigned char *)StringValuePtr(#@name)"
         when :const_char_p  then "StringValuePtr(#@name)"
         when :uint          then "NUM2UINT(#@name)"
@@ -161,13 +175,20 @@ class Arg
     def type_str
         case type
         when :callback      then "callback_type"
+        when :glbitfield    then "GLbitfield "
+        when :glboolean     then "GLboolean "
         when :glenum        then "GLenum "
         when :gldouble      then "GLdouble "
         when :glfloat       then "GLfloat "
         when :gluint        then "GLuint "
         when :glint         then "GLint "
+        when :glushort      then "GLushort "
         when :glshort       then "GLshort "
+        when :glubyte       then "GLubyte "
+        when :glbyte        then "GLbyte "
         when :glsizei       then "GLsizei "
+        when :glclampf      then "GLclampf "
+        when :glclampd      then "GLclampd "
         when :const_uchar_p then "const unsigned char * "
         when :const_char_p  then "const cahr * "
         when :uint          then "unsigned int "
