@@ -33,8 +33,7 @@
 
 # TODO rb_intern("call") could be done only once as in Yoshi's code.
 # TODO remove write_callback and do its job inside write_wrap.
-# TODO the handling of the :void argument is messy : we shoudn't add it to
-#      the argument list and it will be cleaner.
+# TODO use String#joint, not String#inject for some things...
 
 $debug = nil
 
@@ -66,7 +65,9 @@ class Parser
                 parser = Parser.new( $2 )
                 args = parser.parse
             end
-            @current << arg( symbol, $1 == "" ? "_a#{@increment += 1}" : $1, args )
+            if symbol != :void
+                @current << arg( symbol, $1 == "" ? "_a#{@increment += 1}" : $1, args )
+            end
         end
     end
 
@@ -143,8 +144,8 @@ class Arg
     end
     def to_conversion_str2 # TODO rename
         case type
-        when :uchar           then "INT2NUM(#@name)" # or INT2FIX ?
-        when :uint           then "INT2NUM(#@name)"
+        when :uchar         then "INT2NUM(#@name)" # or INT2FIX ?
+        when :uint          then "INT2NUM(#@name)"
         when :int           then "INT2NUM(#@name)"
         else
             puts "ERR : Arg.to_conversion_str2 can't handle |#{type}|"
@@ -197,10 +198,7 @@ class HFunction
     end
 
     def num_args
-        # We don't want to count void as part of our argument count.
-        n = @arguments.inject(0)  do |count, arg|
-            arg.type == :void ? count : count + 1
-        end
+        @arguments.length
     end
 
     def has_callback?
@@ -215,8 +213,7 @@ class HFunction
 
     def callback_num_args
         callback = has_callback?
-        l = callback.args.length
-        l == 1 && callback.args[0] == :void ? 0 : l
+        callback.args.length
     end
 
     def callback_args_type
@@ -230,7 +227,7 @@ class HFunction
     def callback_args
         callback = has_callback?
         callback.args.inject('') do |str, arg|
-            str += ", #{arg.to_conversion_str2}" unless arg.type == :void
+            str += ", #{arg.to_conversion_str2}"
         end
     end
 
@@ -277,9 +274,9 @@ class HFunction
         # let write_callback do the job if it has a callback
         return if has_callback?
         
-        string = ''
+        str = ''
         if @function_name == 'glutInit' # TODO
-            string = <<END
+            str = <<END
 static VALUE
 rbgl_glutInit (VALUE self)
 {
@@ -291,35 +288,16 @@ rbgl_glutInit (VALUE self)
 
 END
         else
-            # this part is quite ugly and must be rewritten
-
-            string = "static VALUE\nrbgl_#@function_name (VALUE self"
-            # the following if/else is not necessary ... can be re written without.
-            # also, the two each loop can be done in one.
-            if @arguments.length == 0 || (@arguments.length == 1 && @arguments[0].type == :void)
-                string += ")\n{\n"
-                if @return_type == :void
-                    string += "    #@function_name ();\n"
-                else
-                    string += "    return INT2NUM (#@function_name ());\n"
-                end
-            else
-                string += args_type
-                string += ")\n{\n    "
-                if @return_type == :void
-                    string += "#@function_name ("
-                else
-                    string += "return INT2NUM (#@function_name("
-                end
-                string += args_string
-                string += ")" if @return_type != :void
-                string += ");\n"
-            end
-            string += "    return Qnil;\n" if @return_type == :void
-            string += "}\n\n"
+            str = "static VALUE\nrbgl_#@function_name (VALUE self#{args_type})\n{\n    "
+            str += "return INT2NUM (" if @return_type != :void
+            str += "#@function_name (#{args_string})"
+            str += ")" if @return_type != :void
+            str += ";\n"
+            str += "    return Qnil;\n" if @return_type == :void
+            str += "}\n\n"
         end
 
-        file << string
+        file << str
     end
 
     # Write the c initialization code in file.
@@ -377,7 +355,6 @@ END
     end
 end
 
-# TODO
 # HConstant represents a c constant we want to generate code for.
 class HConstant
 
@@ -388,6 +365,7 @@ class HConstant
         file << @code
     end
 
+    # FIXME ask Peter why is there a dot between GLUT and \w+ in the regexp.
     def HConstant.construct?( string )
         if string =~ /#define\s+(GLUT.\w+)\s+(.+)/
             puts "Found Constant: #{$1}  Value: #{$2}" if $debug
