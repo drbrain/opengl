@@ -21,7 +21,12 @@ require 'mkwrap'
 
 $debug = true
 
-HFunction.matcher = /.*(void|int).*(gl[A-Z][^(]*)\s*\((.*)\)\s*;/
+# FIXME for the moment, I don't handle gl*v functions and some other kinds...
+HFunction.matcher = /[^(typedef)]*(void|int).*(gl[A-Z][^(]*)\s*\((.*)\)\s*;/
+HFunction.ignore /v$/
+HFunction.ignore /ARB$/
+HFunction.ignore /MESA$/
+HFunction.ignore /ATI$/
 
 class GlFunc < HFunction
 

@@ -38,7 +38,7 @@ $debug = nil
 # Parser
 class Parser
     def initialize( string )
-        puts "string received : |#@string|" if $debug
+        puts "string received : |#{string}|" if $debug
         @increment = 0 # value used to generate variable name, e.g. _a1, _a2
         @string  = string.strip # string representation; will be consumed
                                 # in-place
@@ -267,6 +267,7 @@ class HFunction
         return nil if not md
 
         return_type, function_name, arguments = md.captures
+        return nil if @@ignore.detect { |a| a =~ function_name }
         if $debug
             puts "#{string}"
             puts "return type   : #{return_type}"
