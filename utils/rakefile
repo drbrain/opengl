@@ -1,6 +1,6 @@
 require 'rake/clean'
 
-CLEAN.include( "glut.#{Config::CONFIG['DLEXT']}", 'glut.c', '*_init.c', '*_wrap.c', '*_callbacks.c', '*.o' )
+CLEAN.include( "glut.#{Config::CONFIG['DLEXT']}", 'glut.c', '*_init.c', '*_wrap.c', '*.o' )
 #CLOBBER.include()
 
 $INCLUDES = "-I#{Config::CONFIG['archdir']}"
@@ -40,7 +40,7 @@ file "glut.#{Config::CONFIG['DLEXT']}" => [ 'glut.o' ] do |t|
     sh cmd
 end
 
-file 'glut.c' => [ 'glut_wrap.c', 'glut_callbacks.c', 'glut_init.c' ] do |t|
+file 'glut.c' => [ 'glut_wrap.c', 'glut_init.c' ] do |t|
     sh "cat #{t.prerequisites.join(' ')} > glut.c"
 end
 
@@ -51,10 +51,6 @@ file 'glut_init.c' => [ 'mkwrap.rb' ] do
 end
 
 file 'glut_wrap.c' => [ 'mkwrap.rb' ] do
-    ruby "mkwrap.rb #{glut_h} glut #{$HEADERS.join(' ')}"
-end
-
-file 'glut_callbacks.c' => [ 'mkwrap.rb' ] do
     ruby "mkwrap.rb #{glut_h} glut #{$HEADERS.join(' ')}"
 end
 

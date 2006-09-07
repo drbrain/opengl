@@ -32,7 +32,6 @@
 #
 
 # TODO rb_intern("call") could be done only once as in Yoshi's code.
-# TODO remove write_callback and do its job inside write_wrap.
 # TODO use String#joint, not String#inject for some things...
 
 $debug = nil
@@ -272,7 +271,10 @@ class HFunction
     def write_wrap( file )
 
         # let write_callback do the job if it has a callback
-        return if has_callback?
+        if has_callback?
+            write_callback file
+            return
+        end
         
         str = ''
         if @function_name == 'glutInit' # TODO
@@ -398,10 +400,8 @@ class Wrapper
     def initialize( source, name, *headers )
         @source  = source
         @headers = headers
-        base = File.basename( @source, '.h' )
         @file_wrap_func_name = name + "_wrap.c"
         @file_init_func_name = name + "_init.c"
-        @file_callbacks_name = name + "_callbacks.c"
         @functions_count, @constants_count, @line_count = 0,0,0
     end
 
@@ -412,7 +412,6 @@ class Wrapper
         # don't forget to close these...
         @file_wrap_func = create_wrap_func
         @file_init_func = create_init_func
-        @file_callbacks = create_callbacks
         
         File.open( @source ) do |f|
             f.each {|l| process( l )}
@@ -420,7 +419,6 @@ class Wrapper
 
         close_wrap_func
         close_init_func
-        close_callbacks
 
         print_stats
     end
@@ -452,13 +450,6 @@ class Wrapper
         return f
     end
 
-    # Create the file to hold the callback wrappers and generate the
-    # preamble for it
-    def create_callbacks
-        f = File.new( @file_callbacks_name, 'w' )
-        return f
-    end
-
     # Close the wrap file after adding any closing code
     def close_wrap_func
         @file_wrap_func.close
@@ -468,11 +459,6 @@ class Wrapper
     def close_init_func
         @file_init_func << "}\n"
         @file_init_func.close
-    end
-
-    # Close the callback file after adding any closing code
-    def close_callbacks
-        @file_callbacks.close
     end
     
     # process works as follow :
@@ -489,7 +475,6 @@ class Wrapper
             # the module initialization code.
             function.write_wrap @file_wrap_func
             function.write_init @file_init_func
-            function.write_callback @file_callbacks
 
         elsif (constant = HConstant.construct?( line ))
             @constants_count += 1
