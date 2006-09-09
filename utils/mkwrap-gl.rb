@@ -19,7 +19,7 @@
 
 require 'mkwrap'
 
-$debug = true
+$debug = false
 
 # FIXME for the moment, I don't handle gl*v functions and some other kinds...
 HFunction.matcher = /[^(typedef)]*(void|int).*(gl[A-Z][^(]*)\s*\((.*)\)\s*;/
@@ -73,7 +73,7 @@ class Wrapper
     end
 end
 
-wrapper = Wrapper.new('/usr/include/GL/gl.h', 'gl', '<ruby.h>', '<GL/gl.h>')
+wrapper = Wrapper.new('./gl.h', 'gl', '<ruby.h>', '<GL/gl.h>')
 wrapper.generate
 
 # Local Variables: ***

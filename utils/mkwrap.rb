@@ -113,6 +113,7 @@ class Parser
         end
         # Show an error if the string is not completely consumed.
         puts "ERR : parse failed on |#@string|" if @string != ""
+        return nil if @string != ""
 
         @current
     end
@@ -302,6 +303,11 @@ class HFunction
         # Arg array representation
         parser = Parser.new( arguments )
         arguments = parser.parse
+
+        if arguments.nil?
+            puts "failed on : #{string}"
+            return nil
+        end
 
         HFunction.new( return_type, function_name, arguments )
     end
