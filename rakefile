@@ -29,12 +29,13 @@ when /darwin/
 else
     #
     $INCLUDES << ' -L/usr/lib'
-    $LDFLAGS  << ' -lglut -lGL' # must not be for all targets
+    $LDFLAGS  << ' -lglut -lGLU -lGL' # must not be for all targets
 end
 
 GL_LIB   = "ext/gl.#{Config::CONFIG['DLEXT']}"
+GLU_LIB  = "ext/glu.#{Config::CONFIG['DLEXT']}"
 GLUT_LIB = "ext/glut.#{Config::CONFIG['DLEXT']}"
-LIBS     = [ GL_LIB, GLUT_LIB ]
+LIBS     = [ GL_LIB, GLU_LIB, GLUT_LIB ]
 
 CLEAN.include( 'ext/*.o' )
 CLOBBER.include( LIBS )
@@ -58,6 +59,16 @@ end
 
 # TODO: This is a cut-n-paste of the GL_LIB target.  Need to define a rule
 # to build them
+desc "Create the GLU library (#{GLU_LIB})"
+file GLU_LIB => [ 'ext/glu.o' ] do |t|
+    cmd = "#{$LDCMD} #{$LDFLAGS} #{$CFLAGS} -o #{t.name} #{t.prerequisites.join(' ')}"
+    puts "============== #{cmd}"
+    sh cmd
+end
+
+    
+# TODO: This is a cut-n-paste of the GL_LIB target.  Need to define a rule
+# to build them
 desc "Create the GLUT library (#{GLUT_LIB})"
 file GLUT_LIB => [ 'ext/glut.o' ] do |t|
     cmd = "#{$LDCMD} #{$LDFLAGS} #{$CFLAGS} -o #{t.name} #{t.prerequisites.join(' ')}"
@@ -65,5 +76,4 @@ file GLUT_LIB => [ 'ext/glut.o' ] do |t|
     sh cmd
 end
 
-    
 file 'ext/rbogl.o' => [ 'ext/rbogl.h', 'ext/rbogl.c' ]
