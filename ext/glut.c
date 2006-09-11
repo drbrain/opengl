@@ -47,17 +47,17 @@ VALUE obj,arg1; \
 { \
     int win; \
     if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1)) \
-        rb_raise(rb_eTypeError, "GLUT.%s:%s",#_funcname, rb_class2name(CLASS_OF(arg1))); \
+        rb_raise(rb_eTypeError, "Glut.%s:%s",#_funcname, rb_class2name(CLASS_OF(arg1))); \
     win = glutGetWindow(); \
     if (win == 0) \
-        rb_raise(rb_eRuntimeError, "GLUT.%s needs current window", #_funcname); \
+        rb_raise(rb_eRuntimeError, "Glut.%s needs current window", #_funcname); \
     rb_ary_store(_funcname, win, arg1); \
     glut ## _funcname(glut_ ## _funcname ## Callback); \
     return Qnil; \
 }
 
 #define WINDOW_CALLBACK_DEFINE(_funcname) \
-    rb_define_module_function(module, # _funcname, glut_ ## _funcname , 1); \
+    rb_define_module_function(module, "glut" # _funcname, glut_ ## _funcname , 1); \
     rb_global_variable(&_funcname); \
     _funcname = rb_ary_new()
 
@@ -74,7 +74,7 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 #if 0
     int argcp = 1;
     if (TYPE(arg1) != T_STRING)
-    rb_raise(rb_eTypeError, "GLUT.Init:%s", rb_class2name(CLASS_OF(arg1)));
+    rb_raise(rb_eTypeError, "Glut.Init:%s", rb_class2name(CLASS_OF(arg1)));
     glutInit(&argcp, (char**)&(RSTRING(arg1)->ptr));
 #endif
     int largc;
@@ -137,7 +137,7 @@ glut_InitDisplayString(obj,arg1)
 VALUE obj,arg1;
 {
     if (TYPE(arg1) != T_STRING)
-    rb_raise(rb_eTypeError, "GLUT.InitDisplay:%s",rb_class2name(CLASS_OF(arg1)));
+    rb_raise(rb_eTypeError, "Glut.InitDisplay:%s",rb_class2name(CLASS_OF(arg1)));
     glutInitDisplayString(RSTRING(arg1)->ptr);
     return Qnil;
 }
@@ -226,7 +226,7 @@ VALUE obj;
     if (argc == 0)
         title = rb_eval_string("$0");
     if (TYPE(title) != T_STRING)
-        rb_raise(rb_eTypeError, "GLUT.CreateWindow:%s", rb_class2name(CLASS_OF(title)));
+        rb_raise(rb_eTypeError, "Glut.CreateWindow:%s", rb_class2name(CLASS_OF(title)));
     ret = glutCreateWindow(RSTRING(title)->ptr);
 
     /* setup callback */
@@ -324,7 +324,7 @@ glut_SetWindowTitle(obj,arg1)
 VALUE obj,arg1;
 {
     if (TYPE(arg1) != T_STRING)
-    rb_raise(rb_eTypeError, "GLUT.SetWindowTitle:%s", rb_class2name(CLASS_OF(arg1)));
+    rb_raise(rb_eTypeError, "Glut.SetWindowTitle:%s", rb_class2name(CLASS_OF(arg1)));
     glutSetWindowTitle(RSTRING(arg1)->ptr);
     return Qnil;
 }
@@ -335,7 +335,7 @@ glut_SetIconTitle(obj, arg1)
 VALUE obj,arg1;
 {
     if (TYPE(arg1) != T_STRING)
-    rb_raise(rb_eTypeError, "GLUT.IconTitle:%s", rb_class2name(CLASS_OF(arg1)));
+    rb_raise(rb_eTypeError, "Glut.IconTitle:%s", rb_class2name(CLASS_OF(arg1)));
     glutSetIconTitle(RSTRING(arg1)->ptr);
     return Qnil;
 }
@@ -524,7 +524,7 @@ VALUE obj,arg1;
     int menu;
     VALUE ret;
     if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
-    rb_raise(rb_eTypeError, "GLUT.CreateMenu:%s", rb_class2name(CLASS_OF(arg1)));
+    rb_raise(rb_eTypeError, "Glut.CreateMenu:%s", rb_class2name(CLASS_OF(arg1)));
     menu = glutCreateMenu(glut_CreateMenuCallback);
     ret = INT2FIX(menu);
     rb_hash_aset(g_menucallback, ret, arg1);
@@ -576,10 +576,10 @@ VALUE obj,arg1,arg2;
     VALUE arg_ary;
     VALUE arg_pair;
     if (TYPE(arg1) != T_STRING)
-        rb_raise(rb_eTypeError, "GLUT.AddMenuEntry:%s", rb_class2name(CLASS_OF(arg1)));
+        rb_raise(rb_eTypeError, "Glut.AddMenuEntry:%s", rb_class2name(CLASS_OF(arg1)));
     curmenuid = glutGetMenu();
     if (curmenuid == 0)
-        rb_raise(rb_eRuntimeError, "GLUT.AddMenuEntry needs current menu");
+        rb_raise(rb_eRuntimeError, "Glut.AddMenuEntry needs current menu");
     arg_ary = rb_hash_aref(g_menuargs, INT2FIX(curmenuid));
     arg_pair = rb_ary_new2(2);
     rb_ary_store(arg_pair, 0, INT2FIX(curmenuid));
@@ -596,7 +596,7 @@ VALUE obj,arg1,arg2;
 {
     int value;
     if (TYPE(arg1) != T_STRING)
-        rb_raise(rb_eTypeError, "GLUT.AddSubMenu:%s", rb_class2name(CLASS_OF(arg1)));
+        rb_raise(rb_eTypeError, "Glut.AddSubMenu:%s", rb_class2name(CLASS_OF(arg1)));
     value = NUM2INT(arg2);
     glutAddSubMenu(RSTRING(arg1)->ptr, value);
     return Qnil;
@@ -612,10 +612,10 @@ VALUE obj,arg1,arg2,arg3;
     int curmenuid;
     item = NUM2INT(arg1);
     if (TYPE(arg2) != T_STRING)
-        rb_raise(rb_eTypeError, "GLUT.ChangeToMenuEntry:%s", rb_class2name(CLASS_OF(arg1)));
+        rb_raise(rb_eTypeError, "Glut.ChangeToMenuEntry:%s", rb_class2name(CLASS_OF(arg1)));
     curmenuid = glutGetMenu();
     if (curmenuid == 0)
-        rb_raise(rb_eRuntimeError, "GLUT.ChangeToMenuEntry needs current menu");
+        rb_raise(rb_eRuntimeError, "Glut.ChangeToMenuEntry needs current menu");
     arg_ary = rb_hash_aref(g_menuargs, INT2FIX(curmenuid));
     arg_pair = rb_ary_new2(2);
     rb_ary_store(arg_pair, 0, INT2FIX(curmenuid));
@@ -633,7 +633,7 @@ VALUE obj,arg1,arg2,arg3;
     item = NUM2INT(arg1);
     submenu = NUM2INT(arg3);
     if (TYPE(arg2) != T_STRING)
-        rb_raise(rb_eTypeError, "GLUT.ChangeToSubMenu:%s",
+        rb_raise(rb_eTypeError, "Glut.ChangeToSubMenu:%s",
             rb_class2name(CLASS_OF(arg1)));
     glutChangeToSubMenu(item, RSTRING(arg2)->ptr, submenu);
     return Qnil;
@@ -649,7 +649,7 @@ static VALUE glut_RemoveMenuItem( VALUE obj, VALUE arg1 )
     glutRemoveMenuItem(item);
     curmenuid = glutGetMenu();
     if (curmenuid == 0)
-        rb_raise(rb_eRuntimeError, "GLUT.RemoveMenuItem needs current menu");
+        rb_raise(rb_eRuntimeError, "Glut.RemoveMenuItem needs current menu");
     arg_ary = rb_hash_aref(g_menuargs, INT2FIX(curmenuid));
     rb_ary_delete(arg_ary, item);
     return Qnil;
@@ -1486,7 +1486,7 @@ static VALUE module;
 
 void Init_glut()
 {
-    module = rb_define_module("GLUT");
+    module = rb_define_module("Glut");
 
     rb_global_variable( &g_arg_array );
     rb_global_variable( &g_menucallback );
@@ -1494,251 +1494,251 @@ void Init_glut()
     g_menucallback = rb_hash_new();
     g_menuargs = rb_hash_new();
 
-    rb_define_module_function(module, "Init", glut_Init, -1);
-    rb_define_module_function(module, "InitDisplayMode", glut_InitDisplayMode, 1);
-    rb_define_module_function(module, "InitDisplayString", glut_InitDisplayString, 1);
-    rb_define_module_function(module, "InitWindowPosition", glut_InitWindowPosition, 2);
-    rb_define_module_function(module, "InitWindowSize", glut_InitWindowSize, 2);
-    rb_define_module_function(module, "MainLoop", glut_MainLoop, 0);
+    rb_define_module_function(module, "glutInit", glut_Init, -1);
+    rb_define_module_function(module, "glutInitDisplayMode", glut_InitDisplayMode, 1);
+    rb_define_module_function(module, "glutInitDisplayString", glut_InitDisplayString, 1);
+    rb_define_module_function(module, "glutInitWindowPosition", glut_InitWindowPosition, 2);
+    rb_define_module_function(module, "glutInitWindowSize", glut_InitWindowSize, 2);
+    rb_define_module_function(module, "glutMainLoop", glut_MainLoop, 0);
     
     /* Added by James. */
-    rb_define_module_function(module, "CheckLoop", glut_CheckLoop, 0);
-    rb_define_module_function(module, "GameModeString", glut_GameModeString, 1);
-    rb_define_module_function(module, "EnterGameMode", glut_EnterGameMode, 0);
+    rb_define_module_function(module, "glutCheckLoop", glut_CheckLoop, 0);
+    rb_define_module_function(module, "glutGameModeString", glut_GameModeString, 1);
+    rb_define_module_function(module, "glutEnterGameMode", glut_EnterGameMode, 0);
     
-    rb_define_module_function(module, "CreateWindow", glut_CreateWindow, -1);
-    rb_define_module_function(module, "CreateSubWindow", glut_CreateSubWindow, 5);
-    rb_define_module_function(module, "DestroyWindow", glut_DestroyWindow, 1);
-    rb_define_module_function(module, "PostRedisplay", glut_PostRedisplay, 0);
-    rb_define_module_function(module, "SwapBuffers", glut_SwapBuffers, 0);
-    rb_define_module_function(module, "GetWindow", glut_GetWindow, 0);
-    rb_define_module_function(module, "SetWindow", glut_SetWindow, 1);
-    rb_define_module_function(module, "SetWindowTitle", glut_SetWindowTitle, 1);
-    rb_define_module_function(module, "SetIconTitle", glut_SetIconTitle, 1);
-    rb_define_module_function(module, "PositionWindow", glut_PositionWindow, 2);
-    rb_define_module_function(module, "ReshapeWindow", glut_ReshapeWindow, 2);
-    rb_define_module_function(module, "PopWindow", glut_PopWindow, 0);
-    rb_define_module_function(module, "PushWidow", glut_PushWidow, 0);
-    rb_define_module_function(module, "IconifyWindow", glut_IconifyWindow, 0);
-    rb_define_module_function(module, "ShowWindow", glut_ShowWindow, 0);
-    rb_define_module_function(module, "HideWindow", glut_HideWindow, 0);
-    rb_define_module_function(module, "FullScreen", glut_FullScreen, 0);
-    rb_define_module_function(module, "SetCursor", glut_SetCursor, 1);
-    rb_define_module_function(module, "WarpPointer", glut_WarpPointer, 2);
-    rb_define_module_function(module, "EstablishOverlay", glut_EstablishOverlay, 0);
-    rb_define_module_function(module, "RemoveOverlay", glut_RemoveOverlay, 0);
-    rb_define_module_function(module, "UseLayer", glut_UseLayer, 1);
-    rb_define_module_function(module, "PostOverlayRedisplay", glut_PostOverlayRedisplay, 0);
-    rb_define_module_function(module, "ShowOverlay", glut_ShowOverlay, 0);
-    rb_define_module_function(module, "HideOverlay", glut_HideOverlay, 0);
-    rb_define_module_function(module, "CreateMenu", glut_CreateMenu, 1);
-    rb_define_module_function(module, "DestroyMenu", glut_DestroyMenu, 1);
-    rb_define_module_function(module, "GetMenu", glut_GetMenu, 0);
-    rb_define_module_function(module, "SetMenu", glut_SetMenu, 1);
-    rb_define_module_function(module, "AddMenuEntry", glut_AddMenuEntry, 2);
-    rb_define_module_function(module, "AddSubMenu", glut_AddSubMenu, 2);
-    rb_define_module_function(module, "ChangeToMenuEntry", glut_ChangeToMenuEntry, 3);
-    rb_define_module_function(module, "ChangeToSubMenu", glut_ChangeToSubMenu, 3);
-    rb_define_module_function(module, "RemoveMenuItem", glut_RemoveMenuItem, 1);
-    rb_define_module_function(module, "AttachMenu", glut_AttachMenu, 1);
-    rb_define_module_function(module, "DetachMenu", glut_DetachMenu, 1);
+    rb_define_module_function(module, "glutCreateWindow", glut_CreateWindow, -1);
+    rb_define_module_function(module, "glutCreateSubWindow", glut_CreateSubWindow, 5);
+    rb_define_module_function(module, "glutDestroyWindow", glut_DestroyWindow, 1);
+    rb_define_module_function(module, "glutPostRedisplay", glut_PostRedisplay, 0);
+    rb_define_module_function(module, "glutSwapBuffers", glut_SwapBuffers, 0);
+    rb_define_module_function(module, "glutGetWindow", glut_GetWindow, 0);
+    rb_define_module_function(module, "glutSetWindow", glut_SetWindow, 1);
+    rb_define_module_function(module, "glutSetWindowTitle", glut_SetWindowTitle, 1);
+    rb_define_module_function(module, "glutSetIconTitle", glut_SetIconTitle, 1);
+    rb_define_module_function(module, "glutPositionWindow", glut_PositionWindow, 2);
+    rb_define_module_function(module, "glutReshapeWindow", glut_ReshapeWindow, 2);
+    rb_define_module_function(module, "glutPopWindow", glut_PopWindow, 0);
+    rb_define_module_function(module, "glutPushWidow", glut_PushWidow, 0);
+    rb_define_module_function(module, "glutIconifyWindow", glut_IconifyWindow, 0);
+    rb_define_module_function(module, "glutShowWindow", glut_ShowWindow, 0);
+    rb_define_module_function(module, "glutHideWindow", glut_HideWindow, 0);
+    rb_define_module_function(module, "glutFullScreen", glut_FullScreen, 0);
+    rb_define_module_function(module, "glutSetCursor", glut_SetCursor, 1);
+    rb_define_module_function(module, "glutWarpPointer", glut_WarpPointer, 2);
+    rb_define_module_function(module, "glutEstablishOverlay", glut_EstablishOverlay, 0);
+    rb_define_module_function(module, "glutRemoveOverlay", glut_RemoveOverlay, 0);
+    rb_define_module_function(module, "glutUseLayer", glut_UseLayer, 1);
+    rb_define_module_function(module, "glutPostOverlayRedisplay", glut_PostOverlayRedisplay, 0);
+    rb_define_module_function(module, "glutShowOverlay", glut_ShowOverlay, 0);
+    rb_define_module_function(module, "glutHideOverlay", glut_HideOverlay, 0);
+    rb_define_module_function(module, "glutCreateMenu", glut_CreateMenu, 1);
+    rb_define_module_function(module, "glutDestroyMenu", glut_DestroyMenu, 1);
+    rb_define_module_function(module, "glutGetMenu", glut_GetMenu, 0);
+    rb_define_module_function(module, "glutSetMenu", glut_SetMenu, 1);
+    rb_define_module_function(module, "glutAddMenuEntry", glut_AddMenuEntry, 2);
+    rb_define_module_function(module, "glutAddSubMenu", glut_AddSubMenu, 2);
+    rb_define_module_function(module, "glutChangeToMenuEntry", glut_ChangeToMenuEntry, 3);
+    rb_define_module_function(module, "glutChangeToSubMenu", glut_ChangeToSubMenu, 3);
+    rb_define_module_function(module, "glutRemoveMenuItem", glut_RemoveMenuItem, 1);
+    rb_define_module_function(module, "glutAttachMenu", glut_AttachMenu, 1);
+    rb_define_module_function(module, "glutDetachMenu", glut_DetachMenu, 1);
 
-    rb_define_module_function(module, "SetColor", glut_SetColor, 4);
-    rb_define_module_function(module, "GetColor", glut_GetColor, 2);
-    rb_define_module_function(module, "CopyColormap", glut_CopyColormap, 1);
-    rb_define_module_function(module, "Get", glut_Get, 1);
-    rb_define_module_function(module, "DeviceGet", glut_DeviceGet, 1);
-    rb_define_module_function(module, "ExtensionSupported", glut_ExtensionSupported, 1);
-    rb_define_module_function(module, "GetModifiers", glut_GetModifiers, 0);
-    rb_define_module_function(module, "LayerGet", glut_LayerGet, 1);
-    rb_define_module_function(module, "BitmapCharacter", glut_BitmapCharacter, 2);
+    rb_define_module_function(module, "glutSetColor", glut_SetColor, 4);
+    rb_define_module_function(module, "glutGetColor", glut_GetColor, 2);
+    rb_define_module_function(module, "glutCopyColormap", glut_CopyColormap, 1);
+    rb_define_module_function(module, "glutGet", glut_Get, 1);
+    rb_define_module_function(module, "glutDeviceGet", glut_DeviceGet, 1);
+    rb_define_module_function(module, "glutExtensionSupported", glut_ExtensionSupported, 1);
+    rb_define_module_function(module, "glutGetModifiers", glut_GetModifiers, 0);
+    rb_define_module_function(module, "glutLayerGet", glut_LayerGet, 1);
+    rb_define_module_function(module, "glutBitmapCharacter", glut_BitmapCharacter, 2);
     
     /* Added by James. */
-    rb_define_module_function(module, "BitmapCharacterX", glut_BitmapCharacterX, 1);
+    rb_define_module_function(module, "glutBitmapCharacterX", glut_BitmapCharacterX, 1);
     
-    rb_define_module_function(module, "BitmapWidth", glut_BitmapWidth, 2);
-    rb_define_module_function(module, "StrokeCharacter", glut_StrokeCharacter, 2);
-    rb_define_module_function(module, "StrokeWidth", glut_StrokeWidth, 2);
-    rb_define_module_function(module, "BitmapLength", glut_BitmapLength, 2);
-    rb_define_module_function(module, "StrokeLength", glut_StrokeLength, 2);
-    rb_define_module_function(module, "WireSphere", glut_WireSphere, 3);
-    rb_define_module_function(module, "SolidSphere", glut_SolidSphere, 3);
-    rb_define_module_function(module, "WireCone", glut_WireCone, 4);
-    rb_define_module_function(module, "SolidCone", glut_SolidCone, 4);
-    rb_define_module_function(module, "WireCube", glut_WireCube, 1);
-    rb_define_module_function(module, "SolidCube", glut_SolidCube, 1);
-    rb_define_module_function(module, "WireTorus", glut_WireTorus, 4);
-    rb_define_module_function(module, "SolidTorus", glut_SolidTorus, 4);
-    rb_define_module_function(module, "WireDodecahedron", glut_WireDodecahedron, 0);
-    rb_define_module_function(module, "SolidDodecahedron", glut_SolidDodecahedron, 0);
-    rb_define_module_function(module, "WireTeapot", glut_WireTeapot, 1);
-    rb_define_module_function(module, "SolidTeapot", glut_SolidTeapot, 1);
-    rb_define_module_function(module, "WireOctahedron", glut_WireOctahedron, 0);
-    rb_define_module_function(module, "SolidOctahedron", glut_SolidOctahedron, 0);
-    rb_define_module_function(module, "WireTetrahedron", glut_WireTetrahedron, 0);
-    rb_define_module_function(module, "SolidTetrahedron", glut_SolidTetrahedron, 0);
-    rb_define_module_function(module, "WireIcosahedron", glut_WireIcosahedron, 0);
-    rb_define_module_function(module, "SolidIcosahedron", glut_SolidIcosahedron, 0);
-    rb_define_module_function(module, "VideoResizeGet", glut_VideoResizeGet, 1);
-    rb_define_module_function(module, "SetupVideoResizing", glut_SetupVideoResizing, 0);
-    rb_define_module_function(module, "StopVideoResizing", glut_StopVideoResizing, 0);
-    rb_define_module_function(module, "VideoResize", glut_VideoResize, 4);
-    rb_define_module_function(module, "VideoPan", glut_VideoPan, 4);
-    rb_define_module_function(module, "ReportErrors", glut_ReportErrors, 0);
-    rb_define_module_function(module, "IdleFunc", glut_IdleFunc, 1);
-    rb_define_module_function(module, "TimerFunc", glut_TimerFunc, 3);
+    rb_define_module_function(module, "glutBitmapWidth", glut_BitmapWidth, 2);
+    rb_define_module_function(module, "glutStrokeCharacter", glut_StrokeCharacter, 2);
+    rb_define_module_function(module, "glutStrokeWidth", glut_StrokeWidth, 2);
+    rb_define_module_function(module, "glutBitmapLength", glut_BitmapLength, 2);
+    rb_define_module_function(module, "glutStrokeLength", glut_StrokeLength, 2);
+    rb_define_module_function(module, "glutWireSphere", glut_WireSphere, 3);
+    rb_define_module_function(module, "glutSolidSphere", glut_SolidSphere, 3);
+    rb_define_module_function(module, "glutWireCone", glut_WireCone, 4);
+    rb_define_module_function(module, "glutSolidCone", glut_SolidCone, 4);
+    rb_define_module_function(module, "glutWireCube", glut_WireCube, 1);
+    rb_define_module_function(module, "glutSolidCube", glut_SolidCube, 1);
+    rb_define_module_function(module, "glutWireTorus", glut_WireTorus, 4);
+    rb_define_module_function(module, "glutSolidTorus", glut_SolidTorus, 4);
+    rb_define_module_function(module, "glutWireDodecahedron", glut_WireDodecahedron, 0);
+    rb_define_module_function(module, "glutSolidDodecahedron", glut_SolidDodecahedron, 0);
+    rb_define_module_function(module, "glutWireTeapot", glut_WireTeapot, 1);
+    rb_define_module_function(module, "glutSolidTeapot", glut_SolidTeapot, 1);
+    rb_define_module_function(module, "glutWireOctahedron", glut_WireOctahedron, 0);
+    rb_define_module_function(module, "glutSolidOctahedron", glut_SolidOctahedron, 0);
+    rb_define_module_function(module, "glutWireTetrahedron", glut_WireTetrahedron, 0);
+    rb_define_module_function(module, "glutSolidTetrahedron", glut_SolidTetrahedron, 0);
+    rb_define_module_function(module, "glutWireIcosahedron", glut_WireIcosahedron, 0);
+    rb_define_module_function(module, "glutSolidIcosahedron", glut_SolidIcosahedron, 0);
+    rb_define_module_function(module, "glutVideoResizeGet", glut_VideoResizeGet, 1);
+    rb_define_module_function(module, "glutSetupVideoResizing", glut_SetupVideoResizing, 0);
+    rb_define_module_function(module, "glutStopVideoResizing", glut_StopVideoResizing, 0);
+    rb_define_module_function(module, "glutVideoResize", glut_VideoResize, 4);
+    rb_define_module_function(module, "glutVideoPan", glut_VideoPan, 4);
+    rb_define_module_function(module, "glutReportErrors", glut_ReportErrors, 0);
+    rb_define_module_function(module, "glutIdleFunc", glut_IdleFunc, 1);
+    rb_define_module_function(module, "glutTimerFunc", glut_TimerFunc, 3);
 
-    rb_define_const(module, "API_VERSION", INT2NUM(GLUT_API_VERSION));
-    rb_define_const(module, "XLIB_IMPLEMENTATION", INT2NUM(GLUT_XLIB_IMPLEMENTATION));
-    rb_define_const(module, "RGB", INT2NUM(GLUT_RGB));
-    rb_define_const(module, "RGBA", INT2NUM(GLUT_RGBA));
-    rb_define_const(module, "INDEX", INT2NUM(GLUT_INDEX));
-    rb_define_const(module, "SINGLE", INT2NUM(GLUT_SINGLE));
-    rb_define_const(module, "DOUBLE", INT2NUM(GLUT_DOUBLE));
-    rb_define_const(module, "ACCUM", INT2NUM(GLUT_ACCUM));
-    rb_define_const(module, "ALPHA", INT2NUM(GLUT_ALPHA));
-    rb_define_const(module, "DEPTH", INT2NUM(GLUT_DEPTH));
-    rb_define_const(module, "STENCIL", INT2NUM(GLUT_STENCIL));
-    rb_define_const(module, "MULTISAMPLE", INT2NUM(GLUT_MULTISAMPLE));
-    rb_define_const(module, "STEREO", INT2NUM(GLUT_STEREO));
-    rb_define_const(module, "LUMINANCE", INT2NUM(GLUT_LUMINANCE));
-    rb_define_const(module, "LEFT_BUTTON", INT2NUM(GLUT_LEFT_BUTTON));
-    rb_define_const(module, "MIDDLE_BUTTON", INT2NUM(GLUT_MIDDLE_BUTTON));
-    rb_define_const(module, "RIGHT_BUTTON", INT2NUM(GLUT_RIGHT_BUTTON));
-    rb_define_const(module, "DOWN", INT2NUM(GLUT_DOWN));
-    rb_define_const(module, "UP", INT2NUM(GLUT_UP));
-    rb_define_const(module, "KEY_F1", INT2NUM(GLUT_KEY_F1));
-    rb_define_const(module, "KEY_F2", INT2NUM(GLUT_KEY_F2));
-    rb_define_const(module, "KEY_F3", INT2NUM(GLUT_KEY_F3));
-    rb_define_const(module, "KEY_F4", INT2NUM(GLUT_KEY_F4));
-    rb_define_const(module, "KEY_F5", INT2NUM(GLUT_KEY_F5));
-    rb_define_const(module, "KEY_F6", INT2NUM(GLUT_KEY_F6));
-    rb_define_const(module, "KEY_F7", INT2NUM(GLUT_KEY_F7));
-    rb_define_const(module, "KEY_F8", INT2NUM(GLUT_KEY_F8));
-    rb_define_const(module, "KEY_F9", INT2NUM(GLUT_KEY_F9));
-    rb_define_const(module, "KEY_F10", INT2NUM(GLUT_KEY_F10));
-    rb_define_const(module, "KEY_F11", INT2NUM(GLUT_KEY_F11));
-    rb_define_const(module, "KEY_F12", INT2NUM(GLUT_KEY_F12));
-    rb_define_const(module, "KEY_LEFT", INT2NUM(GLUT_KEY_LEFT));
-    rb_define_const(module, "KEY_UP", INT2NUM(GLUT_KEY_UP));
-    rb_define_const(module, "KEY_RIGHT", INT2NUM(GLUT_KEY_RIGHT));
-    rb_define_const(module, "KEY_DOWN", INT2NUM(GLUT_KEY_DOWN));
-    rb_define_const(module, "KEY_PAGE_UP", INT2NUM(GLUT_KEY_PAGE_UP));
-    rb_define_const(module, "KEY_PAGE_DOWN", INT2NUM(GLUT_KEY_PAGE_DOWN));
-    rb_define_const(module, "KEY_HOME", INT2NUM(GLUT_KEY_HOME));
-    rb_define_const(module, "KEY_END", INT2NUM(GLUT_KEY_END));
-    rb_define_const(module, "KEY_INSERT", INT2NUM(GLUT_KEY_INSERT));
-    rb_define_const(module, "LEFT", INT2NUM(GLUT_LEFT));
-    rb_define_const(module, "ENTERED", INT2NUM(GLUT_ENTERED));
-    rb_define_const(module, "MENU_NOT_IN_USE", INT2NUM(GLUT_MENU_NOT_IN_USE));
-    rb_define_const(module, "MENU_IN_USE", INT2NUM(GLUT_MENU_IN_USE));
-    rb_define_const(module, "NOT_VISIBLE", INT2NUM(GLUT_NOT_VISIBLE));
-    rb_define_const(module, "VISIBLE", INT2NUM(GLUT_VISIBLE));
-    rb_define_const(module, "HIDDEN", INT2NUM(GLUT_HIDDEN));
-    rb_define_const(module, "FULLY_RETAINED", INT2NUM(GLUT_FULLY_RETAINED));
-    rb_define_const(module, "PARTIALLY_RETAINED", INT2NUM(GLUT_PARTIALLY_RETAINED));
-    rb_define_const(module, "FULLY_COVERED", INT2NUM(GLUT_FULLY_COVERED));
-    rb_define_const(module, "RED", INT2NUM(GLUT_RED));
-    rb_define_const(module, "GREEN", INT2NUM(GLUT_GREEN));
-    rb_define_const(module, "BLUE", INT2NUM(GLUT_BLUE));
-    rb_define_const(module, "WINDOW_X", INT2NUM(GLUT_WINDOW_X));
-    rb_define_const(module, "WINDOW_Y", INT2NUM(GLUT_WINDOW_Y));
-    rb_define_const(module, "WINDOW_WIDTH", INT2NUM(GLUT_WINDOW_WIDTH));
-    rb_define_const(module, "WINDOW_HEIGHT", INT2NUM(GLUT_WINDOW_HEIGHT));
-    rb_define_const(module, "WINDOW_BUFFER_SIZE", INT2NUM(GLUT_WINDOW_BUFFER_SIZE));
-    rb_define_const(module, "WINDOW_STENCIL_SIZE", INT2NUM(GLUT_WINDOW_STENCIL_SIZE));
-    rb_define_const(module, "WINDOW_DEPTH_SIZE", INT2NUM(GLUT_WINDOW_DEPTH_SIZE));
-    rb_define_const(module, "WINDOW_RED_SIZE", INT2NUM(GLUT_WINDOW_RED_SIZE));
-    rb_define_const(module, "WINDOW_GREEN_SIZE", INT2NUM(GLUT_WINDOW_GREEN_SIZE));
-    rb_define_const(module, "WINDOW_BLUE_SIZE", INT2NUM(GLUT_WINDOW_BLUE_SIZE));
-    rb_define_const(module, "WINDOW_ALPHA_SIZE", INT2NUM(GLUT_WINDOW_ALPHA_SIZE));
-    rb_define_const(module, "WINDOW_ACCUM_RED_SIZE", INT2NUM(GLUT_WINDOW_ACCUM_RED_SIZE));
-    rb_define_const(module, "WINDOW_ACCUM_GREEN_SIZE", INT2NUM(GLUT_WINDOW_ACCUM_GREEN_SIZE));
-    rb_define_const(module, "WINDOW_ACCUM_BLUE_SIZE", INT2NUM(GLUT_WINDOW_ACCUM_BLUE_SIZE));
-    rb_define_const(module, "WINDOW_ACCUM_ALPHA_SIZE", INT2NUM(GLUT_WINDOW_ACCUM_ALPHA_SIZE));
-    rb_define_const(module, "WINDOW_DOUBLEBUFFER", INT2NUM(GLUT_WINDOW_DOUBLEBUFFER));
-    rb_define_const(module, "WINDOW_RGBA", INT2NUM(GLUT_WINDOW_RGBA));
-    rb_define_const(module, "WINDOW_PARENT", INT2NUM(GLUT_WINDOW_PARENT));
-    rb_define_const(module, "WINDOW_NUM_CHILDREN", INT2NUM(GLUT_WINDOW_NUM_CHILDREN));
-    rb_define_const(module, "WINDOW_COLORMAP_SIZE", INT2NUM(GLUT_WINDOW_COLORMAP_SIZE));
-    rb_define_const(module, "WINDOW_NUM_SAMPLES", INT2NUM(GLUT_WINDOW_NUM_SAMPLES));
-    rb_define_const(module, "WINDOW_STEREO", INT2NUM(GLUT_WINDOW_STEREO));
-    rb_define_const(module, "WINDOW_CURSOR", INT2NUM(GLUT_WINDOW_CURSOR));
-    rb_define_const(module, "SCREEN_WIDTH", INT2NUM(GLUT_SCREEN_WIDTH));
-    rb_define_const(module, "SCREEN_HEIGHT", INT2NUM(GLUT_SCREEN_HEIGHT));
-    rb_define_const(module, "SCREEN_WIDTH_MM", INT2NUM(GLUT_SCREEN_WIDTH_MM));
-    rb_define_const(module, "SCREEN_HEIGHT_MM", INT2NUM(GLUT_SCREEN_HEIGHT_MM));
-    rb_define_const(module, "MENU_NUM_ITEMS", INT2NUM(GLUT_MENU_NUM_ITEMS));
-    rb_define_const(module, "DISPLAY_MODE_POSSIBLE", INT2NUM(GLUT_DISPLAY_MODE_POSSIBLE));
-    rb_define_const(module, "INIT_WINDOW_X", INT2NUM(GLUT_INIT_WINDOW_X));
-    rb_define_const(module, "INIT_WINDOW_Y", INT2NUM(GLUT_INIT_WINDOW_Y));
-    rb_define_const(module, "INIT_WINDOW_WIDTH", INT2NUM(GLUT_INIT_WINDOW_WIDTH));
-    rb_define_const(module, "INIT_WINDOW_HEIGHT", INT2NUM(GLUT_INIT_WINDOW_HEIGHT));
-    rb_define_const(module, "INIT_DISPLAY_MODE", INT2NUM(GLUT_INIT_DISPLAY_MODE));
-    rb_define_const(module, "ELAPSED_TIME", INT2NUM(GLUT_ELAPSED_TIME));
-    rb_define_const(module, "HAS_KEYBOARD", INT2NUM(GLUT_HAS_KEYBOARD));
-    rb_define_const(module, "HAS_MOUSE", INT2NUM(GLUT_HAS_MOUSE));
-    rb_define_const(module, "HAS_SPACEBALL", INT2NUM(GLUT_HAS_SPACEBALL));
-    rb_define_const(module, "HAS_DIAL_AND_BUTTON_BOX", INT2NUM(GLUT_HAS_DIAL_AND_BUTTON_BOX));
-    rb_define_const(module, "HAS_TABLET", INT2NUM(GLUT_HAS_TABLET));
-    rb_define_const(module, "NUM_MOUSE_BUTTONS", INT2NUM(GLUT_NUM_MOUSE_BUTTONS));
-    rb_define_const(module, "NUM_SPACEBALL_BUTTONS", INT2NUM(GLUT_NUM_SPACEBALL_BUTTONS));
-    rb_define_const(module, "NUM_BUTTON_BOX_BUTTONS", INT2NUM(GLUT_NUM_BUTTON_BOX_BUTTONS));
-    rb_define_const(module, "NUM_DIALS", INT2NUM(GLUT_NUM_DIALS));
-    rb_define_const(module, "NUM_TABLET_BUTTONS", INT2NUM(GLUT_NUM_TABLET_BUTTONS));
-    rb_define_const(module, "OVERLAY_POSSIBLE", INT2NUM(GLUT_OVERLAY_POSSIBLE));
-    rb_define_const(module, "LAYER_IN_USE", INT2NUM(GLUT_LAYER_IN_USE));
-    rb_define_const(module, "HAS_OVERLAY", INT2NUM(GLUT_HAS_OVERLAY));
-    rb_define_const(module, "TRANSPARENT_INDEX", INT2NUM(GLUT_TRANSPARENT_INDEX));
-    rb_define_const(module, "NORMAL_DAMAGED", INT2NUM(GLUT_NORMAL_DAMAGED));
-    rb_define_const(module, "OVERLAY_DAMAGED", INT2NUM(GLUT_OVERLAY_DAMAGED));
-    rb_define_const(module, "VIDEO_RESIZE_POSSIBLE", INT2NUM(GLUT_VIDEO_RESIZE_POSSIBLE));
-    rb_define_const(module, "VIDEO_RESIZE_IN_USE", INT2NUM(GLUT_VIDEO_RESIZE_IN_USE));
-    rb_define_const(module, "VIDEO_RESIZE_X_DELTA", INT2NUM(GLUT_VIDEO_RESIZE_X_DELTA));
-    rb_define_const(module, "VIDEO_RESIZE_Y_DELTA", INT2NUM(GLUT_VIDEO_RESIZE_Y_DELTA));
-    rb_define_const(module, "VIDEO_RESIZE_WIDTH_DELTA", INT2NUM(GLUT_VIDEO_RESIZE_WIDTH_DELTA));
-    rb_define_const(module, "VIDEO_RESIZE_HEIGHT_DELTA", INT2NUM(GLUT_VIDEO_RESIZE_HEIGHT_DELTA));
-    rb_define_const(module, "VIDEO_RESIZE_X", INT2NUM(GLUT_VIDEO_RESIZE_X));
-    rb_define_const(module, "VIDEO_RESIZE_Y", INT2NUM(GLUT_VIDEO_RESIZE_Y));
-    rb_define_const(module, "VIDEO_RESIZE_WIDTH", INT2NUM(GLUT_VIDEO_RESIZE_WIDTH));
-    rb_define_const(module, "VIDEO_RESIZE_HEIGHT", INT2NUM(GLUT_VIDEO_RESIZE_HEIGHT));
-    rb_define_const(module, "NORMAL", INT2NUM(GLUT_NORMAL));
-    rb_define_const(module, "OVERLAY", INT2NUM(GLUT_OVERLAY));
-    rb_define_const(module, "ACTIVE_SHIFT", INT2NUM(GLUT_ACTIVE_SHIFT));
-    rb_define_const(module, "ACTIVE_CTRL", INT2NUM(GLUT_ACTIVE_CTRL));
-    rb_define_const(module, "ACTIVE_ALT", INT2NUM(GLUT_ACTIVE_ALT));
-    rb_define_const(module, "CURSOR_RIGHT_ARROW", INT2NUM(GLUT_CURSOR_RIGHT_ARROW));
-    rb_define_const(module, "CURSOR_LEFT_ARROW", INT2NUM(GLUT_CURSOR_LEFT_ARROW));
-    rb_define_const(module, "CURSOR_INFO", INT2NUM(GLUT_CURSOR_INFO));
-    rb_define_const(module, "CURSOR_DESTROY", INT2NUM(GLUT_CURSOR_DESTROY));
-    rb_define_const(module, "CURSOR_HELP", INT2NUM(GLUT_CURSOR_HELP));
-    rb_define_const(module, "CURSOR_CYCLE", INT2NUM(GLUT_CURSOR_CYCLE));
-    rb_define_const(module, "CURSOR_SPRAY", INT2NUM(GLUT_CURSOR_SPRAY));
-    rb_define_const(module, "CURSOR_WAIT", INT2NUM(GLUT_CURSOR_WAIT));
-    rb_define_const(module, "CURSOR_TEXT", INT2NUM(GLUT_CURSOR_TEXT));
-    rb_define_const(module, "CURSOR_CROSSHAIR", INT2NUM(GLUT_CURSOR_CROSSHAIR));
-    rb_define_const(module, "CURSOR_UP_DOWN", INT2NUM(GLUT_CURSOR_UP_DOWN));
-    rb_define_const(module, "CURSOR_LEFT_RIGHT", INT2NUM(GLUT_CURSOR_LEFT_RIGHT));
-    rb_define_const(module, "CURSOR_TOP_SIDE", INT2NUM(GLUT_CURSOR_TOP_SIDE));
-    rb_define_const(module, "CURSOR_BOTTOM_SIDE", INT2NUM(GLUT_CURSOR_BOTTOM_SIDE));
-    rb_define_const(module, "CURSOR_LEFT_SIDE", INT2NUM(GLUT_CURSOR_LEFT_SIDE));
-    rb_define_const(module, "CURSOR_RIGHT_SIDE", INT2NUM(GLUT_CURSOR_RIGHT_SIDE));
-    rb_define_const(module, "CURSOR_TOP_LEFT_CORNER", INT2NUM(GLUT_CURSOR_TOP_LEFT_CORNER));
-    rb_define_const(module, "CURSOR_TOP_RIGHT_CORNER", INT2NUM(GLUT_CURSOR_TOP_RIGHT_CORNER));
-    rb_define_const(module, "CURSOR_BOTTOM_RIGHT_CORNER", INT2NUM(GLUT_CURSOR_BOTTOM_RIGHT_CORNER));
-    rb_define_const(module, "CURSOR_BOTTOM_LEFT_CORNER", INT2NUM(GLUT_CURSOR_BOTTOM_LEFT_CORNER));
-    rb_define_const(module, "CURSOR_INHERIT", INT2NUM(GLUT_CURSOR_INHERIT));
-    rb_define_const(module, "CURSOR_NONE", INT2NUM(GLUT_CURSOR_NONE));
-    rb_define_const(module, "CURSOR_FULL_CROSSHAIR", INT2NUM(GLUT_CURSOR_FULL_CROSSHAIR));
-    rb_define_const(module, "BITMAP_9_BY_15", INT2NUM((VALUE)GLUT_BITMAP_9_BY_15));
-    rb_define_const(module, "BITMAP_8_BY_13", INT2NUM((VALUE)GLUT_BITMAP_8_BY_13));
-    rb_define_const(module, "BITMAP_TIMES_ROMAN_10", INT2NUM((VALUE)GLUT_BITMAP_TIMES_ROMAN_10));
-    rb_define_const(module, "BITMAP_TIMES_ROMAN_24", INT2NUM((VALUE)GLUT_BITMAP_TIMES_ROMAN_24));
-    rb_define_const(module, "BITMAP_HELVETICA_10", INT2NUM((VALUE)GLUT_BITMAP_HELVETICA_10));
-    rb_define_const(module, "BITMAP_HELVETICA_12", INT2NUM((VALUE)GLUT_BITMAP_HELVETICA_12));
-    rb_define_const(module, "BITMAP_HELVETICA_18", INT2NUM((VALUE)GLUT_BITMAP_HELVETICA_18));
-    rb_define_const(module, "STROKE_ROMAN", INT2NUM((VALUE)GLUT_STROKE_ROMAN));
-    rb_define_const(module, "STROKE_MONO_ROMAN", INT2NUM((VALUE)GLUT_STROKE_MONO_ROMAN));
+    rb_define_const(module, "GLUT_API_VERSION", INT2NUM(GLUT_API_VERSION));
+    rb_define_const(module, "GLUT_XLIB_IMPLEMENTATION", INT2NUM(GLUT_XLIB_IMPLEMENTATION));
+    rb_define_const(module, "GLUT_RGB", INT2NUM(GLUT_RGB));
+    rb_define_const(module, "GLUT_RGBA", INT2NUM(GLUT_RGBA));
+    rb_define_const(module, "GLUT_INDEX", INT2NUM(GLUT_INDEX));
+    rb_define_const(module, "GLUT_SINGLE", INT2NUM(GLUT_SINGLE));
+    rb_define_const(module, "GLUT_DOUBLE", INT2NUM(GLUT_DOUBLE));
+    rb_define_const(module, "GLUT_ACCUM", INT2NUM(GLUT_ACCUM));
+    rb_define_const(module, "GLUT_ALPHA", INT2NUM(GLUT_ALPHA));
+    rb_define_const(module, "GLUT_DEPTH", INT2NUM(GLUT_DEPTH));
+    rb_define_const(module, "GLUT_STENCIL", INT2NUM(GLUT_STENCIL));
+    rb_define_const(module, "GLUT_MULTISAMPLE", INT2NUM(GLUT_MULTISAMPLE));
+    rb_define_const(module, "GLUT_STEREO", INT2NUM(GLUT_STEREO));
+    rb_define_const(module, "GLUT_LUMINANCE", INT2NUM(GLUT_LUMINANCE));
+    rb_define_const(module, "GLUT_LEFT_BUTTON", INT2NUM(GLUT_LEFT_BUTTON));
+    rb_define_const(module, "GLUT_MIDDLE_BUTTON", INT2NUM(GLUT_MIDDLE_BUTTON));
+    rb_define_const(module, "GLUT_RIGHT_BUTTON", INT2NUM(GLUT_RIGHT_BUTTON));
+    rb_define_const(module, "GLUT_DOWN", INT2NUM(GLUT_DOWN));
+    rb_define_const(module, "GLUT_UP", INT2NUM(GLUT_UP));
+    rb_define_const(module, "GLUT_KEY_F1", INT2NUM(GLUT_KEY_F1));
+    rb_define_const(module, "GLUT_KEY_F2", INT2NUM(GLUT_KEY_F2));
+    rb_define_const(module, "GLUT_KEY_F3", INT2NUM(GLUT_KEY_F3));
+    rb_define_const(module, "GLUT_KEY_F4", INT2NUM(GLUT_KEY_F4));
+    rb_define_const(module, "GLUT_KEY_F5", INT2NUM(GLUT_KEY_F5));
+    rb_define_const(module, "GLUT_KEY_F6", INT2NUM(GLUT_KEY_F6));
+    rb_define_const(module, "GLUT_KEY_F7", INT2NUM(GLUT_KEY_F7));
+    rb_define_const(module, "GLUT_KEY_F8", INT2NUM(GLUT_KEY_F8));
+    rb_define_const(module, "GLUT_KEY_F9", INT2NUM(GLUT_KEY_F9));
+    rb_define_const(module, "GLUT_KEY_F10", INT2NUM(GLUT_KEY_F10));
+    rb_define_const(module, "GLUT_KEY_F11", INT2NUM(GLUT_KEY_F11));
+    rb_define_const(module, "GLUT_KEY_F12", INT2NUM(GLUT_KEY_F12));
+    rb_define_const(module, "GLUT_KEY_LEFT", INT2NUM(GLUT_KEY_LEFT));
+    rb_define_const(module, "GLUT_KEY_UP", INT2NUM(GLUT_KEY_UP));
+    rb_define_const(module, "GLUT_KEY_RIGHT", INT2NUM(GLUT_KEY_RIGHT));
+    rb_define_const(module, "GLUT_KEY_DOWN", INT2NUM(GLUT_KEY_DOWN));
+    rb_define_const(module, "GLUT_KEY_PAGE_UP", INT2NUM(GLUT_KEY_PAGE_UP));
+    rb_define_const(module, "GLUT_KEY_PAGE_DOWN", INT2NUM(GLUT_KEY_PAGE_DOWN));
+    rb_define_const(module, "GLUT_KEY_HOME", INT2NUM(GLUT_KEY_HOME));
+    rb_define_const(module, "GLUT_KEY_END", INT2NUM(GLUT_KEY_END));
+    rb_define_const(module, "GLUT_KEY_INSERT", INT2NUM(GLUT_KEY_INSERT));
+    rb_define_const(module, "GLUT_LEFT", INT2NUM(GLUT_LEFT));
+    rb_define_const(module, "GLUT_ENTERED", INT2NUM(GLUT_ENTERED));
+    rb_define_const(module, "GLUT_MENU_NOT_IN_USE", INT2NUM(GLUT_MENU_NOT_IN_USE));
+    rb_define_const(module, "GLUT_MENU_IN_USE", INT2NUM(GLUT_MENU_IN_USE));
+    rb_define_const(module, "GLUT_NOT_VISIBLE", INT2NUM(GLUT_NOT_VISIBLE));
+    rb_define_const(module, "GLUT_VISIBLE", INT2NUM(GLUT_VISIBLE));
+    rb_define_const(module, "GLUT_HIDDEN", INT2NUM(GLUT_HIDDEN));
+    rb_define_const(module, "GLUT_FULLY_RETAINED", INT2NUM(GLUT_FULLY_RETAINED));
+    rb_define_const(module, "GLUT_PARTIALLY_RETAINED", INT2NUM(GLUT_PARTIALLY_RETAINED));
+    rb_define_const(module, "GLUT_FULLY_COVERED", INT2NUM(GLUT_FULLY_COVERED));
+    rb_define_const(module, "GLUT_RED", INT2NUM(GLUT_RED));
+    rb_define_const(module, "GLUT_GREEN", INT2NUM(GLUT_GREEN));
+    rb_define_const(module, "GLUT_BLUE", INT2NUM(GLUT_BLUE));
+    rb_define_const(module, "GLUT_WINDOW_X", INT2NUM(GLUT_WINDOW_X));
+    rb_define_const(module, "GLUT_WINDOW_Y", INT2NUM(GLUT_WINDOW_Y));
+    rb_define_const(module, "GLUT_WINDOW_WIDTH", INT2NUM(GLUT_WINDOW_WIDTH));
+    rb_define_const(module, "GLUT_WINDOW_HEIGHT", INT2NUM(GLUT_WINDOW_HEIGHT));
+    rb_define_const(module, "GLUT_WINDOW_BUFFER_SIZE", INT2NUM(GLUT_WINDOW_BUFFER_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_STENCIL_SIZE", INT2NUM(GLUT_WINDOW_STENCIL_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_DEPTH_SIZE", INT2NUM(GLUT_WINDOW_DEPTH_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_RED_SIZE", INT2NUM(GLUT_WINDOW_RED_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_GREEN_SIZE", INT2NUM(GLUT_WINDOW_GREEN_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_BLUE_SIZE", INT2NUM(GLUT_WINDOW_BLUE_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_ALPHA_SIZE", INT2NUM(GLUT_WINDOW_ALPHA_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_ACCUM_RED_SIZE", INT2NUM(GLUT_WINDOW_ACCUM_RED_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_ACCUM_GREEN_SIZE", INT2NUM(GLUT_WINDOW_ACCUM_GREEN_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_ACCUM_BLUE_SIZE", INT2NUM(GLUT_WINDOW_ACCUM_BLUE_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_ACCUM_ALPHA_SIZE", INT2NUM(GLUT_WINDOW_ACCUM_ALPHA_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_DOUBLEBUFFER", INT2NUM(GLUT_WINDOW_DOUBLEBUFFER));
+    rb_define_const(module, "GLUT_WINDOW_RGBA", INT2NUM(GLUT_WINDOW_RGBA));
+    rb_define_const(module, "GLUT_WINDOW_PARENT", INT2NUM(GLUT_WINDOW_PARENT));
+    rb_define_const(module, "GLUT_WINDOW_NUM_CHILDREN", INT2NUM(GLUT_WINDOW_NUM_CHILDREN));
+    rb_define_const(module, "GLUT_WINDOW_COLORMAP_SIZE", INT2NUM(GLUT_WINDOW_COLORMAP_SIZE));
+    rb_define_const(module, "GLUT_WINDOW_NUM_SAMPLES", INT2NUM(GLUT_WINDOW_NUM_SAMPLES));
+    rb_define_const(module, "GLUT_WINDOW_STEREO", INT2NUM(GLUT_WINDOW_STEREO));
+    rb_define_const(module, "GLUT_WINDOW_CURSOR", INT2NUM(GLUT_WINDOW_CURSOR));
+    rb_define_const(module, "GLUT_SCREEN_WIDTH", INT2NUM(GLUT_SCREEN_WIDTH));
+    rb_define_const(module, "GLUT_SCREEN_HEIGHT", INT2NUM(GLUT_SCREEN_HEIGHT));
+    rb_define_const(module, "GLUT_SCREEN_WIDTH_MM", INT2NUM(GLUT_SCREEN_WIDTH_MM));
+    rb_define_const(module, "GLUT_SCREEN_HEIGHT_MM", INT2NUM(GLUT_SCREEN_HEIGHT_MM));
+    rb_define_const(module, "GLUT_MENU_NUM_ITEMS", INT2NUM(GLUT_MENU_NUM_ITEMS));
+    rb_define_const(module, "GLUT_DISPLAY_MODE_POSSIBLE", INT2NUM(GLUT_DISPLAY_MODE_POSSIBLE));
+    rb_define_const(module, "GLUT_INIT_WINDOW_X", INT2NUM(GLUT_INIT_WINDOW_X));
+    rb_define_const(module, "GLUT_INIT_WINDOW_Y", INT2NUM(GLUT_INIT_WINDOW_Y));
+    rb_define_const(module, "GLUT_INIT_WINDOW_WIDTH", INT2NUM(GLUT_INIT_WINDOW_WIDTH));
+    rb_define_const(module, "GLUT_INIT_WINDOW_HEIGHT", INT2NUM(GLUT_INIT_WINDOW_HEIGHT));
+    rb_define_const(module, "GLUT_INIT_DISPLAY_MODE", INT2NUM(GLUT_INIT_DISPLAY_MODE));
+    rb_define_const(module, "GLUT_ELAPSED_TIME", INT2NUM(GLUT_ELAPSED_TIME));
+    rb_define_const(module, "GLUT_HAS_KEYBOARD", INT2NUM(GLUT_HAS_KEYBOARD));
+    rb_define_const(module, "GLUT_HAS_MOUSE", INT2NUM(GLUT_HAS_MOUSE));
+    rb_define_const(module, "GLUT_HAS_SPACEBALL", INT2NUM(GLUT_HAS_SPACEBALL));
+    rb_define_const(module, "GLUT_HAS_DIAL_AND_BUTTON_BOX", INT2NUM(GLUT_HAS_DIAL_AND_BUTTON_BOX));
+    rb_define_const(module, "GLUT_HAS_TABLET", INT2NUM(GLUT_HAS_TABLET));
+    rb_define_const(module, "GLUT_NUM_MOUSE_BUTTONS", INT2NUM(GLUT_NUM_MOUSE_BUTTONS));
+    rb_define_const(module, "GLUT_NUM_SPACEBALL_BUTTONS", INT2NUM(GLUT_NUM_SPACEBALL_BUTTONS));
+    rb_define_const(module, "GLUT_NUM_BUTTON_BOX_BUTTONS", INT2NUM(GLUT_NUM_BUTTON_BOX_BUTTONS));
+    rb_define_const(module, "GLUT_NUM_DIALS", INT2NUM(GLUT_NUM_DIALS));
+    rb_define_const(module, "GLUT_NUM_TABLET_BUTTONS", INT2NUM(GLUT_NUM_TABLET_BUTTONS));
+    rb_define_const(module, "GLUT_OVERLAY_POSSIBLE", INT2NUM(GLUT_OVERLAY_POSSIBLE));
+    rb_define_const(module, "GLUT_LAYER_IN_USE", INT2NUM(GLUT_LAYER_IN_USE));
+    rb_define_const(module, "GLUT_HAS_OVERLAY", INT2NUM(GLUT_HAS_OVERLAY));
+    rb_define_const(module, "GLUT_TRANSPARENT_INDEX", INT2NUM(GLUT_TRANSPARENT_INDEX));
+    rb_define_const(module, "GLUT_NORMAL_DAMAGED", INT2NUM(GLUT_NORMAL_DAMAGED));
+    rb_define_const(module, "GLUT_OVERLAY_DAMAGED", INT2NUM(GLUT_OVERLAY_DAMAGED));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_POSSIBLE", INT2NUM(GLUT_VIDEO_RESIZE_POSSIBLE));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_IN_USE", INT2NUM(GLUT_VIDEO_RESIZE_IN_USE));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_X_DELTA", INT2NUM(GLUT_VIDEO_RESIZE_X_DELTA));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_Y_DELTA", INT2NUM(GLUT_VIDEO_RESIZE_Y_DELTA));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_WIDTH_DELTA", INT2NUM(GLUT_VIDEO_RESIZE_WIDTH_DELTA));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_HEIGHT_DELTA", INT2NUM(GLUT_VIDEO_RESIZE_HEIGHT_DELTA));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_X", INT2NUM(GLUT_VIDEO_RESIZE_X));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_Y", INT2NUM(GLUT_VIDEO_RESIZE_Y));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_WIDTH", INT2NUM(GLUT_VIDEO_RESIZE_WIDTH));
+    rb_define_const(module, "GLUT_VIDEO_RESIZE_HEIGHT", INT2NUM(GLUT_VIDEO_RESIZE_HEIGHT));
+    rb_define_const(module, "GLUT_NORMAL", INT2NUM(GLUT_NORMAL));
+    rb_define_const(module, "GLUT_OVERLAY", INT2NUM(GLUT_OVERLAY));
+    rb_define_const(module, "GLUT_ACTIVE_SHIFT", INT2NUM(GLUT_ACTIVE_SHIFT));
+    rb_define_const(module, "GLUT_ACTIVE_CTRL", INT2NUM(GLUT_ACTIVE_CTRL));
+    rb_define_const(module, "GLUT_ACTIVE_ALT", INT2NUM(GLUT_ACTIVE_ALT));
+    rb_define_const(module, "GLUT_CURSOR_RIGHT_ARROW", INT2NUM(GLUT_CURSOR_RIGHT_ARROW));
+    rb_define_const(module, "GLUT_CURSOR_LEFT_ARROW", INT2NUM(GLUT_CURSOR_LEFT_ARROW));
+    rb_define_const(module, "GLUT_CURSOR_INFO", INT2NUM(GLUT_CURSOR_INFO));
+    rb_define_const(module, "GLUT_CURSOR_DESTROY", INT2NUM(GLUT_CURSOR_DESTROY));
+    rb_define_const(module, "GLUT_CURSOR_HELP", INT2NUM(GLUT_CURSOR_HELP));
+    rb_define_const(module, "GLUT_CURSOR_CYCLE", INT2NUM(GLUT_CURSOR_CYCLE));
+    rb_define_const(module, "GLUT_CURSOR_SPRAY", INT2NUM(GLUT_CURSOR_SPRAY));
+    rb_define_const(module, "GLUT_CURSOR_WAIT", INT2NUM(GLUT_CURSOR_WAIT));
+    rb_define_const(module, "GLUT_CURSOR_TEXT", INT2NUM(GLUT_CURSOR_TEXT));
+    rb_define_const(module, "GLUT_CURSOR_CROSSHAIR", INT2NUM(GLUT_CURSOR_CROSSHAIR));
+    rb_define_const(module, "GLUT_CURSOR_UP_DOWN", INT2NUM(GLUT_CURSOR_UP_DOWN));
+    rb_define_const(module, "GLUT_CURSOR_LEFT_RIGHT", INT2NUM(GLUT_CURSOR_LEFT_RIGHT));
+    rb_define_const(module, "GLUT_CURSOR_TOP_SIDE", INT2NUM(GLUT_CURSOR_TOP_SIDE));
+    rb_define_const(module, "GLUT_CURSOR_BOTTOM_SIDE", INT2NUM(GLUT_CURSOR_BOTTOM_SIDE));
+    rb_define_const(module, "GLUT_CURSOR_LEFT_SIDE", INT2NUM(GLUT_CURSOR_LEFT_SIDE));
+    rb_define_const(module, "GLUT_CURSOR_RIGHT_SIDE", INT2NUM(GLUT_CURSOR_RIGHT_SIDE));
+    rb_define_const(module, "GLUT_CURSOR_TOP_LEFT_CORNER", INT2NUM(GLUT_CURSOR_TOP_LEFT_CORNER));
+    rb_define_const(module, "GLUT_CURSOR_TOP_RIGHT_CORNER", INT2NUM(GLUT_CURSOR_TOP_RIGHT_CORNER));
+    rb_define_const(module, "GLUT_CURSOR_BOTTOM_RIGHT_CORNER", INT2NUM(GLUT_CURSOR_BOTTOM_RIGHT_CORNER));
+    rb_define_const(module, "GLUT_CURSOR_BOTTOM_LEFT_CORNER", INT2NUM(GLUT_CURSOR_BOTTOM_LEFT_CORNER));
+    rb_define_const(module, "GLUT_CURSOR_INHERIT", INT2NUM(GLUT_CURSOR_INHERIT));
+    rb_define_const(module, "GLUT_CURSOR_NONE", INT2NUM(GLUT_CURSOR_NONE));
+    rb_define_const(module, "GLUT_CURSOR_FULL_CROSSHAIR", INT2NUM(GLUT_CURSOR_FULL_CROSSHAIR));
+    rb_define_const(module, "GLUT_BITMAP_9_BY_15", INT2NUM((VALUE)GLUT_BITMAP_9_BY_15));
+    rb_define_const(module, "GLUT_BITMAP_8_BY_13", INT2NUM((VALUE)GLUT_BITMAP_8_BY_13));
+    rb_define_const(module, "GLUT_BITMAP_TIMES_ROMAN_10", INT2NUM((VALUE)GLUT_BITMAP_TIMES_ROMAN_10));
+    rb_define_const(module, "GLUT_BITMAP_TIMES_ROMAN_24", INT2NUM((VALUE)GLUT_BITMAP_TIMES_ROMAN_24));
+    rb_define_const(module, "GLUT_BITMAP_HELVETICA_10", INT2NUM((VALUE)GLUT_BITMAP_HELVETICA_10));
+    rb_define_const(module, "GLUT_BITMAP_HELVETICA_12", INT2NUM((VALUE)GLUT_BITMAP_HELVETICA_12));
+    rb_define_const(module, "GLUT_BITMAP_HELVETICA_18", INT2NUM((VALUE)GLUT_BITMAP_HELVETICA_18));
+    rb_define_const(module, "GLUT_STROKE_ROMAN", INT2NUM((VALUE)GLUT_STROKE_ROMAN));
+    rb_define_const(module, "GLUT_STROKE_MONO_ROMAN", INT2NUM((VALUE)GLUT_STROKE_MONO_ROMAN));
 
     callId = rb_intern("call");
 
