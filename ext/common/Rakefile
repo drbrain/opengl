@@ -30,6 +30,7 @@ SRC = FileList[ '*.c' ]
 OBJ = SRC.ext( 'o' )
 
 task :default => OBJ
+file 'rbogl.c' => [ 'rbogl.h' ]
 
 rule '.o' => '.c' do |t|
     sh "gcc -c #{INCLUDES} -o #{t.name} #{t.source}"
