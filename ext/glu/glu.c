@@ -2,9 +2,6 @@
  * Last edit by previous maintainer:
  * 2003/10/25 15:25:05, yoshi
  *
- * $Date: 2006/07/09 02:31:19 $
- * $Author: john $
- *
  * Copyright (C) 1999 - 2005 Yoshi <yoshi@giganet.net>
  * Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
  *
@@ -33,7 +30,7 @@
 #endif
 
 #include <ruby.h>
-#include "rbogl.h"
+#include "../common/rbogl.h"
 
 #ifdef WIN32
 typedef void (CALLBACK*(VOIDFUNC))();

@@ -16,13 +16,12 @@ packages:
 Build instructions
 ------------------
 
-The current build is still not great and will be undergoing some
-changes.
+The current build is still under construction. `:)`
 
-For now, to build, just run `rake` at the top level.  This will do
-everything necessary to build the OpenGL and GLUT bindings for
-Ruby.  The top level `rakefile` calls down to `ext/gl/rakefile` and
-`ext/glut/rakefile` to do the real work.
+Soon, to build, you'll just run `rake` at the top level.  This will do
+everything necessary to build the OpenGL, GLU, and GLUT bindings for
+Ruby.  The top level Rakefile will dig down into the subdirectories
+under `ext` and build the various components.
 
 
 Testing / Running

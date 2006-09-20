@@ -26,7 +26,7 @@
 #include <GL/gl.h>
 #endif
 
-#include "rbogl.h"
+#include "../common/rbogl.h"
 
 #if defined __CYGWIN__
 #undef GL_VERSION_1_2
