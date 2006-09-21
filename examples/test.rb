@@ -11,10 +11,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require '../ext/glut'
-require '../ext/gl'
-require '../lib/opengl_c'
-require '../lib/glut_c'
+require '../ext/glut/glut'
+require '../ext/gl/gl'
 
 class GlutTest
 
@@ -23,19 +21,19 @@ class GlutTest
     # Setup the GLUT display loop callback
     @display = lambda do
       puts "=== In display routine"
-      GL.glClear( GL::GL_COLOR_BUFFER_BIT | GL::GL_DEPTH_BUFFER_BIT )
-      GL.glColor3f( 1.0, 1.0, 1.0 )
+      Gl.glClear( Gl::GL_COLOR_BUFFER_BIT | Gl::GL_DEPTH_BUFFER_BIT )
+      Gl.glColor3f( 1.0, 1.0, 1.0 )
 
-      GL.glBegin( GL::GL_POLYGON )
+      Gl.glBegin( Gl::GL_POLYGON )
 
-      GL.glVertex2f( -0.5, -0.5 )
-      GL.glVertex2f( -0.5,  0.5 )
-      GL.glVertex2f(  0.5,  0.5 )
-      GL.glVertex2f(  0.5, -0.5 )
+      Gl.glVertex2f( -0.5, -0.5 )
+      Gl.glVertex2f( -0.5,  0.5 )
+      Gl.glVertex2f(  0.5,  0.5 )
+      Gl.glVertex2f(  0.5, -0.5 )
 
-      GL.glEnd
+      Gl.glEnd
 
-      GL.glFlush
+      Gl.glFlush
     end
 
     # Keyboard handler to exit when ESC is typed
@@ -49,13 +47,13 @@ class GlutTest
 
   def show
     puts "=== GlutTest.show ==="
-    GLUT.glutInit
-    GLUT.glutInitDisplayMode( GLUT::GLUT_DOUBLE | GLUT::GLUT_RGB | GLUT::GLUT_DEPTH )
-    GLUT.glutCreateWindow( 'pbm' )
-    GLUT.glutDisplayFunc( @display )
-    #GLUT.glutReshapeFunc( @reshape )
-    GLUT.glutKeyboardFunc( @keyboard ) if @keyboard
-    GLUT.glutMainLoop
+    Glut.glutInit
+    Glut.glutInitDisplayMode( Glut::GLUT_DOUBLE | Glut::GLUT_RGB | Glut::GLUT_DEPTH )
+    Glut.glutCreateWindow( 'pbm' )
+    Glut.glutDisplayFunc( @display )
+    #Glut.glutReshapeFunc( @reshape )
+    Glut.glutKeyboardFunc( @keyboard ) if @keyboard
+    Glut.glutMainLoop
   end
 end
 

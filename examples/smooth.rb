@@ -1,29 +1,27 @@
-require "../ext/gl"
-require "../ext/glut"
-require '../lib/opengl_c'
-require '../lib/glut_c'
+require "../ext/gl/gl"
+require "../ext/glut/glut"
 
 STDOUT.sync=TRUE
 disp = Proc.new {
-  GL.glClear(GL::GL_COLOR_BUFFER_BIT)
-  GL.glBegin(GL::GL_TRIANGLES)
-    GL.glColor(0.0, 0.0, 1.0)
-    GL.glVertex(0, 0)
-    GL.glColor(0.0, 1.0, 0.0)
-    GL.glVertex(200, 200)
-    GL.glColor(1.0, 0.0, 0.0)
-    GL.glVertex(20, 200)
-  GL.glEnd
-  GL.glFlush
+  Gl.glClear(Gl::GL_COLOR_BUFFER_BIT)
+  Gl.glBegin(Gl::GL_TRIANGLES)
+    Gl.glColor(0.0, 0.0, 1.0)
+    Gl.glVertex(0, 0)
+    Gl.glColor(0.0, 1.0, 0.0)
+    Gl.glVertex(200, 200)
+    Gl.glColor(1.0, 0.0, 0.0)
+    Gl.glVertex(20, 200)
+  Gl.glEnd
+  Gl.glFlush
 }
 
 reshape = Proc.new {|w, h|
-  GL.glViewport(0, 0, w, h)
-  GL.glMatrixMode(GL::GL_PROJECTION)
-  GL.glLoadIdentity
-  GL.glOrtho(0, w, 0, h, -1, 1)
-  GL.glScale(1, -1, 1)
-  GL.glTranslate(0, -h, 0)
+  Gl.glViewport(0, 0, w, h)
+  Gl.glMatrixMode(Gl::GL_PROJECTION)
+  Gl.glLoadIdentity
+  Gl.glOrtho(0, w, 0, h, -1, 1)
+  Gl.glScale(1, -1, 1)
+  Gl.glTranslate(0, -h, 0)
 }
 
 # Keyboard handler to exit when ESC is typed
@@ -34,9 +32,9 @@ keyboard = lambda do |key, x, y|
     end
 end
 
-GLUT.glutInit
-a =  GLUT.glutCreateWindow("single triangle");
-GLUT.glutDisplayFunc(disp);
-GLUT.glutReshapeFunc(reshape);
-GLUT.glutKeyboardFunc( keyboard )
-GLUT.glutMainLoop;
+Glut.glutInit
+a =  Glut.glutCreateWindow("single triangle");
+Glut.glutDisplayFunc(disp);
+Glut.glutReshapeFunc(reshape);
+Glut.glutKeyboardFunc( keyboard )
+Glut.glutMainLoop;
