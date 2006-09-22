@@ -1,0 +1,14 @@
+Experimental modules
+--------------------
+
+This directory is intended to contain a few pure Ruby modules that
+act to make ruby-opengl behave in more "Rubyish" ways. The plan is
+to add some files to this directory that seem promising, then keep
+them here to stew for a while, giving folks a chance to decide how
+useful they are, and whether or not they belong in ruby-opengl
+proper.
+
+The experimental modules in here that we're currently looking at
+are:
+
+* TODO
