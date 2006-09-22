@@ -18,22 +18,22 @@
 # Thanks to Ilmari Heikkinen for this code, and to Bill Kelly for a
 # previous version.
 
-require '../ext/gl/GL'
+require '../ext/gl/gl'
 
 module GL
     extend self
-    include GL
+    include Gl
 
-    GL.constants.each do |cn|
+    Gl.constants.each do |cn|
         n = cn.sub(/^GL_/,'')
         begin
-            const_set( n, GL.const_get( cn ) )
+            const_set( n, Gl.const_get( cn ) )
         rescue
             puts "=== #{__FILE__} FAILED on Constant: #{cn} --> #{n}"
         end
     end
 
-    GL.methods( false ).each do |mn|
+    Gl.methods( false ).each do |mn|
         n = mn.sub(/^gl/,'')
         begin
             alias_method( n, mn )

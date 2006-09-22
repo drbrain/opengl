@@ -18,22 +18,22 @@
 # Thanks to Ilmari Heikkinen for this code, and to Bill Kelly for a
 # previous version.
 
-require '../ext/glut/GLUT'
+require '../ext/glut/glut'
 
 module GLUT
     extend self
-    include GLUT
+    include Glut
 
-    GLUT.constants.each do |cn|
+    Glut.constants.each do |cn|
         n = cn.sub(/^GLUT_/,'')
         begin
-            const_set( n, GLUT.const_get( cn ) )
+            const_set( n, Glut.const_get( cn ) )
         rescue
             puts "=== #{__FILE__} FAILED on Constant: #{cn} --> #{n}"
         end
     end
 
-    GLUT.methods( false ).each do |mn|
+    Glut.methods( false ).each do |mn|
         n = mn.sub(/^glut/,'')
         begin
             alias_method( n, mn )
