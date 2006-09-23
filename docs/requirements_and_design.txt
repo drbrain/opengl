@@ -1,5 +1,5 @@
-Requirements, design, and specs
-===============================
+Design
+======
 
 This document records the requirements, high-level design, and the
 specifications for the ruby-opengl project.
@@ -35,6 +35,7 @@ Requirements
   follow the standard C-like syntax that OpenGL programmers are used to,
   and that most OpenGL examples are published in:
 
+        <!-- ruby -->
         require 'gl'
 
         Gl.glBegin( Gl::GL_POLYGON )
@@ -116,16 +117,13 @@ try:
 * Possibly switch from mkmf to mkrf.
 
 
-Design
-------
-
-We will continue on with Yoshi's original recipe. `:)`
-
 
 Implementation
 --------------
 
-### Build environment
+So far, the plan is to continue on with Yoshi's original recipe. `:)`
+
+### Build environment ###
 
 The build environment will:
 

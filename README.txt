@@ -1,7 +1,7 @@
 ruby-opengl
 ===========
 
-[ruby-opengl][] consists of Ruby extension modules that are bindings for
+ruby-opengl consists of Ruby extension modules that are bindings for
 the [OpenGL][], GLU, and [GLUT][] libraries. ruby-opengl is:
 
 * still somewhat experimental at this point,
