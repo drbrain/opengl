@@ -126,3 +126,15 @@ rule '.plain' => '.txt' do |t|
     puts "Turning #{t.source} into #{t.name} ..."
     sh "./utils/mkdn2html.rb #{t.source} #{t.name}"
 end
+
+desc 'Upload the newly-built site to RubyForge.'
+task :upload_website => [:gen_website] do
+    sh "scp website/*.html johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+end
+
+desc 'Upload entire site, including stylesheet and the images directory.'
+task :upload_entire_website => [:gen_website] do
+    sh "scp website/*.html johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+    sh "scp website/*.css johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+    sh "scp -r website/images johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+end

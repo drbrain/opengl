@@ -67,7 +67,7 @@ while true
         end
 
         highlighted_code =
-            `source-highlight -s #{language} -i docs/temp_file#{snippet_num}.snip -f html`
+            `source-highlight -s #{language} -i docs/#{base_name}_#{snippet_num}.snip -f html`
 
         temp_content = pre_stuff + highlighted_code + post_stuff
         snippet_num += 1
