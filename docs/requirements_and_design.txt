@@ -35,9 +35,8 @@ Requirements
   follow the standard C-like syntax that OpenGL programmers are used to,
   and that most OpenGL examples are published in:
 
-        <!-- ruby -->
+        {{ruby}}
         require 'gl'
-
         Gl.glBegin( Gl::GL_POLYGON )
           Gl.glVertex2d( 0, 0 )
           Gl.glVertex2d( 0, 1 )
@@ -47,9 +46,9 @@ Requirements
 
   Or:
 
+        {{ruby}}
         require 'gl'
         include Gl
-
         glBegin( GL_POLYGON )
           glVertex2d( 0, 0 )
           glVertex2d( 0, 1 )

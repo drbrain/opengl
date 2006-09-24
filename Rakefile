@@ -81,20 +81,24 @@ file 'ext/common/rbogl.o' => [ 'ext/common/rbogl.h', 'ext/common/rbogl.c' ]
 #====================================================================
 # Generate html docs from the markdown source and upload to the site.
 # All doc files that are destined for the website have filenames that
-# end in .mkdn.
+# end in .txt.
 
 WEBSITE_MKDN = FileList['./docs/*.txt'] << 'README.txt'
-#PLAIN_HTML = WEBSITE_MKDN.ext('plain')
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 
 desc 'Show contents of some variables related to website doc generation.'
-task :explain_website_docs do
-  puts "WEBSITE_MKDN   == #{WEBSITE_MKDN}"
-  #p "PLAIN_HTML     == #{PLAIN_HTML}"
-  puts "NICE_HTML_DOCS == #{NICE_HTML_DOCS}"
+task :explain_website do
+    puts "WEBSITE_MKDN:"
+    WEBSITE_MKDN.each do |doc|
+        puts "\t#{doc}"
+    end
+    puts "NICE_HTML_DOCS:"
+    NICE_HTML_DOCS.each do |doc|
+        puts "\t#{doc}"
+    end
 end
 
-desc 'Generate website html (with syntax-highlighted code snippets).'
+desc 'Generate website html.'
 task :gen_website => NICE_HTML_DOCS do
     # Now that the website docs have been generated, copy them to ./website.
     puts
@@ -102,24 +106,23 @@ task :gen_website => NICE_HTML_DOCS do
     sh "cp docs/*.html website"
 end
 
-desc 'Delete generated site files'
+desc 'Delete all generated website files.'
 task :clean_website do
-    sh "rm docs/*.plain docs/*.html *.plain *.html website/*.html"
+    sh "rm *.plain docs/*.plain"
+    sh "rm docs/*.snip"
+    sh "rm *.html docs/*.html website/*.html"
 end
 
-# You'll see some intermediate .plain files get generated. These don't have
-# their code snippets syntax highlighted yet.
+# You'll see some intermediate .plain files get generated. These are html,
+# but don't yet have their code snippets syntax highlighted.
 rule '.html' => '.plain' do |t|
-    # Syntax highlight the snippets in the plain, newly generated html.
     puts "Turning #{t.source} into #{t.name} ..."
-    #sh "cp #{t.source} #{t.name}" # Just for now. XXX
-    sh "./utils/hlight_snippets.rb #{t.source} #{t.name}"
+    sh "./utils/post-mkdn2html.rb #{t.source} #{t.name}"
 end
 
+# Process the markdown docs into plain html.
 rule '.plain' => '.txt' do |t|
-    # Process the markdown docs into plain html.
     puts
     puts "Turning #{t.source} into #{t.name} ..."
     sh "./utils/mkdn2html.rb #{t.source} #{t.name}"
-    #sh "touch #{t.name}"
 end
