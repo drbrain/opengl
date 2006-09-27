@@ -12,29 +12,29 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-# This module provides access to the GL methods and constants
+# This module provides access to the GLU methods and constants
 # in the way that they were available in previous versions of ruby-opengl.
 #
 # Thanks to Ilmari Heikkinen for this code, and to Bill Kelly for a
 # previous version.
 
-require '../ext/gl/gl'
+require '../ext/glu/glu'
 
-module GL
+module GLU
     extend self
-    include Gl
+    include Glu
 
-    Gl.constants.each do |cn|
-        n = cn.sub(/^GL_/,'')
+    Glu.constants.each do |cn|
+        n = cn.sub(/^GLU_/,'')
         begin
-            const_set( n, Gl.const_get( cn ) )
+            const_set( n, Glu.const_get( cn ) )
         rescue
             puts "=== #{__FILE__} FAILED on Constant: #{cn} --> #{n}"
         end
     end
 
-    Gl.methods( false ).each do |mn|
-        n = mn.sub(/^gl/,'')
+    Glu.methods( false ).each do |mn|
+        n = mn.sub(/^glu/,'')
         begin
             alias_method( n, mn )
             public( n )
