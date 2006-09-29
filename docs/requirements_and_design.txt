@@ -120,11 +120,13 @@ try:
 Implementation
 --------------
 
-So far, the plan is to continue on with Yoshi's original recipe. `:)`
+Our plan is to continue on with Yoshi's original code, modified
+to use standard OpenGL-style constant and function names.
+
 
 ### Build environment ###
 
 The build environment will:
 
-* use rake (and probably also mkrf)
+* use rake (and probably also mkrf, when mkrf is ready)
 * minimize the number of additional tools required
