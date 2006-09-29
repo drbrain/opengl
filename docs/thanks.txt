@@ -1,0 +1,23 @@
+Thank you
+---------
+
+Aside from big thank-you's to the core devs, special thanks (alphabetical
+by first name) also goes to:
+
+* Bill Kelly -- provided some pilot code changing how users can call method and constant names.
+* Ilmari Heikkinen -- provided code for changing how users can call method and constant names.
+* James Adam -- Mac OS X fixes
+* Tony Hursh -- Mac OS X glut build tweak
+* **Yoshi** -- providing ruby-opengl-0.32g from which to work off of.
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>

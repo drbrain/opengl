@@ -1,0 +1,136 @@
+Usage tutorial
+==============
+
+Naming conventions
+------------------
+
+There are two ways to use ruby-opengl. Firstly, you can use customary
+C-style method names and constant names like so:
+
+    {{ruby}}
+    require 'gl'
+    require 'glu'
+    require 'glut'
+    
+    include Gl
+    include Glu
+    include Glut
+
+    glFooBar( GL_FOO_BAR )
+    gluFooBar( GLU_FOO_BAR )
+    glutFooBar( GLUT_FOO_BAR )
+
+You don't have to `include` Gl, Glu, and Glut, but if you don't, then
+you'll have to prefix each of those method and constant names like so:
+
+    {{ruby}}
+    Gl.glFooBar( Gl::GL_FOO_BAR )
+    Glu.gluFooBar( Glu::GLU_FOO_BAR )
+    Glut.glutFooBar( Glut::GLUT_FOO_BAR )
+
+The other way you might use ruby-opengl is to employ the notation that
+users of previous versions of ruby-opengl have used:
+
+    {{ruby}}
+    require 'gl_prev'
+    require 'glu_prev'
+    require 'glut_prev'
+    
+    GL.FooBar( GL::FOO_BAR )
+    GLU.FooBar( GLU::FOO_BAR )
+    GLUT.FooBar( GLUT::FOO_BAR )
+
+There are many fine OpenGL and GLUT tutorials all over the 'Net, so we
+don't plan on trying to duplicate them here at the moment. Most of
+these tutorials presume you are writing your code in C or C++, but
+they should still be almost directly usable with ruby-opengl as long
+as you use the C-style names (and, of course, as long as you change
+the rest of the C code you find from C (or C++) to Ruby). If you opt
+for using the legacy ruby-opengl style names, you'll have to take the
+additional step of converting the calls from `glFooBar( GL_FOO_BAR )`
+to `GL.FooBar( GL::FOO_BAR )`.
+
+Personally, I prefer the current C-style names because:
+
+1. It's somewhat easier to follow along with the many online tutorials
+   and written OpenGL/GLUT books (i.e. the RedBook, BlueBook, SuperBible,
+   etc.).
+
+2. Copying/pasting code between Ruby and C is easier (otherwise you'll
+   be doing a lot of search/replace).
+
+3. My fingers are already used to typing the traditional C-style names
+   of all these identifiers.
+
+Also, I don't like the fact that, if you use the previous ruby-opengl
+style, you've got method names starting with a capital letter (which is
+not customary Ruby style).
+
+For the rest of this document, I'll use the current C-style names.
+
+
+GLUT callbacks
+--------------
+
+The major difference from your GL code in C is in how glut callbacks are
+handled. Rather than define your callbacks as top-level functions,
+with ruby-opengl, it's done (for example) like so:
+
+    {{ruby}}
+    reshape = lambda do |w, h|
+        glViewport( ... )
+        glMatrixMode( GL_PROJECTION )
+        # etc.
+        glMatrixMode( GL_MODELVIEW )
+        glLoadIdentity
+    end
+
+    # ...
+    
+    glutReshapeFunc( reshape )
+
+An older notation you'll see instead of `lambda` is `proc`. The PickAxe
+v2 notes that `proc` is "mildly deprecated" in favor of `lambda`. You'll
+also sometimes see `Proc.new` used in place of either. Pages 359-360 of
+PickAxe v2 describe the differences between using `lambda` and `Proc.new`,
+but for our purposes either will be fine.
+
+
+The Samples
+-----------
+
+To run the samples, manually pass them to `ruby` like so:
+
+    ruby some_sample.rb
+    ruby some_sample_prev.rb
+
+The names ending in `_prev.rb` have been "ported" to use the legacy method
+and constant names (and possibly have been neatened up a bit as well). The
+`README` file in the `samples` directory contains some notes on the samples.
+
+
+Mac OS X notes
+--------------
+
+James Adam passed along some fixes to ruby-opengl in 2005 on ruby-talk.
+Some methods have been incorporated into ruby-opengl-0.33. Paraphrasing
+James a bit, he writes:
+
+> 1. `CheckLoop` was added to bring the GLUT module in line with the
+>    same function in Apple's GLUT. GLUT's MainLoop is blocking and forces
+>    you to perform additoinal processing using GLUT's IdleFunc system,
+>    which can sometimes be very undesirable (particularly if you are using
+>    Ruby as the glue between two libraries which both feature this type of
+>    loop). CheckLoop allows you to cycle through a *single* GLUT processing
+>    loop, and then returns control to the calling thread/process. Thus, by
+>    periodically calling CheckLoop, you can get the scene to update without
+>    having GLUT seize control of the whole application.
+> 
+> 2. `GameModeString(mode_string)` and `Glut.EnterGameMode()`. May allow you
+>    to switch your application to fullscreen.
+> 
+> 3. `BitmapCharacterX(char)` for displaying characters, since there seems to
+>    be a problem with the default `GLUT.BitmapCharacter` method.
+
+Any feedback on testing of these methods is welcome, and will likely
+be incorporated into the ruby-opengl docs.

@@ -16,9 +16,11 @@ packages:
 Build instructions
 ------------------
 
-The current build is still under construction. `:)`
+The current build setup is still under construction. We're waiting for
+mkrf to be ready so we can transition over. So, some extconf.rb's are
+in place, but they're currently not being used.
 
-Soon, to build, you'll just run `rake` at the top level.  This will do
+Currently, to build, just run `rake` at the top level.  This should do
 everything necessary to build the OpenGL, GLU, and GLUT bindings for
 Ruby.  The top level Rakefile will dig down into the subdirectories
 under `ext` and build the various components.

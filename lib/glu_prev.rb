@@ -15,8 +15,8 @@
 # This module provides access to the GLU methods and constants
 # in the way that they were available in previous versions of ruby-opengl.
 #
-# Thanks to Ilmari Heikkinen for this code, and to Bill Kelly for a
-# previous version.
+# Thanks to Ilmari Heikkinen for a previous "reversed" version of this code,
+# and to Bill Kelly for a version before that one.
 
 require '../ext/glu/glu'
 

@@ -1,17 +1,19 @@
 Roadmap
 =======
 
-* Prototype the minimum necessary to get an OpenGLHelloWorld working, so
-  we can play with it.
-
-* Get basic build up and running.
-
-* Get BaseGL implemented.
-
-* Get BaseGLUT implemented (because it's used for testing).
-
-* Get BaseGLU implemented.
-
+* Get BaseGL updated.
+* Get BaseGLU updated.
+* Get BaseGLUT updated.
 * Get the build working with mkrf.
-
 * Add the ESC keyboard handler to smooth.rb
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
