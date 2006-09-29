@@ -1,5 +1,5 @@
-require "../ext/gl/gl"
-require "../ext/glut/glut"
+require "../lib/gl"
+require "../lib/glut"
 
 STDOUT.sync=TRUE
 disp = Proc.new {

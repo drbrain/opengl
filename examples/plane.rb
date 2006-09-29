@@ -43,8 +43,8 @@
 # *  infinite lighting on a flat plane.
 # */
 
-require "../ext/gl/gl"
-require "../ext/glut/glut"
+require "../lib/gl"
+require "../lib/glut"
 require "mathn"
 
 # /*  Initialize material property, light source, and lighting model.

@@ -25,6 +25,18 @@ everything necessary to build the OpenGL, GLU, and GLUT bindings for
 Ruby.  The top level Rakefile will dig down into the subdirectories
 under `ext` and build the various components.
 
+After building, the extension modules will be copied to the `./lib`
+directory.
+
+
+Installing
+----------
+
+For now, if you want to install ruby-opengl on your system, you can
+do so manually (there is no gem for it yet). Just copy the contents
+of `./lib` into your `.../lib/ruby/site_ruby/1.8` directory (or
+anywhere else `ruby` searches for modules).
+
 
 Testing / Running
 -----------------

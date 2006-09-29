@@ -3,6 +3,10 @@ Examples
 
 Just some quick notes on which examples work and which don't.
 
+
+Running legacy ruby-opengl code
+-------------------------------
+
 Note that the filenames ending with `_prev.rb` contain code that is compatible
 with the previous version of ruby-opengl (i.e. Yoshi's version). If you have
 code that runs with the previous version, to make it run with this current
@@ -17,6 +21,10 @@ at the top of your files instead of
 
     require 'opengl'
     require 'glut'
+
+(Of course, you haven't yet installed ruby-opengl on your system, you'll
+need to include paths in those require statments above: as in,
+`require "../lib/gl_prev"`.)
 
 
 Status of examples

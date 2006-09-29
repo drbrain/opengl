@@ -74,6 +74,7 @@ file GL_LIB => [ 'ext/gl/gl.o', 'ext/common/rbogl.o' ] do |t|
     cmd = "#{$LDCMD} #{$LDFLAGS} -o #{t.name} #{t.prerequisites.join(' ')} #{$FOR_GL_LIB} #{$EXTRA_LIBS}"
     puts "\n============================== linking #{GL_LIB}"
     sh cmd
+    sh "cp #{GL_LIB} lib"
 end
 
 
@@ -84,6 +85,7 @@ file GLU_LIB => [ 'ext/glu/glu.o', 'ext/common/rbogl.o' ] do |t|
     cmd = "#{$LDCMD} #{$LDFLAGS} -o #{t.name} #{t.prerequisites.join(' ')} #{$FOR_GLU_LIB} #{$EXTRA_LIBS}"
     puts "\n============================== linking #{GLU_LIB}"
     sh cmd
+    sh "cp #{GLU_LIB} lib"
 end
 
     
@@ -94,6 +96,7 @@ file GLUT_LIB => [ 'ext/glut/glut.o' ] do |t|
     cmd = "#{$LDCMD} #{$LDFLAGS} -o #{t.name} #{t.prerequisites.join(' ')} #{$FOR_GLUT_LIB} #{$EXTRA_LIBS}"
     puts "\n============================== linking #{GLUT_LIB}"
     sh cmd
+    sh "cp #{GLUT_LIB} lib"
 end
 
 
