@@ -1,0 +1,26 @@
+Examples
+========
+
+Just some quick notes on which examples work and which don't.
+
+Note that the filenames ending with `_prev.rb` contain code that is compatible
+with the previous version of ruby-opengl (i.e. Yoshi's version). If you have
+code that runs with the previous version, to make it run with this current
+version, either see the tutorial about the simple changes you can make to the
+code, or else just use
+
+    require "gl_prev"
+    require "glu_prev"
+    require "glut_prev"
+
+at the top of your files instead of 
+
+    require 'opengl'
+    require 'glut'
+
+
+Status of examples
+------------------
+
+* plane.rb -- works
+* smooth.rb, smooth_prev.rb -- works

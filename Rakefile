@@ -16,10 +16,20 @@
 require 'rake/clean'
 require 'rbconfig'
 
+# For one thing, ruby.h is here. Ex.: /opt/ruby-1.8.4/lib/ruby/1.8/i686-linux
 $INCLUDES = "-I#{Config::CONFIG['archdir']}"
-$CFLAGS   = "#{Config::CONFIG['CFLAGS']}"
-$LDFLAGS  = "-l#{Config::CONFIG["RUBY_SO_NAME"]}"
+
+$CFLAGS   = "#{Config::CONFIG['CFLAGS']}"         # Ex.: -g -O2
+$LDFLAGS  = "-l#{Config::CONFIG["RUBY_SO_NAME"]}" # Ex.: ruby
+
+# The link edit command. Ex.: gcc -shared
 $LDCMD    = "#{Config::CONFIG['LDSHARED']}"
+
+# Other libs to link in.
+$EXTRA_LIBS     = ''
+$FOR_GL_LIB = '-lGL'
+$FOR_GLU_LIB = '-lGLU -lGL'
+$FOR_GLUT_LIB = '-lglut -lGLU -lGL'
 
 case RUBY_PLATFORM
 when /darwin/
@@ -27,9 +37,14 @@ when /darwin/
     $LDFLAGS  << ' -framework GLUT -framework OpenGL'
     $LDCMD = 'cc -bundle'
 else
-    $INCLUDES << ' -L/usr/lib'
-    $LDFLAGS  << ' -lglut -lGLU -lGL' # must not be for all targets
+    $CFLAGS << " #{Config::CONFIG["CCDLFLAGS"]}" # Ex.: -fPIC
+
+    $LDFLAGS = "-L#{Config::CONFIG["libdir"]}"   # Ex.: /opt/ruby-1.8.4/lib
+    $LDFLAGS << " -Wl,-R'#{Config::CONFIG["libdir"]}'"
+
+    $EXTRA_LIBS << " #{Config::CONFIG["LIBS"]}"  # Ex.: -ldl -lcrypt -lm
 end
+
 
 GL_LIB   = "ext/gl/gl.#{Config::CONFIG['DLEXT']}"
 GLU_LIB  = "ext/glu/glu.#{Config::CONFIG['DLEXT']}"
@@ -39,19 +54,25 @@ LIBS     = [ GL_LIB, GLU_LIB, GLUT_LIB ]
 CLEAN.include( 'ext/**/*.o' )
 CLOBBER.include( LIBS )
 
-desc "Create #{LIBS}"
+
+desc "Create: #{LIBS.join(', ')}"
 task :default => LIBS
 
+file 'ext/common/rbogl.o' => [ 'ext/common/rbogl.h', 'ext/common/rbogl.c' ]
+
+# I don't think rbogl.c should be compiled with -fPIC like the other source
+# files we're building here. I'm using the ext/common/Rakefile to build rbogl.c
+# for now... ---John
 rule '.o' => '.c' do |t|
-    cmd = "cc #{$INCLUDES} #{$CFLAGS} -c -o #{t.name} #{t.source}"
-    puts "============== #{cmd}"
+    cmd = "cc #{$CFLAGS} #{$INCLUDES} -c -o #{t.name} #{t.source}"
+    puts "\n============================== compiling: #{t.source} --> #{t.name}"
     sh cmd
 end
 
 desc "Create the OpenGL library (#{GL_LIB})"
 file GL_LIB => [ 'ext/gl/gl.o', 'ext/common/rbogl.o' ] do |t|
-    cmd = "#{$LDCMD} #{$LDFLAGS} #{$CFLAGS} -o #{t.name} #{t.prerequisites.join(' ')}"
-    puts "============== #{cmd}"
+    cmd = "#{$LDCMD} #{$LDFLAGS} -o #{t.name} #{t.prerequisites.join(' ')} #{$FOR_GL_LIB} #{$EXTRA_LIBS}"
+    puts "\n============================== linking #{GL_LIB}"
     sh cmd
 end
 
@@ -60,8 +81,8 @@ end
 # to build them
 desc "Create the GLU library (#{GLU_LIB})"
 file GLU_LIB => [ 'ext/glu/glu.o', 'ext/common/rbogl.o' ] do |t|
-    cmd = "#{$LDCMD} #{$LDFLAGS} #{$CFLAGS} -o #{t.name} #{t.prerequisites.join(' ')}"
-    puts "============== #{cmd}"
+    cmd = "#{$LDCMD} #{$LDFLAGS} -o #{t.name} #{t.prerequisites.join(' ')} #{$FOR_GLU_LIB} #{$EXTRA_LIBS}"
+    puts "\n============================== linking #{GLU_LIB}"
     sh cmd
 end
 
@@ -70,12 +91,10 @@ end
 # to build them
 desc "Create the GLUT library (#{GLUT_LIB})"
 file GLUT_LIB => [ 'ext/glut/glut.o' ] do |t|
-    cmd = "#{$LDCMD} #{$LDFLAGS} #{$CFLAGS} -o #{t.name} #{t.prerequisites.join(' ')}"
-    puts "============== #{cmd}"
+    cmd = "#{$LDCMD} #{$LDFLAGS} -o #{t.name} #{t.prerequisites.join(' ')} #{$FOR_GLUT_LIB} #{$EXTRA_LIBS}"
+    puts "\n============================== linking #{GLUT_LIB}"
     sh cmd
 end
-
-file 'ext/common/rbogl.o' => [ 'ext/common/rbogl.h', 'ext/common/rbogl.c' ]
 
 
 #====================================================================
