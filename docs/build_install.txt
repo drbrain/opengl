@@ -25,8 +25,8 @@ everything necessary to build the OpenGL, GLU, and GLUT bindings for
 Ruby.  The top level Rakefile will dig down into the subdirectories
 under `ext` and build the various components.
 
-After building, the extension modules will be copied to the `./lib`
-directory.
+After building, the extension modules are automatically copied to the
+project's `./lib` directory.
 
 
 Installing
