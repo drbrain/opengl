@@ -13,10 +13,11 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+require 'rubygems'
 require 'mkrf'
 
-Mkrf::Generator.new( 'glut', '*.c' ) do |g|
-    g.include_library( 'GLUT', 'glutSolidTeapot' )
+Mkrf::Generator.new( 'glut' ) do |g|
+    g.include_library( 'glut', 'glutSolidTeapot' )
     g.include_library( 'GLU', 'gluLookAt' )
     g.include_library( 'GL', 'glVertex3d' )
 end

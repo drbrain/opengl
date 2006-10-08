@@ -1,5 +1,4 @@
 # -*- ruby -*-
-# Simple Rakefile for building rbogl.c.
 
 # Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
 #
@@ -14,10 +13,13 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+# Simple Rakefile for building rbogl.c.
+
 require 'rake/clean'
 require 'rbconfig'
 
 INCLUDES = "-I#{Config::CONFIG['archdir']}"
+CFLAGS   = "#{Config::CONFIG['CFLAGS']}"
 
 case RUBY_PLATFORM
 when /darwin/
@@ -33,5 +35,5 @@ task :default => OBJ
 file 'rbogl.c' => [ 'rbogl.h' ]
 
 rule '.o' => '.c' do |t|
-    sh "gcc -c #{INCLUDES} -o #{t.name} #{t.source}"
+    sh "cc -c #{CFLAGS} #{INCLUDES} -o #{t.name} #{t.source}"
 end
