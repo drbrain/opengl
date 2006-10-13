@@ -105,7 +105,7 @@ end
 # All doc files that are destined for the website have filenames that
 # end in .txt.
 
-WEBSITE_MKDN = FileList['./docs/*.txt'] << 'README.txt'
+WEBSITE_MKDN = FileList['./doc/*.txt'] << 'README.txt'
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 
 desc 'Show contents of some variables related to website doc generation.'
@@ -125,14 +125,14 @@ task :gen_website => NICE_HTML_DOCS do
     # Now that the website docs have been generated, copy them to ./website.
     puts
     sh "cp README.html website/index.html"
-    sh "cp docs/*.html website"
+    sh "cp doc/*.html website"
 end
 
 desc 'Delete all generated website files.'
 task :clean_website do
-    sh "rm *.plain docs/*.plain"
-    sh "rm docs/*.snip"
-    sh "rm *.html docs/*.html website/*.html"
+    sh "rm *.plain doc/*.plain"
+    sh "rm doc/*.snip"
+    sh "rm *.html doc/*.html website/*.html"
 end
 
 # You'll see some intermediate .plain files get generated. These are html,
