@@ -17,8 +17,10 @@ Build instructions
 ------------------
 
 The current build setup is still under construction. We're waiting for
-mkrf to be ready so we can transition over. So, some extconf.rb's are
-in place, but they're currently not being used.
+the next mkrf release so we can transition over. So, some extconf.rb's are
+in place and you can use them if you've got the version of mkrf in svn
+installed (in fact, on GNU/Linux, with the cutting edge mkrf you can
+use the included `build.sh` to build).
 
 Currently, to build, just run `rake` at the top level.  This should do
 everything necessary to build the OpenGL, GLU, and GLUT bindings for

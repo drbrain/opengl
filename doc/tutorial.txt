@@ -102,7 +102,7 @@ Source code layout
 The directory structure follows current Ruby standards, with a few
 extra directories added.
 
-* `docs/` -- Contains documentation for the project (from which this
+* `doc/` -- Contains documentation for the project (from which this
   website is generated).
 * `examples` -- Some small sample programs. Mostly, these are being
   copied from Yoshi's examples while being updated and neatened up.

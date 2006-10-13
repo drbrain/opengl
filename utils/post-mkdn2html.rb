@@ -62,12 +62,12 @@ while true
         # where, if you omit -o filename, output goes to stdout.
 
         base_name = File.basename( outfile_name, '.*' )
-        File.open( "docs/#{base_name}_#{snippet_num}.snip", 'w' ) do |file|
+        File.open( "doc/#{base_name}_#{snippet_num}.snip", 'w' ) do |file|
             file.write code_to_convert
         end
 
         highlighted_code =
-            `source-highlight -s #{language} -i docs/#{base_name}_#{snippet_num}.snip -f html`
+            `source-highlight -s #{language} -i doc/#{base_name}_#{snippet_num}.snip -f html`
 
         temp_content = pre_stuff + highlighted_code + post_stuff
         snippet_num += 1
