@@ -36,7 +36,6 @@ outfile_name = ARGV[1]
 # title of the page.
 base_filename = File.basename( infile_name, ".*" )
 puts "base_filename = #{base_filename}"
-#base_filename.sub!( %r{\./docs/}, '' ).sub!( /\.txt$/, '' )
 if base_filename == 'README'
     base_filename = 'Home'
 end
@@ -48,7 +47,7 @@ html_content = bc.to_html
 
 puts "outfile is #{File.expand_path( outfile_name )}"
 
-template_content = IO.read( './docs/supplies/page_template.html' )
+template_content = IO.read( './doc/supplies/page_template.html' )
 template_content.sub!( /\{\{content\}\}/, html_content )
 template_content.sub!( /\{\{title\}\}/, base_filename )
 
