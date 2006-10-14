@@ -7,7 +7,7 @@ is a bit of a catch-all at the moment.
 ### Directory contents ###
 
 * For generating website html
-    * `mkdn2html.rb` -- for converting the .txt files to hmtml.
+    * `mkdn2html.rb` -- for converting the .txt files to html.
     * `post-mkdn2html.rb` -- for the html syntax highlighting.
 
 * Tools planned for auto-generating the modules.
