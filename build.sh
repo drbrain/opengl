@@ -16,6 +16,14 @@
 # Dunno how to make rake do this, and this simple script seems to work
 # ok on GNU/Linux for now. ---John
 
+echo 'Cleaning up previous build products ...'
+# Note, extconf.rb should always generate a new Rakefile,
+# so we don't clean out old ones.
+rm ext/common/rbogl.o
+rm ext/gl/gl.o
+rm ext/glu/glu.o
+rm ext/glut/glut.o
+
 cd ext/common
 echo "Building common/rbogl.o ..."
 rake
