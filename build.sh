@@ -31,7 +31,7 @@ rake
 echo ""
 cd ../gl
 echo "Making Rakefile for gl ..."
-ruby extconf.rb
+ruby mkrf_conf.rb
 echo "Building gl ..."
 rake
 cp gl.so ../../lib
@@ -39,7 +39,7 @@ cp gl.so ../../lib
 echo ""
 cd ../glu
 echo "Making Rakefile for glu ..."
-ruby extconf.rb
+ruby mkrf_conf.rb
 echo "Building glu ..."
 rake
 cp glu.so ../../lib
@@ -47,7 +47,7 @@ cp glu.so ../../lib
 echo ""
 cd ../glut
 echo "Making Rakefile for glut ..."
-ruby extconf.rb
+ruby mkrf_conf.rb
 echo "Building glut ..."
 rake
 cp glut.so ../../lib
