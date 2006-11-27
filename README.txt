@@ -22,10 +22,11 @@ Status: Alpha
 
 Current status:
 
-* Compiles and runs on GNU/Linux (with Mesa) and Mac OS X.
-* No thought has yet been directed toward performance.
-* Will soon begin updating ruby-opengl to the current
-  OpenGL version.
+* Compiles and runs on GNU/Linux (with Mesa) and Mac OS X using
+  what's in svn for [mkrf](http://rubyforge.org/projects/mkrf/)
+  (doesn't work with the 0.1.2 release though).
+* Currently no-longer being worked on. Anyone interested in maintaining
+  this project please contact the current maintainer.
 
 <br/>
 <br/>

@@ -12,20 +12,21 @@ packages:
 * `libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev`
 
 
-
 Build instructions
 ------------------
 
-The current build setup is still under construction. We're waiting for
-the next mkrf release so we can transition over. So, some extconf.rb's are
-in place and you can use them if you've got the version of mkrf in svn
-installed (in fact, on GNU/Linux, with the cutting edge mkrf you can
-use the included `build.sh` to build).
+The current build setup is still under construction. When last looked at
+(late November 2006), we were waiting for
+the next mkrf release (we've patched what they have in svn, so it works,
+but their maintainer seems to have moved on and not made a release
+containing our fix). Building our ruby-opengl works, but you'll need
+the version of mkrf still in svn.
 
-Currently, to build, just run `rake` at the top level.  This should do
-everything necessary to build the OpenGL, GLU, and GLUT bindings for
-Ruby.  The top level Rakefile will dig down into the subdirectories
-under `ext` and build the various components.
+Once you have a mkrf in place, on unixy platforms, just run
+
+    ./build.sh
+
+to build.
 
 After building, the extension modules are automatically copied to the
 project's `./lib` directory.
@@ -35,9 +36,10 @@ Installing
 ----------
 
 For now, if you want to install ruby-opengl on your system, you can
-do so manually (there is no gem for it yet). Just copy the contents
-of `./lib` into your `.../lib/ruby/site_ruby/1.8` directory (or
-anywhere else `ruby` searches for modules).
+do so manually (there is no gem, nor even a release, for it yet).
+Just copy the contents of `./lib` into your
+`.../lib/ruby/site_ruby/1.8` directory (or anywhere else `ruby`
+searches for modules).
 
 
 Testing / Running
@@ -48,4 +50,4 @@ To run a sample file:
     $ cd examples
     $ ruby plane.rb
 
-Just hit ESC to exit the super-interesting OpenGL program.
+Hit ESC to exit.

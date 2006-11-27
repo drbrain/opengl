@@ -113,8 +113,6 @@ try:
   glVertex that examines its arguments and calls the appropriate
   glVertex{234}{fisdv} call in BaseGL.
 
-* Possibly switch from mkmf to mkrf.
-
 
 
 Implementation
@@ -128,5 +126,6 @@ to use standard OpenGL-style constant and function names.
 
 The build environment will:
 
-* use rake (and probably also mkrf, when mkrf is ready)
+* use rake and mkrf. (note -- development of mkrf seems to have
+  stalled)
 * minimize the number of additional tools required

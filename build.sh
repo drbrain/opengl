@@ -17,8 +17,10 @@
 # ok on GNU/Linux for now. ---John
 
 echo 'Cleaning up previous build products ...'
-# Note, extconf.rb should always generate a new Rakefile,
-# so we don't clean out old ones.
+# Note, mkrf_conf.rb should always generate a new Rakefile,
+# so we don't clean out old ones (also, recall that ext/common
+# contains a hand-written Rakefile which you wouldn't want to
+# remove).
 rm ext/common/rbogl.o
 rm ext/gl/gl.o
 rm ext/glu/glu.o
