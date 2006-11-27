@@ -4,9 +4,9 @@ Roadmap
 * Get BaseGL updated.
 * Get BaseGLU updated.
 * Get BaseGLUT updated.
-* Get the build working with mkrf.
 * Add the ESC keyboard handler to smooth.rb
 
+<br/>
 <br/>
 <br/>
 <br/>
