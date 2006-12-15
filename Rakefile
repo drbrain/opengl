@@ -22,6 +22,15 @@
 # All doc files that are destined for the website have filenames that
 # end in .txt.
 
+begin
+    require 'rubygems'
+rescue LoadError
+    nil
+end
+
+require 'rake'
+require 'rake/gempackagetask'
+
 WEBSITE_MKDN = FileList['./doc/*.txt'] << 'README.txt'
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 
@@ -76,4 +85,23 @@ task :upload_entire_website => [:gen_website] do
     sh "scp website/*.html johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
     sh "scp website/*.css johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
     sh "scp -r website/images johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+end
+
+
+spec = Gem::Specification.new do |s|
+    s.name              = "opengl"
+    s.version           = "0.3.2"
+    s.authors           = [ "John Gabriele", "Minh Thu Vo" ]
+    s.homepage          = "http://opengl-ruby.rubyforge.org"
+    s.platform          = Gem::Platform::RUBY
+    s.summary           = "OpenGL Interface for Ruby"
+    s.files             = FileList["lib/*"]
+    s.require_path      = "lib"
+    s.autorequire       = "gl"
+    s.has_rdoc          = false
+end
+
+# Create a task for creating a ruby gem
+Rake::GemPackageTask.new(spec) do |pkg|
+    pkg.need_tar = true
 end
