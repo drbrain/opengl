@@ -77,20 +77,20 @@ end
 
 desc 'Upload the newly-built site to RubyForge.'
 task :upload_website => [:gen_website] do
-    sh "scp website/*.html johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+    sh "scp website/*.html hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
 end
 
 desc 'Upload entire site, including stylesheet and the images directory.'
 task :upload_entire_website => [:gen_website] do
-    sh "scp website/*.html johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
-    sh "scp website/*.css johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
-    sh "scp -r website/images johnmg@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+    sh "scp website/*.html hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+    sh "scp website/*.css hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+    sh "scp -r website/images hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
 end
 
 
 spec = Gem::Specification.new do |s|
     s.name              = "opengl"
-    s.version           = "0.3.2"
+    s.version           = "0.33.0"
     s.authors           = [ "John Gabriele", "Minh Thu Vo" ]
     s.homepage          = "http://opengl-ruby.rubyforge.org"
     s.platform          = Gem::Platform::RUBY
