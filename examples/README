@@ -32,3 +32,5 @@ Status of examples
 
 * plane.rb -- works
 * smooth.rb, smooth_prev.rb -- works
+* aaindex.rb  -- does not seem to work
+* test.rb  -- does not seem to work
