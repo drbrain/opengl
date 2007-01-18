@@ -27,13 +27,11 @@ require 'opengl'
 class OpenglTest < Test::Unit::TestCase
 
     def test_gl_constant
-        assert_equal 1, GL::GL_VERSION_1_1
-        assert_equal 1, GL_VERSION_1_1
+        assert Gl::VERSION
     end
 
     def test_glut_constant
-        assert_equal 5, GLUT::GLUT_API_VERSION
-        assert_equal 5, GLUT_API_VERSION
+        assert Glut::GLUT_API_VERSION
     end
 
     def test_glu_constant

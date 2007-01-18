@@ -20,10 +20,10 @@ if __FILE__ == $0
 end
 
 require 'test/unit'
-require 'gl/GL'
-require 'glut/GLUT'
-include GL
-include GLUT
+require 'gl'
+require 'glut'
+include Gl
+include Glut
 
 
 # Yet to test

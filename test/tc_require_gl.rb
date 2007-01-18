@@ -20,17 +20,15 @@ if __FILE__ == $0
 end
 
 require 'test/unit'
-require 'gl/GL'
+require 'gl'
 
 # Test that a require but not include of GL forces the use of the full
 # namespace qualifiers:
-#   require GL
+#   require Gl
 #   ...
-#   GL::GL_VERSION_1_1 --> 1
-#   GL_VERSION_1_1     --> error
+#   Gl::VERSION exists
 class GLRequireTest < Test::Unit::TestCase
     def test_require_of_gl
-        assert_equal 1, GL::GL_VERSION_1_1
-        assert_raise(NameError) { GL_VERSION_1_1 }
+        assert Gl::GL_VERSION
     end
 end

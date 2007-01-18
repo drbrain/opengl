@@ -20,18 +20,16 @@ if __FILE__ == $0
 end
 
 require 'test/unit'
-require 'gl/GL'
-include GL
+require 'gl'
+include Gl
 
-# Test that an include of GL forces makes the OpenGL namespace available in
+# Test that an include of Gl forces makes the OpenGL namespace available in
 # the current module.
-#   include GL
+#   include Gl
 #   ...
-#   GL::GL_VERSION_1_1 --> 1
-#   GL_VERSION_1_1     --> 1
+#   Gl::VERSION exists
 class GlIncludeTest < Test::Unit::TestCase
     def test_require_of_gl
-        assert_equal 1, GL::GL_VERSION_1_1
-        assert_equal 1, GL_VERSION_1_1
+        assert Gl::GL_VERSION
     end
 end
