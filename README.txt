@@ -25,8 +25,11 @@ Current status:
 * Compiles and runs on GNU/Linux (with Mesa) and Mac OS X using
   what's in svn for [mkrf](http://rubyforge.org/projects/mkrf/)
   (doesn't work with the 0.1.2 release though).
-* Currently no-longer being worked on. Anyone interested in maintaining
-  this project please contact the current maintainer.
+* To compile under Mac OS X you MUST install your own version of Ruby
+  as the version included with Tiger (1.8.2) is has a broken rbconfig
+  and will fail to build the project properly.  Try either DarwinPorts,
+  fink, or building your own from source.
+* New project maintainer
 
 <br/>
 <br/>
