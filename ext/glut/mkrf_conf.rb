@@ -17,7 +17,12 @@ require 'rubygems'
 require 'mkrf'
 
 Mkrf::Generator.new( 'glut' ) do |g|
-    g.include_library( 'glut', 'glutSolidTeapot' )
-    g.include_library( 'GLU', 'gluLookAt' )
-    g.include_library( 'GL', 'glVertex3d' )
+    case RUBY_PLATFORM
+    when /darwin/
+        g.ldshared << ' -framework GLUT -framework OpenGL -framework Cocoa'
+    else
+        g.include_library( 'glut', 'glutSolidTeapot' )
+        g.include_library( 'GLU', 'gluLookAt' )
+        g.include_library( 'GL', 'glVertex3d')
+    end
 end

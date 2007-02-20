@@ -18,6 +18,11 @@ require 'mkrf'
 
 Mkrf::Generator.new( 'glu' ) do |g|
     g.objects << '../common/rbogl.o'
-    g.include_library( 'GLU', 'gluLookAt' )
-    g.include_library( 'GL', 'glVertex3d' )
+    case RUBY_PLATFORM
+    when /darwin/
+        g.ldshared << ' -framework OpenGL'
+    else
+        g.include_library( 'GLU', 'gluLookAt' )
+        g.include_library( 'GL', 'glVertex3d')
+    end
 end
