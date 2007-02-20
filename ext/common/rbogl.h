@@ -27,10 +27,17 @@ typedef struct RArray RArray;
 extern VALUE cProc;
 
 int   ary2cint( VALUE, int[], int );
+int   ary2cuint( VALUE, GLuint[], int );
+int   ary2cshort( VALUE, GLshort[], int );
+int   ary2cushort( VALUE, GLushort[], int );
+int   ary2cbyte( VALUE, GLbyte[], int );
+int   ary2cubyte( VALUE, GLubyte[], int );
+int   ary2cboolean( VALUE, GLboolean[], int );
 int   ary2cdbl( VALUE, double[], int );
 int   ary2cflt( VALUE, float[], int );
 void  mary2ary( VALUE, VALUE );
-void  ary2cmat4x4( VALUE, double[] );
+void  ary2cmat4x4dbl( VALUE, double[] );
+void  ary2cmat4x4flt( VALUE, float[] );
 VALUE allocate_buffer_with_string( int );
 
 #ifndef NUM2DBL
@@ -38,5 +45,8 @@ double num2double( VALUE );
 #define _NO_NUM2DBL_
 #define NUM2DBL(_val) num2double(_val) 
 #endif /* NUM2DBL */
+
+int gltype_size(GLenum type);
+int glformat_size(GLenum format);
 
 #endif /* _RBOGL_H_ */

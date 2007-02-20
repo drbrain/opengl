@@ -27,6 +27,7 @@
 #endif
 
 #include "rbogl.h"
+#include "gl-enums.h"
 
 /* -------------------------------------------------------------------- */
 #ifdef _NO_NUM2DBL_
@@ -40,26 +41,36 @@ extern double num2double( VALUE val )
 #endif
 
 /* -------------------------------------------------------------------- */
-extern int ary2cint( arg, cary, maxlen )
-VALUE arg;
-int cary[];
-int maxlen;
-{
-    int i;
-    struct RArray* ary;
-    VALUE entry;
-    ary = RARRAY(rb_Array(arg));
-    if (maxlen < 1)
-        maxlen = ary->len;
-    else
-        maxlen = maxlen < ary->len ? maxlen : ary->len;
-    for (i=0; i < maxlen; i++)
-    {
-        entry = rb_ary_entry((VALUE)ary,i);
-        cary[i] = NUM2INT(entry);
-    }
-    return i;
+#define ARY2INTEGRAL(_type_) \
+extern int ary2c##_type_( arg, cary, maxlen ) \
+VALUE arg; \
+GL##_type_ cary[]; \
+int maxlen; \
+{ \
+    int i; \
+    struct RArray* ary; \
+    VALUE entry; \
+    ary = RARRAY(rb_Array(arg)); \
+    if (maxlen < 1) \
+        maxlen = ary->len; \
+    else \
+        maxlen = maxlen < ary->len ? maxlen : ary->len; \
+    for (i=0; i < maxlen; i++) \
+    { \
+        entry = rb_ary_entry((VALUE)ary,i); \
+        cary[i] = (GL##_type_)NUM2INT(entry); \
+    } \
+    return i; \
 }
+
+ARY2INTEGRAL(int)
+ARY2INTEGRAL(uint)
+ARY2INTEGRAL(byte)
+ARY2INTEGRAL(ubyte)
+ARY2INTEGRAL(short)
+ARY2INTEGRAL(ushort)
+ARY2INTEGRAL(boolean)
+#undef ARY2INTEGRAL
 
 /* -------------------------------------------------------------------- */
 extern int ary2cflt(arg, cary, maxlen)
@@ -115,7 +126,7 @@ VALUE ary;
 }
 
 /* -------------------------------------------------------------------- */
-extern void ary2cmat4x4(ary, cary)
+extern void ary2cmat4x4dbl(ary, cary)
 VALUE ary;
 double cary[];
 {
@@ -132,6 +143,27 @@ double cary[];
             ary_r = RARRAY(rb_Array(ary_c->ptr[i]));
             for(j = 0; j < ary_r->len && j < 4; j++)
                 cary[i*4+j] = (GLdouble)NUM2DBL(ary_r->ptr[j]);
+        }
+    }
+}
+
+extern void ary2cmat4x4flt(ary, cary)
+VALUE ary;
+float cary[];
+{
+    int i,j;
+    RArray *ary_r,*ary_c;
+    memset(cary, 0x0, sizeof(float[4*4]));
+    ary_c = RARRAY(rb_Array(ary));
+    if (TYPE(ary_c->ptr[0]) != T_ARRAY)
+        ary2cflt((VALUE)ary_c, cary, 16);
+    else
+    {
+        for (i = 0; i < ary_c->len && i < 4; i++)
+        {
+            ary_r = RARRAY(rb_Array(ary_c->ptr[i]));
+            for(j = 0; j < ary_r->len && j < 4; j++)
+                cary[i*4+j] = (GLfloat)NUM2DBL(ary_r->ptr[j]);
         }
     }
 }
@@ -156,18 +188,12 @@ int glformat_size(GLenum format)
             return 2;
 
         case GL_RGB:
-#ifdef GL_BGR_EXT
         case GL_BGR_EXT:
-#endif
             return 3;
 
         case GL_RGBA:
-#ifdef GL_BGRA_EXT
         case GL_BGRA_EXT:
-#endif
-#ifdef GL_ABGR_EXT
         case GL_ABGR_EXT:
-#endif
             return 4;
         case 1:
         case 2:
@@ -186,15 +212,27 @@ int gltype_size(GLenum type)
     {
         case GL_BYTE:
         case GL_UNSIGNED_BYTE:
+		case GL_UNSIGNED_BYTE_3_3_2:
+		case GL_UNSIGNED_BYTE_2_3_3_REV:
             return 8;
 
         case GL_SHORT:
         case GL_UNSIGNED_SHORT:
+        case GL_UNSIGNED_SHORT_5_6_5:
+        case GL_UNSIGNED_SHORT_5_6_5_REV:
+        case GL_UNSIGNED_SHORT_4_4_4_4:
+        case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+        case GL_UNSIGNED_SHORT_5_5_5_1:
+        case GL_UNSIGNED_SHORT_1_5_5_5_REV:
             return 16;
 
         case GL_INT:
         case GL_UNSIGNED_INT:
         case GL_FLOAT:
+		case GL_UNSIGNED_INT_8_8_8_8:
+		case GL_UNSIGNED_INT_8_8_8_8_REV:
+		case GL_UNSIGNED_INT_10_10_10_2:
+		case GL_UNSIGNED_INT_2_10_10_10_REV:
             return 32;
 
         case GL_BITMAP:
@@ -212,8 +250,11 @@ VALUE allocate_buffer_with_string( int size )
 }
 
 /* -------------------------------------------------------------------- */
+void Init_gl(void);
+
 void Init_opengl()
 {
-  Init_gl();
+  Init_gl(); /* is this needed ? */			  
   /* RxINC: InitializeGLU(); */
 }
+

@@ -1242,8 +1242,8 @@ VALUE obj;
         glGetIntegerv(GL_VIEWPORT, vport);
         break;
     case 6:
-        ary2cmat4x4(args[3], mdl_mtx);
-        ary2cmat4x4(args[4], prj_mtx);
+        ary2cmat4x4dbl(args[3], mdl_mtx);
+        ary2cmat4x4dbl(args[4], prj_mtx);
         ary2cint(args[5], vport, 4);
         break;
     default:
@@ -1287,8 +1287,8 @@ VALUE obj;
         glGetIntegerv(GL_VIEWPORT, vport);
         break;
     case 6:
-        ary2cmat4x4(args[3], mdl_mtx);
-        ary2cmat4x4(args[4], prj_mtx);
+        ary2cmat4x4dbl(args[3], mdl_mtx);
+        ary2cmat4x4dbl(args[4], prj_mtx);
         ary2cint(args[5], vport, 4);
         break;
     default:
@@ -1449,7 +1449,7 @@ static VALUE module;
 #endif
 
 
-void InitializeGLU()
+void Init_glu()
 {
     callId = rb_intern("call");
     refId = rb_intern("[]");
