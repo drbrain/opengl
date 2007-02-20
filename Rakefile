@@ -29,10 +29,30 @@ rescue LoadError
 end
 
 require 'rake'
+require 'rake/clean'
 require 'rake/gempackagetask'
+require 'mkrf/rakehelper'
 
 WEBSITE_MKDN = FileList['./doc/*.txt'] << 'README.txt'
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
+
+CLEAN.include("ext/gl*/Rakefile", "ext/*/mkrf.log", "ext/*/*.so", 
+              "lib/*.so", "ext/*/*.o", "pkg")
+CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
+                "doc/*.html", "website/*.html")
+
+setup_extension('gl', 'gl')
+setup_extension('glu', 'glu')
+setup_extension('glut', 'glut')
+
+desc 'Does a full compile'
+task :default => [:build_rbogl, :gl, :glu, :glut]
+
+desc 'Builds common OpenGL object file.  Necessary for building GL bindings'
+task :build_rbogl do
+    puts "Building common rbogl object file"
+    sh "cd ext/common && rake"
+end
 
 desc 'Show contents of some variables related to website doc generation.'
 task :explain_website do
@@ -52,13 +72,6 @@ task :gen_website => NICE_HTML_DOCS do
     puts
     sh "cp README.html website/index.html"
     sh "cp doc/*.html website"
-end
-
-desc 'Delete all generated website files.'
-task :clean_website do
-    sh "rm *.plain doc/*.plain"
-    sh "rm doc/*.snip"
-    sh "rm *.html doc/*.html website/*.html"
 end
 
 # You'll see some intermediate .plain files get generated. These are html,
@@ -87,18 +100,18 @@ task :upload_entire_website => [:gen_website] do
     sh "scp -r website/images hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
 end
 
-
 spec = Gem::Specification.new do |s|
-    s.name              = "opengl"
+    s.name              = "ruby-opengl"
     s.version           = "0.33.0"
     s.authors           = [ "John Gabriele", "Minh Thu Vo" ]
     s.homepage          = "http://opengl-ruby.rubyforge.org"
     s.platform          = Gem::Platform::RUBY
     s.summary           = "OpenGL Interface for Ruby"
-    s.files             = FileList["lib/*"]
+    s.files             = FileList["{lib,ext,doc,examples}/**/*"].exclude("*.so", "*.o", "ext/*.log", "ext/gl*/Rakefile").to_a
     s.require_path      = "lib"
     s.autorequire       = "gl"
     s.has_rdoc          = false
+    s.add_dependency("mkrf", ">=0.2.0")
 end
 
 # Create a task for creating a ruby gem
