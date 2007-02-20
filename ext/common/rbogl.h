@@ -26,7 +26,7 @@ typedef struct RArray RArray;
 
 extern VALUE cProc;
 
-int   ary2cint( VALUE, int[], int );
+int   ary2cint( VALUE, GLint[], int );
 int   ary2cuint( VALUE, GLuint[], int );
 int   ary2cshort( VALUE, GLshort[], int );
 int   ary2cushort( VALUE, GLushort[], int );
