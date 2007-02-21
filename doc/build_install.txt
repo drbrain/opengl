@@ -11,35 +11,27 @@ packages:
 * `libgl1-mesa libgl1-mesa-dri libglu1-mesa freeglut3`
 * `libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev`
 
+On OS X, you will need to install your own version of Ruby as the
+version that ships with OS X has known problems with properly building
+ruby-opengl bindings.  You'll also need XCode for gcc and tools.
 
-Build instructions
+Manual Build instructions
 ------------------
 
-The current build setup is still under construction. When last looked at
-(late November 2006), we were waiting for
-the next mkrf release (we've patched what they have in svn, so it works,
-but their maintainer seems to have moved on and not made a release
-containing our fix). Building our ruby-opengl works, but you'll need
-the version of mkrf still in svn.
-
-Once you have a mkrf in place, on unixy platforms, just run
-
-    ./build.sh
-
-to build.
-
-After building, the extension modules are automatically copied to the
-project's `./lib` directory.
+1. Install mkrf (Need at least version 0.2.0)
+   
+   gem install -y mkrf
+2. Run 'rake' at the top level of the project
+3. Run 'rake gem' to build a gem
+4. Run 'gem install pkg/ruby-opengl-<version>.gem' to install the gem
 
 
-Installing
-----------
+Installing from rubygems
+-------------------
 
-For now, if you want to install ruby-opengl on your system, you can
-do so manually (there is no gem, nor even a release, for it yet).
-Just copy the contents of `./lib` into your
-`.../lib/ruby/site_ruby/1.8` directory (or anywhere else `ruby`
-searches for modules).
+ruby-opengl should also support being installed via gems now.  Just
+try 'gem install -y ruby-opengl' and it should pull down the gem
+and try to build the bindings for you automatically.
 
 
 Testing / Running

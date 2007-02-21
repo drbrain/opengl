@@ -8,6 +8,8 @@ by first name) also goes to:
 * Ilmari Heikkinen -- provided code for changing how users can call method and constant names.
 * James Adam -- Mac OS X fixes
 * Tony Hursh -- Mac OS X glut build tweak
+* Sean Long -- More Mac OS X fixes
+* Jan Dvorak -- Patches to start OpenGL 2.1 support
 * **Yoshi** -- providing ruby-opengl-0.32g from which to work off of.
 
 

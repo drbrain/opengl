@@ -124,8 +124,7 @@ to use standard OpenGL-style constant and function names.
 
 ### Build environment ###
 
-The build environment will:
+The build environment will use:
 
-* use rake and mkrf. (note -- development of mkrf seems to have
-  stalled)
+* use rake and mkrf. 
 * minimize the number of additional tools required
