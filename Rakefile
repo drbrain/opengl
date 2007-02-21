@@ -48,6 +48,8 @@ setup_extension('glut', 'glut')
 desc 'Does a full compile'
 task :default => [:build_rbogl, :gl, :glu, :glut]
 
+task :extension => :default
+
 desc 'Builds common OpenGL object file.  Necessary for building GL bindings'
 task :build_rbogl do
     puts "Building common rbogl object file"
@@ -100,6 +102,10 @@ task :upload_entire_website => [:gen_website] do
     sh "scp -r website/images hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
 end
 
+# Define the files that will go into the gem
+gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
+gem_files = gem_files.exclude("**/*.so", "**/*.o", "ext/**/*.log", "ext/gl*/Rakefile")
+
 spec = Gem::Specification.new do |s|
     s.name              = "ruby-opengl"
     s.version           = "0.33.0"
@@ -107,7 +113,10 @@ spec = Gem::Specification.new do |s|
     s.homepage          = "http://opengl-ruby.rubyforge.org"
     s.platform          = Gem::Platform::RUBY
     s.summary           = "OpenGL Interface for Ruby"
-    s.files             = FileList["{lib,ext,doc,examples}/**/*"].exclude("*.so", "*.o", "ext/*.log", "ext/gl*/Rakefile").to_a
+    s.files             = gem_files
+    s.extensions        << 'Rakefile'
+#    s.extensions        << 'ext/common/Rakefile', 'ext/gl/mkrf_conf.rb', 
+#                           'ext/glu/mkrf_conf.rb', 'ext/glut/mkrf_conf.rb']
     s.require_path      = "lib"
     s.autorequire       = "gl"
     s.has_rdoc          = false
