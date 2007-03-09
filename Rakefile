@@ -37,7 +37,8 @@ WEBSITE_MKDN = FileList['./doc/*.txt'] << 'README.txt'
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 
 CLEAN.include("ext/gl*/Rakefile", "ext/*/mkrf.log", "ext/*/*.so", 
-              "lib/*.so", "ext/*/*.o", "pkg")
+              "ext/**/*.bundle", "lib/*.so", "lib/*.bundle", "ext/*/*.o", 
+              "pkg")
 CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
                 "doc/*.html", "website/*.html")
 
