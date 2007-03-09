@@ -19,11 +19,15 @@
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
+#include <mach-o/dyld.h>
+#include <stdlib.h>
+#include <string.h>
 #elif defined WIN32
 #include <windows.h>
 #include <GL/gl.h>
 #else
 #include <GL/gl.h>
+#include <GL/glx.h>
 #endif
 
 #include "rbogl.h"
@@ -41,7 +45,7 @@ extern double num2double( VALUE val )
 #endif
 
 /* -------------------------------------------------------------------- */
-#define ARY2INTEGRAL(_type_) \
+#define ARY2INTEGRAL(_type_,_convert_) \
 extern int ary2c##_type_( arg, cary, maxlen ) \
 VALUE arg; \
 GL##_type_ cary[]; \
@@ -58,18 +62,18 @@ int maxlen; \
     for (i=0; i < maxlen; i++) \
     { \
         entry = rb_ary_entry((VALUE)ary,i); \
-        cary[i] = (GL##_type_)NUM2INT(entry); \
+        cary[i] = (GL##_type_)_convert_(entry); \
     } \
     return i; \
 }
 
-ARY2INTEGRAL(int)
-ARY2INTEGRAL(uint)
-ARY2INTEGRAL(byte)
-ARY2INTEGRAL(ubyte)
-ARY2INTEGRAL(short)
-ARY2INTEGRAL(ushort)
-ARY2INTEGRAL(boolean)
+ARY2INTEGRAL(int,NUM2INT)
+ARY2INTEGRAL(uint,NUM2UINT)
+ARY2INTEGRAL(byte,NUM2INT)
+ARY2INTEGRAL(ubyte,NUM2INT)
+ARY2INTEGRAL(short,NUM2INT)
+ARY2INTEGRAL(ushort,NUM2INT)
+ARY2INTEGRAL(boolean,NUM2INT)
 #undef ARY2INTEGRAL
 
 /* -------------------------------------------------------------------- */
@@ -214,7 +218,7 @@ int gltype_size(GLenum type)
         case GL_UNSIGNED_BYTE:
 		case GL_UNSIGNED_BYTE_3_3_2:
 		case GL_UNSIGNED_BYTE_2_3_3_REV:
-            return 8;
+            return 1;
 
         case GL_SHORT:
         case GL_UNSIGNED_SHORT:
@@ -224,7 +228,7 @@ int gltype_size(GLenum type)
         case GL_UNSIGNED_SHORT_4_4_4_4_REV:
         case GL_UNSIGNED_SHORT_5_5_5_1:
         case GL_UNSIGNED_SHORT_1_5_5_5_REV:
-            return 16;
+            return 2;
 
         case GL_INT:
         case GL_UNSIGNED_INT:
@@ -233,10 +237,10 @@ int gltype_size(GLenum type)
 		case GL_UNSIGNED_INT_8_8_8_8_REV:
 		case GL_UNSIGNED_INT_10_10_10_2:
 		case GL_UNSIGNED_INT_2_10_10_10_REV:
-            return 32;
+            return 4;
 
         case GL_BITMAP:
-            return 1;
+            return 0;
 
         default:
             return -1;
@@ -247,6 +251,47 @@ int gltype_size(GLenum type)
 VALUE allocate_buffer_with_string( int size )
 {
     return rb_str_new(NULL, size);
+}
+
+/* -------------------------------------------------------------------- */
+void *load_gl_function(const char *name) 
+{
+	void *func_ptr = NULL;
+
+#if defined(__APPLE__)
+	static const struct mach_header* library = NULL;
+	char* symbolName;
+	NSSymbol symbol;
+	if (library == NULL)
+		library = NSAddImage("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL",NSADDIMAGE_OPTION_RETURN_ON_ERROR);
+
+	if (library == NULL)
+		rb_raise(rb_eRuntimeError,"Can't load OpenGL library for dynamic loading");
+		
+	/*  prepend a '_' for the Unix C symbol mangling convention  */
+	symbolName = ALLOC_N(char,strlen(name) + 2);
+	symbolName[0] = '_';
+	strcpy(symbolName+1, name);
+
+	symbol = NSLookupSymbolInImage(library,symbolName,NSLOOKUPSYMBOLINIMAGE_OPTION_BIND | NSLOOKUPSYMBOLINIMAGE_OPTION_RETURN_ON_ERROR);
+	xfree(symbolName);
+
+	if (symbol == NULL)
+		func_ptr = NULL;
+	else
+		func_ptr = NSAddressOfSymbol(symbol);
+#elif defined(WIN32) || defined(_WIN32)
+	func_ptr = wglGetProcAddress((LPCSTR)name);
+#elif defined(GLX_VERSION_1_4)
+    func_ptr = glXGetProcAddress((const GLubyte *)name);
+#else
+    func_ptr = glXGetProcAddressARB((const GLubyte *)name);
+#endif
+
+	if (func_ptr == NULL)
+	    rb_raise(rb_eNotImpError,"Function %s is not available at this machine",name);
+
+	return func_ptr;
 }
 
 /* -------------------------------------------------------------------- */

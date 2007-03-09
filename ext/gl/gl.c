@@ -21,6 +21,11 @@ static VALUE module;
 void gl_init_enums(VALUE);
 void gl_init_functions_1_0__1_1(VALUE);
 void gl_init_functions_1_2(VALUE);
+void gl_init_functions_1_3(VALUE);
+void gl_init_functions_1_4(VALUE);
+void gl_init_functions_1_5(VALUE);
+void gl_init_functions_2_0(VALUE);
+void gl_init_functions_2_1(VALUE);
 
 void Init_gl()
 {
@@ -28,4 +33,9 @@ void Init_gl()
 	gl_init_enums(module);
 	gl_init_functions_1_0__1_1(module);
 	gl_init_functions_1_2(module);
+	gl_init_functions_1_3(module);
+	gl_init_functions_1_4(module);
+	gl_init_functions_1_5(module);
+	gl_init_functions_2_0(module);
+	gl_init_functions_2_1(module);
 }

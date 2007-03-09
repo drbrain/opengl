@@ -74,7 +74,7 @@ VALUE obj,arg1;
 		n = RSTRING(arg1)->len;
 	} else if (TYPE(arg1) == T_ARRAY) {
 		type = GL_INT;
-		lists = ALLOC_N(int, RARRAY(arg1)->len);
+		lists = ALLOC_N(GLint, RARRAY(arg1)->len);
 		n = ary2cint(arg1,lists,0);
 	} else {
 		rb_raise(rb_eArgError,"GL.CallLists wrong arguments");
@@ -245,9 +245,9 @@ VALUE obj,arg1,arg2,arg3;
 	GLuint red;
 	GLuint green;
 	GLuint blue;
-	red = (GLuint)NUM2INT(arg1);
-	green = (GLuint)NUM2INT(arg2);
-	blue = (GLuint)NUM2INT(arg3);
+	red = (GLuint)NUM2UINT(arg1);
+	green = (GLuint)NUM2UINT(arg2);
+	blue = (GLuint)NUM2UINT(arg3);
 	glColor3ui(red,green,blue);
 	return Qnil;
 }
@@ -370,10 +370,10 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLuint green;
 	GLuint blue;
 	GLuint alpha;
-	red = (GLuint)NUM2INT(arg1);
-	green = (GLuint)NUM2INT(arg2);
-	blue = (GLuint)NUM2INT(arg3);
-	alpha = (GLuint)NUM2INT(arg4);
+	red = (GLuint)NUM2UINT(arg1);
+	green = (GLuint)NUM2UINT(arg2);
+	blue = (GLuint)NUM2UINT(arg3);
+	alpha = (GLuint)NUM2UINT(arg4);
 	glColor4ui(red,green,blue,alpha);
 	return Qnil;
 }
@@ -1522,13 +1522,9 @@ gl_PolygonStipple(obj,arg1)
 VALUE obj,arg1;
 {
 	GLubyte mask[128];
-	RArray* ary;
-	int i;
-	memset(mask, 0x0, sizeof(GLubyte[128]));
+	memset(mask, 0x0, sizeof(GLubyte)*128);
 	if (TYPE(arg1) == T_ARRAY) {
-		ary = RARRAY(arg1);
-		for(i = 0; i < ary->len && i < 128; i++)
-			mask[i] = (GLubyte)NUM2INT(ary->ptr[i]);
+		ary2cubyte(arg1,mask,128);
 	}
 	else if (TYPE(arg1) == T_STRING) {
 		if (RSTRING(arg1)->len < 128)
@@ -1650,21 +1646,19 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	border = (GLint)NUM2INT(arg5);
 	format = (GLenum)NUM2INT(arg6);
 	type = (GLenum)NUM2INT(arg7);
-	if (TYPE(arg8) == T_STRING) {
-		type_size = gltype_size(type) / 8;
-		format_size = glformat_size(format);
-		if (type_size <= 0 || format_size == -1)
-			return Qnil;
+	type_size = gltype_size(type);
+	format_size = glformat_size(format);
+	if (type_size == -1 || format_size == -1)
+		return Qnil;
+	if (type==GL_BITMAP)
+		size = format_size*(width/8);
+	else
 		size = type_size*format_size*width;
+	if (TYPE(arg8) == T_STRING) {
 		if (RSTRING(arg8)->len < size)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
 		pixels = RSTRING(arg8)->ptr;
 	} else if (NIL_P(arg8)) {
-		type_size = gltype_size(type) / 8;
-		format_size = glformat_size(format);
-		if (type_size <= 0 || format_size == -1)
-			return Qnil;
-		size = type_size*format_size*width;
 		pixels = NULL;
 	} else
 		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg8));
@@ -1696,21 +1690,19 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	border = (GLint)NUM2INT(arg6);
 	format = (GLenum)NUM2INT(arg7);
 	type = (GLenum)NUM2INT(arg8);
-	if (TYPE(arg9) == T_STRING) {
-		type_size = gltype_size(type) / 8;
-		format_size = glformat_size(format);
-		if (type_size <= 0 || format_size == -1)
-			return Qnil;
+	type_size = gltype_size(type);
+	format_size = glformat_size(format);
+	if (type_size == -1 || format_size == -1)
+		return Qnil;
+	if (type==GL_BITMAP)
+		size = format_size*((height*width)/8);
+	else
 		size = type_size*format_size*height*width;
+	if (TYPE(arg9) == T_STRING) {
 		if (RSTRING(arg9)->len < size)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
 		pixels = RSTRING(arg9)->ptr;
 	} else if (NIL_P(arg9)) {
-		type_size = gltype_size(type) / 8;
-		format_size = glformat_size(format);
-		if (type_size <= 0 || format_size == -1)
-			return Qnil;
-		size = type_size*format_size*height*width;
 		pixels = NULL;
 	} else
 		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg9));
@@ -1868,28 +1860,15 @@ VALUE obj,arg1,arg2,arg3;
 	glTexGeniv(coord,pname,params);
 	return Qnil;
 }
-
-#define DEFAULT_BUFFER	512
 static VALUE g_current_feed_buffer;
 static VALUE
-gl_FeedbackBuffer(argc, argv, obj)
-int argc;
-VALUE* argv;
-VALUE obj;
+gl_FeedbackBuffer(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
 {
 	GLsizei size;
 	GLenum type;
-	if (argc == 0) {
-		size = DEFAULT_BUFFER;
-		type = GL_4D_COLOR_TEXTURE;
-	}
-	else if (argc == 2) {
-		size = NUM2INT(argv[0]);
-		type = NUM2INT(argv[1]);
-	}
-	else {
-		rb_raise(rb_eTypeError, "GL.FeedbackBuffer");
-	}
+	size = (GLsizei)NUM2INT(arg1);
+	type = (GLenum)NUM2INT(arg2);
 	g_current_feed_buffer = allocate_buffer_with_string(sizeof(GLfloat)*size);
 	rb_str_freeze(g_current_feed_buffer);
 	glFeedbackBuffer(size, type, (GLfloat*)RSTRING(g_current_feed_buffer)->ptr);
@@ -1898,17 +1877,11 @@ VALUE obj;
 
 static VALUE g_current_sel_buffer;
 static VALUE
-gl_SelectBuffer(argc,argv,obj)
-int argc;
-VALUE *argv;
-VALUE obj;
+gl_SelectBuffer(obj,arg1)
+VALUE obj,arg1;
 {
-	VALUE args;
 	GLsizei size;
-	size = DEFAULT_BUFFER;
-	rb_scan_args(argc, argv, "01", &args);
-	if (args != Qnil)
-		size = (GLsizei)NUM2INT(args);
+	size = (GLsizei)NUM2INT(arg1);
 	g_current_sel_buffer = allocate_buffer_with_string(sizeof(GLuint)*size);
 	rb_str_freeze(g_current_sel_buffer);
 	glSelectBuffer(size, (GLuint*)RSTRING(g_current_sel_buffer)->ptr);
@@ -2729,18 +2702,23 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	int format;
 	int type;
 	VALUE pixels;
+	GLsizei type_size;
+	GLsizei format_size;
+	GLsizei size;
 	x = (GLint)NUM2INT(arg1);
 	y = (GLint)NUM2INT(arg2);
 	width = (GLsizei)NUM2INT(arg3);
 	height = (GLsizei)NUM2INT(arg4);
 	format = NUM2INT(arg5);
 	type = NUM2INT(arg6);
-	if (format != -1 && type != -1) {
-		int type_size;
-		int format_size;
-		type_size = gltype_size(type) / 8;
-		format_size = glformat_size(format);
-		pixels = allocate_buffer_with_string(width*height*format_size*type_size);
+	type_size = gltype_size(type);
+	format_size = glformat_size(format);
+	if (type_size != -1 && format_size != -1) {
+		if (type==GL_BITMAP)
+			size = format_size*((width*height)/8);
+		else
+			size = width*height*format_size*type_size;
+		pixels = allocate_buffer_with_string(size);
 		glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING(pixels)->ptr);
 		return pixels;
 	}
@@ -2756,18 +2734,27 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLenum format;
 	GLenum type;
 	const char *pixels;
+	GLsizei size;
+	GLsizei type_size;
+	GLsizei format_size;
 	width = (GLsizei)NUM2INT(arg1);
 	height = (GLsizei)NUM2INT(arg2);
 	format = (GLenum)NUM2INT(arg3);
 	type = (GLenum)NUM2INT(arg4);
-	if (format != -1 && type != -1) {
-		if (TYPE(arg5) != T_STRING)
-			rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg5));
-		if (RSTRING(arg5)->len < width * height * glformat_size(format) * gltype_size(type) / 8)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg5)->len);
-		pixels = RSTRING(arg5)->ptr;
-		glDrawPixels(width,height,format,type,pixels);
-	}
+	if (TYPE(arg5) != T_STRING)
+		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg5));
+	type_size = gltype_size(type);
+	format_size = glformat_size(format);
+	if (type_size == -1 || format_size == -1)
+		rb_raise(rb_eArgError, "type/format mismatch");
+	if (type==GL_BITMAP)
+		size = format_size*(width/8);
+	else
+		size = type_size*format_size*width*height;
+	if (RSTRING(arg5)->len < size)
+		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg5)->len);
+	pixels = RSTRING(arg5)->ptr;
+	glDrawPixels(width,height,format,type,pixels);
 	return Qnil;
 }
 
@@ -3319,8 +3306,8 @@ VALUE obj,arg1;
 }
 
 static VALUE
-gl_GetPolygonStipple(obj,arg1)
-VALUE obj,arg1;
+gl_GetPolygonStipple(obj)
+VALUE obj;
 {
 	GLubyte mask[128];
 	glGetPolygonStipple(mask);
@@ -3527,15 +3514,54 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-/*
+
 static VALUE
-gl_GetTexImage(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
+gl_GetTexImage(obj,arg1,arg2,arg3,arg4)
+VALUE obj,arg1,arg2,arg3,arg4;
 {
-	#warning glGetTexImage not implemented
-	return Qnil;
+	GLenum tex;
+	GLint lod;
+	GLenum format;
+	GLenum type;
+	GLint width;
+	GLint height;
+	GLint depth;
+	GLint size;
+	GLint format_size;
+	GLint type_size;
+	VALUE pixels;
+	tex = (GLenum)NUM2INT(arg1);
+	lod = (GLint)NUM2INT(arg2);
+	format = (GLenum)NUM2INT(arg3);
+	type = (GLenum)NUM2INT(arg4);
+	format_size = glformat_size(format);
+	type_size = gltype_size(type);
+	if (type_size == -1 && format_size == -1)
+		return Qnil;
+
+	size = 1;
+	switch(tex) {
+		case GL_TEXTURE_3D:
+			glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_DEPTH,&depth);
+			size *= depth;
+			/* fall through */
+		case GL_TEXTURE_2D:
+			glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_HEIGHT,&height);
+			size *= height;
+			/* fall through */
+		case GL_TEXTURE_1D:
+			glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_WIDTH,&width);
+			size *= width;
+			break;
+		default:
+			return Qnil;
+	}
+	size *=	format_size*type_size;
+	pixels = allocate_buffer_with_string(size);
+	glGetTexImage(tex,lod,format,type,(GLvoid*)RSTRING(pixels)->ptr);
+	return pixels;
 }
-*/
+
 
 static VALUE
 gl_GetTexParameterfv(obj,arg1,arg2)
@@ -3891,12 +3917,12 @@ VALUE obj,arg1;
 
 static VALUE g_Vertex_ptr;
 static VALUE g_Normal_ptr;
-static VALUE g_Color_ptr;
-static VALUE g_Index_ptr;
-static VALUE g_TexCoord_ptr;
-static VALUE g_EdgeFlag_ptr;
-VALUE g_FogCoord_ptr = 0;
-VALUE g_SecondaryColor_ptr = 0;
+static VALUE g_Color_ptr; 
+static VALUE g_Index_ptr; 
+static VALUE g_TexCoord_ptr; 
+static VALUE g_EdgeFlag_ptr; 
+VALUE g_FogCoord_ptr; /* OpenGL 1.4 */
+VALUE g_SecondaryColor_ptr; /* OpenGL 1.4 */
 #define POINTER_FUNC(_func_) \
 static VALUE \
 gl_##_func_##Pointer(obj, arg1, arg2, arg3, arg4) \
@@ -4006,6 +4032,10 @@ VALUE obj,arg1,arg2;
 			return g_FogCoord_ptr;
 		case GL_SECONDARY_COLOR_ARRAY_POINTER:
 			return g_SecondaryColor_ptr;
+		case GL_FEEDBACK_BUFFER_POINTER:
+			return g_current_feed_buffer;
+		case GL_SELECTION_BUFFER_POINTER:
+			return g_current_sel_buffer;			
 		default:
 			rb_raise(rb_eArgError, "Invalid pname %d",pname);
 			break; /* not reached */
@@ -4178,12 +4208,17 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	width = (GLsizei)NUM2INT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
-	if (TYPE(arg7) == T_STRING) {
-		type_size = gltype_size(type) / 8;
-		format_size = glformat_size(format);
-		if (type_size < 0 || format_size == -1)
-			return Qnil;
+	type_size = gltype_size(type);
+	format_size = glformat_size(format);
+	if (type_size == -1 || format_size == -1)
+		return Qnil;
+
+	if (type==GL_BITMAP)
+		size = format_size*(width/8);
+	else
 		size = type_size*format_size*width;
+
+	if (TYPE(arg7) == T_STRING) {
 		if (RSTRING(arg7)->len < size)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
 		 pixels = RSTRING(arg7)->ptr;
@@ -4217,12 +4252,15 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	height = (GLsizei)NUM2INT(arg6);
 	format = (GLenum)NUM2INT(arg7);
 	type = (GLenum)NUM2INT(arg8);
-	if (TYPE(arg9) == T_STRING) {
-		type_size = gltype_size(type) / 8;
-		format_size = glformat_size(format);
-		if (type_size < 0 || format_size == -1)
-			return Qnil;
+	type_size = gltype_size(type);
+	format_size = glformat_size(format);
+	if (type_size == -1 || format_size == -1)
+		return Qnil;
+	if (type==GL_BITMAP)
+		size = format_size*((height*width)/8);
+	else
 		size = type_size*format_size*height*width;
+	if (TYPE(arg9) == T_STRING) {
 		if (RSTRING(arg9)->len < size)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
 		 pixels = RSTRING(arg9)->ptr;
@@ -4280,11 +4318,9 @@ VALUE obj,arg1;
 {
 	GLsizei n;
 	GLuint *textures;
-	RArray *ary;
 	if (TYPE(arg1) != T_ARRAY)
 		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg1));
-	ary = RARRAY(arg1);
-	n = ary->len;
+	n = RARRAY(arg1)->len;
 	textures = ALLOC_N(GLuint,n);
 	ary2cuint(arg1,textures,n); 
 	glDeleteTextures( n, textures);
@@ -4538,14 +4574,15 @@ VALUE obj; \
 { \
 	int num; \
 	VALUE args[4]; \
-	RArray *ary; \
-	switch (num = rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
-	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
+	RArray *ary,*ary2; \
+	switch (num = rb_scan_args(argc, argv, "22", &args[0], &args[1], &args[2], &args[3])) { \
+	case 2: \
+		if (TYPE(args[0]) == T_ARRAY && TYPE(args[1]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \
+		ary2 = RARRAY(args[1]); \
 		switch (ary->len) { \
-			case 4: \
-			gl_Rect##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
+			case 2: \
+			gl_Rect##_type_(obj,ary->ptr[0],ary->ptr[1],ary2->ptr[0],ary2->ptr[1]); \
 			break; \
 			default: \
 			rb_raise(rb_eArgError, "array length:%d", ary->len); \
@@ -4584,6 +4621,9 @@ VALUE obj; \
 		if (TYPE(args[0]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \
 		switch (ary->len) { \
+			case 1: \
+			gl_TexCoord1##_type_(obj,ary->ptr[0]); \
+			break; \
 			case 2: \
 			gl_TexCoord2##_type_(obj,ary->ptr[0],ary->ptr[1]); \
 			break; \
@@ -4598,7 +4638,7 @@ VALUE obj; \
 		} \
 		} \
 		else \
-			rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(args[0]))); \
+			gl_TexCoord1##_type_(obj,args[0]); \
 		break; \
 	case 2: \
 		gl_TexCoord2##_type_(obj,args[0], args[1]); \
@@ -4763,6 +4803,9 @@ VALUE obj,arg1,arg2,arg3;
 /* init */
 void gl_init_functions_1_0__1_1(VALUE module)
 {
+	g_FogCoord_ptr = 0; /* for use in gl-1.4.c */
+	g_SecondaryColor_ptr = 0; /* for use in gl-1.4.c */
+
 	/* OpenGL 1.0 functions */
 	rb_define_module_function(module, "glNewList", gl_NewList, 2);
 	rb_define_module_function(module, "glEndList", gl_EndList, 0);
@@ -4893,8 +4936,8 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glTexGenfv", gl_TexGenfv, 3);
 	rb_define_module_function(module, "glTexGeni", gl_TexGeni, 3);
 	rb_define_module_function(module, "glTexGeniv", gl_TexGeniv, 3);
-	rb_define_module_function(module, "glFeedbackBuffer", gl_FeedbackBuffer, -1);
-	rb_define_module_function(module, "glSelectBuffer", gl_SelectBuffer, -1);
+	rb_define_module_function(module, "glFeedbackBuffer", gl_FeedbackBuffer, 2);
+	rb_define_module_function(module, "glSelectBuffer", gl_SelectBuffer, 1);
 	rb_define_module_function(module, "glRenderMode", gl_RenderMode, 1);
 	rb_define_module_function(module, "glInitNames", gl_InitNames, 0);
 	rb_define_module_function(module, "glLoadName", gl_LoadName, 1);
@@ -4957,12 +5000,12 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glCopyPixels", gl_CopyPixels, 5);
 	rb_define_module_function(module, "glReadPixels", gl_ReadPixels, 6);
 	rb_define_module_function(module, "glDrawPixels", gl_DrawPixels, 5);
-	rb_define_module_function(module, "glGetBooleanv", gl_GetBooleanv, 2);
+	rb_define_module_function(module, "glGetBooleanv", gl_GetBooleanv, 1);
 	rb_define_module_function(module, "glGetClipPlane", gl_GetClipPlane, 1);
 	rb_define_module_function(module, "glGetDoublev", gl_GetDoublev, 1);
 	rb_define_module_function(module, "glGetError", gl_GetError, 0);
-	rb_define_module_function(module, "glGetFloatv", gl_GetFloatv, 2);
-	rb_define_module_function(module, "glGetIntegerv", gl_GetIntegerv, 2);
+	rb_define_module_function(module, "glGetFloatv", gl_GetFloatv, 1);
+	rb_define_module_function(module, "glGetIntegerv", gl_GetIntegerv, 1);
 	rb_define_module_function(module, "glGetLightfv", gl_GetLightfv, 2);
 	rb_define_module_function(module, "glGetLightiv", gl_GetLightiv, 2);
 	rb_define_module_function(module, "glGetMapdv", gl_GetMapdv, 2);
@@ -4973,14 +5016,14 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glGetPixelMapfv", gl_GetPixelMapfv, 1);
 	rb_define_module_function(module, "glGetPixelMapuiv", gl_GetPixelMapuiv, 1);
 	rb_define_module_function(module, "glGetPixelMapusv", gl_GetPixelMapusv, 1);
-	rb_define_module_function(module, "glGetPolygonStipple", gl_GetPolygonStipple, 1);
+	rb_define_module_function(module, "glGetPolygonStipple", gl_GetPolygonStipple, 0);
 	rb_define_module_function(module, "glGetString", gl_GetString, 1);
 	rb_define_module_function(module, "glGetTexEnvfv", gl_GetTexEnvfv, 2);
 	rb_define_module_function(module, "glGetTexEnviv", gl_GetTexEnviv, 2);
 	rb_define_module_function(module, "glGetTexGendv", gl_GetTexGendv, 2);
 	rb_define_module_function(module, "glGetTexGenfv", gl_GetTexGenfv, 2);
 	rb_define_module_function(module, "glGetTexGeniv", gl_GetTexGeniv, 2);
-/*	rb_define_module_function(module, "glGetTexImage", gl_GetTexImage, 5); */
+	rb_define_module_function(module, "glGetTexImage", gl_GetTexImage, 4); 
 	rb_define_module_function(module, "glGetTexParameterfv", gl_GetTexParameterfv, 2);
 	rb_define_module_function(module, "glGetTexParameteriv", gl_GetTexParameteriv, 2);
 	rb_define_module_function(module, "glGetTexLevelParameterfv", gl_GetTexLevelParameterfv, 3);
