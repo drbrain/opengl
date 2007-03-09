@@ -49,10 +49,10 @@ double num2double( VALUE );
 int gltype_size(GLenum type);
 int glformat_size(GLenum format);
 
-void *load_gl_function(const char *name);
+void *load_gl_function(const char *name, int raise);
 
 #define LOAD_GL_FUNC(_NAME_) \
 if (fptr_##_NAME_==NULL) \
-fptr_##_NAME_ = load_gl_function(#_NAME_);
+fptr_##_NAME_ = load_gl_function(#_NAME_, 1);
 
 #endif /* _RBOGL_H_ */

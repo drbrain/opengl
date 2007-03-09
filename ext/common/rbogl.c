@@ -254,7 +254,7 @@ VALUE allocate_buffer_with_string( int size )
 }
 
 /* -------------------------------------------------------------------- */
-void *load_gl_function(const char *name) 
+void *load_gl_function(const char *name,int raise) 
 {
 	void *func_ptr = NULL;
 
@@ -288,7 +288,7 @@ void *load_gl_function(const char *name)
     func_ptr = glXGetProcAddressARB((const GLubyte *)name);
 #endif
 
-	if (func_ptr == NULL)
+	if (func_ptr == NULL && raise == 1)
 	    rb_raise(rb_eNotImpError,"Function %s is not available at this machine",name);
 
 	return func_ptr;

@@ -14,7 +14,16 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <ruby.h>
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#elif defined WIN32
+#include <windows.h>
+#include <GL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#include "../common/rbogl.h"
+#include "../common/gl-enums.h"
 
 static VALUE module;
 
@@ -27,6 +36,19 @@ void gl_init_functions_1_5(VALUE);
 void gl_init_functions_2_0(VALUE);
 void gl_init_functions_2_1(VALUE);
 
+static VALUE
+IsFunctionAvailable(obj,arg1)
+VALUE obj,arg1;
+{
+	GLvoid *ret;
+	Check_Type(arg1, T_STRING);
+	ret = load_gl_function(RSTRING(arg1)->ptr,0); /* won't raise */
+	if (ret==NULL)
+		return Qfalse;
+	else
+		return Qtrue;
+}
+
 void Init_gl()
 {
     module = rb_define_module("Gl");
@@ -38,4 +60,6 @@ void Init_gl()
 	gl_init_functions_1_5(module);
 	gl_init_functions_2_0(module);
 	gl_init_functions_2_1(module);
+
+	rb_define_module_function(module, "is_available?", IsFunctionAvailable, 1);
 }
