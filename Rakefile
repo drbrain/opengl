@@ -105,7 +105,6 @@ task :upload_entire_website => [:gen_website] do
     sh "scp -r website/images hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
 end
 
-# Create a task for running unit tests
 desc 'Runs unit tests.'
 Rake::TestTask.new do |t|
     t.libs << "test"
@@ -113,7 +112,6 @@ Rake::TestTask.new do |t|
     t.verbose = true
 end
 
-# Create a task for running unit tests
 desc 'Runs interactive tests.'
 Rake::TestTask.new(:test_interactive) do |t|
     t.libs << "test"
@@ -121,6 +119,9 @@ Rake::TestTask.new(:test_interactive) do |t|
     t.test_files = FileList['test/interactive/tc_base.rb']
     t.verbose = true
 end
+
+desc 'Runs both unit and interactive tests'
+task :test_all => [:test, :test_interactive]
 
 # Define the files that will go into the gem
 gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
