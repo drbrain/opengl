@@ -1,12 +1,14 @@
 Roadmap
 =======
 
-* Continue trying to support more of OpenGL 2.1 
+* Ensure support for 2.0 and 2.1 is solid 
 * Make sure OpenGL 1.0 and 1.1 are solidly supported
-* Continu testing 1.2+ support
+* Continue testing 1.2+ support
 * Create a set of test images for functional test comparison
 * Possibly port GLU to use Ruby/DL
 * Get BaseGLUT updated.
+* Make sure this can build cleanly under Windows under the current
+  build system.
 * Add the ESC keyboard handler to smooth.rb
 
 <br/>

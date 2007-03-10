@@ -11,19 +11,26 @@ packages:
 * `libgl1-mesa libgl1-mesa-dri libglu1-mesa freeglut3`
 * `libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev`
 
+On Gentoo, you MUST have rubygems 0.9.x or higher installed.  Using the
+base 0.8.x in the portage tree will not work.
+
 On OS X, you will need to install your own version of Ruby as the
 version that ships with OS X has known problems with properly building
-ruby-opengl bindings.  You'll also need XCode for gcc and tools.
+ruby-opengl bindings.  You'll also need XCode for gcc and tools.  Macports
+or fink should handle this cleanly.
 
 Manual Build instructions
 ------------------
 
-1. Install mkrf (Need at least version 0.2.0)
+1. Install rake
+
+   gem install -y rake
+2. Install mkrf (Need at least version 0.2.0)
    
    gem install -y mkrf
-2. Run 'rake' at the top level of the project
-3. Run 'rake gem' to build a gem
-4. Run 'gem install pkg/ruby-opengl-<version>.gem' to install the gem
+3. Run 'rake' at the top level of the project
+4. Run 'rake gem' to build a gem
+5. Run 'gem install pkg/ruby-opengl-<version>.gem' to install the gem
 
 
 Installing from rubygems
@@ -36,6 +43,15 @@ and try to build the bindings for you automatically.
 
 Testing / Running
 -----------------
+
+To run unit tests:
+   $ rake test
+
+To run the interactive tests:
+   $ rake test_interactive
+
+To run all the tests:
+   $ rake test_all
 
 To run a sample file:
 
