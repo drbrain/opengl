@@ -26,6 +26,7 @@ Current status:
 * Compiles and runs on GNU/Linux (with Mesa) and Mac OS X.
 * First gem release finally available.  Run 'gem install -y ruby-opengl' to try
   it out
+* You must require 'gl' before using 'glu'
 * REQUIRES mkrf 0.2.0 or higher to build and install properly
 * To compile under Mac OS X you MUST install your own version of Ruby
   as the version included with Tiger (1.8.2) is has a broken rbconfig

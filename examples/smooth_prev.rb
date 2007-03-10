@@ -1,5 +1,6 @@
-require "../lib/gl_prev"
-require "../lib/glut_prev"
+#!/usr/bin/env ruby -rubygems
+require "gl_prev"
+require "glut_prev"
 
 STDOUT.sync=TRUE
 disp = Proc.new {

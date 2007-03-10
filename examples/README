@@ -22,15 +22,11 @@ at the top of your files instead of
     require 'opengl'
     require 'glut'
 
-(Of course, if you haven't yet installed ruby-opengl on your system, you'll
-need to include paths in those require statments above: as in,
-`require "../lib/gl_prev"`.)
-
 
 Status of examples
 ------------------
 
-* plane.rb -- works
+* plane.rb -- works (Should show a picture of a planar surface)
 * smooth.rb, smooth_prev.rb -- works
 * aaindex.rb  -- does not seem to work
-* test.rb  -- does not seem to work
+* test.rb  -- works

@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby -rubygems
 # Copyright (C) 2006 Peter McLain <peter.mclain@gmail.com>
 #
 # This program is distributed under the terms of the MIT license.
@@ -11,8 +12,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require '../lib/glut'
-require '../lib/gl'
+require 'glut'
+require 'gl'
 
 class GlutTest
 

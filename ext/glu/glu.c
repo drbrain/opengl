@@ -1453,7 +1453,7 @@ void Init_glu()
 {
     callId = rb_intern("call");
     refId = rb_intern("[]");
-    module = rb_define_module("GLU");
+    module = rb_define_module("Glu");
     rb_define_module_function(module, "gluNewNurbsRenderer", glu_NewNurbsRenderer, 0);
     rb_define_module_function(module, "gluDeleteNurbsRenderer", glu_DeleteNurbsRenderer, 1);
     rb_define_module_function(module, "gluNurbsProperty", glu_NurbsProperty, 3);

@@ -18,7 +18,7 @@
 # Thanks to Ilmari Heikkinen for a previous "reversed" version of this code,
 # and to Bill Kelly for a version before that one.
 
-require '../ext/glut/glut'
+require 'glut'
 
 module GLUT
     extend self

@@ -18,7 +18,8 @@
 # Thanks to Ilmari Heikkinen for a previous "reversed" version of this code,
 # and to Bill Kelly for a version before that one.
 
-require '../ext/glu/glu'
+require 'gl'
+require 'glu'
 
 module GLU
     extend self

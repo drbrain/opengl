@@ -1,9 +1,10 @@
-require "../ext/gl/GL"
-require "../ext/glut/GLUT"
+#!/usr/bin/env ruby -rubygems
+#require "gl"
+#require "glut"
 require "rational"
 
-require "../lib/gl_prev"
-require "../lib/glut_prev"
+require "gl_prev"
+require "glut_prev"
 
 RAMPSIZE=16
 RAMP1START=32
@@ -42,7 +43,7 @@ display = Proc.new {
    GL.End
    GL.PopMatrix();
 
-   GL.Indexi(RAMP2START);
+  # GL.Indexi(RAMP2START);
    GL.PushMatrix();
    GL.Rotate($rotAngle, 0.0, 0.0, 0.1);
    GL.Begin(GL::LINES);

@@ -1,5 +1,7 @@
-require "../lib/gl"
-require "../lib/glut"
+#!/usr/bin/env ruby -rubygems
+
+require "gl"
+require "glut"
 
 STDOUT.sync=TRUE
 disp = Proc.new {

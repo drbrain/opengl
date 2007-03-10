@@ -1,4 +1,4 @@
-#
+#!/usr/bin/env ruby -rubygems
 #/* Copyright (c) Mark J. Kilgard, 1994. */
 #
 #/*

@@ -129,8 +129,8 @@ gem_files = gem_files.exclude("**/*.so", "**/*.o", "ext/**/*.log", "ext/gl*/Rake
 
 spec = Gem::Specification.new do |s|
     s.name              = "ruby-opengl"
-    s.version           = "0.33.0"
-    s.authors           = [ "John Gabriele", "Minh Thu Vo" ]
+    s.version           = "0.34.0"
+    s.authors           = [ "Alain Hoang", "Minh Thu Vo" ]
     s.homepage          = "http://opengl-ruby.rubyforge.org"
     s.platform          = Gem::Platform::RUBY
     s.summary           = "OpenGL Interface for Ruby"
@@ -142,5 +142,10 @@ spec = Gem::Specification.new do |s|
     s.autorequire       = "gl"
     s.has_rdoc          = false
     s.add_dependency("mkrf", ">=0.2.0")
+    s.add_dependency("rake")
 end
 
+# Create a task for creating a ruby gem
+Rake::GemPackageTask.new(spec) do |pkg|
+    pkg.need_tar = true
+end
