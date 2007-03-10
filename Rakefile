@@ -31,6 +31,8 @@ end
 require 'rake'
 require 'rake/clean'
 require 'rake/gempackagetask'
+require 'rake/testtask'
+
 require 'mkrf/rakehelper'
 
 WEBSITE_MKDN = FileList['./doc/*.txt'] << 'README.txt'
@@ -103,6 +105,14 @@ task :upload_entire_website => [:gen_website] do
     sh "scp -r website/images hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
 end
 
+# Create a task for running unit tests
+desc 'Runs unit tests.'
+Rake::TestTask.new do |t|
+    t.libs << "test"
+    t.test_files = FileList['test/tc_*.rb']
+    t.verbose = true
+end
+
 # Define the files that will go into the gem
 gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
 gem_files = gem_files.exclude("**/*.so", "**/*.o", "ext/**/*.log", "ext/gl*/Rakefile")
@@ -124,7 +134,3 @@ spec = Gem::Specification.new do |s|
     s.add_dependency("mkrf", ">=0.2.0")
 end
 
-# Create a task for creating a ruby gem
-Rake::GemPackageTask.new(spec) do |pkg|
-    pkg.need_tar = true
-end
