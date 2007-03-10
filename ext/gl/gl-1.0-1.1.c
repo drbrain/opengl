@@ -138,19 +138,25 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLfloat yorig;
 	GLfloat xmove;
 	GLfloat ymove;
-	const GLubyte *bitmap;
 	width = (GLsizei)NUM2INT(arg1);
 	height = (GLsizei)NUM2INT(arg2);
 	xorig = (GLfloat)NUM2DBL(arg3);
 	yorig = (GLfloat)NUM2DBL(arg4);
 	xmove = (GLfloat)NUM2DBL(arg5);
 	ymove = (GLfloat)NUM2DBL(arg6);
-	if (TYPE(arg7) != T_STRING)
+	if (TYPE(arg7) == T_FIXNUM || TYPE(arg7) == T_BIGNUM) { /* offset to unpack buffer */
+		GLuint offset = NUM2UINT(arg7);
+		glBitmap(width, height, xorig, yorig, xmove, ymove, (GLvoid *)offset);
+	} else if (TYPE(arg7) == T_STRING) {
+		const GLubyte *bitmap;
+		if (RSTRING(arg7)->len < (width * height / 8))
+			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
+
+		bitmap = (const GLubyte*)RSTRING(arg7)->ptr;
+		glBitmap(width, height, xorig, yorig, xmove, ymove, bitmap);
+	} else {
 		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(arg7)));
-	if (RSTRING(arg7)->len < (width * height / 8))
-		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
-	bitmap = (const GLubyte*)RSTRING(arg7)->ptr;
-	glBitmap(width, height, xorig, yorig, xmove, ymove, bitmap);
+	}
 	return Qnil;
 }
 
@@ -5108,18 +5114,18 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glNormal3sv", gl_Normalsv, -1);
 
 	rb_define_module_function(module, "glRasterPos", gl_RasterPosdv, -1);
-	rb_define_module_function(module, "glRasterPos2d", gl_RasterPosdv, -1);
-	rb_define_module_function(module, "glRasterPos2f", gl_RasterPosfv, -1);
-	rb_define_module_function(module, "glRasterPos2i", gl_RasterPosiv, -1);
-	rb_define_module_function(module, "glRasterPos2s", gl_RasterPossv, -1);
-	rb_define_module_function(module, "glRasterPos3d", gl_RasterPosdv, -1);
-	rb_define_module_function(module, "glRasterPos3f", gl_RasterPosfv, -1);
-	rb_define_module_function(module, "glRasterPos3i", gl_RasterPosiv, -1);
-	rb_define_module_function(module, "glRasterPos3s", gl_RasterPossv, -1);
-	rb_define_module_function(module, "glRasterPos4d", gl_RasterPosdv, -1);
-	rb_define_module_function(module, "glRasterPos4f", gl_RasterPosfv, -1);
-	rb_define_module_function(module, "glRasterPos4i", gl_RasterPosiv, -1);
-	rb_define_module_function(module, "glRasterPos4s", gl_RasterPossv, -1);
+	rb_define_module_function(module, "glRasterPos2dv", gl_RasterPosdv, -1);
+	rb_define_module_function(module, "glRasterPos2fv", gl_RasterPosfv, -1);
+	rb_define_module_function(module, "glRasterPos2iv", gl_RasterPosiv, -1);
+	rb_define_module_function(module, "glRasterPos2sv", gl_RasterPossv, -1);
+	rb_define_module_function(module, "glRasterPos3dv", gl_RasterPosdv, -1);
+	rb_define_module_function(module, "glRasterPos3fv", gl_RasterPosfv, -1);
+	rb_define_module_function(module, "glRasterPos3iv", gl_RasterPosiv, -1);
+	rb_define_module_function(module, "glRasterPos3sv", gl_RasterPossv, -1);
+	rb_define_module_function(module, "glRasterPos4dv", gl_RasterPosdv, -1);
+	rb_define_module_function(module, "glRasterPos4fv", gl_RasterPosfv, -1);
+	rb_define_module_function(module, "glRasterPos4iv", gl_RasterPosiv, -1);
+	rb_define_module_function(module, "glRasterPos4sv", gl_RasterPossv, -1);
 
 	rb_define_module_function(module, "glRect", gl_Rectdv, -1);
 	rb_define_module_function(module, "glRectdv", gl_Rectdv, -1);
