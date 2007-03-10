@@ -13,7 +13,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/new/gltest_glut'
+require 'gltest_glut'
 
 include GL_func
 

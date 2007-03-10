@@ -20,8 +20,8 @@ if __FILE__ == $0
     $: << File.join(File.dirname(__FILE__), '..', 'ext')
 end
 
-require 'lib/gl'
-require 'lib/glut'
+require 'gl'
+require 'glut'
 
 #
 # Supportive GL functions for tests

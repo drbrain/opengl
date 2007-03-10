@@ -113,6 +113,15 @@ Rake::TestTask.new do |t|
     t.verbose = true
 end
 
+# Create a task for running unit tests
+desc 'Runs interactive tests.'
+Rake::TestTask.new(:test_interactive) do |t|
+    t.libs << "test"
+    t.libs << "test/interactive"
+    t.test_files = FileList['test/interactive/tc_base.rb']
+    t.verbose = true
+end
+
 # Define the files that will go into the gem
 gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
 gem_files = gem_files.exclude("**/*.so", "**/*.o", "ext/**/*.log", "ext/gl*/Rakefile")
