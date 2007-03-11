@@ -352,4 +352,76 @@ class GLtest_2_rasterpos_bitmap
 	end
 end
 
+class GLtest_3_displaylists_matrixops
+	FUNCTIONS_TESTED = [
+"glNewList","glEndList","glCallList","glCallLists","glDeleteLists","glGenLists","glListBase","glIsList",
+"glScalef","glScaled","glRotatef","glRotated","glTranslated","glTranslatef"
+	]
+	def initialize
+		projection_ortho_box(8)
+		@listbase = glGenLists(3)
+		@list1 = @listbase
+		@list2 = @listbase + 1
+		@list3 = @listbase + 2
+
+		glNewList(@list1,GL_COMPILE)
+		glBegin(GL_LINES)
+		glVertex2i(-1,-1)
+		glVertex2i( 1,-1)
+		glVertex2i( 1, 1)
+		glVertex2i(-1, 1)
+		glEnd
+		glEndList()
+
+		glNewList(@list2,GL_COMPILE)
+		glBegin(GL_LINE_STRIP)
+		glVertex2i(-1,-1)
+		glVertex2i( 1,-1)
+		glVertex2i( 1, 1)
+		glVertex2i(-1, 1)
+		glVertex2i(-1,-1)
+		glEnd
+		glEndList()
+
+		glNewList(@list3,GL_COMPILE)
+		glBegin(GL_LINE_STRIP)
+		glVertex2f(-0.8,-0.8)
+		glVertex2f( 0.8,-0.8)
+		glVertex2f( 0.8, 0.8)
+		glVertex2f(-0.8, 0.8)
+		glVertex2f(-0.8,-0.8)
+		glEnd
+		glEndList()
+	end
+	def loop
+		return if glIsList(@list1)==GL_FALSE
+		return if glIsList(@list2)==GL_FALSE
+		return if glIsList(@list3)==GL_FALSE
+		clear_screen_and_depth_buffer
+		reset_modelview
+
+		# quad
+		glScalef(0.8,0.8,0)
+		glCallList(@list1)
+		glRotatef(90,0,0,1)
+		glCallList(@list1)
+
+		glScaled(1.25,1.25,1.25)
+		glCallList(@list1)
+		glRotated(90,0,0,1)
+		glCallList(@list1)
+
+		reset_modelview
+		glTranslatef(3,0,0)
+		glListBase(0)
+		glCallLists([@list3,@list2])
+		glTranslated(-6,0,0)
+		glListBase(1)
+		glCallLists([@list3-1,@list2-1])
+	end
+	def destroy
+		glDeleteLists(@listbase,3)
+	end
+end
+
 Test_Runner.new("GLtest_","base tests")

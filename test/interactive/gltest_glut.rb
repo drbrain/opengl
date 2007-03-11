@@ -173,6 +173,8 @@ class Test_Runner
 
 	def reset_state
 		clear_screen_and_depth_buffer
+		reset_modelview
+		reset_projection
 	end
 
 	def check_functions(c)
