@@ -3149,7 +3149,7 @@ VALUE obj,arg1,arg2;
 	glGetMaterialfv(face,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_ary_new2(params[i]));
+		rb_ary_push(retary, rb_float_new(params[i]));
 	return retary;
 }
 
@@ -3361,7 +3361,7 @@ VALUE obj,arg1,arg2;
 	glGetTexEnvfv(target,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_ary_new2(params[i]));
+		rb_ary_push(retary, rb_float_new(params[i]));
 	return retary;
 }
 
@@ -3440,7 +3440,7 @@ VALUE obj,arg1,arg2;
 	glGetTexGendv(coord,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_ary_new2(params[i]));
+		rb_ary_push(retary, rb_float_new(params[i]));
 	return retary;
 }
 
@@ -3471,7 +3471,7 @@ VALUE obj,arg1,arg2;
 	glGetTexGenfv(coord,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_ary_new2(params[i]));
+		rb_ary_push(retary, rb_float_new(params[i]));
 	return retary;
 }
 

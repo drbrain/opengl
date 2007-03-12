@@ -424,4 +424,270 @@ class GLtest_3_displaylists_matrixops
 	end
 end
 
+# top row - basic texturing
+# middle row - texture-color interaction
+# bottom row - automatic generation of texture coordinates
+class GLtest_4_textureops
+	FUNCTIONS_TESTED = [
+"glPushAttrib","glPopAttrib","glBindTexture","glDeleteTextures","glGenTextures",
+"glIsTexture","glDisable","glEnable","glIsEnabled","glTexParameterf",
+"glTexParameterfv","glTexParameteri","glTexParameteriv","glTexImage1D",
+"glTexImage2D","glGetTexParameterfv","glGetTexParameteriv","glGetTexEnvfv",
+"glGetTexEnviv","glTexEnvf","glTexEnvfv","glTexEnvi","glTexEnviv","glTexGenf",
+"glTexGenfv","glTexGeni","glTexGeniv","glTexGend","glTexGendv","glGetTexGendv",
+"glGetTexGenfv","glGetTexGeniv","glTexCoord1d","glTexCoord1dv","glTexCoord1f",
+"glTexCoord1fv","glTexCoord1i","glTexCoord1iv","glTexCoord1s","glTexCoord1sv",
+"glTexCoord2d","glTexCoord2dv","glTexCoord2f","glTexCoord2fv","glTexCoord2i",
+"glTexCoord2iv","glTexCoord2s","glTexCoord2sv","glTexCoord3d","glTexCoord3dv",
+"glTexCoord3f","glTexCoord3fv","glTexCoord3i","glTexCoord3iv","glTexCoord3s",
+"glTexCoord3sv","glTexCoord4d","glTexCoord4dv","glTexCoord4f","glTexCoord4fv",
+"glTexCoord4i","glTexCoord4iv","glTexCoord4s","glTexCoord4sv"
+	]
+
+	def initialize
+		size = 64
+		projection_ortho_box(5)		
+		bitmap = checker_texture_bitmap(size,8,[255,255,255],[0,0,0]) # checker texture
+		bitmap_1D = (0..255).collect.pack("c*") # uncolored byte gradient 0..255
+
+		@textures = glGenTextures(3)
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+
+		# 2D texture
+		glEnable(GL_TEXTURE_2D)
+
+		glBindTexture(GL_TEXTURE_2D,@textures[0])
+
+		glTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, [GL_LINEAR] )
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP)
+        glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP)
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, size, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap)
+
+		glDisable(GL_TEXTURE_2D)
+
+		# 1D textures
+		glEnable(GL_TEXTURE_1D)
+
+		glBindTexture(GL_TEXTURE_1D,@textures[1])
+		glTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_MIN_FILTER, [GL_LINEAR] )
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, 256, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap_1D)
+
+		glBindTexture(GL_TEXTURE_1D,@textures[2])
+		glTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_MIN_FILTER, [GL_LINEAR] )
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, 256, 0, GL_BLUE, GL_UNSIGNED_BYTE, bitmap_1D)
+
+		glDisable(GL_TEXTURE_1D)
+	end
+	
+	def loop
+		clear_screen_and_depth_buffer
+		reset_modelview
+
+		return if glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER) != [GL_LINEAR]
+		return if glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_MIN_FILTER) != [GL_LINEAR]
+		return if glIsEnabled(GL_TEXTURE_2D) != GL_FALSE
+		return if glIsTexture(@textures[0]) != GL_TRUE
+
+		# color modulation off
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
+		glColor3f(0.0,1.0,0.0)
+		return if glGetTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE) != [GL_DECAL]
+		return if glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE) != [GL_DECAL]
+
+		glTranslatef(0.0,3.0,0.0)
+
+		#2D - top center quad
+		glEnable(GL_TEXTURE_2D)
+
+		return if glIsEnabled(GL_TEXTURE_2D) != GL_TRUE
+
+		glBindTexture(GL_TEXTURE_2D,@textures[0])
+		
+		glBegin(GL_QUADS)
+		glTexCoord2f(0.0,0.0)	
+		glVertex2i(-1,-1)
+		glTexCoord2d(2.0,0.0)
+		glVertex2i( 1,-1)
+		glTexCoord2fv([2,2])
+		glVertex2i( 1, 1)
+		glTexCoord2dv([0,2])
+		glVertex2i(-1, 1)
+		glEnd()
+		
+		glDisable(GL_TEXTURE_2D)
+
+		# 1D - top right quad
+		glTranslatef(3.0,0.0,0.0)
+
+		glEnable(GL_TEXTURE_1D)
+		glBindTexture(GL_TEXTURE_1D,@textures[1])
+
+		glBegin(GL_QUADS)
+		glTexCoord1f(0.005)	
+		glVertex2i(-1,-1)
+		glTexCoord1d(1.0)	
+		glVertex2i( 1,-1)
+		glTexCoord1fv([1.0])	
+		glVertex2i( 1, 1)
+		glTexCoord1dv([0.005])	
+		glVertex2i(-1, 1)
+		glEnd()
+
+		# 1D - top left quad
+		glTranslatef(-6.0,0.0,0.0)
+
+		glBindTexture(GL_TEXTURE_1D,@textures[2])
+
+		glBegin(GL_QUADS)
+		glTexCoord1i(0)
+		glVertex2i(-1,-1)
+		glTexCoord1s(1)
+		glVertex2i( 1,-1)
+		glTexCoord1iv([1])
+		glVertex2i( 1, 1)
+		glTexCoord1sv([0])
+		glVertex2i(-1, 1)
+		glEnd()
+
+		glDisable(GL_TEXTURE_1D)
+
+		# middle row
+		reset_modelview
+		glEnable(GL_TEXTURE_2D)
+		glBindTexture(GL_TEXTURE_2D,@textures[0])
+
+		# color modulation on
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+		glColor3f(0.0,1.0,0.0)
+
+		# center quad
+		glBegin(GL_QUADS)
+		glTexCoord2i(0,0)
+		glVertex2i(-1,-1)
+		glTexCoord2s(1,0)
+		glVertex2i( 1,-1)
+		glTexCoord2iv([1,1])
+		glVertex2i( 1, 1)
+		glTexCoord2sv([0,1])
+		glVertex2i(-1, 1)
+		glEnd()
+
+		# middle right quad
+		glTranslatef(3.0,0.0,0.0)
+
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
+		glTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, [GL_MODULATE])
+
+		glColor3f(1.0,0.0,0.0)
+
+		glBegin(GL_QUADS)
+		glTexCoord3i(0,0,0)
+		glVertex2i(-1,-1)
+		glTexCoord3f(0.5,0.0,0.0)
+		glVertex2i( 0,-1)
+		glTexCoord3d(0.5,1.0,0.0)
+		glVertex2i( 0, 1)
+		glTexCoord3s(0,1,0)
+		glVertex2i(-1, 1)
+
+		glTexCoord3fv([0.5,0.0,0.0])
+		glVertex2i( 0,-1)
+		glTexCoord3iv([1,0,0])
+		glVertex2i( 1,-1)
+		glTexCoord3sv([1,1,0])
+		glVertex2i( 1, 1)
+		glTexCoord3dv([0.5,1.0,0.0])
+		glVertex2i( 0, 1)
+		glEnd()
+
+		# middle left quad
+		glTranslatef(-6.0,0.0,0.0)
+
+		glColor3f(0.0,0.0,1.0)
+
+		glBegin(GL_QUADS)
+		glTexCoord4i(0,0,0,1)
+		glVertex2i(-1,-1)
+		glTexCoord4f(0.5,0.0,0.0,1.0)
+		glVertex2i( 0,-1)
+		glTexCoord4d(0.5,1.0,0.0,1.0)
+		glVertex2i( 0, 1)
+		glTexCoord4s(0,1,0,1)
+		glVertex2i(-1, 1)
+
+		glTexCoord4fv([0.5,0.0,0.0,1.0])
+		glVertex2i( 0,-1)
+		glTexCoord4iv([1,0,0,1])
+		glVertex2i( 1,-1)
+		glTexCoord4sv([1,1,0,1])
+		glVertex2i( 1, 1)
+		glTexCoord4dv([0.5,1.0,0.0,1.0])
+		glVertex2i( 0, 1)
+		glEnd()
+
+		# color modulation off
+		glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, [GL_DECAL])
+
+		# bottom row
+		reset_modelview		
+		glTranslatef(0.0,-3.0,0.0)
+
+		glEnable(GL_TEXTURE_GEN_S)
+		glEnable(GL_TEXTURE_GEN_T)
+
+		glTexGeni(GL_S,GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
+		glTexGeniv(GL_T,GL_TEXTURE_GEN_MODE, [GL_OBJECT_LINEAR])
+		return if glGetTexGeniv(GL_T,GL_TEXTURE_GEN_MODE) != [GL_OBJECT_LINEAR]
+
+		glBegin(GL_QUADS)
+		glVertex2i(-1,-1)
+		glVertex2i( 1,-1)
+		glVertex2i( 1, 1)
+		glVertex2i(-1, 1)
+		glEnd()
+
+		# bottom right quad
+		glTranslatef(3.0,0.0,0.0)
+
+		glTexGenf(GL_S,GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR)
+		glTexGenfv(GL_T,GL_TEXTURE_GEN_MODE, [GL_EYE_LINEAR])
+
+		return if glGetTexGenfv(GL_T,GL_TEXTURE_GEN_MODE) != [GL_EYE_LINEAR]
+
+		glBegin(GL_QUADS)
+		glVertex2i(-1,-1)
+		glVertex2i( 1,-1)
+		glVertex2i( 1, 1)
+		glVertex2i(-1, 1)
+		glEnd()
+
+		# bottom left quad
+		glTranslatef(-6.0,0.0,0.0)
+
+		glTexGend(GL_S,GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR)
+		glTexGendv(GL_T,GL_TEXTURE_GEN_MODE, [GL_OBJECT_LINEAR])
+		return if glGetTexGendv(GL_T,GL_TEXTURE_GEN_MODE) != [GL_OBJECT_LINEAR]
+
+		glBegin(GL_QUADS)
+		glVertex2i(-1,-1)
+		glVertex2i( 1,-1)
+		glVertex2i( 1, 1)
+		glVertex2i(-1, 1)
+		glEnd()
+
+		glDisable(GL_TEXTURE_GEN_S)
+		glDisable(GL_TEXTURE_GEN_T)
+
+		glDisable(GL_TEXTURE_2D)
+	end
+	
+	def destroy
+		glDisable(GL_TEXTURE_1D)
+		glDisable(GL_TEXTURE_2D)
+		glDeleteTextures(@textures)
+	end
+end
+
 Test_Runner.new("GLtest_","base tests")

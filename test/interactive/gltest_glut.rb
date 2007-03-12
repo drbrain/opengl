@@ -75,15 +75,22 @@ module GL_func
 	end
 
 	def print_text(text,x,y,color=[255,255,255],font = Glut::GLUT_BITMAP_HELVETICA_18)
-		# TODO: push/pop attributes (texturing, color etc.)
 		push_modelview
 		reset_modelview
 		push_projection
 		projection_ortho_window
 
+		Gl.glPushAttrib(Gl::GL_LIGHTING_BIT | Gl::GL_ENABLE_BIT | Gl::GL_TEXTURE_BIT)
+		Gl.glDisable(GL_TEXTURE_1D)
+		Gl.glDisable(GL_TEXTURE_2D)
+		Gl.glDisable(GL_TEXTURE_3D)
+		Gl.glDisable(GL_LIGHTING)
+
 		Gl.glColor3ubv(color)
         Gl.glRasterPos2d(x,y)
         text.each_byte {|c| Glut::glutBitmapCharacter(font,c) }
+	
+		Gl.glPopAttrib()
 
 		pop_projection
 		pop_modelview
