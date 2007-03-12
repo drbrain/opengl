@@ -77,7 +77,7 @@ VALUE obj,arg1;
 		lists = ALLOC_N(GLint, RARRAY(arg1)->len);
 		n = ary2cint(arg1,lists,0);
 	} else {
-		rb_raise(rb_eArgError,"GL.CallLists wrong arguments");
+		Check_Type(arg1,T_ARRAY); /* force exception */
 		return Qnil; /* not reached */
 	}
 	glCallLists(n, type, lists);
@@ -155,7 +155,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		bitmap = (const GLubyte*)RSTRING(arg7)->ptr;
 		glBitmap(width, height, xorig, yorig, xmove, ymove, bitmap);
 	} else {
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(arg7)));
+		Check_Type(arg7,T_STRING); /* force exception */
 	}
 	return Qnil;
 }
@@ -415,8 +415,7 @@ gl_EdgeFlagv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLboolean flag[1] = { GL_FALSE };
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cboolean(arg1,flag,1);
 	glEdgeFlagv(flag);
 	return Qnil;
@@ -445,8 +444,7 @@ gl_Indexdv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLdouble c[1] = {0.0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cdbl(arg1,c,1);
 	glIndexdv(c);
 	return Qnil;
@@ -467,8 +465,7 @@ gl_Indexfv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLfloat c[1] = {0.0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,c,1);
 	glIndexfv(c);
 	return Qnil;
@@ -489,8 +486,7 @@ gl_Indexiv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLint c[1] = {0.0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cint(arg1,c,1);
 	glIndexiv(c);
 	return Qnil;
@@ -511,8 +507,7 @@ gl_Indexsv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLshort c[1] = {0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cshort(arg1,c,1);
 	glIndexsv(c);
 	return Qnil;
@@ -1203,10 +1198,8 @@ VALUE obj,arg1,arg2;
 	GLenum plane;
 	GLdouble equation[4];
 	plane = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) == T_ARRAY)
-		ary2cdbl(arg2, equation, 4);
-	else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg2,T_ARRAY);
+	ary2cdbl(arg2, equation, 4);
 	glClipPlane(plane,equation);
 	return Qnil;
 }
@@ -1252,8 +1245,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	pname = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	ary2cflt(arg2,params,4);
 	glFogfv(pname,params);
 	return Qnil;
@@ -1278,8 +1270,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	pname = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	ary2cint(arg2,params,4);
 	glFogiv(pname,params);
 	return Qnil;
@@ -1330,8 +1321,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	light = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	glLightfv(light,pname,params);
 	return Qnil;
@@ -1360,8 +1350,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint params[4]={0,0,0,0};
 	light = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	glLightiv(light,pname,params);
 	return Qnil;
@@ -1386,8 +1375,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	pname = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	ary2cflt(arg2,params,4);
 	glLightModelfv(pname,params);
 	return Qnil;
@@ -1412,8 +1400,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	pname = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	ary2cint(arg2,params,4);
 	glLightModeliv(pname,params);
 	return Qnil;
@@ -1464,8 +1451,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	face = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	glMaterialfv(face,pname,params);
 	return Qnil;
@@ -1494,8 +1480,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint params[4] = {0,0,0,0};
 	face = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	glMaterialiv(face,pname,params);
 	return Qnil;
@@ -1538,7 +1523,7 @@ VALUE obj,arg1;
 		memcpy(mask, RSTRING(arg1)->ptr, 128);
 	}
 	else
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg1));
+		Check_Type(arg1,T_STRING); /* force exception */
 	glPolygonStipple(mask);
 	return Qnil;
 }
@@ -1592,8 +1577,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	glTexParameterfv(target,pname,params);
 	return Qnil;
@@ -1622,8 +1606,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint params[4] = {0,0,0,0};
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	glTexParameteriv(target,pname,params);
 	return Qnil;
@@ -1654,20 +1637,28 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	type = (GLenum)NUM2INT(arg7);
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
+
 	if (type_size == -1 || format_size == -1)
 		return Qnil;
 	if (type==GL_BITMAP)
 		size = format_size*(width/8);
 	else
 		size = type_size*format_size*width;
-	if (TYPE(arg8) == T_STRING) {
-		if (RSTRING(arg8)->len < size)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
-		pixels = RSTRING(arg8)->ptr;
-	} else if (NIL_P(arg8)) {
+
+	if (target == GL_PROXY_TEXTURE_2D || target == GL_PROXY_TEXTURE_CUBE_MAP || NIL_P(arg8)) { /* proxy texture, no data read */
 		pixels = NULL;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg8));
+	} else {
+		if (TYPE(arg8) == T_FIXNUM || TYPE(arg8) == T_BIGNUM) { /* arg8 is offset to unpack buffer */
+			pixels = (const char *)NUM2UINT(arg8);
+		} else if (TYPE(arg8) == T_STRING) { /* image data */
+			if (RSTRING(arg8)->len < size)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
+			pixels = RSTRING(arg8)->ptr;
+		} else {
+			Check_Type(arg8,T_STRING); /* force exception */
+			return Qnil;
+		}
+	}
 	glTexImage1D(target,level,components,width,border,format,type,pixels);
 	return Qnil;
 }
@@ -1698,20 +1689,28 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	type = (GLenum)NUM2INT(arg8);
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
+
 	if (type_size == -1 || format_size == -1)
 		return Qnil;
 	if (type==GL_BITMAP)
 		size = format_size*((height*width)/8);
 	else
 		size = type_size*format_size*height*width;
-	if (TYPE(arg9) == T_STRING) {
-		if (RSTRING(arg9)->len < size)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
-		pixels = RSTRING(arg9)->ptr;
-	} else if (NIL_P(arg9)) {
+	
+	if (target == GL_PROXY_TEXTURE_2D || target == GL_PROXY_TEXTURE_CUBE_MAP || NIL_P(arg9)) { /* proxy texture, no data read */
 		pixels = NULL;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg9));
+	} else {
+		if (TYPE(arg9) == T_FIXNUM || TYPE(arg9) == T_BIGNUM) { /* arg9 is offset to unpack buffer */
+			pixels = (const char *)NUM2UINT(arg9);
+		} else if (TYPE(arg9) == T_STRING) { /* image data */
+			if (RSTRING(arg9)->len < size)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
+			pixels = RSTRING(arg9)->ptr;
+		} else {
+			Check_Type(arg9,T_STRING); /* force exception */
+			return Qnil;
+		}
+	}
 	glTexImage2D(target,level,components,width,height,border,format,type,pixels);
 	return Qnil;
 }
@@ -1739,8 +1738,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	glTexEnvfv(target,pname,params);
 	return Qnil;
@@ -1769,8 +1767,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint params[4] = {0,0,0,0};
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	glTexEnviv(target,pname,params);
 	return Qnil;
@@ -1799,8 +1796,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLdouble params[4] = {0.0,0.0,0.0,0.0};
 	coord = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cdbl(arg3,params,4);
 	glTexGendv(coord,pname,params);
 	return Qnil;
@@ -1830,8 +1826,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	coord = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	glTexGenfv(coord,pname,params);
 	return Qnil;
@@ -1860,8 +1855,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint params[4] = {0,0,0,0};
 	coord = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	glTexGeniv(coord,pname,params);
 	return Qnil;
@@ -2140,7 +2134,7 @@ gl_PushAttrib(obj,arg1)
 VALUE obj,arg1;
 {
 	GLbitfield mask;
-	mask = (GLbitfield)NUM2INT(arg1);
+	mask = (GLbitfield)NUM2UINT(arg1);
 	glPushAttrib(mask);
 	return Qnil;
 }
@@ -2352,8 +2346,7 @@ gl_EvalCoord1dv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLdouble params[1] = {0.0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cdbl(arg1,params,1);
 	glEvalCoord1dv(params);
 	return Qnil;
@@ -2374,8 +2367,7 @@ gl_EvalCoord1fv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLfloat params[1] = {0.0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,params,1);
 	glEvalCoord1fv(params);
 	return Qnil;
@@ -2398,8 +2390,7 @@ gl_EvalCoord2dv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLdouble params[2] = {0.0,0.0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cdbl(arg1,params,2);
 	glEvalCoord2dv(params);
 	return Qnil;
@@ -2422,8 +2413,7 @@ gl_EvalCoord2fv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLfloat params[2] = {0.0,0.0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,params,2);
 	glEvalCoord2fv(params);
 	return Qnil;
@@ -2623,8 +2613,7 @@ VALUE obj,arg1,arg2;
 	GLfloat *values;
 	GLsizei size;
 	map = (GLenum)NUM2INT(arg1);	
-	if (TYPE(arg2) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	size = RARRAY(arg2)->len;
 	values = ALLOC_N(GLfloat,size);
 	ary2cflt(arg2,values,size);
@@ -2641,8 +2630,7 @@ VALUE obj,arg1,arg2;
 	GLuint *values;
 	GLsizei size;
 	map = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	size = RARRAY(arg2)->len;
 	values = ALLOC_N(GLuint,size);
 	ary2cuint(arg2,values,size);
@@ -2659,8 +2647,7 @@ VALUE obj,arg1,arg2;
 	GLushort *values;
 	GLsizei size;
 	map = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	size = RARRAY(arg2)->len;
 	values = ALLOC_N(GLushort,size);
 	ary2cushort(arg2,values,size);
@@ -2747,8 +2734,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	height = (GLsizei)NUM2INT(arg2);
 	format = (GLenum)NUM2INT(arg3);
 	type = (GLenum)NUM2INT(arg4);
-	if (TYPE(arg5) != T_STRING)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg5));
+	Check_Type(arg5,T_STRING);
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
 	if (type_size == -1 || format_size == -1)
@@ -4228,8 +4214,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		if (RSTRING(arg7)->len < size)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
 		 pixels = RSTRING(arg7)->ptr;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg7));
+	} else {
+		Check_Type(arg7,T_STRING); /* force exception */
+		return Qnil;
+	}
 	glTexSubImage1D(target,level,xoffset,width,format,type,pixels);
 	return Qnil;
 }
@@ -4270,8 +4258,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		if (RSTRING(arg9)->len < size)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
 		 pixels = RSTRING(arg9)->ptr;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg9));
+	} else {
+		Check_Type(arg9,T_STRING); /* force exception */
+		return Qnil;
+	}
 	glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,pixels);
 	return Qnil;
 }
@@ -4286,8 +4276,7 @@ VALUE obj,arg1;
 	GLboolean r;
 	VALUE retary;
 	int i;
-	if (TYPE(arg1) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	size = RARRAY(arg1)->len;
 	textures = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
@@ -4324,8 +4313,7 @@ VALUE obj,arg1;
 {
 	GLsizei n;
 	GLuint *textures;
-	if (TYPE(arg1) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	n = RARRAY(arg1)->len;
 	textures = ALLOC_N(GLuint,n);
 	ary2cuint(arg1,textures,n); 
@@ -4370,10 +4358,8 @@ VALUE obj,arg1,arg2;
 	GLuint *textures;
 	GLclampf *priorities;
 	GLsizei size;
-	if (TYPE(arg1) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg1));
-	if (TYPE(arg2) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg2));
+	Check_Type(arg1,T_ARRAY);
+	Check_Type(arg2,T_ARRAY);
 	if ((size = RARRAY(arg1)->len) != RARRAY(arg2)->len)
 		rb_raise(rb_eArgError, "passed arrays must have the same length");
 	textures = ALLOC_N(GLuint,size);
@@ -4401,8 +4387,7 @@ gl_Indexubv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLubyte c[1] = {0};
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cubyte(arg1,c,1);
 	glIndexubv(c);
 	return Qnil;
@@ -4454,7 +4439,7 @@ VALUE obj; \
 		} \
 		} \
 		else \
-			rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(args[0]))); \
+			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 3: \
 		gl_Color3##_type_(obj,args[0], args[1], args[2]); \
@@ -4501,7 +4486,7 @@ VALUE obj; \
 		} \
 		} \
 		else \
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(args[0]))); \
+			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 3: \
 		gl_Normal3##_type_(obj,args[0], args[1], args[2]); \
@@ -4548,7 +4533,7 @@ VALUE obj; \
 		} \
 		} \
 		else \
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(args[0]))); \
+			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 2: \
 		gl_RasterPos2##_type_(obj,args[0], args[1]); \
@@ -4595,7 +4580,7 @@ VALUE obj; \
 		} \
 		} \
 		else \
-			rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(args[0]))); \
+			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 4: \
 		gl_Rect##_type_(obj,args[0], args[1], args[2], args[3]); \
@@ -4696,7 +4681,7 @@ VALUE obj; \
 		} \
 		} \
 		else \
-			rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(args[0]))); \
+			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 2: \
 		gl_Vertex2##_type_(obj,args[0], args[1]); \

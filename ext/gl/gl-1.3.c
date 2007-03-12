@@ -472,8 +472,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		pixels = RSTRING(arg9)->ptr;
 	} else if (NIL_P(arg9)) {
 		pixels = NULL;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg9));
+	} else {
+		Check_Type(arg9,T_STRING); /* force exception */
+		return Qnil;
+	}
 	fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,pixels);
 	return Qnil;
 }
@@ -505,8 +507,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 		pixels = RSTRING(arg8)->ptr;
 	} else if (NIL_P(arg8)) {
 		pixels = NULL;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg8));
+	} else {
+		Check_Type(arg8,T_STRING); /* force exception */
+		return Qnil;
+	}
 	fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,pixels);
 	return Qnil;
 }
@@ -536,8 +540,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		pixels = RSTRING(arg7)->ptr;
 	} else if (NIL_P(arg7)) {
 		pixels = NULL;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg7));
+	} else {
+		Check_Type(arg7,T_STRING); /* force exception */
+		return Qnil;
+	}
 	fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,pixels);
 	return Qnil;
 }
@@ -573,8 +579,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 		if (RSTRING(arg11)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
 		 pixels = RSTRING(arg11)->ptr;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg11));
+	} else {
+		Check_Type(arg11,T_STRING); /* force exception */
+		return Qnil;
+	}
 	fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,pixels);
 	return Qnil;
 }
@@ -606,8 +614,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		if (RSTRING(arg9)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
 		 pixels = RSTRING(arg9)->ptr;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg9));
+	} else {
+		Check_Type(arg9,T_STRING); /* force exception */
+		return Qnil;
+	}
 	fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,pixels);
 	return Qnil;
 }
@@ -635,8 +645,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		if (RSTRING(arg7)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
 		 pixels = RSTRING(arg7)->ptr;
-	} else
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg7));
+	} else {
+		Check_Type(arg7,T_STRING); /* force exception */
+		return Qnil;
+	}
 	fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,pixels);
 	return Qnil;
 }

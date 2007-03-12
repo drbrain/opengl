@@ -54,8 +54,7 @@ VALUE obj,arg1;
 	GLsizei n;
 	GLuint *queries;
 	LOAD_GL_FUNC(glDeleteQueries)
-	if (TYPE(arg1) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	n = RARRAY(arg1)->len;
 	queries = ALLOC_N(GLuint,n);
 	ary2cuint(arg1,queries,n); 
@@ -179,8 +178,7 @@ VALUE obj,arg1;
 	GLsizei n;
 	GLuint *buffers;
 	LOAD_GL_FUNC(glDeleteBuffers)
-	if (TYPE(arg1) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	n = RARRAY(arg1)->len;
 	buffers = ALLOC_N(GLuint,n);
 	ary2cuint(arg1,buffers,n); 
@@ -234,8 +232,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	target = (GLenum)NUM2INT(arg1);
 	size = (GLsizeiptr)NUM2INT(arg2);
 	usage = (GLenum)NUM2INT(arg4);
-	if (TYPE(arg3) != T_STRING)
-		rb_raise(rb_eArgError, "type mismatch");
+	Check_Type(arg3,T_STRING);
 	fptr_glBufferData(target,size,(GLvoid *)RSTRING(arg3)->ptr,usage);
 	return Qnil;
 }
@@ -252,8 +249,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	target = (GLenum)NUM2INT(arg1);
 	offset = (GLintptr)NUM2INT(arg2);
 	size = (GLsizeiptr)NUM2INT(arg3);
-	if (TYPE(arg4) != T_STRING)
-		rb_raise(rb_eArgError, "type mismatch");
+	Check_Type(arg4,T_STRING);
 	fptr_glBufferSubData(target,offset,size,(GLvoid *)RSTRING(arg4)->ptr);
 	return Qnil;
 }

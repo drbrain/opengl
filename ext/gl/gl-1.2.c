@@ -98,8 +98,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	width = (GLsizei)NUM2INT(arg3);
 	format = (GLenum)NUM2INT(arg4);
 	type = (GLenum)NUM2INT(arg5);
-	if (TYPE(arg6) != T_STRING)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg6));
+	Check_Type(arg6,T_STRING);
 	format_size = glformat_size(format);	
 	type_size = gltype_size(type);	
 	if (type_size == -1 || format_size == -1)
@@ -122,8 +121,7 @@ VALUE obj,arg1,arg2,arg3;
 	LOAD_GL_FUNC(glColorTableParameterfv)
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	fptr_glColorTableParameterfv(target,pname,params);
 	return Qnil;
@@ -140,8 +138,7 @@ VALUE obj,arg1,arg2,arg3;
 	LOAD_GL_FUNC(glColorTableParameteriv)
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	fptr_glColorTableParameteriv(target,pname,params);
 	return Qnil;
@@ -278,8 +275,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	count = (GLsizei)NUM2INT(arg3);	
 	format = (GLenum)NUM2INT(arg4);	
 	type = (GLenum)NUM2INT(arg5);	
-	if (TYPE(arg6) != T_STRING)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg6));
+	Check_Type(arg6,T_STRING);
 	format_size = glformat_size(format);	
 	type_size = gltype_size(type);	
 	if (type_size == -1 || format_size == -1)
@@ -330,8 +326,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	width = (GLsizei)NUM2INT(arg3);
 	format = (GLenum)NUM2INT(arg4);
 	type = (GLenum)NUM2INT(arg5);
-	if (TYPE(arg6) != T_STRING)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg6));
+	Check_Type(arg6,T_STRING);
 	format_size = glformat_size(format);	
 	type_size = gltype_size(type);	
 	if (type_size == -1 || format_size == -1)
@@ -367,8 +362,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	height = (GLsizei)NUM2INT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
-	if (TYPE(arg7) != T_STRING)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg7));
+	Check_Type(arg7,T_STRING);
 	format_size = glformat_size(format);
 	type_size = gltype_size(type);
 	if (type_size == -1 || format_size == -1)
@@ -410,8 +404,7 @@ VALUE obj,arg1,arg2,arg3;
 	LOAD_GL_FUNC(glConvolutionParameterfv)
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	fptr_glConvolutionParameterfv(target,pname,params);
 	return Qnil;
@@ -444,8 +437,7 @@ VALUE obj,arg1,arg2,arg3;
 	LOAD_GL_FUNC(glConvolutionParameteriv)
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg3));
+	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	fptr_glConvolutionParameteriv(target,pname,params);
 	return Qnil;
@@ -657,10 +649,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	height = (GLsizei)NUM2INT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
-	if (TYPE(arg7) != T_STRING)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg7));
-	if (TYPE(arg8) != T_STRING)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(arg8));
+	Check_Type(arg7,T_STRING);
+	Check_Type(arg8,T_STRING);
 	format_size = glformat_size(format);
 	type_size = gltype_size(type);
 	if (type_size == -1 || format_size == -1)

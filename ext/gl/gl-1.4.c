@@ -63,8 +63,7 @@ VALUE obj,arg1;
 {
 	GLfloat coord;
 	LOAD_GL_FUNC(glFogCoordfv)
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,&coord,1);
 	fptr_glFogCoordfv(&coord);
 	return Qnil;
@@ -89,8 +88,7 @@ VALUE obj,arg1;
 {
 	GLdouble coord;
 	LOAD_GL_FUNC(glFogCoorddv)
-	if (TYPE(arg1) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg1));
+	Check_Type(arg1,T_ARRAY);
 	ary2cdbl(arg1,&coord,1);
 	fptr_glFogCoorddv(&coord);
 	return Qnil;
@@ -153,8 +151,7 @@ VALUE obj,arg1,arg2,arg3;
 	LOAD_GL_FUNC(glMultiDrawElements)
 	mode = (GLenum)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
-	if (TYPE(arg3) != T_ARRAY)
-		rb_raise(rb_eTypeError, "type mismatch:%s", rb_class2name(CLASS_OF(arg3)));
+	Check_Type(arg3,T_ARRAY);
 	ary = RARRAY(arg3);
 	size = ary->len;
 	counts = ALLOC_N(GLsizei,size);
@@ -193,8 +190,7 @@ VALUE obj,arg1,arg2;
 	GLint size;
 	LOAD_GL_FUNC(glPointParameterfv)
 	pname = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
 		size = 3;
 	else
@@ -228,8 +224,7 @@ VALUE obj,arg1,arg2;
 	GLint size;
 	LOAD_GL_FUNC(glPointParameteriv)
 	pname = (GLenum)NUM2INT(arg1);
-	if (TYPE(arg2) != T_ARRAY) 
-		rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg2));
+	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
 		size = 3;
 	else
