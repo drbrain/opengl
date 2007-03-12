@@ -11,7 +11,7 @@ require "mathn"
 
 # Add GL and GLUT namespaces in to make porting easier
 include Gl
-include GLU
+include Glu
 include Glut
 
 # Placeholder for the window object
@@ -81,7 +81,8 @@ def draw_gl_scene
     glEnd
 
     # Move right 3 units
-    glTranslatef(3.0, 0.0, 0.0)
+    glLoadIdentity
+    glTranslatef(1.5, 0.0, -6.0)
 
     # Draw a quadrilateral
     # Rotate the quad on the X-axis

@@ -11,7 +11,7 @@ require "mathn"
 
 # Add GL and GLUT namespaces in to make porting easier
 include Gl
-include GLU
+include Glu
 include Glut
 
 # Placeholder for the window object
