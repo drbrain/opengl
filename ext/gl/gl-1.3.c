@@ -461,11 +461,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
-	width = (GLsizei)NUM2INT(arg4);
-	height = (GLsizei)NUM2INT(arg5);
-	depth = (GLsizei)NUM2INT(arg6);
+	width = (GLsizei)NUM2UINT(arg4);
+	height = (GLsizei)NUM2UINT(arg5);
+	depth = (GLsizei)NUM2UINT(arg6);
 	border = (GLint)NUM2INT(arg7);
-	imagesize = (GLsizei)NUM2INT(arg8);
+	imagesize = (GLsizei)NUM2UINT(arg8);
 	if (TYPE(arg9) == T_STRING) {
 		if (RSTRING(arg9)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
@@ -497,10 +497,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
-	width = (GLsizei)NUM2INT(arg4);
-	height = (GLsizei)NUM2INT(arg5);
+	width = (GLsizei)NUM2UINT(arg4);
+	height = (GLsizei)NUM2UINT(arg5);
 	border = (GLint)NUM2INT(arg6);
-	imagesize = (GLsizei)NUM2INT(arg7);
+	imagesize = (GLsizei)NUM2UINT(arg7);
 	if (TYPE(arg8) == T_STRING) {
 		if (RSTRING(arg8)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
@@ -531,9 +531,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
-	width = (GLsizei)NUM2INT(arg4);
+	width = (GLsizei)NUM2UINT(arg4);
 	border = (GLint)NUM2INT(arg5);
-	imagesize = (GLsizei)NUM2INT(arg6);
+	imagesize = (GLsizei)NUM2UINT(arg6);
 	if (TYPE(arg7) == T_STRING) {
 		if (RSTRING(arg7)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
@@ -570,11 +570,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	xoffset = (GLint)NUM2INT(arg3);
 	yoffset = (GLint)NUM2INT(arg4);
 	zoffset = (GLint)NUM2INT(arg5);
-	width = (GLsizei)NUM2INT(arg6);
-	height = (GLsizei)NUM2INT(arg7);
-	depth = (GLsizei)NUM2INT(arg8);
+	width = (GLsizei)NUM2UINT(arg6);
+	height = (GLsizei)NUM2UINT(arg7);
+	depth = (GLsizei)NUM2UINT(arg8);
 	format = (GLenum)NUM2INT(arg9);
-	imagesize = (GLsizei)NUM2INT(arg10);
+	imagesize = (GLsizei)NUM2UINT(arg10);
 	if (TYPE(arg11) == T_STRING) {
 		if (RSTRING(arg11)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
@@ -606,10 +606,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
 	yoffset = (GLint)NUM2INT(arg4);
-	width = (GLsizei)NUM2INT(arg5);
-	height = (GLsizei)NUM2INT(arg6);
+	width = (GLsizei)NUM2UINT(arg5);
+	height = (GLsizei)NUM2UINT(arg6);
 	format = (GLenum)NUM2INT(arg7);
-	imagesize = (GLsizei)NUM2INT(arg8);
+	imagesize = (GLsizei)NUM2UINT(arg8);
 	if (TYPE(arg9) == T_STRING) {
 		if (RSTRING(arg9)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
@@ -638,9 +638,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
-	width = (GLsizei)NUM2INT(arg4);
+	width = (GLsizei)NUM2UINT(arg4);
 	format = (GLenum)NUM2INT(arg5);
-	imagesize = (GLsizei)NUM2INT(arg6);
+	imagesize = (GLsizei)NUM2UINT(arg6);
 	if (TYPE(arg7) == T_STRING) {
 		if (RSTRING(arg7)->len < imagesize)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);

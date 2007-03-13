@@ -37,7 +37,7 @@ VALUE obj,arg1,arg2;
 {
 	GLuint list;
 	GLenum mode;
-	list = (GLuint)NUM2INT(arg1);
+	list = (GLuint)NUM2UINT(arg1);
 	mode = (GLenum)NUM2INT(arg2);
 	glNewList(list,mode);
 	return Qnil;
@@ -56,7 +56,7 @@ gl_CallList(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint list;
-	list = (GLuint)NUM2INT(arg1);
+	list = (GLuint)NUM2UINT(arg1);
 	glCallList(list);
 	return Qnil;
 }
@@ -91,8 +91,8 @@ VALUE obj,arg1,arg2;
 {
 	GLuint list;
 	GLsizei range;
-	list = (GLuint)NUM2INT(arg1);
-	range = (GLsizei)NUM2INT(arg2);
+	list = (GLuint)NUM2UINT(arg1);
+	range = (GLsizei)NUM2UINT(arg2);
 	glDeleteLists(list,range);
 	return Qnil;
 }
@@ -103,7 +103,7 @@ VALUE obj,arg1;
 {
 	GLsizei range;
 	GLuint ret;
-	range = (GLsizei)NUM2INT(arg1);
+	range = (GLsizei)NUM2UINT(arg1);
 	ret = glGenLists(range);
 	return INT2NUM(ret);
 }
@@ -113,7 +113,7 @@ gl_ListBase(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint base;
-	base = (GLuint)NUM2INT(arg1);
+	base = (GLuint)NUM2UINT(arg1);
 	glListBase(base);
 	return Qnil;
 }
@@ -138,8 +138,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLfloat yorig;
 	GLfloat xmove;
 	GLfloat ymove;
-	width = (GLsizei)NUM2INT(arg1);
-	height = (GLsizei)NUM2INT(arg2);
+	width = (GLsizei)NUM2UINT(arg1);
+	height = (GLsizei)NUM2UINT(arg2);
 	xorig = (GLfloat)NUM2DBL(arg3);
 	yorig = (GLfloat)NUM2DBL(arg4);
 	xmove = (GLfloat)NUM2DBL(arg5);
@@ -1292,8 +1292,8 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLenum mode;
-	target = (GLenum)NUM2INT(arg1);
-	mode = (GLenum)NUM2INT(arg2);
+	target = (GLenum)NUM2UINT(arg1);
+	mode = (GLenum)NUM2UINT(arg2);
 	glHint(target,mode);
 	return Qnil;
 }
@@ -1538,8 +1538,8 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLsizei height;
 	x = (GLint)NUM2INT(arg1);
 	y = (GLint)NUM2INT(arg2);
-	width = (GLsizei)NUM2INT(arg3);
-	height = (GLsizei)NUM2INT(arg4);
+	width = (GLsizei)NUM2UINT(arg3);
+	height = (GLsizei)NUM2UINT(arg4);
 	glScissor(x,y,width,height);
 	return Qnil;
 }
@@ -1631,7 +1631,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	components = (GLint)NUM2INT(arg3);
-	width = (GLsizei)NUM2INT(arg4);
+	width = (GLsizei)NUM2UINT(arg4);
 	border = (GLint)NUM2INT(arg5);
 	format = (GLenum)NUM2INT(arg6);
 	type = (GLenum)NUM2INT(arg7);
@@ -1682,8 +1682,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	components = (GLint)NUM2INT(arg3);
-	width = (GLsizei)NUM2INT(arg4);
-	height = (GLsizei)NUM2INT(arg5);
+	width = (GLsizei)NUM2UINT(arg4);
+	height = (GLsizei)NUM2UINT(arg5);
 	border = (GLint)NUM2INT(arg6);
 	format = (GLenum)NUM2INT(arg7);
 	type = (GLenum)NUM2INT(arg8);
@@ -1867,7 +1867,7 @@ VALUE obj,arg1,arg2;
 {
 	GLsizei size;
 	GLenum type;
-	size = (GLsizei)NUM2INT(arg1);
+	size = (GLsizei)NUM2UINT(arg1);
 	type = (GLenum)NUM2INT(arg2);
 	g_current_feed_buffer = allocate_buffer_with_string(sizeof(GLfloat)*size);
 	rb_str_freeze(g_current_feed_buffer);
@@ -1881,7 +1881,7 @@ gl_SelectBuffer(obj,arg1)
 VALUE obj,arg1;
 {
 	GLsizei size;
-	size = (GLsizei)NUM2INT(arg1);
+	size = (GLsizei)NUM2UINT(arg1);
 	g_current_sel_buffer = allocate_buffer_with_string(sizeof(GLuint)*size);
 	rb_str_freeze(g_current_sel_buffer);
 	glSelectBuffer(size, (GLuint*)RSTRING(g_current_sel_buffer)->ptr);
@@ -1912,7 +1912,7 @@ gl_LoadName(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint name;
-	name = (GLuint)NUM2INT(arg1);
+	name = (GLuint)NUM2UINT(arg1);
 	glLoadName(name);
 	return Qnil;
 }
@@ -1940,7 +1940,7 @@ gl_PushName(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint name;
-	name = (GLuint)NUM2INT(arg1);
+	name = (GLuint)NUM2UINT(arg1);
 	glPushName(name);
 	return Qnil;
 }
@@ -1960,7 +1960,7 @@ gl_Clear(obj,arg1)
 VALUE obj,arg1;
 {
 	GLbitfield mask;
-	mask = (GLbitfield)NUM2INT(arg1);
+	mask = (GLbitfield)NUM2UINT(arg1);
 	glClear(mask);
 	return Qnil;
 }
@@ -2032,7 +2032,7 @@ gl_StencilMask(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint mask;
-	mask = (GLuint)NUM2INT(arg1);
+	mask = (GLuint)NUM2UINT(arg1);
 	glStencilMask(mask);
 	return Qnil;
 }
@@ -2068,7 +2068,7 @@ gl_IndexMask(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint mask;
-	mask = (GLuint)NUM2INT(arg1);
+	mask = (GLuint)NUM2UINT(arg1);
 	glIndexMask(mask);
 	return Qnil;
 }
@@ -2516,7 +2516,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLuint mask;
 	func = (GLenum)NUM2INT(arg1);
 	ref = (GLint)NUM2INT(arg2);
-	mask = (GLuint)NUM2INT(arg3);
+	mask = (GLuint)NUM2UINT(arg3);
 	glStencilFunc(func,ref,mask);
 	return Qnil;
 }
@@ -2677,8 +2677,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLenum type;
 	x = (GLint)NUM2INT(arg1);
 	y = (GLint)NUM2INT(arg2);
-	width = (GLsizei)NUM2INT(arg3);
-	height = (GLsizei)NUM2INT(arg4);
+	width = (GLsizei)NUM2UINT(arg3);
+	height = (GLsizei)NUM2UINT(arg4);
 	type = (GLenum)NUM2INT(arg5);
 	glCopyPixels(x,y,width,height,type);
 	return Qnil;
@@ -2700,8 +2700,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLsizei size;
 	x = (GLint)NUM2INT(arg1);
 	y = (GLint)NUM2INT(arg2);
-	width = (GLsizei)NUM2INT(arg3);
-	height = (GLsizei)NUM2INT(arg4);
+	width = (GLsizei)NUM2UINT(arg3);
+	height = (GLsizei)NUM2UINT(arg4);
 	format = NUM2INT(arg5);
 	type = NUM2INT(arg6);
 	type_size = gltype_size(type);
@@ -2730,8 +2730,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLsizei size;
 	GLsizei type_size;
 	GLsizei format_size;
-	width = (GLsizei)NUM2INT(arg1);
-	height = (GLsizei)NUM2INT(arg2);
+	width = (GLsizei)NUM2UINT(arg1);
+	height = (GLsizei)NUM2UINT(arg2);
 	format = (GLenum)NUM2INT(arg3);
 	type = (GLenum)NUM2INT(arg4);
 	Check_Type(arg5,T_STRING);
@@ -3662,7 +3662,7 @@ VALUE obj,arg1;
 {
 	GLuint list;
 	GLboolean ret;
-	list = (GLuint)NUM2INT(arg1);
+	list = (GLuint)NUM2UINT(arg1);
 	ret = glIsList(list);
 	return INT2NUM(ret);
 }
@@ -3891,8 +3891,8 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLsizei height;
 	x = (GLint)NUM2INT(arg1);
 	y = (GLint)NUM2INT(arg2);
-	width = (GLsizei)NUM2INT(arg3);
-	height = (GLsizei)NUM2INT(arg4);
+	width = (GLsizei)NUM2UINT(arg3);
+	height = (GLsizei)NUM2UINT(arg4);
 	glViewport(x,y,width,height);
 	return Qnil;
 }
@@ -3925,7 +3925,7 @@ VALUE obj, arg1, arg2, arg3, arg4; \
 	GLsizei stride; \
 	size = (GLint)NUM2INT(arg1); \
 	type = (GLenum)NUM2INT(arg2); \
-	stride = (GLsizei)NUM2INT(arg3); \
+	stride = (GLsizei)NUM2UINT(arg3); \
 	Check_Type(arg4, T_STRING); \
 	rb_str_freeze(arg4); \
 	g_##_func_##_ptr = arg4; \
@@ -3958,7 +3958,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLsizei count;
 	mode = (GLenum)NUM2INT(arg1);
 	first = (GLint)NUM2INT(arg2);
-	count = (GLsizei)NUM2INT(arg3);
+	count = (GLsizei)NUM2UINT(arg3);
 	glDrawArrays(mode,first,count);
 	return Qnil;
 }
@@ -3971,7 +3971,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLsizei count;
 	GLenum type;
 	mode = (GLenum)NUM2INT(arg1);
-	count = (GLsizei)NUM2INT(arg2);
+	count = (GLsizei)NUM2UINT(arg2);
 	type = (GLenum)NUM2INT(arg3);
 	Check_Type(arg4, T_STRING);
 	glDrawElements(mode, count, type, (const GLvoid*)RSTRING(arg4)->ptr);
@@ -3983,7 +3983,7 @@ gl_EdgeFlagPointer(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	GLsizei stride;
-	stride = (GLsizei)NUM2INT(arg1);
+	stride = (GLsizei)NUM2UINT(arg1);
 	Check_Type(arg2, T_STRING);
 	rb_str_freeze(arg2);
 	g_EdgeFlag_ptr = arg2;
@@ -4042,7 +4042,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum type;
 	GLsizei stride;
 	type = (GLenum)NUM2INT(arg1);
-	stride = (GLsizei)NUM2INT(arg2);
+	stride = (GLsizei)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	rb_str_freeze(arg3);
 	g_Index_ptr = arg3;
@@ -4057,7 +4057,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum format;
 	GLsizei stride;
 	format = (GLenum)NUM2INT(arg1);
-	stride = (GLsizei)NUM2INT(arg2);
+	stride = (GLsizei)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	glInterleavedArrays(format, stride, (const GLvoid*)RSTRING(arg3)->ptr);
 	return Qnil;
@@ -4070,7 +4070,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum type;
 	GLsizei stride;
 	type = (GLenum)NUM2INT(arg1);
-	stride = (GLsizei)NUM2INT(arg2);
+	stride = (GLsizei)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	rb_str_freeze(arg3);
 	g_Normal_ptr = arg3;
@@ -4106,7 +4106,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	internalformat = (GLenum)NUM2INT(arg3);
 	x = (GLint)NUM2INT(arg4);
 	y = (GLint)NUM2INT(arg5);
-	width = (GLsizei)NUM2INT(arg6);
+	width = (GLsizei)NUM2UINT(arg6);
 	border = (GLint)NUM2INT(arg7);
 	glCopyTexImage1D(target,level,internalformat,x,y,width,border);
 	return Qnil;
@@ -4129,8 +4129,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	internalformat = (GLenum)NUM2INT(arg3);
 	x = (GLint)NUM2INT(arg4);
 	y = (GLint)NUM2INT(arg5);
-	width = (GLsizei)NUM2INT(arg6);
-	height = (GLsizei)NUM2INT(arg7);
+	width = (GLsizei)NUM2UINT(arg6);
+	height = (GLsizei)NUM2UINT(arg7);
 	border = (GLint)NUM2INT(arg8);
 	glCopyTexImage2D(target,level,internalformat,x,y,width,height,border);
 	return Qnil;
@@ -4151,7 +4151,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	xoffset = (GLint)NUM2INT(arg3);
 	x = (GLint)NUM2INT(arg4);
 	y = (GLint)NUM2INT(arg5);
-	width = (GLsizei)NUM2INT(arg6);
+	width = (GLsizei)NUM2UINT(arg6);
 	glCopyTexSubImage1D(target,level,xoffset,x,y,width);
 	return Qnil;
 }
@@ -4174,8 +4174,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	yoffset = (GLint)NUM2INT(arg4);
 	x = (GLint)NUM2INT(arg5);
 	y = (GLint)NUM2INT(arg6);
-	width = (GLsizei)NUM2INT(arg7);
-	height = (GLsizei)NUM2INT(arg8);
+	width = (GLsizei)NUM2UINT(arg7);
+	height = (GLsizei)NUM2UINT(arg8);
 	glCopyTexSubImage2D(target,level,xoffset,yoffset,x,y,width,height);
 	return Qnil;
 }
@@ -4197,7 +4197,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
-	width = (GLsizei)NUM2INT(arg4);
+	width = (GLsizei)NUM2UINT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
 	type_size = gltype_size(type);
@@ -4242,8 +4242,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
 	yoffset = (GLint)NUM2INT(arg4);
-	width = (GLsizei)NUM2INT(arg5);
-	height = (GLsizei)NUM2INT(arg6);
+	width = (GLsizei)NUM2UINT(arg5);
+	height = (GLsizei)NUM2UINT(arg6);
 	format = (GLenum)NUM2INT(arg7);
 	type = (GLenum)NUM2INT(arg8);
 	type_size = gltype_size(type);
@@ -4302,7 +4302,7 @@ VALUE obj,arg1,arg2;
 	GLenum target;
 	GLuint texture;
 	target = (GLenum)NUM2INT(arg1);
-	texture = (GLuint)NUM2INT(arg2);
+	texture = (GLuint)NUM2UINT(arg2);
 	glBindTexture(target,texture);
 	return Qnil;
 }
@@ -4330,7 +4330,7 @@ VALUE obj,arg1;
 	GLuint *textures;
 	RArray *ret;
 	int i;
-	n = (GLsizei)NUM2INT(arg1);
+	n = (GLsizei)NUM2UINT(arg1);
 	textures = ALLOC_N(GLuint, n);
 	glGenTextures(n, textures);
 	ret = RARRAY(rb_ary_new2(n));
@@ -4346,7 +4346,7 @@ VALUE obj,arg1;
 {
 	GLuint texture;
 	GLboolean ret;
-	texture = (GLuint)NUM2INT(arg1);
+	texture = (GLuint)NUM2UINT(arg1);
 	ret = glIsTexture(texture);
 	return INT2NUM(ret);
 }
@@ -4406,7 +4406,7 @@ gl_PushClientAttrib(obj,arg1)
 VALUE obj,arg1;
 {
 	GLbitfield mask;
-	mask = (GLbitfield)NUM2INT(arg1);
+	mask = (GLbitfield)NUM2UINT(arg1);
 	glPushClientAttrib(mask);
 	return Qnil;
 }

@@ -36,7 +36,7 @@ VALUE obj,arg1;
 	RArray *ret;
 	int i;
 	LOAD_GL_FUNC(glGenQueries)
-	n = (GLsizei)NUM2INT(arg1);
+	n = (GLsizei)NUM2UINT(arg1);
 	queries = ALLOC_N(GLuint, n);
 	fptr_glGenQueries(n, queries);
 	ret = RARRAY(rb_ary_new2(n));
@@ -71,7 +71,7 @@ VALUE obj,arg1;
 	GLuint query;
 	GLboolean ret;
 	LOAD_GL_FUNC(glIsQuery)
-	query = (GLuint)NUM2INT(arg1);
+	query = (GLuint)NUM2UINT(arg1);
 	ret = fptr_glIsQuery(query);
 	return INT2NUM(ret);
 }
@@ -85,7 +85,7 @@ VALUE obj,arg1,arg2;
 	GLuint id;
 	LOAD_GL_FUNC(glBeginQuery)
 	target = (GLenum)NUM2INT(arg1);
-	id = (GLuint)NUM2INT(arg2);
+	id = (GLuint)NUM2UINT(arg2);
 	fptr_glBeginQuery(target,id);
 	return Qnil;
 }
@@ -130,7 +130,7 @@ VALUE obj,arg1,arg2;
 	GLint params = 0;
 	VALUE retary;
 	LOAD_GL_FUNC(glGetQueryObjectiv)
-	id = (GLuint)NUM2INT(arg1);
+	id = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectiv(id,pname,&params);
 	retary = rb_ary_new2(1);
@@ -148,7 +148,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLuint params = 0;
 	VALUE retary;
 	LOAD_GL_FUNC(glGetQueryObjectuiv)
-	id = (GLuint)NUM2INT(arg1);
+	id = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectuiv(id,pname,&params);
 	retary = rb_ary_new2(1);
@@ -197,7 +197,7 @@ VALUE obj,arg1;
 	RArray *ret;
 	int i;
 	LOAD_GL_FUNC(glGenBuffers)
-	n = (GLsizei)NUM2INT(arg1);
+	n = (GLsizei)NUM2UINT(arg1);
 	buffers = ALLOC_N(GLuint, n);
 	fptr_glGenBuffers(n, buffers);
 	ret = RARRAY(rb_ary_new2(n));
@@ -215,7 +215,7 @@ VALUE obj,arg1;
 	GLuint buffer;
 	GLboolean ret;
 	LOAD_GL_FUNC(glIsBuffer)
-	buffer = (GLuint)NUM2INT(arg1);
+	buffer = (GLuint)NUM2UINT(arg1);
 	ret = fptr_glIsBuffer(buffer);
 	return INT2NUM(ret);
 }

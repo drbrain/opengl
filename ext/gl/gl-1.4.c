@@ -104,7 +104,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLsizei stride;
 	LOAD_GL_FUNC(glFogCoordPointer)
 	type = (GLenum)NUM2INT(arg1);
-	stride = (GLsizei)NUM2INT(arg2);
+	stride = (GLsizei)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	rb_str_freeze(arg3);
 	g_FogCoord_ptr = arg3;
@@ -125,7 +125,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLsizei *ary2;
 	LOAD_GL_FUNC(glMultiDrawArrays)
 	mode = (GLenum)NUM2INT(arg1);
-	primcount = (GLsizei)NUM2INT(arg4);
+	primcount = (GLsizei)NUM2UINT(arg4);
 	ary1 = ALLOC_N(GLint,primcount);
 	ary2 = ALLOC_N(GLsizei,primcount);
 	ary2cint(arg2,ary1,primcount);
@@ -419,7 +419,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	LOAD_GL_FUNC(glSecondaryColorPointer)
 	size = (GLint)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
-	stride = (GLsizei)NUM2INT(arg3);
+	stride = (GLsizei)NUM2UINT(arg3);
 	Check_Type(arg4, T_STRING);
 	rb_str_freeze(arg4);
 	g_SecondaryColor_ptr = arg4;
