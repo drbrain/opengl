@@ -30,7 +30,8 @@ class GLtest_1_vertex_color
 "glColor4ui","glColor4uiv","glColor4us","glColor4usv","glVertex2d","glVertex2dv","glVertex2f",
 "glVertex2fv","glVertex2i","glVertex2iv","glVertex2s","glVertex2sv","glVertex3d","glVertex3dv",
 "glVertex3f","glVertex3fv","glVertex3i","glVertex3iv","glVertex3s","glVertex3sv","glVertex4d",
-"glVertex4dv","glVertex4f","glVertex4fv","glVertex4i","glVertex4iv","glVertex4s","glVertex4sv"
+"glVertex4dv","glVertex4f","glVertex4fv","glVertex4i","glVertex4iv","glVertex4s","glVertex4sv",
+"glClear","glLoadIdentity","glMatrixMode","glPopMatrix","glPushMatrix","glOrtho"
 	]
 	def initialize
 		projection_ortho_box(10)
