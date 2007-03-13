@@ -403,7 +403,7 @@ VALUE obj,arg1;
 {
 	GLuint shader;
 	GLint max_size = 0;
-	GLsizei ret_length;
+	GLsizei ret_length = 0;
 	VALUE buffer;
 	LOAD_GL_FUNC(glGetShaderSource)
 	LOAD_GL_FUNC(glGetShaderiv)
@@ -620,13 +620,16 @@ VALUE obj,arg1,arg2;
 		fptr_glShaderSource(shader,len,str_ptrs,str_lengths);		
 		xfree(str_lengths);
 		xfree(str_ptrs);
-	} else { /* single string */
+	} else if (TYPE(arg2)==T_STRING) { /* single string */
 		GLchar *ptr;
 		GLint len;
 		ptr = RSTRING(arg2)->ptr;
 		len = RSTRING(arg2)->len;
 		fptr_glShaderSource(shader,1,&ptr,&len);
+	} else {
+		Check_Type(arg2,T_STRING); /* force exception */		
 	}
+	
 	return Qnil;
 }
 
