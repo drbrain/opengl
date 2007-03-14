@@ -3302,6 +3302,7 @@ gl_GetPolygonStipple(obj)
 VALUE obj;
 {
 	GLubyte mask[128];
+	memset(mask, 0x0, sizeof(GLubyte)*128);
 	glGetPolygonStipple(mask);
 	return rb_str_new((const char*)mask, 128);
 }

@@ -353,6 +353,7 @@ class GLtest_2_rasterpos_bitmap
 	end
 end
 
+# tests display lists and basic matrix operations
 class GLtest_3_displaylists_matrixops
 	FUNCTIONS_TESTED = [
 "glNewList","glEndList","glCallList","glCallLists","glDeleteLists","glGenLists","glListBase","glIsList",
@@ -425,6 +426,7 @@ class GLtest_3_displaylists_matrixops
 	end
 end
 
+# tests texturing operations
 # top row - basic texturing
 # middle row - texture-color interaction
 # bottom row - automatic generation of texture coordinates
@@ -688,6 +690,142 @@ class GLtest_4_textureops
 		glDisable(GL_TEXTURE_1D)
 		glDisable(GL_TEXTURE_2D)
 		glDeleteTextures(@textures)
+	end
+end
+
+# tests glRect and polygon/line/point operations
+class GLtest_5_polygonops
+	FUNCTIONS_TESTED = [
+"glRectd","glRectdv","glRectf","glRectfv","glRecti","glRectiv","glRects","glRectsv","glCullFace",
+"glFrontFace","glPolygonMode","glPolygonStipple","glGetPolygonStipple",
+"glLineStipple","glLineWidth","glPointSize"
+	]
+
+	def initialize
+		projection_ortho_box(6)
+		@bitmap = redbook_fly_bitmap()
+	end
+	def loop
+		clear_screen_and_depth_buffer
+		reset_modelview
+
+		glEnable(GL_CULL_FACE)
+		glCullFace(GL_FRONT)
+
+		glFrontFace(GL_CW)
+
+		reset_modelview
+
+		glPolygonMode(GL_FRONT,GL_LINE)
+		glPolygonMode(GL_BACK,GL_LINE)
+
+		# top row
+		glTranslatef(-4.5,4.5,0)
+		glRectd(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRectf(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRects(0,0,1,1)
+		glTranslatef(2,0,0)
+
+		glBegin(GL_QUADS)
+			glVertex2i(0,0)		
+			glVertex2i(1,0)		
+			glVertex2i(1,1)		
+			glVertex2i(0,1)		
+		glEnd()
+
+		glDisable(GL_CULL_FACE)
+
+		glFrontFace(GL_CCW)
+
+		glPolygonMode(GL_FRONT,GL_FILL)
+		glPolygonMode(GL_BACK,GL_FILL)
+
+		# 2nd row
+		glTranslatef(-8,-2,0)
+		glRectdv([0,0],[1,1])
+		glTranslatef(2,0,0)
+		glRectfv([0,0],[1,1])
+		glTranslatef(2,0,0)
+		glRectiv([0,0],[1,1])
+		glTranslatef(2,0,0)
+		glRectsv([0,0],[1,1])
+		glTranslatef(2,0,0)
+
+		glEnable(GL_CULL_FACE)
+
+		glBegin(GL_QUADS)
+			glVertex2i(0,0)		
+			glVertex2i(0,1)		
+			glVertex2i(1,1)	
+			glVertex2i(1,0)		
+		glEnd()
+
+		glDisable(GL_CULL_FACE)
+
+		# 3rd row
+
+		glEnable(GL_POLYGON_STIPPLE)
+		glPolygonStipple(@bitmap)
+		return if glGetPolygonStipple() != @bitmap
+
+		glTranslatef(-8,-2,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glDisable(GL_POLYGON_STIPPLE)
+
+		# 4th row
+		glPolygonMode(GL_FRONT,GL_LINE)
+
+		glEnable(GL_LINE_STIPPLE)
+		glLineStipple(6,0xAAAA)
+		glLineWidth(7)
+		glTranslatef(-8,-2,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+
+		glLineWidth(1)
+		glDisable(GL_LINE_STIPPLE)
+
+		# 5th row
+		glPolygonMode(GL_FRONT,GL_POINT)
+
+		glPointSize(10)
+	
+		glTranslatef(-8,-2,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+		glTranslatef(2,0,0)
+		glRecti(0,0,1,1)
+
+		glPointSize(1)
+	end
+	def destroy
+		glPolygonMode(GL_BACK,GL_FILL)
+		glPolygonMode(GL_FRONT,GL_FILL)
+		glFrontFace(GL_CCW)
 	end
 end
 
