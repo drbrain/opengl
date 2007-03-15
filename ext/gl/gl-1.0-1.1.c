@@ -1645,7 +1645,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	else
 		size = type_size*format_size*width;
 
-	if (target == GL_PROXY_TEXTURE_2D || target == GL_PROXY_TEXTURE_CUBE_MAP || NIL_P(arg8)) { /* proxy texture, no data read */
+	if (target == GL_PROXY_TEXTURE_1D || NIL_P(arg8)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
 		if (TYPE(arg8) == T_FIXNUM || TYPE(arg8) == T_BIGNUM) { /* arg8 is offset to unpack buffer */
@@ -2712,7 +2712,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		else
 			size = width*height*format_size*type_size;
 		pixels = allocate_buffer_with_string(size);
+		FORCE_PIXEL_STORE_MODE
 		glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING(pixels)->ptr);
+		RESTORE_PIXEL_STORE_MODE
 		return pixels;
 	}
 	return Qnil;
@@ -3303,7 +3305,9 @@ VALUE obj;
 {
 	GLubyte mask[128];
 	memset(mask, 0x0, sizeof(GLubyte)*128);
+	FORCE_PIXEL_STORE_MODE
 	glGetPolygonStipple(mask);
+	RESTORE_PIXEL_STORE_MODE
 	return rb_str_new((const char*)mask, 128);
 }
 
@@ -3551,7 +3555,10 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	}
 	size *=	format_size*type_size;
 	pixels = allocate_buffer_with_string(size);
+
+	FORCE_PIXEL_STORE_MODE
 	glGetTexImage(tex,lod,format,type,(GLvoid*)RSTRING(pixels)->ptr);
+	RESTORE_PIXEL_STORE_MODE
 	return pixels;
 }
 
@@ -4215,6 +4222,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		if (RSTRING(arg7)->len < size)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
 		 pixels = RSTRING(arg7)->ptr;
+	} else if (TYPE(arg7) == T_FIXNUM || TYPE(arg7) == T_BIGNUM) { /* arg7 is offset to unpack buffer */
+			pixels = (const char *)NUM2UINT(arg7);
 	} else {
 		Check_Type(arg7,T_STRING); /* force exception */
 		return Qnil;
@@ -4259,6 +4268,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		if (RSTRING(arg9)->len < size)
 			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
 		 pixels = RSTRING(arg9)->ptr;
+	} else if (TYPE(arg9) == T_FIXNUM || TYPE(arg9) == T_BIGNUM) { /* arg9 is offset to unpack buffer */
+			pixels = (const char *)NUM2UINT(arg9);
 	} else {
 		Check_Type(arg9,T_STRING); /* force exception */
 		return Qnil;

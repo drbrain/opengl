@@ -252,7 +252,9 @@ VALUE obj,arg1,arg2,arg3;
 	else
 		size = type_size*format_size*width;
 	data = allocate_buffer_with_string(size);
+	FORCE_PIXEL_STORE_MODE
 	fptr_glGetColorTable(target,format,type,(GLvoid*)RSTRING(data)->ptr);	
+	RESTORE_PIXEL_STORE_MODE
 	return data;
 }
 
@@ -581,7 +583,9 @@ VALUE obj,arg1,arg2,arg3;
 	else
 		size = size*type_size*format_size;
 	data = allocate_buffer_with_string(size);
+	FORCE_PIXEL_STORE_MODE
 	fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)RSTRING(data)->ptr);
+	RESTORE_PIXEL_STORE_MODE
 	return data;
 }
 
@@ -620,7 +624,9 @@ VALUE obj,arg1,arg2,arg3;
 	}
 	data_row = allocate_buffer_with_string(size_row);
 	data_column = allocate_buffer_with_string(size_column);
+	FORCE_PIXEL_STORE_MODE
 	fptr_glGetSeparableFilter(target,format,type,(GLvoid*)RSTRING(data_row)->ptr,(GLvoid*)RSTRING(data_column)->ptr,0);
+	RESTORE_PIXEL_STORE_MODE
 	retary = rb_ary_new2(2);
 	rb_ary_push(retary, data_row);
 	rb_ary_push(retary, data_column);
@@ -736,7 +742,9 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	else
 		size = size*type_size*format_size;
 	data = allocate_buffer_with_string(size);
+	FORCE_PIXEL_STORE_MODE
 	fptr_glGetHistogram(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
+	RESTORE_PIXEL_STORE_MODE
 	return data;
 }
 
@@ -767,7 +775,9 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	else
 		size = type_size*format_size*2;
 	data = allocate_buffer_with_string(size);
+	FORCE_PIXEL_STORE_MODE
 	fptr_glGetMinmax(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
+	RESTORE_PIXEL_STORE_MODE
 	return data;
 }
 
@@ -879,6 +889,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	GLint border;
 	GLenum format;
 	GLenum type;
+	const char *pixels;
 	int size;
 	int type_size;
 	int format_size;
@@ -901,11 +912,23 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 		size = format_size*((height*width*depth)/8);
 	else	
 		size = type_size*format_size*height*width*depth;
-	if (RSTRING(arg10)->len < size)
-		rb_raise(rb_eArgError, "string length:%d",RSTRING(arg10)->len);
+
+	if (target == GL_PROXY_TEXTURE_3D || NIL_P(arg10)) { /* proxy texture, no data read */
+		pixels = NULL;
+	} else {
+		if (TYPE(arg10) == T_FIXNUM || TYPE(arg10) == T_BIGNUM) { /* arg10 is offset to unpack buffer */
+			pixels = (const char *)NUM2UINT(arg10);
+		} else if (TYPE(arg10) == T_STRING) { /* image data */
+			if (RSTRING(arg10)->len < size)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg10)->len);
+			pixels = RSTRING(arg10)->ptr;
+		} else {
+			Check_Type(arg10,T_STRING); /* force exception */
+			return Qnil;
+		}
+	}
 	fptr_glTexImage3D( target, level, internalFormat, width, height,
-				  depth, border, format, type,
-				  (const GLvoid*)RSTRING(arg10)->ptr);
+				  depth, border, format, type,pixels);
 	return Qnil;
 }
 
@@ -924,6 +947,7 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	GLsizei depth;
 	GLenum format;
 	GLenum type;
+	const char *pixels;
 	int size;
 	int type_size;
 	int format_size;
@@ -947,11 +971,21 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 		size = format_size*((height*width*depth)/8);
 	else	
 		size = type_size*format_size*height*width*depth;
-	if (RSTRING(arg11)->len < size)
-		rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
+
+	if (TYPE(arg11) == T_STRING) {
+		if (RSTRING(arg11)->len < size)
+			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
+		 pixels = RSTRING(arg11)->ptr;
+	} else if (TYPE(arg11) == T_FIXNUM || TYPE(arg11) == T_BIGNUM) { /* arg11 is offset to unpack buffer */
+			pixels = (const char *)NUM2UINT(arg11);
+	} else {
+		Check_Type(arg11,T_STRING); /* force exception */
+		return Qnil;
+	}
+
 	fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 			width, height, depth,
-			format, type, RSTRING(arg11)->ptr);
+			format, type, pixels);
 	return Qnil;
 }
 

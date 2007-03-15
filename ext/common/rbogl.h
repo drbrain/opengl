@@ -55,4 +55,19 @@ void *load_gl_function(const char *name, int raise);
 if (fptr_##_NAME_==NULL) \
 fptr_##_NAME_ = load_gl_function(#_NAME_, 1);
 
+#define FORCE_PIXEL_STORE_MODE \
+	glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT); \
+	glPixelStorei(GL_PACK_ALIGNMENT, 1); \
+	glPixelStorei(GL_PACK_SKIP_PIXELS, 0); \
+	glPixelStorei(GL_PACK_SKIP_ROWS, 0); \
+	glPixelStorei(GL_PACK_ROW_LENGTH, 0); \
+	glPixelStorei(GL_PACK_SKIP_IMAGES, 0); \
+	glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0); \
+	glPixelStorei(GL_PACK_SKIP_VOLUMES_SGIS, 0); \
+	glPixelStorei(GL_PACK_IMAGE_DEPTH_SGIS, 0);
+
+#define RESTORE_PIXEL_STORE_MODE \
+	glPopClientAttrib();
+
+
 #endif /* _RBOGL_H_ */
