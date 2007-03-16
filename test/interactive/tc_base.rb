@@ -829,4 +829,191 @@ class GLtest_5_polygonops
 	end
 end
 
+class GLtest_6_textureops_2
+	FUNCTIONS_TESTED = [
+"glTexSubImage1D","glTexSubImage2D",
+"glCopyTexImage1D","glCopyTexImage2D",
+"glCopyTexSubImage1D","glCopyTexSubImage2D",
+"glDrawPixels","glReadPixels", "glCopyPixels",
+"glGetTexLevelParameterfv","glGetTexLevelParameteriv",
+"glPrioritizeTextures","glAreTexturesResident",
+"glGetTexImage",
+	]
+
+	def base_tex_params(target)
+		glTexParameterf(target,GL_TEXTURE_MIN_FILTER, GL_LINEAR )
+		glTexParameterf(target,GL_TEXTURE_MAG_FILTER, GL_LINEAR )
+        glTexParameteri(target,GL_TEXTURE_WRAP_S, GL_CLAMP)
+        glTexParameteri(target,GL_TEXTURE_WRAP_T, GL_CLAMP)
+	end
+
+	def initialize
+		bitmap_1D = (0..255).collect.pack("c*") # uncolored byte gradient 0..255
+		bitmap_2D = checker_texture_bitmap(64,8,[255,255,255],[0,0,0]) # checker texture
+		bitmap_2D_small = checker_texture_bitmap(32,8,[0,0,255],[0,0,0]) # checker texture
+		bitmap_random = random_rgb_texture(512)
+
+		@textures = glGenTextures(7)
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+
+		# random background
+		projection_ortho_window
+		clear_screen_and_depth_buffer
+		reset_modelview
+		glRasterPos2i(0,0)
+		glDrawPixels(512,512,GL_RGB,GL_UNSIGNED_BYTE,bitmap_random)
+		projection_ortho_box(5)		
+
+		# 1D
+		glEnable(GL_TEXTURE_1D)
+
+		# texture which half is replaced with subimage
+		glBindTexture(GL_TEXTURE_1D,@textures[0])
+		base_tex_params(GL_TEXTURE_1D)
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, 256, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap_1D)
+		glTexSubImage1D(GL_TEXTURE_1D, 0, 0, 128, GL_GREEN, GL_UNSIGNED_BYTE, bitmap_1D)
+
+		return if glGetTexLevelParameteriv(GL_TEXTURE_1D,0,GL_TEXTURE_WIDTH) != [256]
+		return if glGetTexLevelParameterfv(GL_TEXTURE_1D,0,GL_TEXTURE_WIDTH) != [256]
+
+		# random texture
+		glBindTexture(GL_TEXTURE_1D,@textures[1])
+		base_tex_params(GL_TEXTURE_1D)
+		glCopyTexImage1D(GL_TEXTURE_1D,0,GL_RGB,0,0,256,0)
+
+		# random subimage
+		glBindTexture(GL_TEXTURE_1D,@textures[2])
+		base_tex_params(GL_TEXTURE_1D)
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, 256, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap_1D)
+		glCopyTexSubImage1D(GL_TEXTURE_1D,0,0,0,0,128)
+		
+		# </1D>
+		glDisable(GL_TEXTURE_1D)
+
+		# 2D
+		glEnable(GL_TEXTURE_2D)
+
+		# texture which half is replaced with subimage
+		glBindTexture(GL_TEXTURE_2D,@textures[3])
+		base_tex_params(GL_TEXTURE_2D)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64,64, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap_2D)
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0,32, 32,32, GL_RGB, GL_UNSIGNED_BYTE, bitmap_2D_small)
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, 32,32, GL_RGB, GL_UNSIGNED_BYTE, bitmap_2D_small)
+
+		# random texture
+		glBindTexture(GL_TEXTURE_2D,@textures[4])
+		base_tex_params(GL_TEXTURE_2D)
+		glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGB,0,0,64,64,0)
+
+		# random subimage
+		glBindTexture(GL_TEXTURE_2D,@textures[5])
+		base_tex_params(GL_TEXTURE_2D)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64,64, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap_2D)
+		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, 0,0, 32,32)
+		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0,32,32,32, 32,32)
+
+		# image for getteximage
+		glBindTexture(GL_TEXTURE_2D,@textures[6])
+		base_tex_params(GL_TEXTURE_2D)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64,64, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap_2D)
+
+		x = glGetTexImage(GL_TEXTURE_2D,0, GL_RGBA, GL_UNSIGNED_BYTE)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64,64, 0, GL_RGB, GL_UNSIGNED_BYTE, x)
+
+		glPrioritizeTextures(@textures,[0.0,1.0,0.0,1.0,0.0,1.0,1.0])
+
+		# </2D>
+		glDisable(GL_TEXTURE_2D)
+	end
+	def draw_quad
+		glBegin(GL_QUADS)
+		glTexCoord2i(0,0)
+		glVertex2i(-1,-1)
+		glTexCoord2i(1,0)
+		glVertex2i( 1,-1)
+		glTexCoord2i(1,1)
+		glVertex2i( 1, 1)
+		glTexCoord2i(0,1)
+		glVertex2i(-1, 1)
+		glEnd()
+	end
+	def loop	
+		projection_ortho_box(5)
+
+		clear_screen_and_depth_buffer
+
+		res = glAreTexturesResident(@textures) # residences are implementation defined
+		return if res.size != @textures.size
+
+		# top row
+		reset_modelview
+		glEnable(GL_TEXTURE_1D)
+		glBindTexture(GL_TEXTURE_1D,@textures[0])
+		glTranslatef(-3,3,0)		
+		draw_quad
+
+		return if glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY) != [0.0]
+
+		glBindTexture(GL_TEXTURE_1D,@textures[1])
+		glTranslatef(3,0,0)
+		draw_quad
+
+		return if glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY) != [1.0]
+
+		glBindTexture(GL_TEXTURE_1D,@textures[2])
+		glTranslatef(3,0,0)
+		draw_quad
+
+		return if glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY) != [0.0]
+
+		glDisable(GL_TEXTURE_1D)
+
+		# middle row
+		reset_modelview
+
+		glEnable(GL_TEXTURE_2D)
+
+		glBindTexture(GL_TEXTURE_2D,@textures[3])
+		glTranslatef(-3,0,0)
+		draw_quad
+
+		glBindTexture(GL_TEXTURE_2D,@textures[4])
+		glTranslatef(3,0,0)	
+		draw_quad
+
+		glBindTexture(GL_TEXTURE_2D,@textures[5])
+		glTranslatef(3,0,0)	
+		draw_quad
+
+		# bottom row
+		reset_modelview
+		glBindTexture(GL_TEXTURE_2D,@textures[6])
+		glTranslatef(0,-3,0)
+		draw_quad
+
+		reset_modelview
+
+		glDisable(GL_TEXTURE_2D)
+
+		x = glReadPixels(0,0,512,512,GL_RGB,GL_UNSIGNED_BYTE)
+
+		clear_screen_and_depth_buffer
+		projection_ortho_window
+		glRasterPos2i(0,0)
+
+		glDrawPixels(512,512,GL_RGB,GL_UNSIGNED_BYTE,x)
+
+		glRasterPos2i(38,40)
+		glCopyPixels(192,40,128,128,GL_COLOR)
+
+		glRasterPos2i(344,40)
+		glCopyPixels(192,40,128,128,GL_COLOR)
+	end
+	def destroy
+		glDeleteTextures(@textures)	
+	end
+end
+
+srand(1234)
 Test_Runner.new("GLtest_","base tests")

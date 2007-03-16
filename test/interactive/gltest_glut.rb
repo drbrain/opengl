@@ -128,6 +128,10 @@ module GL_func
 		]
 		bitmap.pack("c*")
 	end
+
+	def random_rgb_texture(size=64)
+		(0..(size*size*3)).collect { rand(256) } .pack("c*")
+	end
 end
 
 # Test runner - finds all classes matching $prefix, then creates instance of each,
@@ -250,6 +254,11 @@ class Test_Runner
 		case k
 		when ?y, ?n
 			@test_results[@test_index] = (k==?y ? true : false)
+
+			clear_screen_and_depth_buffer
+			print_text("Loading ...",10,30)
+			glutSwapBuffers()
+
 			next_test
 		when 27 # Esc
 			puts "Aborted!"
