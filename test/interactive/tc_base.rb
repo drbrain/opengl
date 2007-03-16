@@ -1015,5 +1015,157 @@ class GLtest_6_textureops_2
 	end
 end
 
+class GLtest_7_light_material
+	FUNCTIONS_TESTED = [
+"glLightfv","glLightiv","glLightf","glLighti","glGetLightfv","glGetLightiv",
+"glMaterialfv","glMaterialiv","glMaterialf","glMateriali","glGetMaterialfv","glGetMaterialiv",
+"glNormal3d","glNormal3dv","glNormal3f","glNormal3fv","glNormal3i","glNormal3iv","glNormal3s",
+"glNormal3sv","glNormal3b","glNormal3bv",
+"glColorMaterial","glLightModelfv","glLightModeliv","glLightModelf","glLightModeli"
+	]
+
+	def initialize
+		projection_ortho_box(5)
+
+		glEnable(GL_LIGHTING)
+		# red light
+		glLightfv(GL_LIGHT0,GL_AMBIENT, [0.2,0.2,0.2,1.0])
+		glLightiv(GL_LIGHT0,GL_DIFFUSE, [2**31-1,0,0,2**31-1])
+		glLightfv(GL_LIGHT0,GL_POSITION, [0.0,0.0,5.0,1.0])
+		# green light	
+		glLightfv(GL_LIGHT1,GL_AMBIENT, [0.2,0.2,0.2,1.0])
+		glLightfv(GL_LIGHT1,GL_DIFFUSE, [0.0,1.0,0.0,1.0])
+		glLightfv(GL_LIGHT1,GL_POSITION, [0.0,0.0,5.0,1.0])
+		# blue light
+		glLightfv(GL_LIGHT2,GL_AMBIENT, [0.2,0.2,0.2,1.0])
+		glLightfv(GL_LIGHT2,GL_DIFFUSE, [0.0,0.0,1.0,1.0])
+		glLightfv(GL_LIGHT2,GL_POSITION, [0.0,0.0,5.0,1.0])
+	end
+
+	def draw_quad
+		glBegin(GL_QUADS)
+		glVertex2i(-1,-1)
+		glVertex2i( 1,-1)
+		glVertex2i( 1, 1)
+		glVertex2i(-1, 1)
+		glEnd()
+	end
+	def draw_quad_rev
+		glBegin(GL_QUADS)
+		glVertex2i(-1,-1)
+		glVertex2i(-1, 1)
+		glVertex2i( 1, 1)
+		glVertex2i( 1,-1)
+		glEnd()
+	end
+	def loop
+		clear_screen_and_depth_buffer
+		reset_modelview
+
+		glMaterialfv(GL_FRONT,GL_AMBIENT,[0.3,0.3,0.3,1.0])
+
+		glLightf(GL_LIGHT0,GL_SPOT_CUTOFF,45.0)
+		return if glGetLightfv(GL_LIGHT0,GL_SPOT_CUTOFF) != [45.0]
+		glLighti(GL_LIGHT0,GL_SPOT_CUTOFF,90)
+		return if glGetLightiv(GL_LIGHT0,GL_SPOT_CUTOFF) != [90]
+
+		glMaterialf(GL_FRONT,GL_SHININESS,96)
+		return if glGetMaterialfv(GL_FRONT,GL_SHININESS) != [96.0]
+		glMateriali(GL_FRONT,GL_SHININESS,64)
+		return if glGetMaterialiv(GL_FRONT,GL_SHININESS) != [64]
+
+		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,1)
+		glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,1.0)
+		
+		glNormal3b(0,0,-127)
+		# top row
+		imax = 2**31-1
+		glMaterialiv(GL_FRONT,GL_DIFFUSE,[imax,imax,imax,imax])
+		glTranslatef(-3,3,0)
+		glEnable(GL_LIGHT0)
+		glNormal3f(0,0,1)
+		draw_quad
+		glNormal3f(0,0,-1)
+		glDisable(GL_LIGHT0)
+	
+		glTranslatef(3,0,0)
+		glEnable(GL_LIGHT1)
+		glNormal3fv([0,0,1])
+		draw_quad
+		glNormal3fv([0,0,-1])
+		glDisable(GL_LIGHT1)
+
+		glTranslatef(3,0,0)
+		glEnable(GL_LIGHT2)
+		glNormal3d(0,0,-1)
+		draw_quad_rev
+		glNormal3d(0,0,-1)
+		glDisable(GL_LIGHT2)
+
+		# middle row
+		reset_modelview
+		glMaterialfv(GL_FRONT,GL_DIFFUSE,[0.4,0.4,0.4,1.0])
+		glTranslatef(-3,0,0)
+		glEnable(GL_LIGHT0)
+		glNormal3dv([0,0,1])
+		draw_quad
+		glNormal3dv([0,0,-1])
+		glDisable(GL_LIGHT0)
+
+		glLightModeliv(GL_LIGHT_MODEL_AMBIENT,[2**31-1,2**31-1,2**31-1,2**31-1])
+	
+		glTranslatef(3,0,0)
+		glEnable(GL_LIGHT1)
+		glNormal3i(0,0,2**30)
+		draw_quad
+		glNormal3i(0,0,-2**30)
+		glDisable(GL_LIGHT1)
+
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT,[0.2,0.2,0.2,1.0])
+
+		glTranslatef(3,0,0)
+		glEnable(GL_LIGHT2)
+		glNormal3iv([0,0,2**30])
+		draw_quad
+		glNormal3iv([0,0,-2**30])
+		glDisable(GL_LIGHT2)
+
+		glEnable(GL_COLOR_MATERIAL)
+
+		glColor(1.0,1.0,1.0)
+		glColorMaterial(GL_FRONT,GL_DIFFUSE)
+		# bottom row
+		reset_modelview
+		glTranslatef(-3,-3,0)
+		glEnable(GL_LIGHT0)
+		glNormal3s(0,0,2**15-1)
+		draw_quad
+		glNormal3s(0,0,-2**15-1)
+		glDisable(GL_LIGHT0)
+	
+		glTranslatef(3,0,0)
+		glEnable(GL_LIGHT1)
+		glNormal3sv([0,0,2**15-1])
+		draw_quad
+		glNormal3sv([0,0,-2**15-1])
+		glDisable(GL_LIGHT1)
+
+		glTranslatef(3,0,0)
+		glEnable(GL_LIGHT2)
+		glNormal3bv([0,0,127])
+		draw_quad
+		glNormal3bv([0,0,-127])
+		glDisable(GL_LIGHT2)
+
+		glDisable(GL_COLOR_MATERIAL)
+
+	end
+
+	def destroy
+		glDisable(GL_LIGHTING)
+		glDisable(GL_COLOR_MATERIAL)
+	end
+end
+
 srand(1234)
 Test_Runner.new("GLtest_","base tests")

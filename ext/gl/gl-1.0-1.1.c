@@ -2706,18 +2706,18 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	type = NUM2INT(arg6);
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
-	if (type_size != -1 && format_size != -1) {
-		if (type==GL_BITMAP)
-			size = format_size*((width*height)/8);
-		else
-			size = width*height*format_size*type_size;
-		pixels = allocate_buffer_with_string(size);
-		FORCE_PIXEL_STORE_MODE
-		glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING(pixels)->ptr);
-		RESTORE_PIXEL_STORE_MODE
-		return pixels;
-	}
-	return Qnil;
+	if (type_size == -1 || format_size == -1) 
+		return Qnil;
+
+	if (type==GL_BITMAP)
+		size = format_size*((width*height)/8);
+	else
+		size = width*height*format_size*type_size;
+	pixels = allocate_buffer_with_string(size);
+	FORCE_PIXEL_STORE_MODE
+	glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING(pixels)->ptr);
+	RESTORE_PIXEL_STORE_MODE
+	return pixels;
 }
 
 static VALUE
@@ -2932,7 +2932,7 @@ VALUE obj,arg1,arg2;
 	glGetLightiv(light,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(params[i]));
+		rb_ary_push(retary, INT2NUM(params[i]));
 	return retary;
 }
 
@@ -3114,7 +3114,7 @@ VALUE obj,arg1,arg2;
 	glGetMapiv(target,query,points);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(points[i]));
+		rb_ary_push(retary, INT2NUM(points[i]));
 	xfree(points);
 	return retary;
 }
@@ -3187,7 +3187,7 @@ VALUE obj,arg1,arg2;
 	glGetMaterialiv(face,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(params[i]));
+		rb_ary_push(retary, INT2NUM(params[i]));
 	return retary;
 }
 
@@ -3258,7 +3258,7 @@ VALUE obj,arg1;
 	glGetPixelMapuiv(map,values);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(values[i]));
+		rb_ary_push(retary, INT2NUM(values[i]));
 	xfree(values);
 	return retary;
 }
@@ -3294,7 +3294,7 @@ VALUE obj,arg1;
 	glGetPixelMapusv(map,values);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(values[i]));
+		rb_ary_push(retary, INT2NUM(values[i]));
 	xfree(values);
 	return retary;
 }
@@ -3414,7 +3414,7 @@ VALUE obj,arg1,arg2;
 	glGetTexEnviv(target,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(params[i]));
+		rb_ary_push(retary, INT2NUM(params[i]));
 	return retary;
 }
 
@@ -3507,7 +3507,7 @@ VALUE obj,arg1,arg2;
 	glGetTexGeniv(coord,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(params[i]));
+		rb_ary_push(retary, INT2NUM(params[i]));
 	return retary;
 }
 
@@ -3613,7 +3613,7 @@ VALUE obj,arg1,arg2;
 	glGetTexParameteriv(target,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(params[i]));
+		rb_ary_push(retary, INT2NUM(params[i]));
 	return retary;
 }
 
@@ -3649,7 +3649,7 @@ VALUE obj,arg1,arg2,arg3;
 	pname = (GLenum)NUM2INT(arg3);
 	glGetTexLevelParameteriv(target,level,pname,&params);
 	retary = rb_ary_new2(1);
-	rb_ary_push(retary, INT2FIX(params));
+	rb_ary_push(retary, INT2NUM(params));
 	return retary;
 }
 
@@ -4297,10 +4297,10 @@ VALUE obj,arg1;
 	retary = rb_ary_new2(size);
 	if (r==GL_TRUE) { /* all are resident */
 		for(i=0;i<size;i++)
-			rb_ary_push(retary, INT2FIX(GL_TRUE));
+			rb_ary_push(retary, INT2NUM(GL_TRUE));
 	} else {
 		for(i=0;i<size;i++)
-			rb_ary_push(retary, INT2FIX(residences[i]));
+			rb_ary_push(retary, INT2NUM(residences[i]));
 	}
 	xfree(textures);
 	xfree(residences);

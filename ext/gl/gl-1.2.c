@@ -220,7 +220,7 @@ VALUE obj,arg1,arg2;
 	fptr_glGetColorTableParameteriv(target,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(params[i]));
+		rb_ary_push(retary, INT2NUM(params[i]));
 	return retary;
 }
 
@@ -545,7 +545,7 @@ VALUE obj,arg1,arg2;
 	fptr_glGetConvolutionParameteriv(target,pname,params);
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2FIX(params[i]));
+		rb_ary_push(retary, INT2NUM(params[i]));
 	return retary;
 }
 
@@ -709,7 +709,7 @@ VALUE obj,arg1,arg2,arg3;
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetHistogramParameteriv(target,pname,&params);
 	retary = rb_ary_new2(1);
-	rb_ary_push(retary, INT2FIX(params));
+	rb_ary_push(retary, INT2NUM(params));
 	return retary;
 }
 
@@ -813,7 +813,7 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetMinmaxParameteriv(target,pname,&params);
 	retary = rb_ary_new2(1);
-	rb_ary_push(retary, INT2FIX(params));
+	rb_ary_push(retary, INT2NUM(params));
 	return retary;
 }
 
