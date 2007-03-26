@@ -5,11 +5,19 @@ Roadmap
 * Make sure OpenGL 1.0 and 1.1 are solidly supported
 * Continue testing 1.2+ support
 * Create a set of test images for functional test comparison
-* Possibly port GLU to use Ruby/DL
 * Get BaseGLUT updated.
+* Add RDoc documentation comments to C API
 * Make sure this can build cleanly under Windows under the current
   build system.
 * Add the ESC keyboard handler to smooth.rb
+* Add all of Yoshi's examples into examples
+* Create more example code
+* Write a getting started tutorial
+
+
+Possible Features
+========
+* Possibly port GLU to use Ruby/DL
 
 <br/>
 <br/>

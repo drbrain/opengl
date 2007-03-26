@@ -129,18 +129,17 @@ gem_files = gem_files.exclude("**/*.so", "**/*.o", "ext/**/*.log", "ext/gl*/Rake
 
 spec = Gem::Specification.new do |s|
     s.name              = "ruby-opengl"
-    s.version           = "0.34.0"
-    s.authors           = [ "Alain Hoang", "Minh Thu Vo" ]
+    s.version           = "0.40.0"
+    s.authors           = [ "Alain Hoang", "Jan Dvorak", "Minh Thu Vo" ]
     s.homepage          = "http://opengl-ruby.rubyforge.org"
     s.platform          = Gem::Platform::RUBY
     s.summary           = "OpenGL Interface for Ruby"
     s.files             = gem_files
     s.extensions        << 'Rakefile'
-#    s.extensions        << 'ext/common/Rakefile', 'ext/gl/mkrf_conf.rb', 
-#                           'ext/glu/mkrf_conf.rb', 'ext/glut/mkrf_conf.rb']
     s.require_path      = "lib"
     s.autorequire       = "gl"
     s.has_rdoc          = false
+    s.add_dependency("rubygems", ">=0.9.1")
     s.add_dependency("mkrf", ">=0.2.0")
     s.add_dependency("rake")
 end
