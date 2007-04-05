@@ -1,4 +1,42 @@
-/* This file was genereated on Sun Feb 11 01:24:24 +0100 2007 */
+/* GL types - define if system GLheaders are not recent */
+
+/* GL base */
+#ifndef GL_VERSION_1_5
+typedef ptrdiff_t GLintptr;
+typedef ptrdiff_t GLsizeiptr;
+#endif
+
+#ifndef GL_VERSION_2_0
+typedef char GLchar;
+#endif
+
+/* new GL types introduced by ARB extensions */
+#ifndef GL_ARB_half_float_pixel
+typedef unsigned short GLhalfARB;
+#endif
+
+#ifndef GL_ARB_shader_objects
+typedef char GLcharARB;
+typedef unsigned int GLhandleARB;
+#endif
+
+#ifndef GL_ARB_vertex_buffer_object
+typedef ptrdiff_t GLintptrARB;
+typedef ptrdiff_t GLsizeiptrARB;
+#endif
+
+/* new GL types introduced by other extensions */
+#ifndef GL_NV_half_float
+typedef unsigned short GLhalfNV;
+#endif
+
+/* List of GL enumerators */
+
+/* The code below was genereated on Sun Feb 11 01:24:24 +0100 2007
+   source: http://www.opengl.org/registry/api/enum.spec
+           http://www.opengl.org/registry/api/enumext.spec
+*/
+
 #ifndef _GLENUMS_H_
 #define _GLENUMS_H_ 
 
