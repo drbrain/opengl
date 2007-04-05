@@ -15,12 +15,16 @@
 
 require 'rubygems'
 require 'mkrf'
+require 'rbconfig'
 
 Mkrf::Generator.new( 'gl' ) do |g|
-    g.objects << '../common/rbogl.o'
+    g.objects << "../common/rbogl.#{Config::CONFIG['OBJEXT']}"
     case RUBY_PLATFORM
     when /darwin/
         g.ldshared << ' -framework OpenGL'
+    when /mswin32/
+        g.cflags << ' -DWIN32'
+        g.include_library( 'opengl32.lib', 'glVertex3d')
     else
         g.include_library( 'GL', 'glVertex3d')
     end

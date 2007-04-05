@@ -35,6 +35,12 @@
 
 #include <ruby.h>
 
+#ifdef WIN32
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+
 static int callId; /* 'call' method id */
 
 /* callback define macro */
@@ -1484,7 +1490,7 @@ VALUE obj;
 
 static VALUE module;
 
-void Init_glut()
+DLLEXPORT void Init_glut()
 {
     module = rb_define_module("Glut");
 

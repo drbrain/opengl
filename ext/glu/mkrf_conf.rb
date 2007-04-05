@@ -17,10 +17,14 @@ require 'rubygems'
 require 'mkrf'
 
 Mkrf::Generator.new( 'glu' ) do |g|
-    g.objects << '../common/rbogl.o'
+    g.objects << "../common/rbogl.#{Config::CONFIG['OBJEXT']}"
     case RUBY_PLATFORM
     when /darwin/
         g.ldshared << ' -framework OpenGL'
+    when /mswin32/
+        g.cflags << ' -DWIN32'
+        g.include_library( 'opengl32.lib', 'glVertex3d')
+        g.include_library( 'glu32.lib', 'gluLookAt')
     else
         g.include_library( 'GLU', 'gluLookAt' )
         g.include_library( 'GL', 'glVertex3d')

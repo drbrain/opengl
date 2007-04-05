@@ -33,8 +33,10 @@
 #include "../common/rbogl.h"
 
 #ifdef WIN32
+#define DLLEXPORT __declspec(dllexport)
 typedef void (CALLBACK*(VOIDFUNC))();
 #else
+#define DLLEXPORT
 typedef void (*VOIDFUNC)();
 #endif
 
@@ -1448,8 +1450,7 @@ static VALUE module;
 #define GLU_ERROR                          100103
 #endif
 
-
-void Init_glu()
+DLLEXPORT void Init_glu()
 {
     callId = rb_intern("call");
     refId = rb_intern("[]");

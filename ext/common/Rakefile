@@ -20,20 +20,24 @@ require 'rbconfig'
 
 INCLUDES = "-I#{Config::CONFIG['archdir']}"
 CFLAGS   = "#{Config::CONFIG['CFLAGS']}"
+CC       = "#{Config::CONFIG['CC']}"
+O        = "#{Config::CONFIG['OBJEXT']}"
 
 case RUBY_PLATFORM
 when /darwin/
     INCLUDES << ' -F/System/Library/Frameworks'
+when /mswin32/
+    CFLAGS << ' -DWIN32'
 end
 
-CLEAN.include( '*.o' )
+CLEAN.include( '*.#{O}' )
 
 SRC = FileList[ '*.c' ]
-OBJ = SRC.ext( 'o' )
+OBJ = SRC.ext( O )
 
 task :default => OBJ
 file 'rbogl.c' => [ 'rbogl.h' ]
 
-rule '.o' => '.c' do |t|
-    sh "cc -c #{CFLAGS} #{INCLUDES} -o #{t.name} #{t.source}"
+rule ".#{O}" => '.c' do |t|
+    sh "#{CC} -c #{CFLAGS} #{INCLUDES} #{t.source}"
 end

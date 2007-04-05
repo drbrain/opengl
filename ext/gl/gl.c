@@ -25,6 +25,12 @@
 #include "../common/rbogl.h"
 #include "../common/gl-enums.h"
 
+#ifdef WIN32
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+
 static VALUE module;
 
 void gl_init_enums(VALUE);
@@ -49,7 +55,7 @@ VALUE obj,arg1;
 		return Qtrue;
 }
 
-void Init_gl()
+DLLEXPORT void Init_gl()
 {
     module = rb_define_module("Gl");
 	gl_init_enums(module);

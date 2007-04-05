@@ -20,6 +20,11 @@ Mkrf::Generator.new( 'glut' ) do |g|
     case RUBY_PLATFORM
     when /darwin/
         g.ldshared << ' -framework GLUT -framework OpenGL -framework Cocoa'
+    when /mswin32/
+        g.cflags << ' -DWIN32'
+        g.include_library( 'glut32.lib', 'glutSolidTeapot' )
+        g.include_library( 'glu32.lib', 'gluLookAt' )
+        g.include_library( 'opengl32.lib', 'glVertex3d' )
     else
         g.include_library( 'glut', 'glutSolidTeapot' )
         g.include_library( 'GLU', 'gluLookAt' )

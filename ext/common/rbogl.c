@@ -294,12 +294,3 @@ void *load_gl_function(const char *name,int raise)
 	return func_ptr;
 }
 
-/* -------------------------------------------------------------------- */
-void Init_gl(void);
-
-void Init_opengl()
-{
-  Init_gl(); /* is this needed ? */			  
-  /* RxINC: InitializeGLU(); */
-}
-
