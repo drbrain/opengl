@@ -22,11 +22,65 @@ at the top of your files instead of
     require 'opengl'
     require 'glut'
 
+For examples of using the legacy code look at the directory legacy/ for
+lots of example code that was borrowed from Yoshi's examples
+
 
 Status of examples
 ------------------
 
 * plane.rb -- works (Should show a picture of a planar surface)
-* smooth.rb, smooth_prev.rb -- works
-* aaindex.rb  -- does not seem to work
-* test.rb  -- works
+* smooth.rb -- works
+* test.rb -- works
+
+Status of legacy examples
+-------------------------
+
+* aaindex.rb -- does not seem to work
+* aapoly.rb -- works
+* aargb.rb -- works
+* accanti.rb -- does not seem to work
+* accpersp.rb -- does not seem to work
+* alpha3D.rb -- works
+* alpha.rb -- works
+* bezcurve.rb -- works
+* bezmesh.rb -- works
+* checker.rb -- works
+* clip.rb -- works
+* colormat.rb -- works
+* cube.rb -- works
+* depthcue.rb -- works
+* smooth.rb -- works
+* dof.rb -- works
+* double.rb -- works
+* drawf.rb -- works
+* feedback.rb -- seems to work
+* fog.rb -- works
+* font-glut.rb -- works
+* font.rb -- works
+* hello.rb -- works
+* image.rb -- works
+* lines.rb -- works
+* list.rb -- works
+* material.rb -- works
+* mipmap.rb -- works
+* model.rb -- works
+* movelight.rb -- works
+* pickdepth.rb -- works
+* planet.rb -- works
+* quadric.rb -- works
+* readpixel.rb -- does not seem to work
+* robot.rb -- seems to work
+* select.rb -- works
+* smooth.rb -- works
+* stencil.rb -- works
+* stroke.rb -- works
+* surface.rb -- works
+* teaambient.rb -- works
+* teapots.rb -- works
+* tess.rb -- does not seem to work
+* texbind.rb -- works
+* texgen.rb -- works
+* texturesurf.rb -- works
+* varray.rb -- works
+* wrap.rb -- works
