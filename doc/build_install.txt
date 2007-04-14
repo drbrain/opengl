@@ -5,9 +5,10 @@ Building ruby-opengl
 Pre-requisites
 --------------
 
-On Ubuntu, aside from Ruby you'll need the following:
+On Ubuntu or Debian systems, aside from Ruby you'll need ruby and
+some extra ruby related packages:
 
-* `rdoc ri ruby1.8-dev`
+* `ruby rdoc ri ruby1.8-dev`
 
 For OpenGL related headers you'll need the following packages:
 

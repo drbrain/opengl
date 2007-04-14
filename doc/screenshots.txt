@@ -1,0 +1,23 @@
+ruby-opengl screenshots
+=======================
+
+Currently the screenshots are a little barren but here are some
+renders from the interactive test suite in ruby-opengl
+
+interactive test screenshots
+============================
+
+<img src="images/GLtest_1_vertex_color.png" />
+<br />
+<img src="images/GLtest_2_rasterpos_bitmap.png" />
+<br />
+<img src="images/GLtest_3_displaylists_matrixops.png" />
+<br />
+<img src="images/GLtest_4_textureops.png" />
+<br />
+<img src="images/GLtest_5_polygonops.png" />
+<br />
+<img src="images/GLtest_6_textureops_2.png" />
+<br />
+<img src="images/GLtest_7_light_material.png" />
+<br />

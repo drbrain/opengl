@@ -43,7 +43,9 @@ CLEAN.include("ext/gl*/Rakefile", "ext/*/mkrf.log", "ext/*/*.so",
               "ext/*/*.lib", "ext/*/*.exp", "ext/*/*.pdb",
               "pkg")
 CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
-                "doc/*.html", "website/*.html")
+                "doc/*.html", "website/*.html", "website/images/*")
+# Make sure these files aren't deleted in a clobber op
+CLOBBER.exclude("website/images/tab_bottom.gif")
 
 setup_extension('gl', 'gl')
 setup_extension('glu', 'glu')
@@ -78,6 +80,7 @@ task :gen_website => NICE_HTML_DOCS do
     puts
     sh "cp README.html website/index.html"
     sh "cp doc/*.html website"
+    sh "cp test/interactive/reference/*.png website/images"
 end
 
 # You'll see some intermediate .plain files get generated. These are html,
@@ -97,6 +100,7 @@ end
 desc 'Upload the newly-built site to RubyForge.'
 task :upload_website => [:gen_website] do
     sh "scp website/*.html hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl"
+    sh "scp website/images/* hoanga@rubyforge.org:/var/www/gforge-projects/ruby-opengl/images/"
 end
 
 desc 'Upload entire site, including stylesheet and the images directory.'
