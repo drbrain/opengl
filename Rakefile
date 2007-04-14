@@ -140,12 +140,12 @@ spec = Gem::Specification.new do |s|
     s.require_path      = "lib"
     s.autorequire       = "gl"
     s.has_rdoc          = false
-    s.add_dependency("rubygems", ">=0.9.1")
     s.add_dependency("mkrf", ">=0.2.0")
     s.add_dependency("rake")
 end
 
 # Create a task for creating a ruby gem
 Rake::GemPackageTask.new(spec) do |pkg|
+    pkg.gem_spec = spec
     pkg.need_tar = true
 end

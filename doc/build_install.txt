@@ -5,14 +5,20 @@ Building ruby-opengl
 Pre-requisites
 --------------
 
-On Ubuntu, aside from Ruby and the Rake gem, you'll need the following
-packages:
+On Ubuntu, aside from Ruby you'll need the following:
 
-* `libgl1-mesa libgl1-mesa-dri libglu1-mesa freeglut3`
+* `rdoc ri ruby1.8-dev`
+
+For OpenGL related headers you'll need the following packages:
+
+* `libgl1-mesa-dri libglu1-mesa freeglut3`
 * `libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev`
 
-On Gentoo, you MUST have rubygems 0.9.1 or higher installed.  Using the
-base 0.8.x in the portage tree will not work.
+You MUST have rubygems 0.9.1 or higher installed.  
+
+On Gentoo, Debian and ubuntu, rubygems 0.9.0 will be installed by default
+in the packages.  This version of rubygems is INCOMPATIBLE with ruby-opengl.
+You'll need to install rubygems from source.
 
 On OS X, you will need to install your own version of Ruby as the
 version that ships with OS X has known problems with properly building
