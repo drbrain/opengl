@@ -1167,5 +1167,183 @@ class GLtest_7_light_material
 	end
 end
 
+class GLtest_8_evaluators
+	FUNCTIONS_TESTED = [
+"glMap1f","glMap1d",
+"glEvalCoord1f","glEvalCoord1d","glEvalCoord1dv","glEvalCoord1fv",
+"glGetMapdv","glGetMapfv","glGetMapiv","glMap2f","glMap2d",
+"glEvalCoord2d","glEvalCoord2dv","glEvalCoord2f","glEvalCoord2fv",
+"glMapGrid1d","glMapGrid1f","glEvalMesh1","glEvalMesh2",
+"glMapGrid2d","glMapGrid2f","glEvalPoint1","glEvalPoint2"
+	]
+	def initialize
+		projection_ortho_box(1.1)		
+
+		@control_points = [
+			0.25, 0.5, 0.0,
+			1.0, 1.0, 0.0,
+			0.0, 1.0, 0.0,
+			0.75, 0.5, 0.0
+		]
+		
+		@control_points_2d = [
+			-0.5, -0.5, 0.0,
+			-0.25, -0.25, 0.0,
+			0.25, -0.25, 0.0,
+			0.5, -0.5, 0.0,
+
+			-0.25, -0.25, 0.0,
+			-0.25, -0.25, 0.0,
+			0.25, -0.25, 0.0,
+			0.25, -0.25, 0.0,
+
+			-0.25, 0.25, 0.0,
+			-0.25, 0.25, 0.0,
+			0.25, 0.25, 0.0,
+			0.25, 0.25, 0.0,
+
+			-0.5, 0.5, 0.0,
+			-0.25, 0.25, 0.0,
+			0.25, 0.25, 0.0,
+			0.5, 0.5, 0.0
+		]
+	end
+	
+	def loop
+		clear_screen_and_depth_buffer
+		reset_modelview
+
+		# red loop
+		glEnable(GL_MAP1_VERTEX_3);
+
+		glTranslatef(-1.25,-0.25,0.0)
+		glColor3f(1.0,0.0,0.0)
+
+		glMap1f(GL_MAP1_VERTEX_3, 1.0, 100.0, 3, 4, @control_points)
+
+		return unless glGetMapfv(GL_MAP1_VERTEX_3, GL_COEFF) == @control_points
+		return unless glGetMapdv(GL_MAP1_VERTEX_3, GL_COEFF) == @control_points
+		return unless glGetMapiv(GL_MAP1_VERTEX_3,GL_DOMAIN) == [1,100]
+
+		glBegin(GL_LINE_STRIP)
+		1.upto(50) { |i| glEvalCoord1f(i) }
+		51.upto(100) { |i| glEvalCoord1d(i) }
+		glEnd()
+
+		# green loop
+		glTranslatef(0.5,0.0,0.0)
+		glColor3f(0.0,1.0,0.0)
+
+		glMap1d(GL_MAP1_VERTEX_3, 1.0, 200.0, 3, 4, @control_points)
+
+		glBegin(GL_LINE_STRIP)
+		0.upto(25) { |i| glEvalPoint1(i)}
+		50.upto(150) { |i| glEvalCoord1fv( [i] ) }
+		151.upto(200) { |i| glEvalCoord1dv( [i] ) }
+		glEnd()
+
+		# blue loop
+		glTranslatef(0.5,0.0,0.0)
+		glColor3f(0.0,0.0,1.0)
+
+		glMapGrid1f(100, 1.0, 200.0);
+		glEvalMesh1(GL_LINE, 0.0, 100);
+
+		# white loop
+		glTranslatef(0.5,0.0,0.0)
+		glColor3f(1.0,1.0,1.0)
+
+		glMapGrid1d(100, 1.0, 200.0);
+		glEvalMesh1(GL_LINE, 0.0, 100);
+
+
+		glDisable(GL_MAP1_VERTEX_3)
+
+		# red points
+		glEnable(GL_MAP2_VERTEX_3)
+
+		glTranslatef(-1.0,0.0,0.0)
+		glScalef(0.5,0.5,0.5)
+		glColor3f(1.0,0.0,0.0)
+
+    glMap2f(GL_MAP2_VERTEX_3, 0, 10, 3, 4,
+            0, 10, 12, 4, @control_points_2d)
+
+		glBegin(GL_POINTS)
+		1.upto(9) do |x|
+			1.upto(3) do |y| glEvalPoint2(x,y) end
+			4.upto(6) do |y| glEvalCoord2f(x,y) end
+			7.upto(9) do |y| glEvalCoord2fv([x,y]) end
+		end
+    glEnd()
+
+		# green points
+		glTranslatef(1,0.0,0.0)
+		glColor3f(0.0,1.0,0.0)
+
+    glMap2d(GL_MAP2_VERTEX_3, 0, 10, 3, 4,
+            0, 10, 12, 4, @control_points_2d)
+
+		glBegin(GL_POINTS)
+		1.upto(9) do |x|
+			1.upto(4) do |y| glEvalCoord2d(x, y) end
+			5.upto(9) do |y| glEvalCoord2dv([x, y]) end
+		end
+    glEnd()
+
+		# blue points
+		glTranslatef(1,0.0,0.0)
+		glColor3f(0.0,0.0,1.0)
+
+    glMapGrid2f(10, 0.0, 10.0, 10, 0.0, 10.0)
+    glEvalMesh2(GL_POINT, 1, 9, 1, 9)
+
+		# white points
+		glTranslatef(1,0.0,0.0)
+		glColor3f(1.0,1.0,1.0)
+
+    glMapGrid2d(10, 0.0, 10.0, 10, 0.0, 10.0)
+    glEvalMesh2(GL_POINT, 1, 9, 1, 9)
+
+		glDisable(GL_MAP2_VERTEX_3)
+	end
+
+	def destroy
+	end
+end
+
+class GLtest_9_fog
+	FUNCTIONS_TESTED = [
+"glFogfv","glFogiv","glFogf","glFogi"
+	]
+
+	def initialize
+		projection_ortho_box(2)
+	end
+
+	def loop
+		glEnable(GL_FOG)
+
+		glFogfv(GL_FOG_COLOR,[0.0,0.0,1.0,0.0])
+		glFogiv(GL_FOG_MODE,[GL_LINEAR])
+		glFogf(GL_FOG_START,-1)
+		glFogi(GL_FOG_END,2)
+
+		# red quad
+		glColor3f(1.0,0.0,0.0)
+		glBegin(GL_QUADS)
+		glVertex3f(-1.0,-1.0,0.0)
+		glVertex3f(1.0,-1.0,0.0)
+		glVertex3f(1.0,1.0,-1.0)
+		glVertex3f(-1.0,1.0,-1.0)
+		glEnd()
+
+		glDisable(GL_FOG)
+	end
+
+	def destroy
+	end
+end
+
 srand(1234)
 Test_Runner.new("GLtest_","base tests")

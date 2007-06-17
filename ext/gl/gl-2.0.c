@@ -385,15 +385,20 @@ VALUE obj,arg1;
 	GLuint program;	
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
-	VALUE buffer;
+	VALUE ret_buffer;
+	GLchar *buffer;
 	LOAD_GL_FUNC(glGetShaderInfoLog)
 	LOAD_GL_FUNC(glGetShaderiv)
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetShaderiv(program,GL_INFO_LOG_LENGTH,&max_size);
-	buffer = allocate_buffer_with_string(max_size);
-	fptr_glGetShaderInfoLog(program,max_size,&ret_length,RSTRING(buffer)->ptr);
-	RSTRING(buffer)->len = ret_length;
-	return buffer;
+	if (max_size<=0)
+		rb_raise(rb_eTypeError, "Returned size out of bounds");
+	buffer = ALLOC_N(GLchar,max_size+1);
+	memset(buffer,0,sizeof(GLchar) * (max_size+1));
+	fptr_glGetShaderInfoLog(program,max_size,&ret_length,buffer);
+	ret_buffer = rb_str_new(buffer, ret_length);
+	xfree(buffer);
+	return ret_buffer;
 }
 
 static void (*fptr_glGetShaderSource)(GLuint,GLsizei,GLsizei *,GLchar *);

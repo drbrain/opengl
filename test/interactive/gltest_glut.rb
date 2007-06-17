@@ -232,6 +232,8 @@ class Test_Runner
 	end
 
 	def loop_func
+		sleep(0.01) # to avoid consuming all cpu time
+		
 		@test.loop if @test.respond_to? :loop
 
 		print_text("Test: #{@test.class.to_s}",10,30)

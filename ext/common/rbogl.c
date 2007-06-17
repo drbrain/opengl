@@ -123,7 +123,7 @@ VALUE ary;
     for (i = 0; i < tmp_ary->len; i++)
     {
         if (TYPE(tmp_ary->ptr[i]) == T_ARRAY)
-            mary2ary((VALUE)tmp_ary, ary);
+            mary2ary((VALUE)tmp_ary->ptr[i], ary);
         else
             rb_ary_push(ary, tmp_ary->ptr[i]);
     }
