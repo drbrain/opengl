@@ -4010,8 +4010,8 @@ VALUE obj,arg1;
 }
 
 static VALUE
-gl_GetPointerv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
+gl_GetPointerv(obj,arg1)
+VALUE obj,arg1;
 {
 	GLenum pname;
 	pname = (GLenum)NUM2INT(arg1);
@@ -5060,7 +5060,7 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glDrawElements", gl_DrawElements, 4);
 	rb_define_module_function(module, "glEdgeFlagPointer", gl_EdgeFlagPointer, 2);
 	rb_define_module_function(module, "glEnableClientState", gl_EnableClientState, 1);
-	rb_define_module_function(module, "glGetPointerv", gl_GetPointerv, 2);
+	rb_define_module_function(module, "glGetPointerv", gl_GetPointerv, 1);
 	rb_define_module_function(module, "glIndexPointer", gl_IndexPointer, 3);
 	rb_define_module_function(module, "glInterleavedArrays", gl_InterleavedArrays, 3);
 	rb_define_module_function(module, "glNormalPointer", gl_NormalPointer, 3);

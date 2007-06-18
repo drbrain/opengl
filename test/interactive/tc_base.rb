@@ -1322,6 +1322,9 @@ class GLtest_9_fog
 	end
 
 	def loop
+		clear_screen_and_depth_buffer
+		reset_modelview
+
 		glEnable(GL_FOG)
 
 		glFogfv(GL_FOG_COLOR,[0.0,0.0,1.0,0.0])
@@ -1342,6 +1345,145 @@ class GLtest_9_fog
 	end
 
 	def destroy
+	end
+end
+
+class GLtest__10_arrays
+	FUNCTIONS_TESTED = [
+"glVertexPointer","glColorPointer","glEdgeFlagPointer","glTexCoordPointer","glNormalPointer",
+"glGetPointerv",
+"glDrawArrays","glArrayElement","glDrawElements","glInterleavedArrays"
+	]
+
+	def initialize
+		projection_ortho_box(5)
+
+		@vertex_data = [ -1.0,-1.0,0.0,
+									   1.0,-1.0,0.0,
+									   1.0,1.0,0.0,
+									  -1.0,1.0,0.0 ]
+
+		@vertex_data_2 = [ -1.0,-1.0,0.0,
+									   -1.0,1.0,0.0,
+									   1.0,1.0,0.0,
+									  1.0,-1.0,0.0 ]
+
+		@color_data = [ 1.0,0.0,0.0,0.0,
+									 1.0,0.0,0.0,0.0,
+									 0.0,0.0,1.0,0.0,
+									 0.0,0.0,1.0,0.0 ]
+
+		@normal_data = [ 0.0,0.0,-1.0,
+										0.0,0.0,-1.0,
+										0.0,0.0,-1.0,
+										0.0,0.0,-1.0 ]
+		
+		@texcoord_data = [0.0,0.0,
+										 0.0,1.0,
+										 1.0,1.0,
+										 1.0,0.0]
+
+		@edgeflag_data = [ 0,1,0,1 ]
+
+		# texture setup
+		size = 64
+		bitmap = checker_texture_bitmap(size,8,[255,255,255],[0,0,0]) # checker texture
+		@textures = glGenTextures(1)
+
+		glEnable(GL_TEXTURE_2D)
+		glBindTexture(GL_TEXTURE_2D,@textures[0])
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR )
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, size, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmap)
+		glDisable(GL_TEXTURE_2D)
+	end
+
+	def loop
+		clear_screen_and_depth_buffer
+		reset_modelview
+
+		glVertexPointer(3,GL_FLOAT,0,@vertex_data.pack("f*"))
+		glColorPointer(4,GL_FLOAT,0,@color_data.pack("f*"))
+		glEdgeFlagPointer(0,@edgeflag_data.pack("c*"))
+		glTexCoordPointer(2,GL_FLOAT,0,@texcoord_data.pack("f*"))
+
+		d = glGetPointerv(GL_VERTEX_ARRAY_POINTER)
+    return unless d.unpack("f*") == @vertex_data
+                    
+		glEnableClientState(GL_VERTEX_ARRAY)
+
+		# first row
+		glTranslatef(-3,3,0)
+		glDrawArrays(GL_QUADS,0,4)
+
+		glEnableClientState(GL_COLOR_ARRAY)
+		glTranslatef(3,0,0)
+		glDrawArrays(GL_QUADS,0,4)
+		glDisableClientState(GL_COLOR_ARRAY)
+
+		glColor3f(1.0,1.0,1.0)
+
+		glEnableClientState(GL_EDGE_FLAG_ARRAY)
+		glPolygonMode(GL_FRONT,GL_LINE)
+		glTranslatef(3,0,0)
+		glDrawArrays(GL_POLYGON,0,4)
+		glPolygonMode(GL_FRONT,GL_FILL)
+		glDisableClientState(GL_EDGE_FLAG_ARRAY)
+
+		# second row
+		glTranslatef(-6,-3,0)
+		glBegin(GL_QUADS)
+		0.upto(3) {|i| glArrayElement(i) }
+		glEnd()
+
+		glEnable(GL_TEXTURE_2D)
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+		glTranslatef(3,0,0)
+		glDrawArrays(GL_POLYGON,0,4)
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY)
+		glDisable(GL_TEXTURE_2D)
+
+		glPolygonMode(GL_FRONT,GL_LINE)
+		glTranslatef(3,0,0)
+		glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, [0,1,3,2].pack("c*") )
+
+
+		# third row
+		glInterleavedArrays(GL_V3F,0, @vertex_data_2.pack("f*"))
+
+		glTranslatef(-6,-3,0)
+		glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, [0,1,3,2].pack("c*") )
+
+		glPolygonMode(GL_FRONT,GL_FILL)
+
+		glNormalPointer(GL_FLOAT,0,@normal_data.pack("f*"))
+
+		glEnable(GL_LIGHTING)
+		glEnableClientState(GL_NORMAL_ARRAY)
+		glEnable(GL_LIGHT0)
+		glLightfv(GL_LIGHT0,GL_AMBIENT, [0.2,0.2,0.2,1.0])
+		glLightfv(GL_LIGHT0,GL_DIFFUSE, [1.0,0,0,1.0])
+		glLightfv(GL_LIGHT0,GL_POSITION, [0.0,0.0,5.0,1.0])
+
+		glTranslatef(3,0,0)
+		glDrawArrays(GL_QUADS,0,4)
+
+		glDisable(GL_LIGHT0)
+		glDisable(GL_LIGHTING)
+		glDisableClientState(GL_NORMAL_ARRAY)
+
+		glEnableClientState(GL_EDGE_FLAG_ARRAY)
+		glPolygonMode(GL_BACK,GL_LINE)
+		glTranslatef(3,0,0)
+		glDrawArrays(GL_POLYGON,0,4)
+		glPolygonMode(GL_BACK,GL_FILL)
+		glDisableClientState(GL_EDGE_FLAG_ARRAY)
+
+		glDisableClientState(GL_VERTEX_ARRAY)
+	end
+
+	def destroy
+		glDisable(GL_CULL_FACE)
+		glDeleteTextures(@textures)
 	end
 end
 

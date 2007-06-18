@@ -183,6 +183,8 @@ class Test_Runner
 	end
 
 	def reset_state
+		glPopAttrib()
+		glPushAttrib(GL_ALL_ATTRIB_BITS)
 		clear_screen_and_depth_buffer
 		reset_modelview
 		reset_projection
@@ -209,6 +211,7 @@ class Test_Runner
 			if (@test_index == nil) # first test
 				@test = nil
 				@test_index = 0
+				glPushAttrib(GL_ALL_ATTRIB_BITS)
 			else # cleanup after previous test (if any) and advance iterator
 				@test.destroy if @test and @test.respond_to? :destroy
 				reset_state if @test
