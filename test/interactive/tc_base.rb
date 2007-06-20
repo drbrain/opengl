@@ -1487,5 +1487,51 @@ class GLtest__10_arrays
 	end
 end
 
+class GLtest__11_accum
+	FUNCTIONS_TESTED = [
+"glAccum"
+	]
+	def initialize
+		projection_ortho_box(4)
+	end
+
+	def draw_quad
+		glBegin(GL_QUADS)
+		glTexCoord2i(0,0)
+		glVertex2i(-1,-1)
+		glTexCoord2i(1,0)
+		glVertex2i( 1,-1)
+		glTexCoord2i(1,1)
+		glVertex2i( 1, 1)
+		glTexCoord2i(0,1)
+		glVertex2i(-1, 1)
+		glEnd()
+	end
+	
+	def loop
+		glClear(GL_ACCUM_BUFFER_BIT)
+
+		# left
+		clear_screen_and_depth_buffer
+		reset_modelview
+		glTranslatef(-2,0,0)
+		draw_quad
+		
+		glAccum(GL_ACCUM,0.5)
+
+		# right
+		clear_screen_and_depth_buffer
+		reset_modelview
+		glTranslatef(2,0,0)
+		draw_quad
+		glAccum(GL_ACCUM,0.5)
+
+		glAccum(GL_RETURN,1.0)
+	end
+
+	def destroy
+	end
+end
+
 srand(1234)
 Test_Runner.new("GLtest_","base tests")
