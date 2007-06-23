@@ -42,17 +42,34 @@ void gl_init_functions_1_5(VALUE);
 void gl_init_functions_2_0(VALUE);
 void gl_init_functions_2_1(VALUE);
 
-static VALUE
-IsFunctionAvailable(obj,arg1)
-VALUE obj,arg1;
+VALUE IsFunctionAvailable(char *name)
 {
 	GLvoid *ret;
-	Check_Type(arg1, T_STRING);
-	ret = load_gl_function(RSTRING(arg1)->ptr,0); /* won't raise */
+	ret = load_gl_function(name,0); /* won't raise */
 	if (ret==NULL)
 		return Qfalse;
 	else
 		return Qtrue;
+}
+
+static VALUE
+IsAvailable(obj,arg1)
+VALUE obj,arg1;
+{
+	char *name = RSTRING(arg1)->ptr;
+	Check_Type(arg1, T_STRING);
+	if (name && name[0] && (name[0]=='G' || name[0]=='W')) { /* GL_, GLX_, WGL_ extension */
+		char buf[512+128];
+		if (strlen(name)>(512))
+			return Qfalse;
+		if (glGetString(GL_EXTENSIONS)==0)
+			return Qfalse;
+
+		sprintf(buf,"Gl.glGetString(Gl::GL_EXTENSIONS).split(' ').include?('%s')", name);
+		return rb_eval_string(buf);
+	} else { /* function */
+		return IsFunctionAvailable(name);
+	}
 }
 
 DLLEXPORT void Init_gl()
@@ -67,5 +84,5 @@ DLLEXPORT void Init_gl()
 	gl_init_functions_2_0(module);
 	gl_init_functions_2_1(module);
 
-	rb_define_module_function(module, "is_available?", IsFunctionAvailable, 1);
+	rb_define_module_function(module, "is_available?", IsAvailable, 1);
 }

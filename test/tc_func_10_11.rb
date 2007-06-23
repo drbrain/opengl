@@ -25,20 +25,33 @@ require 'glut'
 include Gl
 include Glut
 
-class Test_10_11 < Test::Unit::TestCase
-	@@initialized = false
-
-	def setup
-		return if @@initialized == true
+def glut_init()
 		glutInit
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB | GLUT_STENCIL)
 	  glutInitWindowPosition(1, 1)
-	  glutInitWindowSize(10, 10)
+	  glutInitWindowSize(512, 512)
 	  glutCreateWindow("test")
-		@@initialized = true
+end
+
+class Test_10_11 < Test::Unit::TestCase
+	def setup
+		if $glut_initialized == true
+			glPushAttrib(GL_ALL_ATTRIB_BITS)
+			glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS)
+			return
+		end
+		
+		glut_init()
+		$glut_initialized = true
+
+		glPushAttrib(GL_ALL_ATTRIB_BITS)
+		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS)
 	end
 
-# TODO: assert_throws - neexistujici funkci
+	def teardown
+		glPopAttrib()
+		glPopClientAttrib()
+	end
 
 	def test_glhint
 		glHint(GL_FOG_HINT,GL_NICEST)
@@ -288,6 +301,64 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetPixelMapusv(GL_PIXEL_MAP_I_TO_I),[9,10,11,12])
 	end
 
-	def teardown
+	def test_buffers
+		glDrawBuffer(GL_FRONT)
+		assert_equal(glGetIntegerv(GL_DRAW_BUFFER),GL_FRONT)
+		glDrawBuffer(GL_BACK)
+		assert_equal(glGetIntegerv(GL_DRAW_BUFFER),GL_BACK)
+
+		glReadBuffer(GL_FRONT)
+		assert_equal(glGetIntegerv(GL_READ_BUFFER),GL_FRONT)
+		glReadBuffer(GL_BACK)
+		assert_equal(glGetIntegerv(GL_READ_BUFFER),GL_BACK)
+	end
+
+	def test__selection_buffer
+		buf = glSelectBuffer(32)
+
+		glRenderMode(GL_SELECT)
+		glInitNames()
+		glPushName(6)
+		glPushName(3)
+		glLoadName(5)
+		glPopName()
+
+		glBegin(GL_QUADS)
+		glVertex2i(-1,-1)
+		glVertex2i( 1,-1)
+		glVertex2i( 1, 1)
+		glVertex2i(-1, 1)
+		glEnd()
+		
+		count = glRenderMode(GL_RENDER)
+		data = buf.unpack("i*")
+		assert(count==1) # number of records
+		assert(data[0]==1) # number of hits in this record
+		assert(data[1]>0) # zbuffer near
+		assert(data[2]>0) # zbuffer far
+		assert(data[3]==6) # name of hit
+	end
+
+	def test__feedback_buffer
+		buf = glFeedbackBuffer(32,GL_2D)
+		
+		glRenderMode(GL_FEEDBACK)
+
+		glBegin(GL_TRIANGLES)
+		glVertex2i(-1,-1)
+		glVertex2i( 1,-1)
+		glVertex2i( 1, 1)
+		glEnd()
+	
+		glPassThrough(2.0)
+		
+		count = glRenderMode(GL_RENDER)
+		data = buf.unpack("f*")
+		assert_equal(count,10) # (1 + 1 + 3x2) + (1 + 1)
+		assert_equal(data[0],GL_POLYGON_TOKEN)
+		assert_equal(data[1],3) # 3 vertices
+		# skip rasterized vertex data
+		assert_equal(data[8],GL_PASS_THROUGH_TOKEN)
+		assert_equal(data[9],2.0)
 	end
 end
