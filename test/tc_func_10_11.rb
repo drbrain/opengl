@@ -25,32 +25,35 @@ require 'glut'
 include Gl
 include Glut
 
+$window_size = 512
+
 def glut_init()
 		glutInit
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB | GLUT_STENCIL)
 	  glutInitWindowPosition(1, 1)
-	  glutInitWindowSize(512, 512)
+	  glutInitWindowSize($window_size, $window_size)
 	  glutCreateWindow("test")
 end
 
 class Test_10_11 < Test::Unit::TestCase
 	def setup
-		if $glut_initialized == true
-			glPushAttrib(GL_ALL_ATTRIB_BITS)
-			glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS)
-			return
+		if $glut_initialized == nil
+			glut_init()
+			$glut_initialized = true
 		end
-		
-		glut_init()
-		$glut_initialized = true
 
 		glPushAttrib(GL_ALL_ATTRIB_BITS)
 		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS)
+		glMatrixMode(GL_MODELVIEW)
+		glLoadIdentity()
+		glMatrixMode(GL_PROJECTION)
+		glLoadIdentity()
 	end
 
 	def teardown
 		glPopAttrib()
 		glPopClientAttrib()
+		assert_equal(glGetError(),0) # all expected GL errors must be handled by the method itself
 	end
 
 	def test_glhint
@@ -128,7 +131,13 @@ class Test_10_11 < Test::Unit::TestCase
 					 [0.0,3.0,0.0,0.0],
 					 [0.0,0.0,3.0,0.0],
 					 [0.0,0.0,0.0,3.0]]
-					 
+
+		m_ident = [[1.0,0.0,0.0,0.0],
+							 [0.0,1.0,0.0,0.0],
+							 [0.0,0.0,1.0,0.0],
+							 [0.0,0.0,0.0,1.0]]
+				
+		# 1	 
 		glMatrixMode(GL_MODELVIEW)
 		glLoadMatrixf(m_a)
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_a)
@@ -136,11 +145,30 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_b)
 
 		glLoadIdentity()
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_ident)
+
 		glMultMatrixf(m_a)
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_a)
 		glLoadIdentity()
 		glMultMatrixd(m_b)
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_b)
+
+		# 2
+		glMatrixMode(GL_MODELVIEW)
+		glLoadMatrixf(m_a)
+		glMatrixMode(GL_PROJECTION)
+		glLoadMatrixf(m_b)
+
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_a)
+		assert_equal(glGetDoublev(GL_PROJECTION_MATRIX), m_b)
+		
+		glMatrixMode(GL_MODELVIEW)
+		glLoadMatrixf(m_a)
+		glPushMatrix()
+		glLoadMatrixf(m_b)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_b)
+		glPopMatrix()
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_a)
 	end
 
 	def test_gledge
@@ -361,4 +389,263 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(data[8],GL_PASS_THROUGH_TOKEN)
 		assert_equal(data[9],2.0)
 	end
+
+	def test_glrasterpos
+		glOrtho(0,$window_size,0,$window_size,0,-1)
+
+		# 2		
+		glRasterPos2d(1.0,2.0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,0.0,1.0])
+		glRasterPos2dv([3.0,4.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos2f(1.0,2.0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,0.0,1.0])
+		glRasterPos2fv([3.0,4.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos2i(1,2)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,0.0,1.0])
+		glRasterPos2iv([3,4])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos2s(1,2)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,0.0,1.0])
+		glRasterPos2sv([3,4])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		# 3
+		glRasterPos3d(1.0,2.0,1.0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
+		glRasterPos3dv([3.0,4.0,0.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos3f(1.0,2.0,1.0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
+		glRasterPos3fv([3.0,4.0,0.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos3i(1,2,1)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
+		glRasterPos3iv([3,4,0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos3s(1,2,1)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
+		glRasterPos3sv([3,4,0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		# 4
+		glRasterPos4d(1.0,2.0,1.0,1.0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
+		glRasterPos4dv([3.0,4.0,0.0,1.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos4f(1.0,2.0,1.0,1.0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
+		glRasterPos4fv([3.0,4.0,0.0,1.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos4i(1,2,1,1)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
+		glRasterPos4iv([3,4,0,1])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+
+		glRasterPos4s(1,2,1,1)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
+		glRasterPos4sv([3,4,0,1])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+	end
+
+	def test_glbitmap
+		glOrtho(0,$window_size,0,$window_size,0,-1)
+
+		bitmap = [ 0x55 ] * 8 # 64 bits (8x8 bitmap), stipple pattern
+
+		glPixelStorei(GL_PACK_ALIGNMENT,1)
+		glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+
+		glBitmap(8,8,0,0,0,0,bitmap.pack("c*"))
+		data = glReadPixels(0,0,8,8,GL_RED,GL_UNSIGNED_BYTE)
+		assert_equal(data.unpack("C*"),[0,255] * 32)
+	end
+
+	def test_glfog
+		glFogfv(GL_FOG_COLOR,[0.0,1.0,0.0,1.0])
+		assert_equal(glGetDoublev(GL_FOG_COLOR),[0.0,1.0,0.0,1.0])
+		glFogf(GL_FOG_DENSITY,0.5)
+		assert_equal(glGetDoublev(GL_FOG_DENSITY),0.5)
+		glFogi(GL_FOG_MODE,GL_LINEAR)
+		assert_equal(glGetIntegerv(GL_FOG_MODE),GL_LINEAR)
+		glFogi(GL_FOG_MODE,GL_EXP)
+		assert_equal(glGetIntegerv(GL_FOG_MODE),GL_EXP)
+		glFogiv(GL_FOG_MODE,[GL_EXP2])
+		assert_equal(glGetIntegerv(GL_FOG_MODE),GL_EXP2)
+	end
+
+	def approx_equal(a,b,epsilon=0.01)
+		(0...a.size).each do |i|
+			if ((a[i] - b[i]).abs > epsilon)
+				return false
+			end
+		end
+		true
+	end
+
+	def test_glcolor
+		# 3
+		glColor3b(2**7-1,0,2**7-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		glColor3bv([0,2**7-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor3d(1.0,0.0,1.0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		glColor3dv([0.0,1.0,0.0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor3f(1.0,0.0,1.0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		glColor3fv([0.0,1.0,0.0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor3i(2**31-1,0,2**31-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		glColor3iv([0,2**31-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor3s(2**15-1,0,2**15-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		glColor3sv([0,2**15-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor3ub(2**8-1,0,2**8-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		glColor3ubv([0,2**8-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor3ui(2**32-1,0,2**32-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		glColor3uiv([0,2**32-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor3us(2**16-1,0,2**16-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		glColor3usv([0,2**16-1,0])
+		# 4
+		glColor4b(2**7-1,0,2**7-1,0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		glColor4bv([0,2**7-1,0,2**7-1])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor4d(1.0,0.0,1.0,0.0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		glColor4dv([0.0,1.0,0.0,1.0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor4f(1.0,0.0,1.0,0.0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		glColor4fv([0.0,1.0,0.0,1.0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor4i(2**31-1,0,2**31-1,0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		glColor4iv([0,2**31-1,0,2**31-1])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor4s(2**15-1,0,2**15-1,0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		glColor4sv([0,2**15-1,0,2**15-1])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor4ub(2**8-1,0,2**8-1,0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		glColor4ubv([0,2**8-1,0,2**8-1])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor4ui(2**32-1,0,2**32-1,0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		glColor4uiv([0,2**32-1,0,2**32-1])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		glColor4us(2**16-1,0,2**16-1,0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		glColor4usv([0,2**16-1,0,2**16-1])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+	end
+
+	def test_glortho
+		res = [ [2.0/$window_size, 0, 0, 0],
+					  [0, 2.0/$window_size, 0, 0],
+					  [0, 0, 2, 0],
+						[-1,-1,-1,1] ]
+
+		glMatrixMode(GL_PROJECTION)
+		glLoadIdentity()
+		glOrtho(0,$window_size,0,$window_size,0,-1)
+		assert_equal(glGetDoublev(GL_PROJECTION_MATRIX),res)
+	end
+
+	def test_glnormal
+		glNormal3d(1.0,2.0,3.0)
+		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[1.0,2.0,3.0])
+		glNormal3dv([4.0,5.0,6.0])
+		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[4.0,5.0,6.0])
+
+		glNormal3f(1.0,2.0,3.0)
+		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[1.0,2.0,3.0])
+		glNormal3fv([4.0,5.0,6.0])
+		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[4.0,5.0,6.0])
+
+		glNormal3i(1,2,3)
+		assert_equal(glGetIntegerv(GL_CURRENT_NORMAL),[1,2,3])
+		glNormal3iv([4,5,6])
+		assert_equal(glGetIntegerv(GL_CURRENT_NORMAL),[4,5,6])
+
+		glNormal3b(2**7-1,0,2**7-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_NORMAL),[1.0,0.0,1.0]))
+		glNormal3bv(0,2**7-1,0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_NORMAL),[0.0,1.0,0.0]))
+
+		glNormal3s(2**15-1,0,2**15-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_NORMAL),[1.0,0.0,1.0]))
+		glNormal3sv(0,2**15-1,0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_NORMAL),[0.0,1.0,0.0]))
+	end
+
+
+	def test_gllight
+		glLightf(GL_LIGHT0,GL_SPOT_CUTOFF,80.0)
+		assert_equal(glGetLightfv(GL_LIGHT0,GL_SPOT_CUTOFF),[80.0])
+		glLighti(GL_LIGHT0,GL_SPOT_CUTOFF,75)
+		assert_equal(glGetLightiv(GL_LIGHT0,GL_SPOT_CUTOFF),[75])
+		glLightfv(GL_LIGHT0,GL_AMBIENT,[0.5,0.5,0.5,1.0])
+		assert_equal(glGetLightfv(GL_LIGHT0,GL_AMBIENT), [0.5,0.5,0.5,1.0])
+		glLightiv(GL_LIGHT0,GL_CONSTANT_ATTENUATION,[32])
+		assert_equal(glGetLightiv(GL_LIGHT0,GL_CONSTANT_ATTENUATION),[32])
+	end
+
+	def test_glmaterial
+		glMaterialfv(GL_FRONT,GL_AMBIENT,[0.0,1.0,0.0,1.0])
+		assert_equal(glGetMaterialfv(GL_FRONT,GL_AMBIENT),[0.0,1.0,0.0,1.0])
+
+		glMaterialiv(GL_FRONT,GL_SHININESS,[50])
+		assert_equal(glGetMaterialiv(GL_FRONT,GL_SHININESS),[50])
+
+		glMaterialf(GL_FRONT,GL_SHININESS,49.0)
+		assert_equal(glGetMaterialfv(GL_FRONT,GL_SHININESS),[49.0])
+
+		glMateriali(GL_FRONT,GL_SHININESS,48)
+		assert_equal(glGetMaterialiv(GL_FRONT,GL_SHININESS),[48])
+	
+	end
+
+	def test_glcolormaterial
+		glColorMaterial(GL_FRONT,GL_EMISSION)
+		assert_equal(glGetIntegerv(GL_COLOR_MATERIAL_FACE),GL_FRONT)
+		assert_equal(glGetIntegerv(GL_COLOR_MATERIAL_PARAMETER),GL_EMISSION)
+
+		glColorMaterial(GL_BACK,GL_SPECULAR)
+		assert_equal(glGetIntegerv(GL_COLOR_MATERIAL_FACE),GL_BACK)
+		assert_equal(glGetIntegerv(GL_COLOR_MATERIAL_PARAMETER),GL_SPECULAR)
+	end
+
+	def test_gllightmodel
+		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE)
+		assert_equal(glGetIntegerv(GL_LIGHT_MODEL_TWO_SIDE),GL_TRUE)
+		glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE)
+		assert_equal(glGetIntegerv(GL_LIGHT_MODEL_TWO_SIDE),GL_FALSE)
+
+		glLightModelfv(GL_LIGHT_MODEL_AMBIENT,[0.5,0.5,0.5,1.0])
+		assert_equal(glGetDoublev(GL_LIGHT_MODEL_AMBIENT),[0.5,0.5,0.5,1.0])
+		glLightModeliv(GL_LIGHT_MODEL_AMBIENT,[1,0,1,0])
+		assert_equal(glGetIntegerv(GL_LIGHT_MODEL_AMBIENT),[1,0,1,0])
+	end
+
 end

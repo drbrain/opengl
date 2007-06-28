@@ -62,9 +62,9 @@ fptr_##_NAME_ = load_gl_function(#_NAME_, 1);
 	glPixelStorei(GL_PACK_SKIP_ROWS, 0); \
 	glPixelStorei(GL_PACK_ROW_LENGTH, 0); \
 	glPixelStorei(GL_PACK_SKIP_IMAGES, 0); \
-	glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0); \
-	glPixelStorei(GL_PACK_SKIP_VOLUMES_SGIS, 0); \
-	glPixelStorei(GL_PACK_IMAGE_DEPTH_SGIS, 0);
+	glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0);
+/*	glPixelStorei(GL_PACK_SKIP_VOLUMES_SGIS, 0);
+	glPixelStorei(GL_PACK_IMAGE_DEPTH_SGIS, 0); */
 
 #define RESTORE_PIXEL_STORE_MODE \
 	glPopClientAttrib();
