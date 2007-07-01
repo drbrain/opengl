@@ -48,6 +48,9 @@ class Test_10_11 < Test::Unit::TestCase
 		glLoadIdentity()
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
+
+		glClearColor(0,0,0,0)
+		glClear(GL_COLOR_BUFFER_BIT)
 	end
 
 	def teardown
@@ -648,4 +651,652 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetIntegerv(GL_LIGHT_MODEL_AMBIENT),[1,0,1,0])
 	end
 
+	def test_gltexcoord
+		# 1
+		glTexCoord1d(1.5)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,0,0,1])
+		glTexCoord1dv([0.5])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0,0,1])
+		glTexCoord1f(1.5)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,0,0,1])
+		glTexCoord1fv([0.5])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0,0,1])
+		glTexCoord1i(1)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,0,1])
+		glTexCoord1iv([0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		glTexCoord1s(1)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,0,1])
+		glTexCoord1sv([0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		# 2
+		glTexCoord2d(1.5,1.5)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,0,1])
+		glTexCoord2dv([0.5,0.5])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0,1])
+		glTexCoord2f(1.5,1.5)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,0,1])
+		glTexCoord2fv([0.5,0.5])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0,1])
+		glTexCoord2i(1,1)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,0,1])
+		glTexCoord2iv([0,0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		glTexCoord2s(1,1)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,0,1])
+		glTexCoord2sv([0,0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		# 3
+		glTexCoord3d(1.5,1.5,1.5)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,1.5,1])
+		glTexCoord3dv([0.5,0.5,0.5])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0.5,1])
+		glTexCoord3f(1.5,1.5,1.5)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,1.5,1])
+		glTexCoord3fv([0.5,0.5,0.5])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0.5,1])
+		glTexCoord3i(1,1,1)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,1,1])
+		glTexCoord3iv([0,0,0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		glTexCoord3s(1,1,1)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,1,1])
+		glTexCoord3sv([0,0,0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		# 4
+		glTexCoord4d(1.5,1.5,1.5,1.5)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,1.5,1.5])
+		glTexCoord4dv([0.5,0.5,0.5,0.5])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0.5,0.5])
+		glTexCoord4f(1.5,1.5,1.5,1.5)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,1.5,1.5])
+		glTexCoord4fv([0.5,0.5,0.5,0.5])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0.5,0.5])
+		glTexCoord4i(1,1,1,1)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,1,1])
+		glTexCoord4iv([0,0,0,0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,0])
+		glTexCoord4s(1,1,1,1)
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,1,1])
+		glTexCoord4sv([0,0,0,0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,0])
+	end
+
+	def test_glenable_disable
+		glEnable(GL_FOG)
+		assert_equal(glIsEnabled(GL_FOG),GL_TRUE)
+		glDisable(GL_FOG)
+		assert_equal(glIsEnabled(GL_FOG),GL_FALSE)
+	end
+
+	def test_gltexparameter
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP)
+		assert_equal(glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),[GL_CLAMP])
+		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_MIRRORED_REPEAT)
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),[GL_MIRRORED_REPEAT])
+		glTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,[GL_CLAMP])
+		assert_equal(glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),[GL_CLAMP])
+		glTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,[GL_MIRRORED_REPEAT])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),[GL_MIRRORED_REPEAT])
+
+		assert_equal(glGetTexLevelParameterfv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH),[0.0])
+		assert_equal(glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH),[0])
+	end
+
+	def test_glcullface
+		glCullFace(GL_FRONT)
+		assert_equal(glGetIntegerv(GL_CULL_FACE_MODE),GL_FRONT)
+		glCullFace(GL_BACK)
+		assert_equal(glGetIntegerv(GL_CULL_FACE_MODE),GL_BACK)
+	end
+	
+	def test_glfrontface
+		glFrontFace(GL_CW)
+		assert_equal(glGetIntegerv(GL_FRONT_FACE),GL_CW)
+		glFrontFace(GL_CCW)
+		assert_equal(glGetIntegerv(GL_FRONT_FACE),GL_CCW)
+	end
+
+	def test_glpointsize
+		glPointSize(2.0)
+		assert_equal(glGetDoublev(GL_POINT_SIZE),2.0)
+		glPointSize(3.0)
+		assert_equal(glGetDoublev(GL_POINT_SIZE),3.0)
+	end
+
+	def test_glpolygonmode
+		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE)
+		assert_equal(glGetIntegerv(GL_POLYGON_MODE),[GL_LINE,GL_LINE])
+		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL)
+		assert_equal(glGetIntegerv(GL_POLYGON_MODE),[GL_FILL,GL_FILL])
+	end
+
+	def test_gllinewidth
+		glLineWidth(2.0)
+		assert_equal(glGetDoublev(GL_LINE_WIDTH),2.0)
+		glLineWidth(3.0)
+		assert_equal(glGetDoublev(GL_LINE_WIDTH),3.0)
+	end
+	
+	def test_gllinestipple
+		glLineStipple(3,0x1234)
+		assert_equal(glGetIntegerv(GL_LINE_STIPPLE_REPEAT),3)
+		assert_equal(glGetIntegerv(GL_LINE_STIPPLE_PATTERN),0x1234)
+	end
+
+	def test_glpolygonstipple
+		stipple = [0x12] * 128
+		glPolygonStipple(stipple.pack("c*"))
+		assert_equal(glGetPolygonStipple(),stipple.pack("c*"))
+	end
+
+	def parse_feedback_data(data,count)
+		c = count / 11
+		ret = []
+		(0...c).each do |x|
+			i = x *11
+			type = data[0+i]
+		
+			v1 = [data[2+i], data[3+i], data[4+i]]
+			v2 = [data[5+i], data[6+i], data[7+i]]
+			v3 = [data[8+i], data[9+i], data[10+i]]
+			vertex = [v1,v2,v3].sort
+			ret << [type,vertex]
+		end
+		ret
+	end
+
+	def test_glvertex
+		glMatrixMode(GL_PROJECTION)
+		glOrtho(0,$window_size,0,$window_size,0,-1)
+
+		buf = glFeedbackBuffer(256,GL_3D)
+
+		glRenderMode(GL_FEEDBACK)
+
+		glBegin(GL_TRIANGLES)
+		glVertex2d( 1, 0)
+		glVertex2dv([0,0])
+		glVertex2f( 1,1)
+
+		glVertex2fv([ 1, 0])
+		glVertex2i(  0,0)
+		glVertex2iv([1,1])
+
+		glVertex2s( 1, 0)
+		glVertex2sv([0,0])
+		glVertex3d( 1,1,0)
+
+		glVertex3dv([ 1, 0,0])
+		glVertex3f(  0,0,0)
+		glVertex3fv([1,1,0])
+
+		glVertex3i( 1, 0,0)
+		glVertex3iv([0,0,0])
+		glVertex3s( 1,1,0)
+
+		glVertex3sv([ 1, 0,0])
+		glVertex4d(  0,0,0,1)
+		glVertex4dv([1,1,0,1])
+
+		glVertex4f( 1, 0,0,1)
+		glVertex4fv([0,0,0,1])
+		glVertex4i( 1,1,0,1)
+
+		glVertex4iv([ 1, 0,0,1])
+		glVertex4s(  0,0,0,1)
+		glVertex4sv([1,1,0,1])
+
+		glEnd()
+
+		count = glRenderMode(GL_RENDER)
+		data = buf.unpack("f*")
+		
+		ref = [[GL_POLYGON_TOKEN,[[0,0,0],[1,0,0],[1,1,0]]]] * 8
+		
+		assert_equal(parse_feedback_data(data,count),ref)
+	end
+	
+	def test_glrect
+		glMatrixMode(GL_PROJECTION)
+		glOrtho(0,$window_size,0,$window_size,0,-1)
+		
+		buf = glFeedbackBuffer(256,GL_3D)
+		
+		glRenderMode(GL_FEEDBACK)
+
+		glRectd(0,0,1,1)
+		glRectdv([0,0],[1,1])
+		glRectf(0,0,1,1)
+		glRectfv([0,0],[1,1])
+		glRecti(0,0,1,1)
+		glRectiv([0,0],[1,1])
+		glRects(0,0,1,1)
+		glRectsv([0,0],[1,1])
+		
+		count = glRenderMode(GL_RENDER)
+		data = buf.unpack("f*")
+
+		ref = [
+					 [GL_POLYGON_TOKEN,[[0,0,0],[1,0,0],[1,1,0]]],
+					 [GL_POLYGON_TOKEN,[[0,0,0],[0,1,0],[1,1,0]]]
+					] * 8
+	
+		assert_equal(parse_feedback_data(data,count),ref)
+	end
+
+	def test_glclear
+		glClearColor(1.0,1.0,1.0,1.0)
+		glClear(GL_COLOR_BUFFER_BIT)
+
+		data = glReadPixels(0,0,1,1,GL_RGB,GL_FLOAT)
+		assert_equal(data.unpack("f*"),[1.0,1.0,1.0])
+
+		glClearColor(0.0,0.0,0.0,0.0)
+		glClear(GL_COLOR_BUFFER_BIT)
+
+		data = glReadPixels(0,0,1,1,GL_RGB,GL_FLOAT)
+		assert_equal(data.unpack("f*"),[0.0,0.0,0.0])
+	end
+
+	def test_gltexenv
+		glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_ADD)
+		assert_equal(glGetTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),[GL_ADD])
+		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE)
+		assert_equal(glGetTexEnviv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),[GL_MODULATE])
+
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,[GL_ADD])
+		assert_equal(glGetTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),[GL_ADD])
+		glTexEnviv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,[GL_MODULATE])
+		assert_equal(glGetTexEnviv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),[GL_MODULATE])
+	end
+
+	def test_gltexgen
+		glTexGend(GL_S,GL_TEXTURE_GEN_MODE,GL_REFLECTION_MAP)
+		assert_equal(glGetTexGendv(GL_S,GL_TEXTURE_GEN_MODE),[GL_REFLECTION_MAP])
+		glTexGenf(GL_S,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR)
+		assert_equal(glGetTexGenfv(GL_S,GL_TEXTURE_GEN_MODE),[GL_EYE_LINEAR])
+		glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP)
+		assert_equal(glGetTexGeniv(GL_S,GL_TEXTURE_GEN_MODE),[GL_SPHERE_MAP])
+
+		glTexGendv(GL_S,GL_TEXTURE_GEN_MODE,[GL_REFLECTION_MAP])
+		assert_equal(glGetTexGendv(GL_S,GL_TEXTURE_GEN_MODE),[GL_REFLECTION_MAP])
+		glTexGenfv(GL_S,GL_TEXTURE_GEN_MODE,[GL_EYE_LINEAR])
+		assert_equal(glGetTexGenfv(GL_S,GL_TEXTURE_GEN_MODE),[GL_EYE_LINEAR])
+		glTexGeniv(GL_S,GL_TEXTURE_GEN_MODE,[GL_SPHERE_MAP])
+		assert_equal(glGetTexGeniv(GL_S,GL_TEXTURE_GEN_MODE),[GL_SPHERE_MAP])
+	end
+
+	def test_textures
+		textures = glGenTextures(2)
+		assert_equal(textures.size, 2)
+		assert_equal(glIsTexture(textures[0]),GL_FALSE)
+		glBindTexture(GL_TEXTURE_2D,textures[0])
+		assert_equal(glIsTexture(textures[0]),GL_TRUE)
+
+		image = ([0,0,0,1,1,1] * 8).pack("f*") # 16 RGB pixels
+
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8, 4, 4, 0, GL_RGB, GL_FLOAT, image)
+		assert_equal(glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_FLOAT), image)
+
+		glBindTexture(GL_TEXTURE_1D,textures[1])
+
+		glTexImage1D(GL_TEXTURE_1D,0,GL_RGB8, 16, 0, GL_RGB, GL_FLOAT, image)
+		assert_equal(glGetTexImage(GL_TEXTURE_1D,0,GL_RGB,GL_FLOAT), image)
+
+		glDeleteTextures(textures)
+		assert_equal(glIsTexture(textures[0]),GL_FALSE)
+	end
+
+	def test_pixels
+		glClearColor(0,0,0,0)
+		glClear(GL_COLOR_BUFFER_BIT)
+
+		data = glReadPixels(0,0,4,4,GL_RGB,GL_FLOAT)
+		assert_equal(data.unpack("f*"), [0] * 3 * 16)
+
+		image = ([1.0] * 3 * 16).pack("f*")
+		glDrawPixels(4,4,GL_RGB,GL_FLOAT,image)
+
+		data = glReadPixels(0,0,4,4,GL_RGB,GL_FLOAT)
+		assert_equal(data,image)
+
+		#
+		glClearColor(0,0,0,0)
+		glClear(GL_COLOR_BUFFER_BIT)
+
+		image = (([0.0] * 3 * 8) + ([1.0] * 3 * 8)).pack("f*")
+		glDrawPixels(4,4,GL_RGB,GL_FLOAT,image)
+
+		data = glReadPixels(0,0,4,4,GL_RGB,GL_FLOAT)
+		assert_equal(data,image)
+	
+		glCopyPixels(0,2,4,2,GL_COLOR)
+	
+		data = glReadPixels(0,0,4,4,GL_RGB,GL_FLOAT)
+		assert_equal(data,([1.0] * 3 * 16).pack("f*"))
+	end
+
+	def test_gltranslate
+		m = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[1,2,3,1]]
+		glMatrixMode(GL_MODELVIEW)
+		glLoadIdentity()
+		glTranslated(1.0,2.0,3.0)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX),m)
+		glLoadIdentity()
+		glTranslatef(1.0,2.0,3.0)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX),m)
+	end
+
+	def test_glscale
+		m = [[1,0,0,0],[0,2,0,0],[0,0,3,0],[0,0,0,1]]
+		glMatrixMode(GL_MODELVIEW)
+		glLoadIdentity()
+		glScaled(1.0,2.0,3.0)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX),m)
+		glLoadIdentity()
+		glScalef(1.0,2.0,3.0)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX),m)
+	end
+
+	def test_glrotate
+		m1 = [[0,0,-1,0],[0,1,0,0],[1,0,0,0],[0,0,0,1]]
+		m2 = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]
+		glMatrixMode(GL_MODELVIEW)
+		glLoadIdentity()
+		glRotated(90,0,1,0)
+		assert(approx_equal(glGetDoublev(GL_MODELVIEW_MATRIX).flatten,m1.flatten))
+		glRotated(-90,0,1,0)
+		assert(approx_equal(glGetDoublev(GL_MODELVIEW_MATRIX).flatten,m2.flatten))
+	end
+
+	def test_textures_2
+		textures = glGenTextures(2)
+		glBindTexture(GL_TEXTURE_1D,textures[0])
+		glBindTexture(GL_TEXTURE_2D,textures[1])
+		assert_equal(glAreTexturesResident(textures).size,2)
+		glPrioritizeTextures(textures,[0.5,1.0])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY),[0.5])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY),[1.0])
+
+		tex = ([0,0,0,1,1,1] * 2).pack("f*")
+		tex2 = ([1] * 3 * 4).pack("f*")
+
+		# 1d
+		glDrawPixels(4,1,GL_RGB,GL_FLOAT,tex)
+		glCopyTexImage1D(GL_TEXTURE_1D,0,GL_RGB8,0,0,4,0)
+		assert_equal(glGetTexImage(GL_TEXTURE_1D,0,GL_RGB,GL_FLOAT),tex)
+		
+		glDrawPixels(4,1,GL_RGB,GL_FLOAT,tex2)
+		glCopyTexSubImage1D(GL_TEXTURE_1D,0,0,0,0,4)
+		assert_equal(glGetTexImage(GL_TEXTURE_1D,0,GL_RGB,GL_FLOAT),tex2)
+
+		glTexSubImage1D(GL_TEXTURE_1D,0,0,4,GL_RGB,GL_FLOAT,tex)
+		assert_equal(glGetTexImage(GL_TEXTURE_1D,0,GL_RGB,GL_FLOAT),tex)
+
+		# 2d
+		glDrawPixels(2,2,GL_RGB,GL_FLOAT,tex)
+		glCopyTexImage2D(GL_TEXTURE_2D,0,GL_RGB8,0,0,2,2,0)
+		assert_equal(glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_FLOAT),tex)
+
+		glDrawPixels(2,2,GL_RGB,GL_FLOAT,tex2)
+		glCopyTexSubImage2D(GL_TEXTURE_2D,0,0,0,0,0,2,2)
+		assert_equal(glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_FLOAT),tex2)
+
+		glTexSubImage2D(GL_TEXTURE_2D,0,0,0,2,2,GL_RGB,GL_FLOAT,tex)
+		assert_equal(glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_FLOAT),tex)
+
+		glDeleteTextures(textures)
+	end
+
+	def test_glmap
+		control_points = [
+			0.25, 0.5, 0.0,
+			1.0, 1.0, 0.0
+		]
+
+		control_points_2 = [
+			1.25, 1.5, 1.0,
+			0.0, 0.0, 1.0
+		]
+
+		glMap1f(GL_MAP1_VERTEX_3,0,100,3,2,control_points)
+		assert_equal(glGetMapfv(GL_MAP1_VERTEX_3,GL_COEFF),control_points)
+
+		glMap1d(GL_MAP1_VERTEX_3,0,100,3,2,control_points_2)
+		assert_equal(glGetMapdv(GL_MAP1_VERTEX_3,GL_COEFF),control_points_2)
+
+		assert_equal(glGetMapiv(GL_MAP1_VERTEX_3,GL_ORDER),[2])
+
+		glMap2f(GL_MAP2_VERTEX_3,0,100,3,1,0,100,3,2,control_points)
+		assert_equal(glGetMapfv(GL_MAP2_VERTEX_3,GL_COEFF),control_points)
+
+		glMap2d(GL_MAP2_VERTEX_3,0,100,3,1,0,100,3,2,control_points_2)
+		assert_equal(glGetMapdv(GL_MAP2_VERTEX_3,GL_COEFF),control_points_2)
+	end
+
+	def test_glmapgrid
+		glMapGrid1d(2,1,100)
+		assert_equal(glGetIntegerv(GL_MAP1_GRID_SEGMENTS),2)
+		assert_equal(glGetIntegerv(GL_MAP1_GRID_DOMAIN),[1,100])
+		glMapGrid1f(3,2,99)
+		assert_equal(glGetIntegerv(GL_MAP1_GRID_SEGMENTS),3)
+		assert_equal(glGetIntegerv(GL_MAP1_GRID_DOMAIN),[2,99])
+		#
+		glMapGrid2d(2,1,100,3,2,99)
+		assert_equal(glGetIntegerv(GL_MAP2_GRID_SEGMENTS),[2,3])
+		assert_equal(glGetIntegerv(GL_MAP2_GRID_DOMAIN),[1,100,2,99])
+
+		glMapGrid2f(3,2,99,4,3,98)
+		assert_equal(glGetIntegerv(GL_MAP2_GRID_SEGMENTS),[3,4])
+		assert_equal(glGetIntegerv(GL_MAP2_GRID_DOMAIN),[2,99,3,98])
+	end
+
+	def test_gleval
+		control_points = [0,0,0,1,1,1]
+		glMap1f(GL_MAP1_VERTEX_3,0,1,3,2,control_points)
+		glMap2f(GL_MAP2_VERTEX_3,0,1,3,1,0,1,3,2,control_points)
+		glEnable(GL_MAP1_VERTEX_3)
+		glEnable(GL_MAP2_VERTEX_3)
+
+		buf = glFeedbackBuffer(256,GL_3D)
+		glRenderMode(GL_FEEDBACK)
+
+		glBegin(GL_TRIANGLES)
+		glEvalCoord1d(1.0)
+		glEvalCoord1dv([1.0])
+		glEvalCoord1f(1.0)
+		
+		glEvalCoord1fv([1.0])
+		glEvalCoord1fv([1.0])
+		glEvalCoord1fv([1.0])
+
+		glEvalCoord2d(1.0,1.0)
+		glEvalCoord2dv([1.0,1.0])
+		glEvalCoord2f(1.0,1.0)
+
+		glEvalCoord2fv([1.0,1.0])
+		glEvalCoord2fv([1.0,1.0])
+		glEvalCoord2fv([1.0,1.0])
+
+		glEvalPoint1(0.0)
+		glEvalPoint1(0.0)
+		glEvalPoint1(0.0)
+
+		glEvalPoint2(0.0,1.0)
+		glEvalPoint2(0.0,1.0)
+		glEvalPoint2(0.0,1.0)
+
+		glEnd
+
+		count = glRenderMode(GL_RENDER)
+		assert_equal(count,(3*3+2)*6)
+
+		glDisable(GL_MAP2_VERTEX_3)
+		glDisable(GL_MAP1_VERTEX_3)
+	end
+
+	def test_glevalmesh
+		control_points = [0,0,0,1,1,1]
+		glMap1f(GL_MAP1_VERTEX_3,0,1,3,2,control_points)
+		glMap2f(GL_MAP2_VERTEX_3,0,1,3,1,0,1,3,2,control_points)
+		glEnable(GL_MAP1_VERTEX_3)
+		glEnable(GL_MAP2_VERTEX_3)
+		
+		buf = glFeedbackBuffer(256,GL_3D)
+		glRenderMode(GL_FEEDBACK)
+		
+		glEvalMesh1(GL_POINT,0,1)
+		glEvalMesh2(GL_POINT,0,1,0,1)
+		
+		count = glRenderMode(GL_RENDER)
+		assert_equal(count,((3+1)*(2+2*2)))
+		
+		glDisable(GL_MAP2_VERTEX_3)
+		glDisable(GL_MAP1_VERTEX_3)
+	end
+
+	def test_glaccum
+		i1 = ([0.0] * 3 + [1.0] * 3 ).pack("f*")
+		i2 = ([1.0] * 3 + [0.0] * 3 ).pack("f*")
+
+		# init
+		glClearColor(0,0,0,0)	
+		glClear(GL_ACCUM_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
+		# left
+		glDrawPixels(2,1,GL_RGB,GL_FLOAT,i1)
+		glAccum(GL_ACCUM,1.0)
+		# right
+		glClear(GL_COLOR_BUFFER_BIT)
+		glDrawPixels(2,1,GL_RGB,GL_FLOAT,i2)
+		glAccum(GL_ACCUM,1.0)
+		# combine
+		glAccum(GL_RETURN,1.0)
+
+		data = glReadPixels(0,0,2,1,GL_RGB,GL_FLOAT)
+		assert_equal(data.unpack("f*"),[1.0] * 2 * 3)
+	end
+
+	def test_displaylists
+		base = glGenLists(2)
+		assert_equal(base,GL_TRUE)
+		glListBase(1)
+		assert_equal(glGetIntegerv(GL_LIST_BASE),1)
+		glListBase(0)
+		assert_equal(glGetIntegerv(GL_LIST_BASE),0)
+
+		glNewList(base+0, GL_COMPILE)
+		glBegin(GL_TRIANGLES)
+		glVertex2f(0,0)
+		glVertex2f(1,0)
+		glVertex2f(1,1)
+		glEnd()
+		glEndList()
+
+		glNewList(base+1, GL_COMPILE)
+		glBegin(GL_TRIANGLES)
+		glVertex2f(0,0)
+		glVertex2f(1,0)
+		glVertex2f(1,1)
+		glEnd()
+		glEndList()
+
+		assert_equal(glIsList(base+0),GL_TRUE)
+		assert_equal(glIsList(base+1),GL_TRUE)
+		assert_equal(glIsList(base+2),GL_FALSE)
+
+		#		
+		buf = glFeedbackBuffer(256,GL_3D)
+		glRenderMode(GL_FEEDBACK)
+
+		glCallList(base+0)
+		glCallLists([base+0,base+1])
+
+		count = glRenderMode(GL_RENDER)
+		assert_equal(count,(3*3+2) * 3) # 3 triangles
+		#
+
+		glDeleteLists(base,2)
+
+		assert_equal(glIsList(base+0),GL_FALSE)
+		assert_equal(glIsList(base+1),GL_FALSE)
+	end
+
+	def test_arrays
+		glEnableClientState(GL_VERTEX_ARRAY)
+		
+		va = [0,0, 0,1, 1,1].pack("f*")
+		glVertexPointer(2,GL_FLOAT,0,va)
+		assert_equal(glGetPointerv(GL_VERTEX_ARRAY_POINTER),va)
+		assert_equal(glGetIntegerv(GL_VERTEX_ARRAY_SIZE),2)
+		assert_equal(glGetIntegerv(GL_VERTEX_ARRAY_TYPE),GL_FLOAT)
+		assert_equal(glGetIntegerv(GL_VERTEX_ARRAY_STRIDE),0)
+		#
+		buf = glFeedbackBuffer(256,GL_3D)
+		glRenderMode(GL_FEEDBACK)
+
+		glDrawArrays(GL_TRIANGLES,0,3)
+
+		glBegin(GL_TRIANGLES)
+		glArrayElement(0)
+		glArrayElement(1)
+		glArrayElement(2)
+		glEnd()
+
+		glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_BYTE,[0,1,2].pack("C*"))
+
+		glInterleavedArrays(GL_V2F,0, va)
+
+		glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_BYTE,[0,1,2].pack("C*"))
+
+		#		
+		count = glRenderMode(GL_RENDER)
+		assert_equal(count,44)
+
+		glDisableClientState(GL_VERTEX_ARRAY)
+	end
+
+	def test_arrays_2
+		na = [0,1,0].pack("f*")
+		ta = [1,0,1,0].pack("f*")
+		ea = [GL_FALSE].pack("C*")
+		ca = [1,0,1,0].pack("f*")
+		
+		glNormalPointer(GL_FLOAT,0,na)
+		assert_equal(glGetIntegerv(GL_NORMAL_ARRAY_TYPE),GL_FLOAT)
+		assert_equal(glGetIntegerv(GL_NORMAL_ARRAY_STRIDE),0)
+		assert_equal(glGetPointerv(GL_NORMAL_ARRAY_POINTER),na)
+		glTexCoordPointer(4,GL_FLOAT,0,ta)
+		assert_equal(glGetIntegerv(GL_TEXTURE_COORD_ARRAY_SIZE),4)
+		assert_equal(glGetIntegerv(GL_TEXTURE_COORD_ARRAY_TYPE),GL_FLOAT)
+		assert_equal(glGetIntegerv(GL_TEXTURE_COORD_ARRAY_STRIDE),0)
+		assert_equal(glGetPointerv(GL_TEXTURE_COORD_ARRAY_POINTER),ta)
+		glEdgeFlagPointer(0,ea)
+		assert_equal(glGetIntegerv(GL_EDGE_FLAG_ARRAY_STRIDE),0)
+		assert_equal(glGetPointerv(GL_EDGE_FLAG_ARRAY_POINTER),ea)
+		glColorPointer(4,GL_FLOAT,0,ca)
+		assert_equal(glGetIntegerv(GL_COLOR_ARRAY_SIZE),4)
+		assert_equal(glGetIntegerv(GL_COLOR_ARRAY_TYPE),GL_FLOAT)
+		assert_equal(glGetIntegerv(GL_COLOR_ARRAY_STRIDE),0)
+		assert_equal(glGetPointerv(GL_COLOR_ARRAY_POINTER),ca)
+		#
+		glEnable(GL_COLOR_ARRAY)
+		glEnable(GL_NORMAL_ARRAY)
+		glEnable(GL_TEXTURE_COORD_ARRAY)
+		glEnable(GL_EDGE_FLAG_ARRAY)
+
+		glBegin(GL_TRIANGLES)
+		glArrayElement(0)
+		glEnd()
+
+		assert_equal(glGetDoublev(GL_CURRENT_COLOR),[1,0,1,0])
+		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[0,1,0])
+		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,1,0])
+		assert_equal(glGetDoublev(GL_EDGE_FLAG),GL_FALSE)
+
+		glDisable(GL_EDGE_FLAG_ARRAY)
+		glDisable(GL_TEXTURE_COORD_ARRAY)
+		glDisable(GL_NORMAL_ARRAY)
+		glDisable(GL_COLOR_ARRAY)
+	end
 end
