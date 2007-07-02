@@ -332,22 +332,22 @@ VALUE obj; \
 	int num; \
 	VALUE args[5]; \
 	RArray *ary; \
-	switch (num = rb_scan_args(argc, argv, "14", &args[0], &args[1], &args[2], &args[3])) { \
-	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
+	switch (num = rb_scan_args(argc, argv, "23", &args[0], &args[1], &args[2], &args[3],&args[4])) { \
+	case 2: \
+		if (TYPE(args[1]) == T_ARRAY) { \
+		ary = RARRAY(args[1]); \
 		switch (ary->len) { \
 			case 1: \
-			gl_MultiTexCoord1##_type_(obj,ary->ptr[0],ary->ptr[1]); \
+			gl_MultiTexCoord1##_type_(obj,args[0],ary->ptr[0]); \
 			break; \
 			case 2: \
-			gl_MultiTexCoord2##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
+			gl_MultiTexCoord2##_type_(obj,args[0],ary->ptr[0],ary->ptr[1]); \
 			break; \
 			case 3: \
-			gl_MultiTexCoord3##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
+			gl_MultiTexCoord3##_type_(obj,args[0],ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
 			break; \
 			case 4: \
-			gl_MultiTexCoord4##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3],ary->ptr[4]); \
+			gl_MultiTexCoord4##_type_(obj,args[0],ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
 			break; \
 			default: \
 			rb_raise(rb_eArgError, "array length:%d", num); \
@@ -358,13 +358,13 @@ VALUE obj; \
 			break; \
 		} \
 		break; \
-	case 2: \
+	case 3: \
 		gl_MultiTexCoord2##_type_(obj,args[0], args[1], args[2]); \
 		break; \
-	case 3: \
+	case 4: \
 		gl_MultiTexCoord3##_type_(obj,args[0], args[1], args[2], args[3]); \
 		break; \
-	case 4: \
+	case 5: \
 		gl_MultiTexCoord4##_type_(obj,args[0], args[1], args[2], args[3], args[4]); \
 		break; \
 	default: \

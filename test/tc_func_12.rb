@@ -28,7 +28,8 @@ include Glut
 def supported?(funcs)
 	funcs.each do |name|
 		if !Gl.is_available?(name)
-				puts "Function #{name} not supported, test skipped"
+				puts ""				
+				puts "Function/extension #{name} not supported, test skipped"
 				return false
 		end
 	end
@@ -215,5 +216,7 @@ class Test_12 < Test::Unit::TestCase
 		glCopyTexSubImage3D(GL_TEXTURE_3D,0,0,0,0,0,0,2,2)
 		ti = glGetTexImage(GL_TEXTURE_3D,0,GL_RGB,GL_FLOAT).unpack("f*")
 		assert_equal(ti,([0]*3 + [1]*3) * 2 + ([1]*3 + [0]*3) * 2)
+
+		glDeleteTextures(textures)
 	end
 end
