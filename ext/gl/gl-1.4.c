@@ -207,7 +207,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum pname;
 	GLint param;
-	LOAD_GL_FUNC(glPointParameterf)
+	LOAD_GL_FUNC(glPointParameteri)
 	pname = (GLenum)NUM2INT(arg1);
 	param = (GLint)NUM2INT(arg2);
 	fptr_glPointParameteri(pname,param);

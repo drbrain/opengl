@@ -25,7 +25,8 @@ module GL
     include Gl
 
     Gl.constants.each do |cn|
-        n = cn.sub(/^GL_/,'')
+        n = cn.to_s.sub(/^GL_/,'')
+	next if n =~ /^[0-9]/
         begin
             const_set( n, Gl.const_get( cn ) )
         rescue
@@ -34,7 +35,7 @@ module GL
     end
 
     Gl.methods( false ).each do |mn|
-        n = mn.sub(/^gl/,'')
+        n = mn.to_s.sub(/^gl/,'')
         begin
             alias_method( n, mn )
             public( n )

@@ -26,7 +26,7 @@ module GLU
     include Glu
 
     Glu.constants.each do |cn|
-        n = cn.sub(/^GLU_/,'')
+        n = cn.to_s.sub(/^GLU_/,'')
         begin
             const_set( n, Glu.const_get( cn ) )
         rescue
@@ -35,7 +35,7 @@ module GLU
     end
 
     Glu.methods( false ).each do |mn|
-        n = mn.sub(/^glu/,'')
+        n = mn.to_s.sub(/^glu/,'')
         begin
             alias_method( n, mn )
             public( n )

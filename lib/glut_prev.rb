@@ -25,7 +25,7 @@ module GLUT
     include Glut
 
     Glut.constants.each do |cn|
-        n = cn.sub(/^GLUT_/,'')
+        n = cn.to_s.sub(/^GLUT_/,'')
         begin
             const_set( n, Glut.const_get( cn ) )
         rescue
@@ -34,7 +34,7 @@ module GLUT
     end
 
     Glut.methods( false ).each do |mn|
-        n = mn.sub(/^glut/,'')
+        n = mn.to_s.sub(/^glut/,'')
         begin
             alias_method( n, mn )
             public( n )
