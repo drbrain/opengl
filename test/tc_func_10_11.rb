@@ -35,6 +35,15 @@ def glut_init()
 	  glutCreateWindow("test")
 end
 
+def approx_equal(a,b,epsilon=0.01)
+	(0...a.size).each do |i|
+		if ((a[i] - b[i]).abs > epsilon)
+			return false
+		end
+	end
+	true
+end
+
 class Test_10_11 < Test::Unit::TestCase
 	def setup
 		if $glut_initialized == nil
@@ -484,15 +493,6 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetIntegerv(GL_FOG_MODE),GL_EXP)
 		glFogiv(GL_FOG_MODE,[GL_EXP2])
 		assert_equal(glGetIntegerv(GL_FOG_MODE),GL_EXP2)
-	end
-
-	def approx_equal(a,b,epsilon=0.01)
-		(0...a.size).each do |i|
-			if ((a[i] - b[i]).abs > epsilon)
-				return false
-			end
-		end
-		true
 	end
 
 	def test_glcolor
