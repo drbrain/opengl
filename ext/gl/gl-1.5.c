@@ -232,8 +232,13 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	target = (GLenum)NUM2INT(arg1);
 	size = (GLsizeiptr)NUM2INT(arg2);
 	usage = (GLenum)NUM2INT(arg4);
-	Check_Type(arg3,T_STRING);
-	fptr_glBufferData(target,size,(GLvoid *)RSTRING(arg3)->ptr,usage);
+	if (TYPE(arg3) == T_STRING) {
+		fptr_glBufferData(target,size,(GLvoid *)RSTRING(arg3)->ptr,usage);
+	} else if (NIL_P(arg3)) {
+		fptr_glBufferData(target,size,NULL,usage);
+	} else {
+		Check_Type(arg3,T_STRING); /* force exception */
+	}
 	return Qnil;
 }
 
@@ -350,7 +355,7 @@ void gl_init_functions_1_5(VALUE module)
 	rb_define_module_function(module, "glIsBuffer", gl_IsBuffer, 1);
 	rb_define_module_function(module, "glBufferData", gl_BufferData, 4);
 	rb_define_module_function(module, "glBufferSubData", gl_BufferSubData, 4);
-	rb_define_module_function(module, "glGetBufferSubData", gl_GetBufferSubData, 4);
+	rb_define_module_function(module, "glGetBufferSubData", gl_GetBufferSubData, 3);
 	rb_define_module_function(module, "glMapBuffer", gl_MapBuffer, 2);
 	rb_define_module_function(module, "glUnmapBuffer", gl_UnmapBuffer, 1);
 	rb_define_module_function(module, "glGetBufferParameteriv", gl_GetBufferParameteriv, 2);
