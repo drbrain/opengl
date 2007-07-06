@@ -557,7 +557,7 @@ VALUE obj; \
 	int num; \
 	VALUE args[3]; \
 	RArray *ary; \
-	switch (num = rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2])) { \
+	switch (num = rb_scan_args(argc, argv, "12", &args[0], &args[1], &args[2])) { \
 	case 1: \
 		if (TYPE(args[0]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \

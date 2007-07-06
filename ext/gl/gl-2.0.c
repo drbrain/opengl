@@ -40,15 +40,16 @@ VALUE obj,arg1,arg2;
 
 static void (*fptr_glDrawBuffers)(GLsizei,GLenum *);
 static VALUE
-gl_DrawBuffers(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
+gl_DrawBuffers(obj,arg1)
+VALUE obj,arg1;
 {
 	GLsizei size;
 	GLenum *buffers;
 	LOAD_GL_FUNC(glDrawBuffers)
-	size = (GLsizei)NUM2UINT(arg1);
+	Check_Type(arg1,T_ARRAY); 
+	size = RARRAY(arg1)->len;
 	buffers = ALLOC_N(GLenum,size);
-	ary2cuint(arg2,buffers,size);
+	ary2cuint(arg1,buffers,size);
 	fptr_glDrawBuffers(size,buffers);
 	xfree(buffers);
 	return Qnil;
@@ -552,14 +553,21 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
+#define _MAX_VERTEX_ATTRIBS 64 /* at least GL_MAX_VERTEX_ATTRIBS - usually 16 or 32 on today's high-end cards */
+static VALUE g_VertexAttrib_ptr[_MAX_VERTEX_ATTRIBS];
+
 static void (*fptr_glGetVertexAttribPointerv)(GLuint,GLenum,GLvoid **);
 static VALUE
-gl_GetVertexAttribPointerv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
+gl_GetVertexAttribPointerv(obj,arg1)
+VALUE obj,arg1;
 {
+	GLuint index;
 	LOAD_GL_FUNC(glGetVertexAttribPointerv)
-	/* not implemented */
-	return Qnil;
+	index =(GLuint) NUM2INT(arg1);
+	if (index>_MAX_VERTEX_ATTRIBS)
+		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
+
+	return g_VertexAttrib_ptr[index];
 }
 
 static GLboolean (*fptr_glIsProgram)(GLuint);
@@ -1389,22 +1397,22 @@ VALUE obj; \
 { \
 	VALUE args[5]; \
 	RArray *ary; \
-	switch (rb_scan_args(argc, argv, "14", &args[0], &args[1], &args[2], &args[3], &args[4])) { \
-	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
+	switch (rb_scan_args(argc, argv, "23", &args[0], &args[1], &args[2], &args[3], &args[4])) { \
+	case 2: \
+		if (TYPE(args[1]) == T_ARRAY) { \
+		ary = RARRAY(args[1]); \
 		switch (ary->len) { \
 			case 1: \
-			gl_VertexAttrib1##_type_(obj,ary->ptr[0],ary->ptr[1]); \
+			gl_VertexAttrib1##_type_(obj,args[0],ary->ptr[0]); \
 			break; \
 			case 2: \
-			gl_VertexAttrib2##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
+			gl_VertexAttrib2##_type_(obj,args[0],ary->ptr[0],ary->ptr[1]); \
 			break; \
 			case 3: \
-			gl_VertexAttrib3##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
+			gl_VertexAttrib3##_type_(obj,args[0],ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
 			break; \
 			case 4: \
-			gl_VertexAttrib4##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3],ary->ptr[4]); \
+			gl_VertexAttrib4##_type_(obj,args[0],ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
 			break; \
 			default: \
 			rb_raise(rb_eRuntimeError, "glVertex vertex num error!:%d", ary->len); \
@@ -1415,17 +1423,17 @@ VALUE obj; \
 			break; \
 		} \
 		break; \
-	case 2: \
+	case 3: \
 		gl_VertexAttrib2##_type_(obj,args[0], args[1], args[2]); \
 		break; \
-	case 3: \
+	case 4: \
 		gl_VertexAttrib3##_type_(obj,args[0], args[1], args[2], args[3]); \
 		break; \
-	case 4: \
+	case 5: \
 		gl_VertexAttrib4##_type_(obj,args[0], args[1], args[2], args[3], args[4]); \
 		break; \
 	default: \
-		rb_raise(rb_eArgError, "too many arguments"); \
+		rb_raise(rb_eArgError, "Argument number error!"); \
 		break; \
 	} \
 	return Qnil; \
@@ -1447,13 +1455,17 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLenum type;
 	GLboolean normalized;
 	GLsizei stride;
+	LOAD_GL_FUNC(glVertexAttribPointer)
 	index = (GLuint)NUM2UINT(arg1);
 	size = (GLuint)NUM2UINT(arg2);
 	type = (GLenum)NUM2INT(arg3);
 	normalized = (GLboolean)NUM2INT(arg4);
 	stride = (GLsizei)NUM2UINT(arg5);
+	if (index>_MAX_VERTEX_ATTRIBS)
+		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 	Check_Type(arg6, T_STRING);
 	rb_str_freeze(arg6);
+	g_VertexAttrib_ptr[index] = arg6;
 	fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING(arg6)->ptr);
 	return Qnil;
 }
@@ -1461,7 +1473,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 void gl_init_functions_2_0(VALUE module)
 {
 	rb_define_module_function(module, "glBlendEquationSeparate", gl_BlendEquationSeparate, 2);
-	rb_define_module_function(module, "glDrawBuffers", gl_DrawBuffers, 2);
+	rb_define_module_function(module, "glDrawBuffers", gl_DrawBuffers, 1);
 	rb_define_module_function(module, "glStencilOpSeparate", gl_StencilOpSeparate, 4);
 	rb_define_module_function(module, "glStencilFuncSeparate", gl_StencilFuncSeparate, 4);
 	rb_define_module_function(module, "glStencilMaskSeparate", gl_StencilMaskSeparate, 2);
@@ -1490,7 +1502,7 @@ void gl_init_functions_2_0(VALUE module)
 	rb_define_module_function(module, "glGetVertexAttribdv", gl_GetVertexAttribdv, 2);
 	rb_define_module_function(module, "glGetVertexAttribfv", gl_GetVertexAttribfv, 2);
 	rb_define_module_function(module, "glGetVertexAttribiv", gl_GetVertexAttribiv, 2);
-	rb_define_module_function(module, "glGetVertexAttribPointerv", gl_GetVertexAttribPointerv, 3);
+	rb_define_module_function(module, "glGetVertexAttribPointerv", gl_GetVertexAttribPointerv, 1);
 	rb_define_module_function(module, "glIsProgram", gl_IsProgram, 1);
 	rb_define_module_function(module, "glIsShader", gl_IsShader, 1);
 	rb_define_module_function(module, "glLinkProgram", gl_LinkProgram, 1);
@@ -1555,4 +1567,10 @@ void gl_init_functions_2_0(VALUE module)
 	rb_define_module_function(module, "glVertexAttrib4dv", gl_VertexAttribdv, -1);
 	rb_define_module_function(module, "glVertexAttrib4fv", gl_VertexAttribfv, -1);
 	rb_define_module_function(module, "glVertexAttrib4sv", gl_VertexAttribsv, -1);
+
+	{
+		int i;
+		for (i=0;i<_MAX_VERTEX_ATTRIBS;i++)
+			rb_global_variable(&g_VertexAttrib_ptr[i]);
+	}
 }

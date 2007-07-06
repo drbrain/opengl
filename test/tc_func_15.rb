@@ -53,7 +53,6 @@ class Test_15 < Test::Unit::TestCase
 		return if not supported?(["glGenQueries","glDeleteQueries","glIsQuery","glBeginQuery","glGetQueryiv","glGetQueryObjectiv","glGetQueryObjectuiv"])
 		queries = glGenQueries(2)
 		assert_equal(queries.size,2)
-		assert_equal(glIsQuery(queries[1]),GL_FALSE)
 
 		glBeginQuery(GL_SAMPLES_PASSED,queries[1])
 		assert_equal(glIsQuery(queries[1]),GL_TRUE)
@@ -67,12 +66,19 @@ class Test_15 < Test::Unit::TestCase
 		assert_equal(glGetQueryiv(GL_SAMPLES_PASSED,GL_CURRENT_QUERY),[queries[1]])
 	
 		glEndQuery(GL_SAMPLES_PASSED)
-		r = glGetQueryObjectiv(queries[1],GL_QUERY_RESULT_AVAILABLE)
-		assert(r[0] == GL_TRUE || r[0] == GL_FALSE)
+		
+		r = [GL_FALSE]
+		100.times do 
+			r = glGetQueryObjectiv(queries[1],GL_QUERY_RESULT_AVAILABLE)
+			break if (r[0]==GL_FALSE)
+			sleep(10)
+		end
+
 		assert(glGetQueryObjectiv(queries[1],GL_QUERY_RESULT)[0] > 0)
 		assert(glGetQueryObjectuiv(queries[1],GL_QUERY_RESULT)[0] > 0)
 
 		glDeleteQueries(queries)
+		assert_equal(glIsQuery(queries[1]),GL_FALSE)
 	end
 	
 	def test_buffers

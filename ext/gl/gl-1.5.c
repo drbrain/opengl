@@ -302,7 +302,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLenum access;
-	GLsizeiptr size = 0;
+	GLint size = 0;
 	VALUE data;
 	GLvoid *buffer_ptr;
 	LOAD_GL_FUNC(glMapBuffer)
