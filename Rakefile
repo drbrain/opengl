@@ -80,7 +80,6 @@ task :gen_website => NICE_HTML_DOCS do
     puts
     sh "cp README.html website/index.html"
     sh "cp doc/*.html website"
-    sh "cp test/interactive/reference/*.png website/images"
 end
 
 # You'll see some intermediate .plain files get generated. These are html,
@@ -117,16 +116,8 @@ Rake::TestTask.new do |t|
     t.verbose = true
 end
 
-desc 'Runs interactive tests.'
-Rake::TestTask.new(:test_interactive) do |t|
-    t.libs << "test"
-    t.libs << "test/interactive"
-    t.test_files = FileList['test/interactive/tc_base.rb']
-    t.verbose = true
-end
-
-desc 'Runs both unit and interactive tests'
-task :test_all => [:test, :test_interactive]
+desc 'Runs unit tests.'
+task :test_all => [:test]
 
 # Define the files that will go into the gem
 gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]

@@ -13,45 +13,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-if __FILE__ == $0
-    # If we are being called from the command line, e.g., ruby foo.rb, then
-    # fixup the load path so we can find the OpenGL extension libs
-    $: << File.join(File.dirname(__FILE__), '..', 'ext')
-end
-
 require 'test/unit'
-require 'gl'
-require 'glut'
-include Gl
-include Glut
 
 class Test_21 < Test::Unit::TestCase
 	def setup
-		if $glut_initialized == nil
-			glut_init()
-			$glut_initialized = true
-		end
-
-		glPushAttrib(GL_ALL_ATTRIB_BITS)
-		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS)
-		glMatrixMode(GL_MODELVIEW)
-		glLoadIdentity()
-		glMatrixMode(GL_PROJECTION)
-		glLoadIdentity()
-
-		glClearColor(0,0,0,0)
-		glClear(GL_COLOR_BUFFER_BIT)
+		common_setup()
 	end
 
 	def teardown
-		glPopAttrib()
-		glPopClientAttrib()
-		assert_equal(glGetError(),0) # all expected GL errors must be handled by the method itself
+		common_teardown()
 	end
 
 	def test_gluniformmatrix21
-		return if not supported?("glUniformMatrix2x3fv")
-		return if not supported?(["glCreateProgram","glUniformMatrix2fv"])
+		return if not supported?(["glCreateProgram","glUniformMatrix2x3fv"])
 
 		vertex_shader_source = "#version 120\n uniform mat2x3 testmat23; uniform mat3x2 testmat32; uniform mat2x4 testmat24; uniform mat4x2 testmat42; uniform mat3x4 testmat34; uniform mat4x3 testmat43; void main() { gl_Position = gl_Vertex * testmat23[0].x * testmat32[0].x * testmat24[0].x * testmat42[0].x * testmat34[0].x * testmat43[0].x;}"
 

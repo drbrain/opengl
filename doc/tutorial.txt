@@ -24,6 +24,10 @@ You don't have to `include` Gl, Glu, and Glut, but if you don't, then
 you'll have to prefix each of those method and constant names like so:
 
     {{ruby}}
+    require 'gl'
+    require 'glu'
+    require 'glut'
+
     Gl.glFooBar( Gl::GL_FOO_BAR )
     Glu.gluFooBar( Glu::GLU_FOO_BAR )
     Glut.glutFooBar( Glut::GLUT_FOO_BAR )
@@ -32,9 +36,7 @@ The other way you might use ruby-opengl is to employ the notation that
 users of previous versions of ruby-opengl have used:
 
     {{ruby}}
-    require 'gl_prev'
-    require 'glu_prev'
-    require 'glut_prev'
+    require 'opengl'
     
     GL.FooBar( GL::FOO_BAR )
     GLU.FooBar( GLU::FOO_BAR )

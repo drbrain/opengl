@@ -10,8 +10,7 @@ by first name) also goes to:
 * Tony Hursh -- Mac OS X glut build tweak
 * Sean Long -- More Mac OS X fixes
 * John Gabriele -- Numerous fixes, documentation, and project support
-* Jan Dvorak -- Patches to start OpenGL 2.1 support and an interactive
-                test framework
+* Jan Dvorak -- Patches to start OpenGL 2.1 support 
 * **Yoshi** -- providing ruby-opengl-0.32g from which to work off of.
 
 

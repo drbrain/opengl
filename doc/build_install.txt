@@ -36,8 +36,7 @@ Manual Build instructions
    
    gem install -y mkrf
 3. Run 'rake' at the top level of the project
-4. Run 'rake test_all' to run unit tests and interactive tests to verify
-   it works properly
+4. (OPTIONAL) Run 'rake test' to run unit tests to verify it works properly
 5. Run 'rake clean' to clean out the project
 6. Run 'rake gem' to build a gem
 7. Run 'gem install pkg/ruby-opengl-<version>.gem' to install the gem
@@ -61,14 +60,6 @@ Testing / Running
 To run unit tests:
 
    $ rake test
-
-To run the interactive tests:
-
-   $ rake test_interactive
-
-To run all the tests:
-
-   $ rake test_all
 
 To run a sample file, make sure the ruby-opengl gem is installed then:
 

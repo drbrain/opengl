@@ -13,51 +13,15 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-if __FILE__ == $0
-    # If we are being called from the command line, e.g., ruby foo.rb, then
-    # fixup the load path so we can find the OpenGL extension libs
-    $: << File.join(File.dirname(__FILE__), '..', 'ext')
-end
-
 require 'test/unit'
-require 'gl'
-require 'glut'
-include Gl
-include Glut
-
-def supported?(funcs)
-	funcs.each do |name|
-		if !Gl.is_available?(name)
-				puts ""				
-				puts "Function/extension #{name} not supported, test skipped"
-				return false
-		end
-	end
-	return true
-end
 
 class Test_12 < Test::Unit::TestCase
 	def setup
-		if $glut_initialized == nil
-			glut_init()
-			$glut_initialized = true
-		end
-
-		glPushAttrib(GL_ALL_ATTRIB_BITS)
-		glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS)
-		glMatrixMode(GL_MODELVIEW)
-		glLoadIdentity()
-		glMatrixMode(GL_PROJECTION)
-		glLoadIdentity()
-
-		glClearColor(0,0,0,0)
-		glClear(GL_COLOR_BUFFER_BIT)
+		common_setup()
 	end
 
 	def teardown
-		glPopAttrib()
-		glPopClientAttrib()
-		assert_equal(glGetError(),0) # all expected GL errors must be handled by the method itself
+		common_teardown()
 	end
 	
 	def test_glblend

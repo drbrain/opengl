@@ -1,23 +1,10 @@
 ruby-opengl tests
 =================
 
-This directory contains the unit tests for ruby-opengl.  You should be able
-to run the tests directly:
+This directory contains the unit tests for ruby-opengl. You should be able
+to run the test by calling 'rake test' from installation root directory. 
 
-    ruby -rubygems tc_include_gl.rb
-
-You can also run all the tests by using the runtests.sh
-
-    ./runtests.sh
-
-Note the tests are currently a work in progress.  For tc_gl_vertex.rb you
-will need to press ESC to close each window as it runs through the tests
-
-TODO
-=====
-o Add require 'opengl' so tc_opengl_namespace.rb will pass
-o Setup a rake task to run the tests so from $RUBY_OPENGL_HOME
-  Example:
-    rake test                      # to run all tests
-    rake test TEST=tc_gl_vertex.rb # Run just one test
+Note that the tests are meant for purposes of internal development, and depending on
+your system configuration may not run at all - the purpose is to test the
+bindings, not the underlying OpenGL implementation. 
 
