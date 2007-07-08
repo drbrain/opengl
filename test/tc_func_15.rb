@@ -67,16 +67,14 @@ class Test_15 < Test::Unit::TestCase
 	
 		glEndQuery(GL_SAMPLES_PASSED)
 		
-		r = [GL_FALSE]
-		100.times do 
-			r = glGetQueryObjectiv(queries[1],GL_QUERY_RESULT_AVAILABLE)
-			break if (r[0]==GL_FALSE)
-			sleep(10)
-		end
+		r = glGetQueryObjectiv(queries[1],GL_QUERY_RESULT_AVAILABLE)
+		assert((r==[GL_TRUE] || r==[GL_FALSE]))
 
+		if (r==[GL_TRUE])
 		assert(glGetQueryObjectiv(queries[1],GL_QUERY_RESULT)[0] > 0)
 		assert(glGetQueryObjectuiv(queries[1],GL_QUERY_RESULT)[0] > 0)
-
+		end
+		
 		glDeleteQueries(queries)
 		assert_equal(glIsQuery(queries[1]),GL_FALSE)
 	end

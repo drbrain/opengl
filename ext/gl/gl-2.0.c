@@ -267,7 +267,7 @@ VALUE obj,arg1,arg2;
 	fptr_glGetProgramiv(program,GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,&max_size);
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum attribute name length");
-	buffer = allocate_buffer_with_string(max_size);
+	buffer = allocate_buffer_with_string(max_size-1);
 	fptr_glGetActiveAttrib(program,index,max_size,&written,&attrib_size,&attrib_type,RSTRING(buffer)->ptr);
 	retary = rb_ary_new2(3);
 	rb_ary_push(retary, INT2NUM(attrib_size));
@@ -296,7 +296,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	fptr_glGetProgramiv(program,GL_ACTIVE_UNIFORM_MAX_LENGTH,&max_size);
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum uniform name length");
-	buffer = allocate_buffer_with_string(max_size);
+	buffer = allocate_buffer_with_string(max_size-1);
 	fptr_glGetActiveUniform(program,index,max_size,&written,&uniform_size,&uniform_type,RSTRING(buffer)->ptr);
 	retary = rb_ary_new2(3);
 	rb_ary_push(retary, INT2NUM(uniform_size));
@@ -314,6 +314,7 @@ VALUE obj,arg1;
 	GLint shaders_num = 0;
 	GLuint *shaders;
 	VALUE retary;
+	GLsizei count = 0;
 	GLint i;
 	LOAD_GL_FUNC(glGetAttachedShaders)
 	LOAD_GL_FUNC(glGetProgramiv)
@@ -322,7 +323,7 @@ VALUE obj,arg1;
 	if (shaders_num<=0)
 		return Qnil;
 	shaders = ALLOC_N(GLuint,shaders_num);
-	fptr_glGetAttachedShaders(program,shaders_num,NULL,shaders);
+	fptr_glGetAttachedShaders(program,shaders_num,&count,shaders);
 	retary = rb_ary_new2(shaders_num);
 	for(i=0;i<shaders_num;i++)
 		rb_ary_push(retary, INT2NUM(shaders[i]));
@@ -417,7 +418,7 @@ VALUE obj,arg1;
 	fptr_glGetShaderiv(shader,GL_SHADER_SOURCE_LENGTH,&max_size);
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum shader source length");
-	buffer = allocate_buffer_with_string(max_size);
+	buffer = allocate_buffer_with_string(max_size-1);
 	fptr_glGetShaderSource(shader,max_size,&ret_length,RSTRING(buffer)->ptr);
 	return buffer;
 }
@@ -436,6 +437,58 @@ VALUE obj,arg1,arg2;
 	return INT2NUM(ret);
 }
 
+
+#define GET_UNIFORM_SIZE \
+	switch (uniform_type) { \
+		case GL_FLOAT: \
+		case GL_INT: \
+		case GL_BOOL: \
+		case GL_SAMPLER_1D: \
+		case GL_SAMPLER_2D: \
+		case GL_SAMPLER_3D: \
+		case GL_SAMPLER_CUBE: \
+		case GL_SAMPLER_1D_SHADOW: \
+		case GL_SAMPLER_2D_SHADOW: \
+			uniform_size = 1; \
+			break; \
+		case GL_FLOAT_VEC2: \
+		case GL_INT_VEC2: \
+		case GL_BOOL_VEC2: \
+			uniform_size = 2; \
+			break; \
+		case GL_FLOAT_VEC3: \
+		case GL_INT_VEC3: \
+		case GL_BOOL_VEC3: \
+			uniform_size = 3; \
+			break; \
+		case GL_FLOAT_VEC4: \
+		case GL_INT_VEC4: \
+		case GL_BOOL_VEC4: \
+		case GL_FLOAT_MAT2: \
+			uniform_size = 4; \
+			break; \
+		case GL_FLOAT_MAT2x3: \
+		case GL_FLOAT_MAT3x2: \
+			uniform_size = 6; \
+			break; \
+		case GL_FLOAT_MAT2x4: \
+		case GL_FLOAT_MAT4x2: \
+			uniform_size = 8; \
+			break; \
+		case GL_FLOAT_MAT3: \
+			uniform_size = 9; \
+			break; \
+		case GL_FLOAT_MAT4x3: \
+		case GL_FLOAT_MAT3x4: \
+			uniform_size = 12; \
+			break; \
+		case GL_FLOAT_MAT4: \
+			uniform_size = 16; \
+			break; \
+		default: \
+			rb_raise(rb_eTypeError, "Unsupported type '%i'",uniform_type); \
+	}
+
 static void (*fptr_glGetUniformfv)(GLuint,GLint,GLfloat *);
 static VALUE
 gl_GetUniformfv(obj,arg1,arg2)
@@ -446,13 +499,25 @@ VALUE obj,arg1,arg2;
 	GLfloat params[16];
 	VALUE retary;
 	GLint i;
+	GLint unused = 0;
+	GLenum uniform_type = 0;
+	GLint uniform_size = 0;
+
 	LOAD_GL_FUNC(glGetUniformfv)
+	LOAD_GL_FUNC(glGetActiveUniform)
 	program = (GLuint)NUM2UINT(arg1);
 	location = (GLint)NUM2INT(arg2);
+
+	fptr_glGetActiveUniform(program,location,0,NULL,&unused,&uniform_type,NULL);
+	if (uniform_type==0)
+		rb_raise(rb_eTypeError, "Can't determine the uniform's type");
+
+	GET_UNIFORM_SIZE
+
 	memset(params,0,16*sizeof(GLfloat));
 	fptr_glGetUniformfv(program,location,params);
-	retary = rb_ary_new2(16);
-	for(i=0;i<16;i++)
+	retary = rb_ary_new2(uniform_size);
+	for(i=0;i<uniform_size;i++)
 		rb_ary_push(retary, rb_float_new(params[i]));
 	return retary;
 }
@@ -467,13 +532,24 @@ VALUE obj,arg1,arg2;
 	GLint params[16];
 	VALUE retary;
 	GLint i;
+	GLint unused = 0;
+	GLenum uniform_type = 0;
+	GLint uniform_size = 0;
 	LOAD_GL_FUNC(glGetUniformiv)
+	LOAD_GL_FUNC(glGetActiveUniform)
 	program = (GLuint)NUM2UINT(arg1);
 	location = (GLint)NUM2INT(arg2);
+
+	fptr_glGetActiveUniform(program,location,0,NULL,&unused,&uniform_type,NULL);
+	if (uniform_type==0)
+		rb_raise(rb_eTypeError, "Can't determine the uniform's type");
+
+	GET_UNIFORM_SIZE
+
 	memset(params,0,16*sizeof(GLint));
 	fptr_glGetUniformiv(program,location,params);
-	retary = rb_ary_new2(16);
-	for(i=0;i<16;i++)
+	retary = rb_ary_new2(uniform_size);
+	for(i=0;i<uniform_size;i++)
 		rb_ary_push(retary, INT2NUM(params[i]));
 	return retary;
 }
