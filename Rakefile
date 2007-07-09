@@ -51,8 +51,24 @@ setup_extension('gl', 'gl')
 setup_extension('glu', 'glu')
 setup_extension('glut', 'glut')
 
-desc 'Does a full compile'
-task :default => [:gl, :glu, :glut]
+case RUBY_PLATFORM
+when /mswin32/
+	desc 'Does a full win32 compile'
+	task :default do
+		exts = ["gl","glu","glut"]
+		exts.each do |ext|
+			Dir.chdir("ext\\#{ext}") do
+				sh "ruby mkrf_conf.rb"
+				sh "call rake --nosearch"
+				sh "copy #{ext}.so ..\\..\\lib"
+			end
+		end
+	end
+else
+	desc 'Does a full compile'
+	task :default => [:gl, :glu, :glut]
+end
+
 
 task :extension => :default
 
