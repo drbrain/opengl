@@ -17,7 +17,6 @@ require 'rubygems'
 require 'mkrf'
 
 Mkrf::Generator.new( 'glu' ) do |g|
-    g.objects << "../common/rbogl.#{Config::CONFIG['OBJEXT']}"
     case RUBY_PLATFORM
     when /darwin/
         g.ldshared << ' -framework OpenGL'

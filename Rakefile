@@ -52,15 +52,9 @@ setup_extension('glu', 'glu')
 setup_extension('glut', 'glut')
 
 desc 'Does a full compile'
-task :default => [:build_rbogl, :gl, :glu, :glut]
+task :default => [:gl, :glu, :glut]
 
 task :extension => :default
-
-desc 'Builds common OpenGL object file.  Necessary for building GL bindings'
-task :build_rbogl do
-    puts "Building common rbogl object file"
-    sh "cd ext/common && rake"
-end
 
 desc 'Show contents of some variables related to website doc generation.'
 task :explain_website do

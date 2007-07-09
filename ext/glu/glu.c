@@ -30,7 +30,7 @@
 #endif
 
 #include <ruby.h>
-#include "../common/rbogl.h"
+#include "../common/common.h"
 
 #ifdef WIN32
 #define DLLEXPORT __declspec(dllexport)

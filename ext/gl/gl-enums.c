@@ -22,8 +22,7 @@
 #else
 #include <GL/gl.h>
 #endif
-#include "../common/rbogl.h"
-#include "../common/gl-enums.h"
+#include "../common/common.h"
 
 void gl_init_enums(VALUE module)
 {

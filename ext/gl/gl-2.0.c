@@ -21,8 +21,7 @@
 #else
 #include <GL/gl.h>
 #endif
-#include "../common/rbogl.h"
-#include "../common/gl-enums.h"
+#include "../common/common.h"
 
 static void (*fptr_glBlendEquationSeparate)(GLenum,GLenum);
 static VALUE

@@ -22,8 +22,7 @@
 #else
 #include <GL/gl.h>
 #endif
-#include "../common/rbogl.h"
-#include "../common/gl-enums.h"
+#include "../common/common.h"
 
 #ifndef MAX
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))

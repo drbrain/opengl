@@ -1,6 +1,6 @@
 /*
  * Last edit by previous maintainer:
- * 2003/08/17 03:46:15, yoshi
+ * 2000/01/06 16:37:43, kusano
  *
  * Copyright (C) 1999 - 2005 Yoshi <yoshi@giganet.net>
  * Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
@@ -17,6 +17,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef _RBOGL_H_
+#define _RBOGL_H_
+
+#include <ruby.h>
+
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <mach-o/dyld.h>
@@ -30,12 +35,37 @@
 #include <GL/glx.h>
 #endif
 
-#include "rbogl.h"
 #include "gl-enums.h"
 
+
+typedef struct RArray RArray;
+
+extern VALUE cProc;
+
+#define LOAD_GL_FUNC(_NAME_) \
+if (fptr_##_NAME_==NULL) \
+fptr_##_NAME_ = load_gl_function(#_NAME_, 1);
+
+#define FORCE_PIXEL_STORE_MODE \
+	glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT); \
+	glPixelStorei(GL_PACK_ALIGNMENT, 1); \
+	glPixelStorei(GL_PACK_SKIP_PIXELS, 0); \
+	glPixelStorei(GL_PACK_SKIP_ROWS, 0); \
+	glPixelStorei(GL_PACK_ROW_LENGTH, 0); \
+	glPixelStorei(GL_PACK_SKIP_IMAGES, 0); \
+	glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0);
+/*	glPixelStorei(GL_PACK_SKIP_VOLUMES_SGIS, 0);
+	glPixelStorei(GL_PACK_IMAGE_DEPTH_SGIS, 0); */
+
+#define RESTORE_PIXEL_STORE_MODE \
+	glPopClientAttrib();
+
+
 /* -------------------------------------------------------------------- */
-#ifdef _NO_NUM2DBL_
-extern double num2double( VALUE val )
+#ifndef NUM2DBL
+#define NUM2DBL(_val) num2double(_val) 
+
+static inline double num2double( VALUE val )
 {
     struct RFloat* flt;
     if (NIL_P(val)) return 0;
@@ -46,7 +76,7 @@ extern double num2double( VALUE val )
 
 /* -------------------------------------------------------------------- */
 #define ARY2INTEGRAL(_type_,_convert_) \
-extern int ary2c##_type_( arg, cary, maxlen ) \
+static inline int ary2c##_type_( arg, cary, maxlen ) \
 VALUE arg; \
 GL##_type_ cary[]; \
 int maxlen; \
@@ -77,7 +107,7 @@ ARY2INTEGRAL(boolean,NUM2INT)
 #undef ARY2INTEGRAL
 
 /* -------------------------------------------------------------------- */
-extern int ary2cflt(arg, cary, maxlen)
+static inline int ary2cflt(arg, cary, maxlen)
 VALUE arg;
 float cary[];
 int maxlen;
@@ -95,7 +125,7 @@ int maxlen;
 }
 
 /* -------------------------------------------------------------------- */
-extern int ary2cdbl(arg, cary, maxlen)
+static inline int ary2cdbl(arg, cary, maxlen)
 VALUE arg;
 double cary[];
 int maxlen;
@@ -113,7 +143,7 @@ int maxlen;
 }
 
 /* -------------------------------------------------------------------- */
-extern void mary2ary(src, ary)
+static inline void mary2ary(src, ary)
 VALUE src;
 VALUE ary;
 {
@@ -130,7 +160,7 @@ VALUE ary;
 }
 
 /* -------------------------------------------------------------------- */
-extern void ary2cmat4x4dbl(ary, cary)
+static inline void ary2cmat4x4dbl(ary, cary)
 VALUE ary;
 double cary[];
 {
@@ -151,7 +181,7 @@ double cary[];
     }
 }
 
-extern void ary2cmat4x4flt(ary, cary)
+static inline void ary2cmat4x4flt(ary, cary)
 VALUE ary;
 float cary[];
 {
@@ -174,7 +204,7 @@ float cary[];
 
 /* -------------------------------------------------------------------- */
 /*Need to find proper size for glReadPixels array*/
-int glformat_size(GLenum format)
+static inline int glformat_size(GLenum format)
 {
     switch(format)
     {
@@ -210,7 +240,7 @@ int glformat_size(GLenum format)
 }
 
 /* -------------------------------------------------------------------- */
-int gltype_size(GLenum type)
+static inline int gltype_size(GLenum type)
 {
     switch(type)
     {
@@ -248,13 +278,13 @@ int gltype_size(GLenum type)
 }
 
 /* -------------------------------------------------------------------- */
-VALUE allocate_buffer_with_string( int size )
+static inline VALUE allocate_buffer_with_string( int size )
 {
     return rb_str_new(NULL, size);
 }
 
 /* -------------------------------------------------------------------- */
-void *load_gl_function(const char *name,int raise) 
+static inline void *load_gl_function(const char *name,int raise) 
 {
 	void *func_ptr = NULL;
 
@@ -294,3 +324,4 @@ void *load_gl_function(const char *name,int raise)
 	return func_ptr;
 }
 
+#endif /* _RBOGL_H_ */
