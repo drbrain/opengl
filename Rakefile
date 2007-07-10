@@ -52,7 +52,7 @@ setup_extension('glu', 'glu')
 setup_extension('glut', 'glut')
 
 case RUBY_PLATFORM
-when /mswin32/
+when /(:?mswin|mingw)/
 	desc 'Does a full win32 compile'
 	task :default do
 		exts = ["gl","glu","glut"]

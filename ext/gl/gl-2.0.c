@@ -275,7 +275,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetActiveUniform)();
+static void (*fptr_glGetActiveUniform)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
 static VALUE
 gl_GetActiveUniform(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
@@ -422,7 +422,7 @@ VALUE obj,arg1;
 	return buffer;
 }
 
-static GLint (*fptr_glGetUniformLocation)();
+static GLint (*fptr_glGetUniformLocation)(GLuint,const GLchar*);
 static VALUE
 gl_GetUniformLocation(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
