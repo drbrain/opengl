@@ -25,7 +25,7 @@
 
 /* OpenGL 1.5 functions */
 
-static void (*fptr_glGenQueries)(GLsizei,GLuint *);
+static void (APIENTRY * fptr_glGenQueries)(GLsizei,GLuint *);
 static VALUE
 gl_GenQueries(obj,arg1)
 VALUE obj,arg1;
@@ -45,7 +45,7 @@ VALUE obj,arg1;
 	return (VALUE)ret;
 }
 
-static void (*fptr_glDeleteQueries)(GLsizei,GLuint *);
+static void (APIENTRY * fptr_glDeleteQueries)(GLsizei,GLuint *);
 static VALUE
 gl_DeleteQueries(obj,arg1)
 VALUE obj,arg1;
@@ -62,7 +62,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static GLboolean (*fptr_glIsQuery)(GLuint);
+static GLboolean (APIENTRY * fptr_glIsQuery)(GLuint);
 static VALUE
 gl_IsQuery(obj,arg1)
 VALUE obj,arg1;
@@ -75,7 +75,7 @@ VALUE obj,arg1;
 	return INT2NUM(ret);
 }
 
-static void (*fptr_glBeginQuery)(GLenum,GLuint);
+static void (APIENTRY * fptr_glBeginQuery)(GLenum,GLuint);
 static VALUE
 gl_BeginQuery(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -89,7 +89,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glEndQuery)(GLenum);
+static void (APIENTRY * fptr_glEndQuery)(GLenum);
 static VALUE
 gl_EndQuery(obj,arg1)
 VALUE obj,arg1;
@@ -101,7 +101,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glGetQueryiv)(GLenum,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetQueryiv)(GLenum,GLenum,GLint *);
 static VALUE
 gl_GetQueryiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -119,7 +119,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetQueryObjectiv)(GLuint,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetQueryObjectiv)(GLuint,GLenum,GLint *);
 static VALUE
 gl_GetQueryObjectiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -137,7 +137,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetQueryObjectuiv)(GLuint,GLenum,GLuint *);
+static void (APIENTRY * fptr_glGetQueryObjectuiv)(GLuint,GLenum,GLuint *);
 static VALUE
 gl_GetQueryObjectuiv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -155,7 +155,7 @@ VALUE obj,arg1,arg2,arg3;
 	return retary;
 }
 
-static void (*fptr_glBindBuffer)(GLenum,GLuint);
+static void (APIENTRY * fptr_glBindBuffer)(GLenum,GLuint);
 static VALUE
 gl_BindBuffer(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -169,7 +169,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glDeleteBuffers)(GLsizei,GLuint *);
+static void (APIENTRY * fptr_glDeleteBuffers)(GLsizei,GLuint *);
 static VALUE
 gl_DeleteBuffers(obj,arg1)
 VALUE obj,arg1;
@@ -186,7 +186,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glGenBuffers)(GLsizei,GLuint *);
+static void (APIENTRY * fptr_glGenBuffers)(GLsizei,GLuint *);
 static VALUE
 gl_GenBuffers(obj,arg1)
 VALUE obj,arg1;
@@ -206,7 +206,7 @@ VALUE obj,arg1;
 	return (VALUE)ret;
 }
 
-static GLboolean (*fptr_glIsBuffer)(GLuint);
+static GLboolean (APIENTRY * fptr_glIsBuffer)(GLuint);
 static VALUE
 gl_IsBuffer(obj,arg1)
 VALUE obj,arg1;
@@ -219,7 +219,7 @@ VALUE obj,arg1;
 	return INT2NUM(ret);
 }
 
-static void (*fptr_glBufferData)(GLenum,GLsizeiptr,GLvoid *,GLenum);
+static void (APIENTRY * fptr_glBufferData)(GLenum,GLsizeiptr,GLvoid *,GLenum);
 static VALUE
 gl_BufferData(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -241,7 +241,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glBufferSubData)(GLenum,GLintptr,GLsizeiptr,GLvoid *);
+static void (APIENTRY * fptr_glBufferSubData)(GLenum,GLintptr,GLsizeiptr,GLvoid *);
 static VALUE
 gl_BufferSubData(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -258,7 +258,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glGetBufferSubData)(GLenum,GLintptr,GLsizeiptr,GLvoid *);
+static void (APIENTRY * fptr_glGetBufferSubData)(GLenum,GLintptr,GLsizeiptr,GLvoid *);
 static VALUE
 gl_GetBufferSubData(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -276,7 +276,7 @@ VALUE obj,arg1,arg2,arg3;
 	return data;
 }
 
-static void (*fptr_glGetBufferParameteriv)(GLenum,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetBufferParameteriv)(GLenum,GLenum,GLint *);
 static VALUE
 gl_GetBufferParameteriv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -294,7 +294,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static GLvoid * (*fptr_glMapBuffer)(GLenum,GLenum);
+static GLvoid * (APIENTRY * fptr_glMapBuffer)(GLenum,GLenum);
 static VALUE
 gl_MapBuffer(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -315,7 +315,7 @@ VALUE obj,arg1,arg2;
 	return data;
 }
 
-static GLboolean (*fptr_glUnmapBuffer)(GLenum);
+static GLboolean (APIENTRY * fptr_glUnmapBuffer)(GLenum);
 static VALUE
 gl_UnmapBuffer(obj,arg1)
 VALUE obj,arg1;
@@ -328,7 +328,7 @@ VALUE obj,arg1;
 	return INT2NUM(ret);
 }
 
-static void (*fptr_glGetBufferPointerv)(GLenum,GLenum,GLvoid **);
+static void (APIENTRY * fptr_glGetBufferPointerv)(GLenum,GLenum,GLvoid **);
 static VALUE
 gl_GetBufferPointerv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;

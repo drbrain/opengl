@@ -23,7 +23,7 @@
 #endif
 #include "../common/common.h"
 
-static void (*fptr_glUniformMatrix2x3fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix2x3fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix2x3fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -43,7 +43,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniformMatrix3x2fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix3x2fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix3x2fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -63,7 +63,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniformMatrix2x4fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix2x4fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix2x4fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -83,7 +83,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniformMatrix4x2fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix4x2fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix4x2fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -103,7 +103,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniformMatrix3x4fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix3x4fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix3x4fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -123,7 +123,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniformMatrix4x3fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix4x3fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix4x3fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;

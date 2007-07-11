@@ -25,7 +25,7 @@
 
 /* OpenGL 1.3 functions */
 
-static void (*fptr_glActiveTexture)(GLenum);
+static void (APIENTRY * fptr_glActiveTexture)(GLenum);
 static VALUE
 gl_ActiveTexture(obj,arg1)
 VALUE obj,arg1;
@@ -37,7 +37,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glClientActiveTexture)(GLenum);
+static void (APIENTRY * fptr_glClientActiveTexture)(GLenum);
 static VALUE
 gl_ClientActiveTexture(obj,arg1)
 VALUE obj,arg1;
@@ -49,7 +49,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord1d)(GLenum,GLdouble);
+static void (APIENTRY * fptr_glMultiTexCoord1d)(GLenum,GLdouble);
 static VALUE
 gl_MultiTexCoord1d(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -63,7 +63,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord1f)(GLenum,GLfloat);
+static void (APIENTRY * fptr_glMultiTexCoord1f)(GLenum,GLfloat);
 static VALUE
 gl_MultiTexCoord1f(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -77,7 +77,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord1i)(GLenum,GLint);
+static void (APIENTRY * fptr_glMultiTexCoord1i)(GLenum,GLint);
 static VALUE
 gl_MultiTexCoord1i(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -91,7 +91,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord1s)(GLenum,GLshort);
+static void (APIENTRY * fptr_glMultiTexCoord1s)(GLenum,GLshort);
 static VALUE
 gl_MultiTexCoord1s(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -105,7 +105,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord2d)(GLenum,GLdouble,GLdouble);
+static void (APIENTRY * fptr_glMultiTexCoord2d)(GLenum,GLdouble,GLdouble);
 static VALUE
 gl_MultiTexCoord2d(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -121,7 +121,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord2f)(GLenum,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glMultiTexCoord2f)(GLenum,GLfloat,GLfloat);
 static VALUE
 gl_MultiTexCoord2f(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -137,7 +137,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord2i)(GLenum,GLint,GLint);
+static void (APIENTRY * fptr_glMultiTexCoord2i)(GLenum,GLint,GLint);
 static VALUE
 gl_MultiTexCoord2i(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -153,7 +153,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord2s)(GLenum,GLshort,GLshort);
+static void (APIENTRY * fptr_glMultiTexCoord2s)(GLenum,GLshort,GLshort);
 static VALUE
 gl_MultiTexCoord2s(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -169,7 +169,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord3d)(GLenum,GLdouble,GLdouble,GLdouble);
+static void (APIENTRY * fptr_glMultiTexCoord3d)(GLenum,GLdouble,GLdouble,GLdouble);
 static VALUE
 gl_MultiTexCoord3d(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -187,7 +187,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord3f)(GLenum,GLfloat,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glMultiTexCoord3f)(GLenum,GLfloat,GLfloat,GLfloat);
 static VALUE
 gl_MultiTexCoord3f(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -205,7 +205,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord3i)(GLenum,GLint,GLint,GLint);
+static void (APIENTRY * fptr_glMultiTexCoord3i)(GLenum,GLint,GLint,GLint);
 static VALUE
 gl_MultiTexCoord3i(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -223,7 +223,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord3s)(GLenum,GLshort,GLshort,GLshort);
+static void (APIENTRY * fptr_glMultiTexCoord3s)(GLenum,GLshort,GLshort,GLshort);
 static VALUE
 gl_MultiTexCoord3s(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -241,7 +241,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord4d)(GLenum,GLdouble,GLdouble,GLdouble,GLdouble);
+static void (APIENTRY * fptr_glMultiTexCoord4d)(GLenum,GLdouble,GLdouble,GLdouble,GLdouble);
 static VALUE
 gl_MultiTexCoord4d(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -261,7 +261,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord4f)(GLenum,GLfloat,GLfloat,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glMultiTexCoord4f)(GLenum,GLfloat,GLfloat,GLfloat,GLfloat);
 static VALUE
 gl_MultiTexCoord4f(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -281,7 +281,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord4i)(GLenum,GLint,GLint,GLint,GLint);
+static void (APIENTRY * fptr_glMultiTexCoord4i)(GLenum,GLint,GLint,GLint,GLint);
 static VALUE
 gl_MultiTexCoord4i(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -301,7 +301,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glMultiTexCoord4s)(GLenum,GLshort,GLshort,GLshort,GLshort);
+static void (APIENTRY * fptr_glMultiTexCoord4s)(GLenum,GLshort,GLshort,GLshort,GLshort);
 static VALUE
 gl_MultiTexCoord4s(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -380,7 +380,7 @@ GLMULTITEXCOORD_VFUNC(s)
 #undef GLTEXCOORD_VFUNC
 
 
-static void (*fptr_glLoadTransposeMatrixf)(const GLfloat[]);
+static void (APIENTRY * fptr_glLoadTransposeMatrixf)(const GLfloat[]);
 static VALUE
 gl_LoadTransposeMatrixf(obj,arg1)
 VALUE obj,arg1;
@@ -392,7 +392,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glLoadTransposeMatrixd)(const GLdouble[]);
+static void (APIENTRY * fptr_glLoadTransposeMatrixd)(const GLdouble[]);
 static VALUE
 gl_LoadTransposeMatrixd(obj,arg1)
 VALUE obj,arg1;
@@ -404,7 +404,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glMultTransposeMatrixf)(const GLfloat[]);
+static void (APIENTRY * fptr_glMultTransposeMatrixf)(const GLfloat[]);
 static VALUE
 gl_MultTransposeMatrixf(obj,arg1)
 VALUE obj,arg1;
@@ -416,7 +416,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glMultTransposeMatrixd)(const GLdouble[]);
+static void (APIENTRY * fptr_glMultTransposeMatrixd)(const GLdouble[]);
 static VALUE
 gl_MultTransposeMatrixd(obj,arg1)
 VALUE obj,arg1;
@@ -428,7 +428,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glSampleCoverage)(GLclampf,GLboolean);
+static void (APIENTRY * fptr_glSampleCoverage)(GLclampf,GLboolean);
 static VALUE
 gl_SampleCoverage(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -442,7 +442,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glCompressedTexImage3D)(GLenum,GLint,GLenum,GLsizei,GLsizei,GLsizei,GLint,GLsizei,GLvoid*);
+static void (APIENTRY * fptr_glCompressedTexImage3D)(GLenum,GLint,GLenum,GLsizei,GLsizei,GLsizei,GLint,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
@@ -479,7 +479,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	return Qnil;
 }
 
-static void (*fptr_glCompressedTexImage2D)(GLenum,GLint,GLenum,GLsizei,GLsizei,GLint,GLsizei,GLvoid*);
+static void (APIENTRY * fptr_glCompressedTexImage2D)(GLenum,GLint,GLenum,GLsizei,GLsizei,GLint,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexImage2D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
@@ -514,7 +514,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	return Qnil;
 }
 
-static void (*fptr_glCompressedTexImage1D)(GLenum,GLint,GLenum,GLsizei,GLint,GLsizei,GLvoid*);
+static void (APIENTRY * fptr_glCompressedTexImage1D)(GLenum,GLint,GLenum,GLsizei,GLint,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexImage1D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
@@ -547,7 +547,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	return Qnil;
 }
 
-static void (*fptr_glCompressedTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLsizei,GLvoid*);
+static void (APIENTRY * fptr_glCompressedTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexSubImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
@@ -586,7 +586,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	return Qnil;
 }
 
-static void (*fptr_glCompressedTexSubImage2D)(GLenum,GLint,GLint,GLint,GLsizei,GLsizei,GLenum,GLsizei,GLvoid*);
+static void (APIENTRY * fptr_glCompressedTexSubImage2D)(GLenum,GLint,GLint,GLint,GLsizei,GLsizei,GLenum,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexSubImage2D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
@@ -621,7 +621,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	return Qnil;
 }
 
-static void (*fptr_glCompressedTexSubImage1D)(GLenum,GLint,GLint,GLsizei,GLenum,GLsizei,GLvoid*);
+static void (APIENTRY * fptr_glCompressedTexSubImage1D)(GLenum,GLint,GLint,GLsizei,GLenum,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexSubImage1D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
@@ -652,7 +652,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	return Qnil;
 }
 
-static void (*fptr_glGetCompressedTexImage)(GLenum,GLint,GLvoid*);
+static void (APIENTRY * fptr_glGetCompressedTexImage)(GLenum,GLint,GLvoid*);
 static VALUE
 gl_GetCompressedTexImage(obj,arg1,arg2)
 VALUE obj,arg1,arg2;

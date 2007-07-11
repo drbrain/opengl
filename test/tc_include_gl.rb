@@ -16,7 +16,7 @@
 if __FILE__ == $0
     # If we are being called from the command line, e.g., ruby foo.rb, then
     # fixup the load path so we can find the OpenGL extension libs
-    $: << File.join(File.dirname(__FILE__), '..', 'ext')
+    $: << File.join(File.dirname(__FILE__), '..', 'lib')
 end
 
 require 'test/unit'

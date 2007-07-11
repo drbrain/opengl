@@ -23,7 +23,7 @@
 #endif
 #include "../common/common.h"
 
-static void (*fptr_glBlendEquationSeparate)(GLenum,GLenum);
+static void (APIENTRY * fptr_glBlendEquationSeparate)(GLenum,GLenum);
 static VALUE
 gl_BlendEquationSeparate(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -37,7 +37,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glDrawBuffers)(GLsizei,GLenum *);
+static void (APIENTRY * fptr_glDrawBuffers)(GLsizei,GLenum *);
 static VALUE
 gl_DrawBuffers(obj,arg1)
 VALUE obj,arg1;
@@ -54,7 +54,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glStencilOpSeparate)(GLenum,GLenum,GLenum,GLenum);
+static void (APIENTRY * fptr_glStencilOpSeparate)(GLenum,GLenum,GLenum,GLenum);
 static VALUE
 gl_StencilOpSeparate(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -72,7 +72,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glStencilFuncSeparate)(GLenum,GLenum,GLint,GLuint);
+static void (APIENTRY * fptr_glStencilFuncSeparate)(GLenum,GLenum,GLint,GLuint);
 static VALUE
 gl_StencilFuncSeparate(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -90,7 +90,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glStencilMaskSeparate)(GLenum face,GLuint mask);
+static void (APIENTRY * fptr_glStencilMaskSeparate)(GLenum face,GLuint mask);
 static VALUE
 gl_StencilMaskSeparate(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -104,7 +104,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glAttachShader)(GLuint,GLuint);
+static void (APIENTRY * fptr_glAttachShader)(GLuint,GLuint);
 static VALUE
 gl_AttachShader(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -118,7 +118,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glBindAttribLocation)(GLuint,GLuint,GLchar *);
+static void (APIENTRY * fptr_glBindAttribLocation)(GLuint,GLuint,GLchar *);
 static VALUE
 gl_BindAttribLocation(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -133,7 +133,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glCompileShader)(GLuint);
+static void (APIENTRY * fptr_glCompileShader)(GLuint);
 static VALUE
 gl_CompileShader(obj,arg1)
 VALUE obj,arg1;
@@ -145,7 +145,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static GLuint (*fptr_glCreateProgram)(void);
+static GLuint (APIENTRY * fptr_glCreateProgram)(void);
 static VALUE
 gl_CreateProgram(obj)
 VALUE obj;
@@ -156,7 +156,7 @@ VALUE obj;
 	return INT2NUM(ret);
 }
 
-static GLuint (*fptr_glCreateShader)(GLenum);
+static GLuint (APIENTRY * fptr_glCreateShader)(GLenum);
 static VALUE
 gl_CreateShader(obj,arg1)
 VALUE obj,arg1;
@@ -169,7 +169,7 @@ VALUE obj,arg1;
 	return INT2NUM(ret);
 }
 
-static void (*fptr_glDeleteProgram)(GLuint);
+static void (APIENTRY * fptr_glDeleteProgram)(GLuint);
 static VALUE
 gl_DeleteProgram(obj,arg1)
 VALUE obj,arg1;
@@ -181,7 +181,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glDeleteShader)(GLuint);
+static void (APIENTRY * fptr_glDeleteShader)(GLuint);
 static VALUE
 gl_DeleteShader(obj,arg1)
 VALUE obj,arg1;
@@ -193,7 +193,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glDetachShader)(GLuint,GLuint);
+static void (APIENTRY * fptr_glDetachShader)(GLuint,GLuint);
 static VALUE
 gl_DetachShader(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -207,7 +207,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glDisableVertexAttribArray)(GLuint);
+static void (APIENTRY * fptr_glDisableVertexAttribArray)(GLuint);
 static VALUE
 gl_DisableVertexAttribArray(obj,arg1)
 VALUE obj,arg1;
@@ -219,7 +219,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glEnableVertexAttribArray)(GLuint);
+static void (APIENTRY * fptr_glEnableVertexAttribArray)(GLuint);
 static VALUE
 gl_EnableVertexAttribArray(obj,arg1)
 VALUE obj,arg1;
@@ -231,7 +231,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glGetProgramiv)(GLuint,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetProgramiv)(GLuint,GLenum,GLint *);
 static VALUE
 gl_GetProgramiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -246,7 +246,7 @@ VALUE obj,arg1,arg2;
 	return INT2NUM(params);
 }
 
-static void (*fptr_glGetActiveAttrib)(GLuint,GLuint,GLsizei,GLsizei *,GLint *,GLenum *,GLchar *);
+static void (APIENTRY * fptr_glGetActiveAttrib)(GLuint,GLuint,GLsizei,GLsizei *,GLint *,GLenum *,GLchar *);
 static VALUE
 gl_GetActiveAttrib(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -275,7 +275,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetActiveUniform)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
+static void (APIENTRY * fptr_glGetActiveUniform)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
 static VALUE
 gl_GetActiveUniform(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
@@ -304,7 +304,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	return retary;
 }
 
-static void (*fptr_glGetAttachedShaders)(GLuint,GLsizei,GLsizei *,GLuint *);
+static void (APIENTRY * fptr_glGetAttachedShaders)(GLuint,GLsizei,GLsizei *,GLuint *);
 static VALUE
 gl_GetAttachedShaders(obj,arg1)
 VALUE obj,arg1;
@@ -330,7 +330,7 @@ VALUE obj,arg1;
 	return retary;
 }
 
-static GLint (*fptr_glGetAttribLocation)(GLuint, GLchar *);
+static GLint (APIENTRY * fptr_glGetAttribLocation)(GLuint, GLchar *);
 static VALUE
 gl_GetAttribLocation(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -344,7 +344,7 @@ VALUE obj,arg1,arg2;
 	return INT2NUM(ret);
 }
 
-static void (*fptr_glGetProgramInfoLog)(GLuint,GLsizei,GLsizei *,GLchar *);
+static void (APIENTRY * fptr_glGetProgramInfoLog)(GLuint,GLsizei,GLsizei *,GLchar *);
 static VALUE
 gl_GetProgramInfoLog(obj,arg1)
 VALUE obj,arg1;
@@ -363,7 +363,7 @@ VALUE obj,arg1;
 	return buffer;
 }
 
-static void (*fptr_glGetShaderiv)(GLuint,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetShaderiv)(GLuint,GLenum,GLint *);
 static VALUE
 gl_GetShaderiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -378,7 +378,7 @@ VALUE obj,arg1,arg2;
 	return INT2NUM(params);
 }
 
-static void (*fptr_glGetShaderInfoLog)(GLuint,GLsizei,GLsizei *,GLchar *);
+static void (APIENTRY * fptr_glGetShaderInfoLog)(GLuint,GLsizei,GLsizei *,GLchar *);
 static VALUE
 gl_GetShaderInfoLog(obj,arg1)
 VALUE obj,arg1;
@@ -402,7 +402,7 @@ VALUE obj,arg1;
 	return ret_buffer;
 }
 
-static void (*fptr_glGetShaderSource)(GLuint,GLsizei,GLsizei *,GLchar *);
+static void (APIENTRY * fptr_glGetShaderSource)(GLuint,GLsizei,GLsizei *,GLchar *);
 static VALUE
 gl_GetShaderSource(obj,arg1)
 VALUE obj,arg1;
@@ -422,7 +422,7 @@ VALUE obj,arg1;
 	return buffer;
 }
 
-static GLint (*fptr_glGetUniformLocation)(GLuint,const GLchar*);
+static GLint (APIENTRY * fptr_glGetUniformLocation)(GLuint,const GLchar*);
 static VALUE
 gl_GetUniformLocation(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -488,7 +488,7 @@ VALUE obj,arg1,arg2;
 			rb_raise(rb_eTypeError, "Unsupported type '%i'",uniform_type); \
 	}
 
-static void (*fptr_glGetUniformfv)(GLuint,GLint,GLfloat *);
+static void (APIENTRY * fptr_glGetUniformfv)(GLuint,GLint,GLfloat *);
 static VALUE
 gl_GetUniformfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -521,7 +521,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetUniformiv)(GLuint,GLint,GLint *);
+static void (APIENTRY * fptr_glGetUniformiv)(GLuint,GLint,GLint *);
 static VALUE
 gl_GetUniformiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -553,7 +553,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetVertexAttribdv)(GLuint,GLenum,GLdouble *);
+static void (APIENTRY * fptr_glGetVertexAttribdv)(GLuint,GLenum,GLdouble *);
 static VALUE
 gl_GetVertexAttribdv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -578,7 +578,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetVertexAttribfv)(GLuint,GLenum,GLfloat *);
+static void (APIENTRY * fptr_glGetVertexAttribfv)(GLuint,GLenum,GLfloat *);
 static VALUE
 gl_GetVertexAttribfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -603,7 +603,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetVertexAttribiv)(GLuint,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetVertexAttribiv)(GLuint,GLenum,GLint *);
 static VALUE
 gl_GetVertexAttribiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -631,7 +631,7 @@ VALUE obj,arg1,arg2;
 #define _MAX_VERTEX_ATTRIBS 64 /* at least GL_MAX_VERTEX_ATTRIBS - usually 16 or 32 on today's high-end cards */
 static VALUE g_VertexAttrib_ptr[_MAX_VERTEX_ATTRIBS];
 
-static void (*fptr_glGetVertexAttribPointerv)(GLuint,GLenum,GLvoid **);
+static void (APIENTRY * fptr_glGetVertexAttribPointerv)(GLuint,GLenum,GLvoid **);
 static VALUE
 gl_GetVertexAttribPointerv(obj,arg1)
 VALUE obj,arg1;
@@ -645,7 +645,7 @@ VALUE obj,arg1;
 	return g_VertexAttrib_ptr[index];
 }
 
-static GLboolean (*fptr_glIsProgram)(GLuint);
+static GLboolean (APIENTRY * fptr_glIsProgram)(GLuint);
 static VALUE
 gl_IsProgram(obj,arg1)
 VALUE obj,arg1;
@@ -658,7 +658,7 @@ VALUE obj,arg1;
 	return INT2NUM(ret);
 }
 
-static GLboolean (*fptr_glIsShader)(GLuint);
+static GLboolean (APIENTRY * fptr_glIsShader)(GLuint);
 static VALUE
 gl_IsShader(obj,arg1)
 VALUE obj,arg1;
@@ -671,7 +671,7 @@ VALUE obj,arg1;
 	return INT2NUM(ret);
 }
 
-static void (*fptr_glLinkProgram)(GLuint);
+static void (APIENTRY * fptr_glLinkProgram)(GLuint);
 static VALUE
 gl_LinkProgram(obj,arg1)
 VALUE obj,arg1;
@@ -683,45 +683,24 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glShaderSource)(GLuint,GLsizei,GLchar**,GLint *);
+static void (APIENTRY * fptr_glShaderSource)(GLuint,GLsizei,GLchar**,GLint *);
 static VALUE
 gl_ShaderSource(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	GLuint shader;
+	GLint length;
+	GLchar *str;
 	LOAD_GL_FUNC(glShaderSource)
 	shader = (GLuint)NUM2UINT(arg1);
-	if (TYPE(arg2)==T_ARRAY) {
-		GLint len;
-		GLint i;
-		RArray *ary;
-		GLint *str_lengths;
-		GLchar **str_ptrs;
-		ary = RARRAY(arg2);
-		len = ary->len;
-		str_lengths = ALLOC_N(GLint,len);
-		str_ptrs = ALLOC_N(GLchar*,len);
-		for (i=0;i<len;i++) {
-			str_lengths[i] = RSTRING(ary->ptr[i])->len;
-			str_ptrs[i] = RSTRING(ary->ptr[i])->ptr;			
-		}
-		fptr_glShaderSource(shader,len,str_ptrs,str_lengths);		
-		xfree(str_lengths);
-		xfree(str_ptrs);
-	} else if (TYPE(arg2)==T_STRING) { /* single string */
-		GLchar *ptr;
-		GLint len;
-		ptr = RSTRING(arg2)->ptr;
-		len = RSTRING(arg2)->len;
-		fptr_glShaderSource(shader,1,&ptr,&len);
-	} else {
-		Check_Type(arg2,T_STRING); /* force exception */		
-	}
-	
+	Check_Type(arg2,T_STRING);
+	str = RSTRING(arg2)->ptr;
+	length = RSTRING(arg2)->len;
+	fptr_glShaderSource(shader,1,&str,&length);
 	return Qnil;
 }
 
-static void (*fptr_glUseProgram)(GLuint);
+static void (APIENTRY * fptr_glUseProgram)(GLuint);
 static VALUE
 gl_UseProgram(obj,arg1)
 VALUE obj,arg1;
@@ -733,7 +712,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glUniform1f)(GLint,GLfloat);
+static void (APIENTRY * fptr_glUniform1f)(GLint,GLfloat);
 static VALUE
 gl_Uniform1f(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -747,7 +726,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glUniform2f)(GLint,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glUniform2f)(GLint,GLfloat,GLfloat);
 static VALUE
 gl_Uniform2f(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -763,7 +742,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glUniform3f)(GLint,GLfloat,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glUniform3f)(GLint,GLfloat,GLfloat,GLfloat);
 static VALUE
 gl_Uniform3f(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -781,7 +760,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniform4f)(GLint,GLfloat,GLfloat,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glUniform4f)(GLint,GLfloat,GLfloat,GLfloat,GLfloat);
 static VALUE
 gl_Uniform4f(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -801,7 +780,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glUniform1i)(GLint,GLint);
+static void (APIENTRY * fptr_glUniform1i)(GLint,GLint);
 static VALUE
 gl_Uniform1i(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -815,7 +794,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glUniform2i)(GLint,GLint,GLint);
+static void (APIENTRY * fptr_glUniform2i)(GLint,GLint,GLint);
 static VALUE
 gl_Uniform2i(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -831,7 +810,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glUniform3i)(GLint,GLint,GLint,GLint);
+static void (APIENTRY * fptr_glUniform3i)(GLint,GLint,GLint,GLint);
 static VALUE
 gl_Uniform3i(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -849,7 +828,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniform4i)(GLint,GLint,GLint,GLint,GLint);
+static void (APIENTRY * fptr_glUniform4i)(GLint,GLint,GLint,GLint,GLint);
 static VALUE
 gl_Uniform4i(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -869,7 +848,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glUniform1fv)(GLint,GLsizei,GLfloat *);
+static void (APIENTRY * fptr_glUniform1fv)(GLint,GLsizei,GLfloat *);
 static VALUE
 gl_Uniform1fv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -883,11 +862,11 @@ VALUE obj,arg1,arg2,arg3;
 	value = ALLOC_N(GLfloat,1*count);
 	ary2cflt(arg3,value,1*count);
 	fptr_glUniform1fv(location,count,value);
-	free(value);
+	xfree(value);
 	return Qnil;
 }
 
-static void (*fptr_glUniform2fv)(GLint,GLsizei,GLfloat *);
+static void (APIENTRY * fptr_glUniform2fv)(GLint,GLsizei,GLfloat *);
 static VALUE
 gl_Uniform2fv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -901,11 +880,11 @@ VALUE obj,arg1,arg2,arg3;
 	value = ALLOC_N(GLfloat,2*count);
 	ary2cflt(arg3,value,2*count);
 	fptr_glUniform2fv(location,count,value);
-	free(value);
+	xfree(value);
 	return Qnil;
 }
 
-static void (*fptr_glUniform3fv)(GLint,GLsizei,GLfloat *);
+static void (APIENTRY * fptr_glUniform3fv)(GLint,GLsizei,GLfloat *);
 static VALUE
 gl_Uniform3fv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -919,11 +898,11 @@ VALUE obj,arg1,arg2,arg3;
 	value = ALLOC_N(GLfloat,3*count);
 	ary2cflt(arg3,value,3*count);
 	fptr_glUniform3fv(location,count,value);
-	free(value);
+	xfree(value);
 	return Qnil;
 }
 
-static void (*fptr_glUniform4fv)(GLint,GLsizei,GLfloat *);
+static void (APIENTRY * fptr_glUniform4fv)(GLint,GLsizei,GLfloat *);
 static VALUE
 gl_Uniform4fv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -937,11 +916,11 @@ VALUE obj,arg1,arg2,arg3;
 	value = ALLOC_N(GLfloat,4*count);
 	ary2cflt(arg3,value,4*count);
 	fptr_glUniform4fv(location,count,value);
-	free(value);
+	xfree(value);
 	return Qnil;
 }
 
-static void (*fptr_glUniform1iv)(GLint,GLsizei,GLint *);
+static void (APIENTRY * fptr_glUniform1iv)(GLint,GLsizei,GLint *);
 static VALUE
 gl_Uniform1iv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -955,11 +934,11 @@ VALUE obj,arg1,arg2,arg3;
 	value = ALLOC_N(GLint,1*count);
 	ary2cint(arg3,value,1*count);
 	fptr_glUniform1iv(location,count,value);
-	free(value);
+	xfree(value);
 	return Qnil;
 }
 
-static void (*fptr_glUniform2iv)(GLint,GLsizei,GLint *);
+static void (APIENTRY * fptr_glUniform2iv)(GLint,GLsizei,GLint *);
 static VALUE
 gl_Uniform2iv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -973,11 +952,11 @@ VALUE obj,arg1,arg2,arg3;
 	value = ALLOC_N(GLint,2*count);
 	ary2cint(arg3,value,2*count);
 	fptr_glUniform2iv(location,count,value);
-	free(value);
+	xfree(value);
 	return Qnil;
 }
 
-static void (*fptr_glUniform3iv)(GLint,GLsizei,GLint *);
+static void (APIENTRY * fptr_glUniform3iv)(GLint,GLsizei,GLint *);
 static VALUE
 gl_Uniform3iv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -991,11 +970,11 @@ VALUE obj,arg1,arg2,arg3;
 	value = ALLOC_N(GLint,3*count);
 	ary2cint(arg3,value,3*count);
 	fptr_glUniform3iv(location,count,value);
-	free(value);
+	xfree(value);
 	return Qnil;
 }
 
-static void (*fptr_glUniform4iv)(GLint,GLsizei,GLint *);
+static void (APIENTRY * fptr_glUniform4iv)(GLint,GLsizei,GLint *);
 static VALUE
 gl_Uniform4iv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -1009,11 +988,11 @@ VALUE obj,arg1,arg2,arg3;
 	value = ALLOC_N(GLint,4*count);
 	ary2cint(arg3,value,4*count);
 	fptr_glUniform4iv(location,count,value);
-	free(value);
+	xfree(value);
 	return Qnil;
 }
 
-static void (*fptr_glUniformMatrix2fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix2fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix2fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -1033,7 +1012,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniformMatrix3fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix3fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix3fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -1053,7 +1032,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glUniformMatrix4fv)(GLint,GLsizei,GLboolean,GLfloat *);
+static void (APIENTRY * fptr_glUniformMatrix4fv)(GLint,GLsizei,GLboolean,GLfloat *);
 static VALUE
 gl_UniformMatrix4fv(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -1073,7 +1052,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glValidateProgram)(GLuint);
+static void (APIENTRY * fptr_glValidateProgram)(GLuint);
 static VALUE
 gl_ValidateProgram(obj,arg1)
 VALUE obj,arg1;
@@ -1085,7 +1064,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib1d)(GLuint,GLdouble);
+static void (APIENTRY * fptr_glVertexAttrib1d)(GLuint,GLdouble);
 static VALUE
 gl_VertexAttrib1d(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1099,7 +1078,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib1f)(GLuint,GLfloat);
+static void (APIENTRY * fptr_glVertexAttrib1f)(GLuint,GLfloat);
 static VALUE
 gl_VertexAttrib1f(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1113,7 +1092,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib1s)(GLuint,GLshort);
+static void (APIENTRY * fptr_glVertexAttrib1s)(GLuint,GLshort);
 static VALUE
 gl_VertexAttrib1s(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1127,7 +1106,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib2d)(GLuint,GLdouble,GLdouble);
+static void (APIENTRY * fptr_glVertexAttrib2d)(GLuint,GLdouble,GLdouble);
 static VALUE
 gl_VertexAttrib2d(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -1143,7 +1122,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib2f)(GLuint,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glVertexAttrib2f)(GLuint,GLfloat,GLfloat);
 static VALUE
 gl_VertexAttrib2f(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -1159,7 +1138,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib2s)(GLuint,GLshort,GLshort);
+static void (APIENTRY * fptr_glVertexAttrib2s)(GLuint,GLshort,GLshort);
 static VALUE
 gl_VertexAttrib2s(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -1175,7 +1154,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib3d)(GLuint,GLdouble,GLdouble,GLdouble);
+static void (APIENTRY * fptr_glVertexAttrib3d)(GLuint,GLdouble,GLdouble,GLdouble);
 static VALUE
 gl_VertexAttrib3d(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -1193,7 +1172,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib3f)(GLuint,GLfloat,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glVertexAttrib3f)(GLuint,GLfloat,GLfloat,GLfloat);
 static VALUE
 gl_VertexAttrib3f(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -1211,7 +1190,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib3s)(GLuint,GLshort,GLshort,GLshort);
+static void (APIENTRY * fptr_glVertexAttrib3s)(GLuint,GLshort,GLshort,GLshort);
 static VALUE
 gl_VertexAttrib3s(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -1229,7 +1208,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4Nbv)(GLuint,GLbyte *);
+static void (APIENTRY * fptr_glVertexAttrib4Nbv)(GLuint,GLbyte *);
 static VALUE
 gl_VertexAttrib4Nbv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1243,7 +1222,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4Niv)(GLuint,GLint *);
+static void (APIENTRY * fptr_glVertexAttrib4Niv)(GLuint,GLint *);
 static VALUE
 gl_VertexAttrib4Niv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1257,7 +1236,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4Nsv)(GLuint,GLshort *);
+static void (APIENTRY * fptr_glVertexAttrib4Nsv)(GLuint,GLshort *);
 static VALUE
 gl_VertexAttrib4Nsv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1271,7 +1250,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4Nub)(GLuint,GLubyte,GLubyte,GLubyte,GLubyte);
+static void (APIENTRY * fptr_glVertexAttrib4Nub)(GLuint,GLubyte,GLubyte,GLubyte,GLubyte);
 static VALUE
 gl_VertexAttrib4Nub(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -1291,7 +1270,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4Nubv)(GLuint,GLubyte *);
+static void (APIENTRY * fptr_glVertexAttrib4Nubv)(GLuint,GLubyte *);
 static VALUE
 gl_VertexAttrib4Nubv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1305,7 +1284,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4Nuiv)(GLuint,GLuint *);
+static void (APIENTRY * fptr_glVertexAttrib4Nuiv)(GLuint,GLuint *);
 static VALUE
 gl_VertexAttrib4Nuiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1319,7 +1298,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4Nusv)(GLuint,GLushort *);
+static void (APIENTRY * fptr_glVertexAttrib4Nusv)(GLuint,GLushort *);
 static VALUE
 gl_VertexAttrib4Nusv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1333,7 +1312,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4bv)(GLuint,GLbyte *);
+static void (APIENTRY * fptr_glVertexAttrib4bv)(GLuint,GLbyte *);
 static VALUE
 gl_VertexAttrib4bv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1347,7 +1326,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4d)(GLuint,GLdouble,GLdouble,GLdouble,GLdouble);
+static void (APIENTRY * fptr_glVertexAttrib4d)(GLuint,GLdouble,GLdouble,GLdouble,GLdouble);
 static VALUE
 gl_VertexAttrib4d(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -1367,7 +1346,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4f)(GLuint,GLfloat,GLfloat,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glVertexAttrib4f)(GLuint,GLfloat,GLfloat,GLfloat,GLfloat);
 static VALUE
 gl_VertexAttrib4f(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -1387,7 +1366,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4iv)(GLuint,GLint *);
+static void (APIENTRY * fptr_glVertexAttrib4iv)(GLuint,GLint *);
 static VALUE
 gl_VertexAttrib4iv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1401,7 +1380,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4s)(GLuint,GLshort,GLshort,GLshort,GLshort);
+static void (APIENTRY * fptr_glVertexAttrib4s)(GLuint,GLshort,GLshort,GLshort,GLshort);
 static VALUE
 gl_VertexAttrib4s(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -1421,7 +1400,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4ubv)(GLuint,GLubyte *);
+static void (APIENTRY * fptr_glVertexAttrib4ubv)(GLuint,GLubyte *);
 static VALUE
 gl_VertexAttrib4ubv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1435,7 +1414,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4uiv)(GLuint,GLuint *);
+static void (APIENTRY * fptr_glVertexAttrib4uiv)(GLuint,GLuint *);
 static VALUE
 gl_VertexAttrib4uiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1449,7 +1428,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glVertexAttrib4usv)(GLuint,GLushort *);
+static void (APIENTRY * fptr_glVertexAttrib4usv)(GLuint,GLushort *);
 static VALUE
 gl_VertexAttrib4usv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1520,7 +1499,7 @@ GLVERTEXATTRIB_VFUNC(s)
 
 #undef GLVERTEXATTRIB_VFUNC
 
-static void (*fptr_glVertexAttribPointer)(GLuint,GLint,GLenum,GLboolean,GLsizei,GLvoid *);
+static void (APIENTRY * fptr_glVertexAttribPointer)(GLuint,GLint,GLenum,GLboolean,GLsizei,GLvoid *);
 static VALUE
 gl_VertexAttribPointer(obj,arg1,arg2,arg3,arg4,arg5,arg6)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;

@@ -27,7 +27,7 @@
 
 /* OpenGL 1.2 functions */
 
-static void (*fptr_glBlendColor)(GLclampf,GLclampf,GLclampf,GLclampf);
+static void (APIENTRY * fptr_glBlendColor)(GLclampf,GLclampf,GLclampf,GLclampf);
 static VALUE
 gl_BlendColor(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -45,7 +45,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glBlendEquation)(GLenum);
+static void (APIENTRY * fptr_glBlendEquation)(GLenum);
 static VALUE
 gl_BlendEquation(obj,arg1)
 VALUE obj,arg1;
@@ -57,7 +57,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glDrawRangeElements)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
+static void (APIENTRY * fptr_glDrawRangeElements)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
 static VALUE
 gl_DrawRangeElements(obj,arg1,arg2,arg3,arg4,arg5,arg6)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
@@ -78,7 +78,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	return Qnil;
 }
 
-static void (*fptr_glColorTable)(GLenum,GLenum,GLsizei,GLenum,GLenum,GLvoid*);
+static void (APIENTRY * fptr_glColorTable)(GLenum,GLenum,GLsizei,GLenum,GLenum,GLvoid*);
 static VALUE
 gl_ColorTable(obj,arg1,arg2,arg3,arg4,arg5,arg6)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
@@ -109,7 +109,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	return Qnil;
 }
 
-static void (*fptr_glColorTableParameterfv)(GLenum,GLenum,const GLfloat*);
+static void (APIENTRY * fptr_glColorTableParameterfv)(GLenum,GLenum,const GLfloat*);
 static VALUE
 gl_ColorTableParameterfv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -126,7 +126,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glColorTableParameteriv)(GLenum,GLenum,const GLint*);
+static void (APIENTRY * fptr_glColorTableParameteriv)(GLenum,GLenum,const GLint*);
 static VALUE
 gl_ColorTableParameteriv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -143,7 +143,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glCopyColorTable)(GLenum,GLenum,GLint,GLint,GLsizei);
+static void (APIENTRY * fptr_glCopyColorTable)(GLenum,GLenum,GLint,GLint,GLsizei);
 static VALUE
 gl_CopyColorTable(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -163,7 +163,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glGetColorTableParameterfv)(GLenum,GLenum,GLfloat *);
+static void (APIENTRY * fptr_glGetColorTableParameterfv)(GLenum,GLenum,GLfloat *);
 static VALUE
 gl_GetColorTableParameterfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -193,7 +193,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetColorTableParameteriv)(GLenum,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetColorTableParameteriv)(GLenum,GLenum,GLint *);
 static VALUE
 gl_GetColorTableParameteriv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -223,7 +223,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetColorTable)(GLenum,GLenum,GLenum,GLvoid *);
+static void (APIENTRY * fptr_glGetColorTable)(GLenum,GLenum,GLenum,GLvoid *);
 static VALUE
 gl_GetColorTable(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -257,7 +257,7 @@ VALUE obj,arg1,arg2,arg3;
 	return data;
 }
 
-static void (*fptr_glColorSubTable)(GLenum,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *data);
+static void (APIENTRY * fptr_glColorSubTable)(GLenum,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *data);
 static VALUE
 gl_ColorSubTable(obj,arg1,arg2,arg3,arg4,arg5,arg6)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
@@ -288,7 +288,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	return Qnil;
 }
 
-static void (*fptr_glCopyColorSubTable)(GLenum,GLsizei,GLint,GLint,GLsizei);
+static void (APIENTRY * fptr_glCopyColorSubTable)(GLenum,GLsizei,GLint,GLint,GLsizei);
 static VALUE
 gl_CopyColorSubTable(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -308,7 +308,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glConvolutionFilter1D)(GLenum,GLenum,GLsizei,GLenum,GLenum,const GLvoid *);
+static void (APIENTRY * fptr_glConvolutionFilter1D)(GLenum,GLenum,GLsizei,GLenum,GLenum,const GLvoid *);
 static VALUE
 gl_ConvolutionFilter1D(obj,arg1,arg2,arg3,arg4,arg5,arg6)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
@@ -342,7 +342,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	return Qnil;
 }
 
-static void (*fptr_glConvolutionFilter2D)(GLenum,GLenum,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *);
+static void (APIENTRY * fptr_glConvolutionFilter2D)(GLenum,GLenum,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *);
 static VALUE
 gl_ConvolutionFilter2D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
@@ -378,7 +378,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	return Qnil;
 }
 
-static void (*fptr_glConvolutionParameterf)(GLenum,GLenum,GLfloat);
+static void (APIENTRY * fptr_glConvolutionParameterf)(GLenum,GLenum,GLfloat);
 static VALUE
 gl_ConvolutionParameterf(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -394,7 +394,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glConvolutionParameterfv)(GLenum,GLenum,const GLfloat *);
+static void (APIENTRY * fptr_glConvolutionParameterfv)(GLenum,GLenum,const GLfloat *);
 static VALUE
 gl_ConvolutionParameterfv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -411,7 +411,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glConvolutionParameteri)(GLenum,GLenum,GLint);
+static void (APIENTRY * fptr_glConvolutionParameteri)(GLenum,GLenum,GLint);
 static VALUE
 gl_ConvolutionParameteri(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -427,7 +427,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glConvolutionParameteriv)(GLenum,GLenum,const GLint *);
+static void (APIENTRY * fptr_glConvolutionParameteriv)(GLenum,GLenum,const GLint *);
 static VALUE
 gl_ConvolutionParameteriv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -444,7 +444,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glCopyConvolutionFilter1D)(GLenum,GLenum,GLint,GLint,GLsizei);
+static void (APIENTRY * fptr_glCopyConvolutionFilter1D)(GLenum,GLenum,GLint,GLint,GLsizei);
 static VALUE
 gl_CopyConvolutionFilter1D(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
@@ -464,7 +464,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	return Qnil;
 }
 
-static void (*fptr_glCopyConvolutionFilter2D)(GLenum,GLenum,GLint,GLint,GLsizei,GLsizei);
+static void (APIENTRY * fptr_glCopyConvolutionFilter2D)(GLenum,GLenum,GLint,GLint,GLsizei,GLsizei);
 static VALUE
 gl_CopyConvolutionFilter2D(obj,arg1,arg2,arg3,arg4,arg5,arg6)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
@@ -486,7 +486,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	return Qnil;
 }
 
-static void (*fptr_glGetConvolutionParameterfv)(GLenum,GLenum,GLfloat *);
+static void (APIENTRY * fptr_glGetConvolutionParameterfv)(GLenum,GLenum,GLfloat *);
 static VALUE
 gl_GetConvolutionParameterfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -517,7 +517,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetConvolutionParameteriv)(GLenum,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetConvolutionParameteriv)(GLenum,GLenum,GLint *);
 static VALUE
 gl_GetConvolutionParameteriv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -548,7 +548,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetConvolutionFilter)(GLenum,GLenum,GLenum,GLvoid *);
+static void (APIENTRY * fptr_glGetConvolutionFilter)(GLenum,GLenum,GLenum,GLvoid *);
 static VALUE
 gl_GetConvolutionFilter(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -588,7 +588,7 @@ VALUE obj,arg1,arg2,arg3;
 	return data;
 }
 
-static void (*fptr_glGetSeparableFilter)(GLenum,GLenum,GLenum,GLvoid*,GLvoid*,GLvoid*);
+static void (APIENTRY * fptr_glGetSeparableFilter)(GLenum,GLenum,GLenum,GLvoid*,GLvoid*,GLvoid*);
 static VALUE
 gl_GetSeparableFilter(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -632,7 +632,7 @@ VALUE obj,arg1,arg2,arg3;
 	return retary;
 }
 
-static void (*fptr_glSeparableFilter2D)(GLenum,GLenum,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *,const GLvoid *);
+static void (APIENTRY * fptr_glSeparableFilter2D)(GLenum,GLenum,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *,const GLvoid *);
 static VALUE
 gl_SeparableFilter2D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
@@ -676,7 +676,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	return Qnil;
 }
 
-static void (*fptr_glGetHistogramParameterfv)(GLenum,GLenum,GLfloat *);
+static void (APIENTRY * fptr_glGetHistogramParameterfv)(GLenum,GLenum,GLfloat *);
 static VALUE
 gl_GetHistogramParameterfv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -694,7 +694,7 @@ VALUE obj,arg1,arg2,arg3;
 	return retary;
 }
 
-static void (*fptr_glGetHistogramParameteriv)(GLenum,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetHistogramParameteriv)(GLenum,GLenum,GLint *);
 static VALUE
 gl_GetHistogramParameteriv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -712,7 +712,7 @@ VALUE obj,arg1,arg2,arg3;
 	return retary;
 }
 
-static void (*fptr_glGetHistogram)(GLenum,GLboolean,GLenum,GLenum,GLvoid*);
+static void (APIENTRY * fptr_glGetHistogram)(GLenum,GLboolean,GLenum,GLenum,GLvoid*);
 static VALUE
 gl_GetHistogram(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -747,7 +747,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return data;
 }
 
-static void (*fptr_glGetMinmax)(GLenum,GLboolean,GLenum,GLenum,GLvoid *);
+static void (APIENTRY * fptr_glGetMinmax)(GLenum,GLboolean,GLenum,GLenum,GLvoid *);
 static VALUE
 gl_GetMinmax(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -780,7 +780,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return data;
 }
 
-static void (*fptr_glGetMinmaxParameterfv)(GLenum,GLenum,GLfloat *);
+static void (APIENTRY * fptr_glGetMinmaxParameterfv)(GLenum,GLenum,GLfloat *);
 static VALUE
 gl_GetMinmaxParameterfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -798,7 +798,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glGetMinmaxParameteriv)(GLenum,GLenum,GLint *);
+static void (APIENTRY * fptr_glGetMinmaxParameteriv)(GLenum,GLenum,GLint *);
 static VALUE
 gl_GetMinmaxParameteriv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -816,7 +816,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (*fptr_glHistogram)(GLenum,GLsizei,GLenum,GLboolean);
+static void (APIENTRY * fptr_glHistogram)(GLenum,GLsizei,GLenum,GLboolean);
 static VALUE
 gl_Histogram(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -834,7 +834,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glMinmax)(GLenum,GLenum,GLboolean);
+static void (APIENTRY * fptr_glMinmax)(GLenum,GLenum,GLboolean);
 static VALUE
 gl_Minmax(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -850,7 +850,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glResetHistogram)(GLenum);
+static void (APIENTRY * fptr_glResetHistogram)(GLenum);
 static VALUE
 gl_ResetHistogram(obj,arg1)
 VALUE obj,arg1;
@@ -862,7 +862,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glResetMinmax)(GLenum);
+static void (APIENTRY * fptr_glResetMinmax)(GLenum);
 static VALUE
 gl_ResetMinmax(obj,arg1)
 VALUE obj,arg1;
@@ -874,7 +874,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glTexImage3D)(GLenum,GLint,GLint,GLsizei,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*);
+static void (APIENTRY * fptr_glTexImage3D)(GLenum,GLint,GLint,GLsizei,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*);
 static VALUE
 gl_TexImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
@@ -931,7 +931,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	return Qnil;
 }
 
-static void (*fptr_glTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLenum,const GLvoid*);
+static void (APIENTRY * fptr_glTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLenum,const GLvoid*);
 static VALUE
 gl_TexSubImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
 VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
@@ -988,7 +988,7 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	return Qnil;
 }
 
-static void (*fptr_glCopyTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLint,GLint,GLsizei,GLsizei);
+static void (APIENTRY * fptr_glCopyTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLint,GLint,GLsizei,GLsizei);
 static VALUE
 gl_CopyTexSubImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;

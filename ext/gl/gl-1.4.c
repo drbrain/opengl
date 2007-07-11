@@ -25,7 +25,7 @@
 
 /* OpenGL 1.4 functions */
 
-static void (*fptr_glBlendFuncSeparate)(GLenum,GLenum,GLenum,GLenum);
+static void (APIENTRY * fptr_glBlendFuncSeparate)(GLenum,GLenum,GLenum,GLenum);
 static VALUE
 gl_BlendFuncSeparate(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -43,7 +43,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glFogCoordf)(GLfloat);
+static void (APIENTRY * fptr_glFogCoordf)(GLfloat);
 static VALUE
 gl_FogCoordf(obj,arg1)
 VALUE obj,arg1;
@@ -55,7 +55,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glFogCoordfv)(GLfloat *);
+static void (APIENTRY * fptr_glFogCoordfv)(GLfloat *);
 static VALUE
 gl_FogCoordfv(obj,arg1)
 VALUE obj,arg1;
@@ -68,7 +68,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glFogCoordd)(GLdouble);
+static void (APIENTRY * fptr_glFogCoordd)(GLdouble);
 static VALUE
 gl_FogCoordd(obj,arg1)
 VALUE obj,arg1;
@@ -80,7 +80,7 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (*fptr_glFogCoorddv)(GLdouble *);
+static void (APIENTRY * fptr_glFogCoorddv)(GLdouble *);
 static VALUE
 gl_FogCoorddv(obj,arg1)
 VALUE obj,arg1;
@@ -94,7 +94,7 @@ VALUE obj,arg1;
 }
 
 extern VALUE g_FogCoord_ptr;
-static void (*fptr_glFogCoordPointer)(GLenum,GLsizei,const GLvoid *);
+static void (APIENTRY * fptr_glFogCoordPointer)(GLenum,GLsizei,const GLvoid *);
 static VALUE
 gl_FogCoordPointer(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -111,7 +111,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glMultiDrawArrays)(GLenum,GLint*,GLsizei*,GLsizei);
+static void (APIENTRY * fptr_glMultiDrawArrays)(GLenum,GLint*,GLsizei*,GLsizei);
 static VALUE
 gl_MultiDrawArrays(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -135,7 +135,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glMultiDrawElements)(GLenum,const GLsizei *,GLenum,GLvoid **,GLsizei);
+static void (APIENTRY * fptr_glMultiDrawElements)(GLenum,const GLsizei *,GLenum,GLvoid **,GLsizei);
 static VALUE
 gl_MultiDrawElements(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -165,7 +165,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glPointParameterf)(GLenum,GLfloat);
+static void (APIENTRY * fptr_glPointParameterf)(GLenum,GLfloat);
 static VALUE
 gl_PointParameterf(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -179,7 +179,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glPointParameterfv)(GLenum,GLfloat *);
+static void (APIENTRY * fptr_glPointParameterfv)(GLenum,GLfloat *);
 static VALUE
 gl_PointParameterfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -199,7 +199,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glPointParameteri)(GLenum,GLint);
+static void (APIENTRY * fptr_glPointParameteri)(GLenum,GLint);
 static VALUE
 gl_PointParameteri(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -213,7 +213,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glPointParameteriv)(GLenum,GLint *);
+static void (APIENTRY * fptr_glPointParameteriv)(GLenum,GLint *);
 static VALUE
 gl_PointParameteriv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -233,7 +233,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glSecondaryColor3b)(GLbyte,GLbyte,GLbyte);
+static void (APIENTRY * fptr_glSecondaryColor3b)(GLbyte,GLbyte,GLbyte);
 static VALUE
 gl_SecondaryColor3b(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -249,7 +249,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glSecondaryColor3d)(GLdouble,GLdouble,GLdouble);
+static void (APIENTRY * fptr_glSecondaryColor3d)(GLdouble,GLdouble,GLdouble);
 static VALUE
 gl_SecondaryColor3d(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -265,7 +265,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glSecondaryColor3f)(GLfloat,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glSecondaryColor3f)(GLfloat,GLfloat,GLfloat);
 static VALUE
 gl_SecondaryColor3f(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -281,7 +281,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glSecondaryColor3i)(GLint,GLint,GLint);
+static void (APIENTRY * fptr_glSecondaryColor3i)(GLint,GLint,GLint);
 static VALUE
 gl_SecondaryColor3i(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -297,7 +297,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glSecondaryColor3s)(GLshort,GLshort,GLshort);
+static void (APIENTRY * fptr_glSecondaryColor3s)(GLshort,GLshort,GLshort);
 static VALUE
 gl_SecondaryColor3s(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -313,7 +313,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glSecondaryColor3ub)(GLubyte,GLubyte,GLubyte);
+static void (APIENTRY * fptr_glSecondaryColor3ub)(GLubyte,GLubyte,GLubyte);
 static VALUE
 gl_SecondaryColor3ub(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -329,7 +329,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glSecondaryColor3ui)(GLuint,GLuint,GLuint);
+static void (APIENTRY * fptr_glSecondaryColor3ui)(GLuint,GLuint,GLuint);
 static VALUE
 gl_SecondaryColor3ui(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -345,7 +345,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glSecondaryColor3us)(GLushort,GLushort,GLushort);
+static void (APIENTRY * fptr_glSecondaryColor3us)(GLushort,GLushort,GLushort);
 static VALUE
 gl_SecondaryColor3us(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -407,7 +407,7 @@ GLSECONDARYCOLOR_VFUNC(us)
 #undef GLSECONDARYCOLOR_VFUNC
 
 extern VALUE g_SecondaryColor_ptr;
-static void (*fptr_glSecondaryColorPointer)(GLint,GLenum,GLsizei,const GLvoid *);
+static void (APIENTRY * fptr_glSecondaryColorPointer)(GLint,GLenum,GLsizei,const GLvoid *);
 static VALUE
 gl_SecondaryColorPointer(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -426,7 +426,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (*fptr_glWindowPos2d)(GLdouble,GLdouble);
+static void (APIENTRY * fptr_glWindowPos2d)(GLdouble,GLdouble);
 static VALUE
 gl_WindowPos2d(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -440,7 +440,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glWindowPos2f)(GLfloat,GLfloat);
+static void (APIENTRY * fptr_glWindowPos2f)(GLfloat,GLfloat);
 static VALUE
 gl_WindowPos2f(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -454,7 +454,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glWindowPos2i)(GLint,GLint);
+static void (APIENTRY * fptr_glWindowPos2i)(GLint,GLint);
 static VALUE
 gl_WindowPos2i(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -468,7 +468,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glWindowPos2s)(GLshort,GLshort);
+static void (APIENTRY * fptr_glWindowPos2s)(GLshort,GLshort);
 static VALUE
 gl_WindowPos2s(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -482,7 +482,7 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (*fptr_glWindowPos3d)(GLdouble,GLdouble,GLdouble);
+static void (APIENTRY * fptr_glWindowPos3d)(GLdouble,GLdouble,GLdouble);
 static VALUE
 gl_WindowPos3d(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -498,7 +498,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glWindowPos3f)(GLfloat,GLfloat,GLfloat);
+static void (APIENTRY * fptr_glWindowPos3f)(GLfloat,GLfloat,GLfloat);
 static VALUE
 gl_WindowPos3f(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -514,7 +514,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glWindowPos3i)(GLint,GLint,GLint);
+static void (APIENTRY * fptr_glWindowPos3i)(GLint,GLint,GLint);
 static VALUE
 gl_WindowPos3i(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -530,7 +530,7 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (*fptr_glWindowPos3s)(GLshort,GLshort,GLshort);
+static void (APIENTRY * fptr_glWindowPos3s)(GLshort,GLshort,GLshort);
 static VALUE
 gl_WindowPos3s(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
