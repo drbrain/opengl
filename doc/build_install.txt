@@ -5,6 +5,8 @@ Building ruby-opengl
 Pre-requisites
 --------------
 
+Linux
+--------------
 On Ubuntu or Debian systems, aside from Ruby you'll need ruby and
 some extra ruby related packages:
 
@@ -21,26 +23,48 @@ On Gentoo, Debian and ubuntu, rubygems 0.9.0 will be installed by default
 in the packages.  This version of rubygems is INCOMPATIBLE with ruby-opengl.
 You'll need to install rubygems from source.
 
+On some distributions you may need 'xorg-dev' developer package.
+
+Mac OS X
+--------------
 On OS X, you will need to install your own version of Ruby as the
 version that ships with OS X has known problems with properly building
 ruby-opengl bindings.  You'll also need XCode for gcc and tools.  Macports
 or fink should handle this cleanly.
 
-Manual Build instructions
+Windows
+--------------
+On Windows you need to have platform SDK and compiler that *must* match the one which
+was used for compiling ruby binary (for One-click ruby installer it is MSVC 6.0).
+You may also need 'glut.h' in SDK include directory, as the One-click ruby
+installer is missing it. You can copy the file from glut package at
+http://www.xmission.com/~nate/glut.html .
+
+Manual Build instructions for all platforms
+(see above for platform-specific notes)
 ------------------
+1. Make sure you have working ruby with rubygems installed
+	 and (if needed) appropriate developer packages (ruby-dev,ruby1.8-dev,...).
+2. Make sure you have working C compiler
+3. Install rake either from package or by running 'gem install rake'
+4. Install mkrf (0.2.0+) either from package or by running 'gem install mkrf'
+5. Make sure you have working OpenGL installation, this includes libGL,libGLU,
+   glut and (if needed) appropriate -dev or -devel packages.
+6. Run 'rake' at the top level of the project
+7. (OPTIONAL) Run 'rake test' to run unit tests to verify it works properly
 
-1. Install rake
+Installing
+------------------
+1. Run 'rake clean' to clean out the project
+2. Run 'rake gem' to build source gem
+3. Run 'gem install pkg/ruby-opengl-<version>.gem' to compile and install the gem
 
-   gem install -y rake
-2. Install mkrf (Need at least version 0.2.0)
-   
-   gem install -y mkrf
-3. Run 'rake' at the top level of the project
-4. (OPTIONAL) Run 'rake test' to run unit tests to verify it works properly
-5. Run 'rake clean' to clean out the project
-6. Run 'rake gem' to build a gem
-7. Run 'gem install pkg/ruby-opengl-<version>.gem' to install the gem
-
+Building binary gem
+------------------
+1. Run 'gem install gembuilder' to install the gembuilder package
+2. Run 'rake clean' to clean out the project
+3. Run 'rake gem' to build source gem
+4. Run 'gembuilder pkg/ruby-opengl-<version>.gem' to compile the binary gem
 
 Installing from rubygems
 -------------------
@@ -60,6 +84,11 @@ Testing / Running
 To run unit tests:
 
    $ rake test
+
+Note that the tests have the adverse effect of testing the underlying OpenGL
+implementation, so depending on your GL provider,drivers or OS, the tests may
+fail, crash, or not run at all, without affecting your ability to use the
+bindings.
 
 To run a sample file, make sure the ruby-opengl gem is installed then:
 
