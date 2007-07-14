@@ -357,6 +357,8 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glGetProgramiv)
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetProgramiv(program,GL_INFO_LOG_LENGTH,&max_size);
+	if (max_size<=0)
+		return rb_str_new2("");
 	buffer = allocate_buffer_with_string(max_size);
 	fptr_glGetProgramInfoLog(program,max_size,&ret_length,RSTRING(buffer)->ptr);
 	RSTRING(buffer)->len = ret_length;
@@ -393,7 +395,7 @@ VALUE obj,arg1;
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetShaderiv(program,GL_INFO_LOG_LENGTH,&max_size);
 	if (max_size<=0)
-		rb_raise(rb_eTypeError, "Returned size out of bounds");
+		return rb_str_new2("");
 	buffer = ALLOC_N(GLchar,max_size+1);
 	memset(buffer,0,sizeof(GLchar) * (max_size+1));
 	fptr_glGetShaderInfoLog(program,max_size,&ret_length,buffer);
