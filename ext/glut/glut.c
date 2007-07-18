@@ -3,6 +3,7 @@
  * 2004/03/02 01:13:06, yoshi
  *
  * Copyright (C) 1999 - 2005 Yoshi <yoshi@giganet.net>
+ * Copyright (C) 2005 James Adam <james@lazyatom.com>
  * Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
  *
  * This program is distributed under the terms of the MIT license.
@@ -1082,12 +1083,14 @@ VALUE obj,arg1,arg2;
     return Qnil;
 }
 
-/* Added by James since the normal function is messed up. His comment:
- * > BitmapCharacterX is my own ugly, lazy hack to avoid bus errors when
- * > trying to display text via GLUT. What really needs to happen is for
- * > someone more experienced with Ruby extensions to figure out why we
- * > can't pass the font values as arguments to this function without it
- * > falling over!
+/* Added by James Adam since the normal function is messed up:
+ * BitmapCharacterX is my own ugly, lazy hack to avoid bus errors when
+ * trying to display text via GLUT. What really needs to happen is for
+ * someone more experienced with Ruby extensions to figure out why we
+ * can't pass the font values as arguments to this function without it
+ * falling over!
+ * 
+ * TODO: Properly fix glut_BitmapCharacter(obj,arg1,arg2)
  */
 static VALUE
 glut_BitmapCharacterX(obj,arg2)
@@ -1465,7 +1468,7 @@ VALUE obj;
 #endif
 
 
-/* Added by James. */
+/* GameMode support added by James Adam. */
 static VALUE
 glut_GameModeString(obj,arg1)
 VALUE obj,arg1;
@@ -1485,8 +1488,6 @@ VALUE obj;
     glutEnterGameMode();
     return Qnil;
 }
-/* end "Added by James." */
-
 
 static VALUE module;
 
@@ -1559,7 +1560,7 @@ DLLEXPORT void Init_glut()
     rb_define_module_function(module, "glutLayerGet", glut_LayerGet, 1);
     rb_define_module_function(module, "glutBitmapCharacter", glut_BitmapCharacter, 2);
     
-    /* Added by James. */
+    /* Added by James - see comment on actual function */
     rb_define_module_function(module, "glutBitmapCharacterX", glut_BitmapCharacterX, 1);
     
     rb_define_module_function(module, "glutBitmapWidth", glut_BitmapWidth, 2);
