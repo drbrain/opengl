@@ -4,6 +4,10 @@ Project history
 The [original ruby-opengl](http://www2.giganet.net/~yoshi/) was written
 by Yoshi.
 
+James A. desperately wanted to get the OpenGL Ruby bindings working on his Mac,
+but they wouldn't even compile on OSX. After a little bit of tweaking, he made
+his patched bindings available to the ruby community in a very informal manner.
+
 John G. then wanted to clean it up and add some docs to it, and so started
 tweaking and put up a new site and made his changes available.
 
