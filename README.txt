@@ -22,7 +22,7 @@ Status: 0.40.1 Released!
 
 Current status:
 
-* Support for OpenGL 2.0 and 2.
+* Support for OpenGL 2.0 and 2.1
 * Should compile on Windows
 * Compiles and runs on GNU/Linux (with Mesa) and Mac OS X.
 * You must require 'gl' before using 'glu'

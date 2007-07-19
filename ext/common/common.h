@@ -38,10 +38,8 @@
 
 #include "gl-enums.h"
 
-#ifdef __APPLE__
 #ifndef APIENTRY
 #define APIENTRY /* to nothing */
-#endif
 #endif
 
 typedef struct RArray RArray;
