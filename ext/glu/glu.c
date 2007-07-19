@@ -40,11 +40,7 @@ typedef void (CALLBACK*(VOIDFUNC))();
 typedef void (*VOIDFUNC)();
 #endif
 
-#if defined(GLU_VERSION_1_2)
 typedef GLUtesselator tesselatorObj;
-#else /* GLU_VERSION_1_2 */
-typedef GLUtriangulatorObj tesselatorObj;
-#endif /* !GLU_VERSION_1_2 */
 
 #ifdef MESA
 struct glu_MesaStack {
@@ -483,20 +479,17 @@ static VALUE t_current;
 #define TESS_END    3
 #define TESS_ERROR  4
 #define TESS_EDGE   5
-#if defined(GLU_VERSION_1_2)
-#  define TESS_OUTDATA     6
-#  define TESS_COMBINE     7
-#  define TESS_BEGIN_DATA  8
-#  define TESS_VERTEX_DATA 9
-#  define TESS_END_DATA    10
-#  define TESS_ERROR_DATA  11
-#  define TESS_EDGE_DATA   12
-#  define TESS_COMBINE_DATA    13
-#  define TESS_USERDATA   14
-#  define REF_LAST    15
-#else /* !GLU_VERSION_1_2 */
-#  define REF_LAST    6
-#endif /* GLU_VERSION_1_2 */
+#define TESS_OUTDATA     6
+#define TESS_COMBINE     7
+#define TESS_BEGIN_DATA  8
+#define TESS_VERTEX_DATA 9
+#define TESS_END_DATA    10
+#define TESS_ERROR_DATA  11
+#define TESS_EDGE_DATA   12
+#define TESS_COMBINE_DATA    13
+#define TESS_USERDATA   14
+#define REF_LAST    15
+
 static void
 mark_tess(tdata)
 struct tessdata* tdata;
@@ -508,9 +501,6 @@ static void
 free_tess(tdata)
 struct tessdata *tdata;
 {
-    ID id;
-    VALUE call_key;
-
     if (tdata->tobj) {
     gluDeleteTess(tdata->tobj);
     }
@@ -597,7 +587,6 @@ GLenum errorno;
     }
 }
 
-#if defined(GLU_VERSION_1_2)
 static void
 t_begin_data(type, user_data)
 GLenum type;
@@ -798,7 +787,6 @@ glu_TessEndContour(obj, arg1)
     gluTessEndContour(tdata->tobj);
     return Qnil;
 }
-#endif /* GLU_VERSION_1_2 */
 
 static VALUE
 glu_TessCallback(obj, arg1, arg2, arg3)
@@ -814,62 +802,41 @@ VALUE obj, arg1, arg2, arg3;
      rb_raise(rb_eTypeError, "GLU.TessCallback needs Proc Object:%s",rb_class2name(CLASS_OF(arg3)));
     
     switch (type) {
-#if defined(GLU_VERSION_1_2)
     case GLU_TESS_BEGIN:
-#else
-    case GLU_BEGIN:
-#endif
             rb_ary_store(tdata->t_ref, TESS_BEGIN, arg3);
             if (NIL_P(arg3))
                 gluTessCallback(tdata->tobj, type, NULL);
             else
                 gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_begin));
         break;
-#if defined(GLU_VERSION_1_2)
     case GLU_TESS_EDGE_FLAG:
-#else
-    case GLU_EDGE_FLAG:
-#endif
             rb_ary_store(tdata->t_ref, TESS_EDGE, arg3);
             if (NIL_P(arg3))
                 gluTessCallback(tdata->tobj, type, NULL);
             else
                 gluTessCallback(tdata->tobj, type, (VOIDFUNC)t_edgeFlag);
         break;
-#if defined(GLU_VERSION_1_2)
     case GLU_TESS_VERTEX:
-#else
-    case GLU_VERTEX:
-#endif
             rb_ary_store(tdata->t_ref, TESS_VERTEX, arg3);
             if (NIL_P(arg3))
                 gluTessCallback(tdata->tobj, type, NULL);
             else
                 gluTessCallback(tdata->tobj, type, (VOIDFUNC)t_vertex);
         break;
-#if defined(GLU_VERSION_1_2)
     case GLU_TESS_END:
-#else
-    case GLU_END:
-#endif
             rb_ary_store(tdata->t_ref, TESS_END, arg3);
             if (NIL_P(arg3))
                 gluTessCallback(tdata->tobj, type, NULL);
             else
                 gluTessCallback(tdata->tobj, type, (VOIDFUNC)t_end);
         break;
-#if defined(GLU_VERSION_1_2)
     case GLU_TESS_ERROR:
-#else
-    case GLU_ERROR:
-#endif
             rb_ary_store(tdata->t_ref, TESS_ERROR, arg3);
             if (NIL_P(arg3))
                 gluTessCallback(tdata->tobj, type, NULL);
             else
                 gluTessCallback(tdata->tobj, type, (VOIDFUNC)t_error);
         break;
-#if defined(GLU_VERSION_1_2)
         case GLU_TESS_COMBINE:
             rb_ary_store(tdata->t_ref, TESS_COMBINE, arg3);
             if (NIL_P(arg3))
@@ -919,7 +886,6 @@ VALUE obj, arg1, arg2, arg3;
             else
                 gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_combine_data));
             break;
-#endif /* GLU_VERSION_1_2 */
     }
     return Qnil;
 }
@@ -940,8 +906,6 @@ VALUE obj, arg1, arg2, arg3;
 {
     struct tessdata* tdata;
     GLdouble v[3];
-    VALUE call_key;
-    ID id;
     GetTESS(arg1, tdata);
     rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_DATA), arg3);
     ary2cdbl(arg2, v, 3);
@@ -1397,11 +1361,10 @@ VALUE obj, arg1;
     errorCode = (GLenum)NUM2INT(arg1);
     error = (GLubyte*)gluErrorString(errorCode);
     if (error)
-        return rb_str_new2(error);
+        return rb_str_new2((char *)error);
     else
         return Qnil;
 }
-#if defined(GLU_VERSION_1_1)
 static VALUE
 glu_GetString(obj, arg1)
 VALUE obj, arg1;
@@ -1411,11 +1374,10 @@ VALUE obj, arg1;
     name = (GLenum)NUM2INT(arg1);
     str = (GLubyte*)gluGetString(name);
     if (str)
-        return rb_str_new2(str);
+        return rb_str_new2((char *)str);
     else
         return Qnil;
 }
-#endif
 
 static VALUE module;
 
@@ -1475,7 +1437,6 @@ DLLEXPORT void Init_glu()
     rb_define_module_function(module, "gluTessVertex", glu_TessVertex, 3);
     rb_define_module_function(module, "gluNextContour", glu_NextContour, 2);
     rb_define_module_function(module, "gluEndPolygon", glu_EndPolygon, 1);
-#if defined(GLU_VERSION_1_2)
     rb_define_module_function(module, "gluTessBeginPolygon", glu_TessBeginPolygon, 2);
     rb_define_module_function(module, "gluTessBeginContour",  glu_TessBeginContour, 1);
     rb_define_module_function(module, "gluTessEndContour", glu_TessEndContour, 1);
@@ -1483,7 +1444,6 @@ DLLEXPORT void Init_glu()
     rb_define_module_function(module, "gluTessProperty", glu_TessProperty, 3);
     rb_define_module_function(module, "gluTessNormal", glu_TessNormal, 4);
     rb_define_module_function(module, "gluGetTessProperty", glu_GetTessProperty, 2);
-#endif /* GLU_VERSION_1_2 */
     rb_define_module_function(module, "gluNewQuadric", glu_NewQuadric, 0);
     rb_define_module_function(module, "gluDeleteQuadric", glu_DeleteQuadric, 1);
     rb_define_module_function(module, "gluQuadricNormals", glu_QuadricNormals, 2);
@@ -1504,9 +1464,7 @@ DLLEXPORT void Init_glu()
     rb_define_module_function(module, "gluBuild2DMipmaps", glu_Build2DMipmaps, 7);
     rb_define_module_function(module, "gluScaleImage", glu_ScaleImage, 8);
     rb_define_module_function(module, "gluErrorString", glu_ErrorString, 1);
-#if defined(GLU_VERSION_1_1)
     rb_define_module_function(module, "gluGetString", glu_GetString, 1);
-#endif
 
     rb_define_const(module, "GLU_SMOOTH", INT2NUM(GLU_SMOOTH));
     rb_define_const(module, "GLU_FLAT", INT2NUM(GLU_FLAT));
@@ -1517,7 +1475,6 @@ DLLEXPORT void Init_glu()
     rb_define_const(module, "GLU_SILHOUETTE", INT2NUM(GLU_SILHOUETTE));
     rb_define_const(module, "GLU_OUTSIDE", INT2NUM(GLU_OUTSIDE));
     rb_define_const(module, "GLU_INSIDE", INT2NUM(GLU_INSIDE));
-#if defined(GLU_VERSION_1_2)
     rb_define_const(module, "GLU_TESS_BEGIN", INT2NUM(GLU_TESS_BEGIN));
     rb_define_const(module, "GLU_TESS_VERTEX", INT2NUM(GLU_TESS_VERTEX));
     rb_define_const(module, "GLU_TESS_END", INT2NUM(GLU_TESS_END));
@@ -1543,7 +1500,6 @@ DLLEXPORT void Init_glu()
     rb_define_const(module, "GLU_TESS_WINDING_RULE", INT2NUM(GLU_TESS_WINDING_RULE));
     rb_define_const(module, "GLU_TESS_BOUNDARY_ONLY", INT2NUM(GLU_TESS_BOUNDARY_ONLY));
     rb_define_const(module, "GLU_TESS_TOLERANCE", INT2NUM(GLU_TESS_TOLERANCE));
-#endif /* GLU_VERSION_1_2 */
 
     rb_define_const(module, "GLU_BEGIN", INT2NUM(GLU_BEGIN));
     rb_define_const(module, "GLU_VERTEX", INT2NUM(GLU_VERTEX));
@@ -1565,15 +1521,6 @@ DLLEXPORT void Init_glu()
     rb_define_const(module, "GLU_TESS_ERROR8", INT2NUM(GLU_TESS_ERROR8));
 #if defined(TESS_ERROR9)
     rb_define_const(module, "GLU_TESS_ERROR9", INT2NUM(GLU_TESS_ERROR9));
-#endif
-#if defined(GLU_VERSION_1_3)
-    rb_define_const(module, "GLU_AUTO_LOAD_MATRIX", INT2NUM(GLU_AUTO_LOAD_MATRIX));
-    rb_define_const(module, "GLU_CULLING", INT2NUM(GLU_CULLING));
-    rb_define_const(module, "GLU_SAMPLING_TOLERANCE", INT2NUM(GLU_SAMPLING_TOLERANCE));
-    rb_define_const(module, "GLU_DISPLAY_MODE", INT2NUM(GLU_DISPLAY_MODE));
-    rb_define_const(module, "GLU_SAMPLING_METHOD", INT2NUM(GLU_SAMPLING_METHOD));
-    rb_define_const(module, "GLU_U_STEP", INT2NUM(GLU_U_STEP));
-    rb_define_const(module, "GLU_V_STEP", INT2NUM(GLU_V_STEP));
 #endif
     rb_define_const(module, "GLU_PATH_LENGTH", INT2NUM(GLU_PATH_LENGTH));
     rb_define_const(module, "GLU_PARAMETRIC_ERROR", INT2NUM(GLU_PARAMETRIC_ERROR));
