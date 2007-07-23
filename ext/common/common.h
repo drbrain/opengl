@@ -18,29 +18,47 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _RBOGL_H_
-#define _RBOGL_H_
+#ifndef _COMMON_H_
+#define _COMMON_H_
 
 #include <ruby.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
 #include <mach-o/dyld.h>
 #include <stdlib.h>
 #include <string.h>
 #elif defined WIN32
 #include <windows.h>
 #include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 #else
 #include <GL/gl.h>
 #include <GL/glx.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 #endif
 
+#include "gl-types.h"
 #include "gl-enums.h"
 
 #ifndef APIENTRY
 #define APIENTRY /* to nothing */
 #endif
+
+#ifdef WIN32
+#define DLLEXPORT __declspec(dllexport)
+typedef void (CALLBACK*(VOIDFUNC))();
+#else
+#define DLLEXPORT
+typedef void (*VOIDFUNC)();
+#endif
+
+
+/* */
 
 typedef struct RArray RArray;
 
@@ -328,4 +346,4 @@ static inline void *load_gl_function(const char *name,int raise)
 	return func_ptr;
 }
 
-#endif /* _RBOGL_H_ */
+#endif /* _COMMON_H_ */

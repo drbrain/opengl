@@ -17,28 +17,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#elif defined WIN32
-#include <windows.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-
-#include <ruby.h>
 #include "../common/common.h"
-
-#ifdef WIN32
-#define DLLEXPORT __declspec(dllexport)
-typedef void (CALLBACK*(VOIDFUNC))();
-#else
-#define DLLEXPORT
-typedef void (*VOIDFUNC)();
-#endif
 
 typedef GLUtesselator tesselatorObj;
 

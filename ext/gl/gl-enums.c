@@ -1,27 +1,8 @@
-/*
- * Copyright (C) 1999 - 2005 Yoshi <yoshi@giganet.net>
- * Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
- *
- * This program is distributed under the terms of the MIT license.
- * See the included MIT-LICENSE file for the terms of this license.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+/* The code below was genereated on Sun Feb 11 01:24:24 +0100 2007
+   source: http://www.opengl.org/registry/api/enum.spec
+   source: http://www.opengl.org/registry/api/enumext.spec
+*/
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#elif defined WIN32
-#include <windows.h>
-#include <GL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include "../common/common.h"
 
 void gl_init_enums(VALUE module)
@@ -2899,6 +2880,4 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_Z_EXT", INT2NUM(GL_Z_EXT));
 	rb_define_const(module, "GL_ZOOM_X", INT2NUM(GL_ZOOM_X));
 	rb_define_const(module, "GL_ZOOM_Y", INT2NUM(GL_ZOOM_Y));
-        /**/
-        rb_define_const(module, "GL_ALL_CLIENT_ATTRIB_BITS", INT2NUM(GL_ALL_CLIENT_ATTRIB_BITS));
 }

@@ -13,14 +13,6 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#elif defined WIN32
-#include <windows.h>
-#include <GL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include "../common/common.h"
 
 static void (APIENTRY * fptr_glUniformMatrix2x3fv)(GLint,GLsizei,GLboolean,GLfloat *);
