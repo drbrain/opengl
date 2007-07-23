@@ -19,6 +19,10 @@
 
 #include "../common/common.h"
 
+static VALUE module;
+
+void glu_init_enums(VALUE);
+
 typedef GLUtesselator tesselatorObj;
 
 #ifdef MESA
@@ -1360,42 +1364,14 @@ VALUE obj, arg1;
 
 static VALUE module;
 
-#ifndef GLU_BEGIN
-#define GLU_BEGIN                          100100
-#endif
-#ifndef GLU_VERTEX
-#define GLU_VERTEX                         100101
-#endif
-#ifndef GLU_END
-#define GLU_END                            100102
-#endif
-#ifndef GLU_EDGE_FLAG
-#define GLU_EDGE_FLAG                      100104
-#endif
-#ifndef GLU_CW
-#define GLU_CW                             100120
-#endif
-#ifndef GLU_CCW
-#define GLU_CCW                            100121
-#endif
-#ifndef GLU_INTERIOR
-#define GLU_INTERIOR                       100122
-#endif
-#ifndef GLU_EXTERIOR
-#define GLU_EXTERIOR                       100123
-#endif
-#ifndef GLU_UNKNOWN
-#define GLU_UNKNOWN                        100124
-#endif
-#ifndef GLU_ERROR
-#define GLU_ERROR                          100103
-#endif
-
 DLLEXPORT void Init_glu()
 {
     callId = rb_intern("call");
     refId = rb_intern("[]");
     module = rb_define_module("Glu");
+
+		glu_init_enums(module);
+
     rb_define_module_function(module, "gluNewNurbsRenderer", glu_NewNurbsRenderer, 0);
     rb_define_module_function(module, "gluDeleteNurbsRenderer", glu_DeleteNurbsRenderer, 1);
     rb_define_module_function(module, "gluNurbsProperty", glu_NurbsProperty, 3);
@@ -1444,115 +1420,6 @@ DLLEXPORT void Init_glu()
     rb_define_module_function(module, "gluScaleImage", glu_ScaleImage, 8);
     rb_define_module_function(module, "gluErrorString", glu_ErrorString, 1);
     rb_define_module_function(module, "gluGetString", glu_GetString, 1);
-
-    rb_define_const(module, "GLU_SMOOTH", INT2NUM(GLU_SMOOTH));
-    rb_define_const(module, "GLU_FLAT", INT2NUM(GLU_FLAT));
-    rb_define_const(module, "GLU_NONE", INT2NUM(GLU_NONE));
-    rb_define_const(module, "GLU_POINT", INT2NUM(GLU_POINT));
-    rb_define_const(module, "GLU_LINE", INT2NUM(GLU_LINE));
-    rb_define_const(module, "GLU_FILL", INT2NUM(GLU_FILL));
-    rb_define_const(module, "GLU_SILHOUETTE", INT2NUM(GLU_SILHOUETTE));
-    rb_define_const(module, "GLU_OUTSIDE", INT2NUM(GLU_OUTSIDE));
-    rb_define_const(module, "GLU_INSIDE", INT2NUM(GLU_INSIDE));
-    rb_define_const(module, "GLU_TESS_BEGIN", INT2NUM(GLU_TESS_BEGIN));
-    rb_define_const(module, "GLU_TESS_VERTEX", INT2NUM(GLU_TESS_VERTEX));
-    rb_define_const(module, "GLU_TESS_END", INT2NUM(GLU_TESS_END));
-    rb_define_const(module, "GLU_TESS_ERROR", INT2NUM(GLU_TESS_ERROR));
-    rb_define_const(module, "GLU_TESS_EDGE_FLAG", INT2NUM(GLU_TESS_EDGE_FLAG));
-    rb_define_const(module, "GLU_TESS_COMBINE", INT2NUM(GLU_TESS_COMBINE));
-
-    rb_define_const(module, "GLU_TESS_BEGIN_DATA", INT2NUM(GLU_TESS_BEGIN_DATA));
-    rb_define_const(module, "GLU_TESS_VERTEX_DATA", INT2NUM(GLU_TESS_VERTEX_DATA));
-    rb_define_const(module, "GLU_TESS_END_DATA", INT2NUM(GLU_TESS_END_DATA));
-    rb_define_const(module, "GLU_TESS_ERROR_DATA", INT2NUM(GLU_TESS_ERROR_DATA));
-    rb_define_const(module, "GLU_TESS_EDGE_FLAG_DATA", INT2NUM(GLU_TESS_EDGE_FLAG_DATA));
-    rb_define_const(module, "GLU_TESS_COMBINE_DATA", INT2NUM(GLU_TESS_COMBINE_DATA));
-
-    /* Winding rules */
-    rb_define_const(module, "GLU_TESS_WINDING_ODD", INT2NUM(GLU_TESS_WINDING_ODD));
-    rb_define_const(module, "GLU_TESS_WINDING_NONZERO", INT2NUM(GLU_TESS_WINDING_NONZERO));
-    rb_define_const(module, "GLU_TESS_WINDING_POSITIVE", INT2NUM(GLU_TESS_WINDING_POSITIVE));
-    rb_define_const(module, "GLU_TESS_WINDING_NEGATIVE", INT2NUM(GLU_TESS_WINDING_NEGATIVE));
-    rb_define_const(module, "GLU_TESS_WINDING_ABS_GEQ_TWO", INT2NUM(GLU_TESS_WINDING_ABS_GEQ_TWO));
-
-    /* Tessellation properties */
-    rb_define_const(module, "GLU_TESS_WINDING_RULE", INT2NUM(GLU_TESS_WINDING_RULE));
-    rb_define_const(module, "GLU_TESS_BOUNDARY_ONLY", INT2NUM(GLU_TESS_BOUNDARY_ONLY));
-    rb_define_const(module, "GLU_TESS_TOLERANCE", INT2NUM(GLU_TESS_TOLERANCE));
-
-    rb_define_const(module, "GLU_BEGIN", INT2NUM(GLU_BEGIN));
-    rb_define_const(module, "GLU_VERTEX", INT2NUM(GLU_VERTEX));
-    rb_define_const(module, "GLU_END", INT2NUM(GLU_END));
-    rb_define_const(module, "GLU_ERROR", INT2NUM(GLU_ERROR));
-    rb_define_const(module, "GLU_EDGE_FLAG", INT2NUM(GLU_EDGE_FLAG));
-    rb_define_const(module, "GLU_CW", INT2NUM(GLU_CW));
-    rb_define_const(module, "GLU_CCW", INT2NUM(GLU_CCW));
-    rb_define_const(module, "GLU_INTERIOR", INT2NUM(GLU_INTERIOR));
-    rb_define_const(module, "GLU_EXTERIOR", INT2NUM(GLU_EXTERIOR));
-    rb_define_const(module, "GLU_UNKNOWN", INT2NUM(GLU_UNKNOWN));
-    rb_define_const(module, "GLU_TESS_ERROR1", INT2NUM(GLU_TESS_ERROR1));
-    rb_define_const(module, "GLU_TESS_ERROR2", INT2NUM(GLU_TESS_ERROR2));
-    rb_define_const(module, "GLU_TESS_ERROR3", INT2NUM(GLU_TESS_ERROR3));
-    rb_define_const(module, "GLU_TESS_ERROR4", INT2NUM(GLU_TESS_ERROR4));
-    rb_define_const(module, "GLU_TESS_ERROR5", INT2NUM(GLU_TESS_ERROR5));
-    rb_define_const(module, "GLU_TESS_ERROR6", INT2NUM(GLU_TESS_ERROR6));
-    rb_define_const(module, "GLU_TESS_ERROR7", INT2NUM(GLU_TESS_ERROR7));
-    rb_define_const(module, "GLU_TESS_ERROR8", INT2NUM(GLU_TESS_ERROR8));
-#if defined(TESS_ERROR9)
-    rb_define_const(module, "GLU_TESS_ERROR9", INT2NUM(GLU_TESS_ERROR9));
-#endif
-    rb_define_const(module, "GLU_PATH_LENGTH", INT2NUM(GLU_PATH_LENGTH));
-    rb_define_const(module, "GLU_PARAMETRIC_ERROR", INT2NUM(GLU_PARAMETRIC_ERROR));
-    rb_define_const(module, "GLU_DOMAIN_DISTANCE", INT2NUM(GLU_DOMAIN_DISTANCE));
-    rb_define_const(module, "GLU_MAP1_TRIM_2", INT2NUM(GLU_MAP1_TRIM_2));
-    rb_define_const(module, "GLU_MAP1_TRIM_3", INT2NUM(GLU_MAP1_TRIM_3));
-    rb_define_const(module, "GLU_OUTLINE_POLYGON", INT2NUM(GLU_OUTLINE_POLYGON));
-    rb_define_const(module, "GLU_OUTLINE_PATCH", INT2NUM(GLU_OUTLINE_PATCH));
-    rb_define_const(module, "GLU_NURBS_ERROR1", INT2NUM(GLU_NURBS_ERROR1));
-    rb_define_const(module, "GLU_NURBS_ERROR2", INT2NUM(GLU_NURBS_ERROR2));
-    rb_define_const(module, "GLU_NURBS_ERROR3", INT2NUM(GLU_NURBS_ERROR3));
-    rb_define_const(module, "GLU_NURBS_ERROR4", INT2NUM(GLU_NURBS_ERROR4));
-    rb_define_const(module, "GLU_NURBS_ERROR5", INT2NUM(GLU_NURBS_ERROR5));
-    rb_define_const(module, "GLU_NURBS_ERROR6", INT2NUM(GLU_NURBS_ERROR6));
-    rb_define_const(module, "GLU_NURBS_ERROR7", INT2NUM(GLU_NURBS_ERROR7));
-    rb_define_const(module, "GLU_NURBS_ERROR8", INT2NUM(GLU_NURBS_ERROR8));
-    rb_define_const(module, "GLU_NURBS_ERROR9", INT2NUM(GLU_NURBS_ERROR9));
-    rb_define_const(module, "GLU_NURBS_ERROR10", INT2NUM(GLU_NURBS_ERROR10));
-    rb_define_const(module, "GLU_NURBS_ERROR11", INT2NUM(GLU_NURBS_ERROR11));
-    rb_define_const(module, "GLU_NURBS_ERROR12", INT2NUM(GLU_NURBS_ERROR12));
-    rb_define_const(module, "GLU_NURBS_ERROR13", INT2NUM(GLU_NURBS_ERROR13));
-    rb_define_const(module, "GLU_NURBS_ERROR14", INT2NUM(GLU_NURBS_ERROR14));
-    rb_define_const(module, "GLU_NURBS_ERROR15", INT2NUM(GLU_NURBS_ERROR15));
-    rb_define_const(module, "GLU_NURBS_ERROR16", INT2NUM(GLU_NURBS_ERROR16));
-    rb_define_const(module, "GLU_NURBS_ERROR17", INT2NUM(GLU_NURBS_ERROR17));
-    rb_define_const(module, "GLU_NURBS_ERROR18", INT2NUM(GLU_NURBS_ERROR18));
-    rb_define_const(module, "GLU_NURBS_ERROR19", INT2NUM(GLU_NURBS_ERROR19));
-    rb_define_const(module, "GLU_NURBS_ERROR20", INT2NUM(GLU_NURBS_ERROR20));
-    rb_define_const(module, "GLU_NURBS_ERROR21", INT2NUM(GLU_NURBS_ERROR21));
-    rb_define_const(module, "GLU_NURBS_ERROR22", INT2NUM(GLU_NURBS_ERROR22));
-    rb_define_const(module, "GLU_NURBS_ERROR23", INT2NUM(GLU_NURBS_ERROR23));
-    rb_define_const(module, "GLU_NURBS_ERROR24", INT2NUM(GLU_NURBS_ERROR24));
-    rb_define_const(module, "GLU_NURBS_ERROR25", INT2NUM(GLU_NURBS_ERROR25));
-    rb_define_const(module, "GLU_NURBS_ERROR26", INT2NUM(GLU_NURBS_ERROR26));
-    rb_define_const(module, "GLU_NURBS_ERROR27", INT2NUM(GLU_NURBS_ERROR27));
-    rb_define_const(module, "GLU_NURBS_ERROR28", INT2NUM(GLU_NURBS_ERROR28));
-    rb_define_const(module, "GLU_NURBS_ERROR29", INT2NUM(GLU_NURBS_ERROR29));
-    rb_define_const(module, "GLU_NURBS_ERROR30", INT2NUM(GLU_NURBS_ERROR30));
-    rb_define_const(module, "GLU_NURBS_ERROR31", INT2NUM(GLU_NURBS_ERROR31));
-    rb_define_const(module, "GLU_NURBS_ERROR32", INT2NUM(GLU_NURBS_ERROR32));
-    rb_define_const(module, "GLU_NURBS_ERROR33", INT2NUM(GLU_NURBS_ERROR33));
-    rb_define_const(module, "GLU_NURBS_ERROR34", INT2NUM(GLU_NURBS_ERROR34));
-    rb_define_const(module, "GLU_NURBS_ERROR35", INT2NUM(GLU_NURBS_ERROR35));
-    rb_define_const(module, "GLU_NURBS_ERROR36", INT2NUM(GLU_NURBS_ERROR36));
-    rb_define_const(module, "GLU_NURBS_ERROR37", INT2NUM(GLU_NURBS_ERROR37));
-    rb_define_const(module, "GLU_INVALID_ENUM", INT2NUM(GLU_INVALID_ENUM));
-    rb_define_const(module, "GLU_INVALID_VALUE", INT2NUM(GLU_INVALID_VALUE));
-    rb_define_const(module, "GLU_OUT_OF_MEMORY", INT2NUM(GLU_OUT_OF_MEMORY));
-#ifdef GLU_INCOMPATIBLE_GL_VERSION
-    rb_define_const(module, "GLU_INCOMPATIBLE_GL_VERSION", INT2NUM(GLU_INCOMPATIBLE_GL_VERSION));
-#endif
-    rb_define_const(module, "GLU_VERSION", INT2NUM(GLU_VERSION));
-    rb_define_const(module, "GLU_EXTENSIONS", INT2NUM(GLU_EXTENSIONS));
 
     cNurbs = rb_define_class("Nurbs", rb_cObject);
     cTess = rb_define_class("Tess", rb_cObject);

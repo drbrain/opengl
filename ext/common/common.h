@@ -44,6 +44,7 @@
 
 #include "gl-types.h"
 #include "gl-enums.h"
+#include "glu-enums.h"
 
 #ifndef APIENTRY
 #define APIENTRY /* to nothing */

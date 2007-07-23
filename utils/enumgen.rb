@@ -62,7 +62,7 @@ def write_enums(enum_list, task)
 		f << "{" << "\n"
 
 		enum_list.each do |name,value|
-			gl_name = "GL_" + name
+			gl_name = task[:prefix] + name
 			f << "\trb_define_const(module, \"#{gl_name}\", INT2NUM(#{gl_name}));" << "\n"			
 		end		
 
@@ -79,7 +79,12 @@ begin
 		:prefix => "GL_"
 	}
 
-	task_list = [gl_enums]
+	glu_enums = {:c => "../ext/glu/glu-enums.c",:h => "../ext/common/glu-enums.h",
+		:sources => "http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec",
+		:prefix => "GLU_"
+	}
+
+	task_list = [gl_enums, glu_enums]
 
 	# main loop	
 	task_list.each do |task|
