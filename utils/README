@@ -1,26 +1,10 @@
 The utils directory
 -------------------
 
-Some of the files in here are just temporary. This directory
-is a bit of a catch-all at the moment.
-
-### Directory contents ###
-
 * For generating website html
     * `mkdn2html.rb` -- for converting the .txt files to html.
     * `post-mkdn2html.rb` -- for the html syntax highlighting.
 
-* Tools planned for auto-generating the modules.
-    * `missing.rb` -- try to show what's missing from our module(s)
-    * `mkwrap.rb` -- trying to generate our module code.
-    * `mkwrap_test.rb` -- starting attempt to test `mkwrap.rb`
-    * `mkwrap-gl.rb` -- first try at generating the gl code
-      (instead of glut, which mkwrap.gl attempts).
-    * `glut_test.rb` -- seems to be for testing the generated
-      `glut.c` file (that we may produce).
-
-* Other random stuff lying around:
-    * `mac_gl_missing`, `mac_glut_missing` -- functions we
-      seem to be missing that are in the Mac OpenGL impl
-      (note, we're using Mesa as our reference implementation)
-    * `test.h` -- used for testing `mkwrap.rb` on.
+* For generating code
+		* `enumgen.rb` -- fetches opengl enum .spec files from web and generates
+                      enumerator lists.
