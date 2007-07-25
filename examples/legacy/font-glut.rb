@@ -1,41 +1,46 @@
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
+require 'opengl'
+include Gl,Glu,Glut
 
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT)
+	GL.LoadIdentity
+	
+	glRasterPos2d(100,100)
+	"Hello Bitmap".each_byte { |x| glutBitmapCharacter(GLUT_BITMAP_9_BY_15, x) }
+	
+	GL.Translate(100, 250, 0)
+	GL.Scale(0.5, 0.5, 1)
+	"Hello Stroke".each_byte { |x| glutStrokeCharacter(GLUT_STROKE_ROMAN, x) }
+	
+	glutSwapBuffers()
+end
 
-display = Proc.new {
-   GL::Clear(GL::COLOR_BUFFER_BIT);
-   GL.LoadIdentity
+reshape = Proc.new do |w, h|
+	glViewport(0, 0,  w,  h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	glOrtho(0.0, w, 0.0, h, -1.0, 1.0)
+	glMatrixMode(GL_MODELVIEW)
+end
 
-   GL::RasterPos2d(20,20)
-   "Hello Bitmap".each_byte { |x| GLUT.BitmapCharacter(GLUT::BITMAP_9_BY_15, x) }
-
-   GL.Translate(0, 50, 0)
-   GL.Scale(0.25, 0.25, 1)
-   "Hello Stroke".each_byte { |x| GLUT.StrokeCharacter(GLUT::STROKE_ROMAN, x) }
-
-   GL.Flush();
-}
-
-reshape = Proc.new {|w, h|
-   GL::Viewport(0, 0,  w,  h);
-   GL::MatrixMode(GL::PROJECTION);
-   GL::LoadIdentity();
-   GL::Ortho(0.0, w, 0.0, h, -1.0, 1.0);
-   GL::MatrixMode(GL::MODELVIEW);
-}
-
+keyboard = Proc.new do |key, x, y|
+	case (key)
+		when 27
+			exit(0)
+	end
+end
 
 #  Main Loop
 #  Open window with initial window size, title bar, 
 #  color index display mode, and handle input events.
 #
-   GLUT.Init
-   GLUT.InitDisplayMode(GLUT::SINGLE | GLUT::RGB);
-   GLUT.InitWindowSize(200, 200);
-   GLUT.CreateWindow($0);
+glutInit
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+glutInitWindowSize(500, 500)
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
 
-   GLUT.ReshapeFunc(reshape);
-   GLUT.DisplayFunc(display);
-   GLUT.MainLoop
-
+glutReshapeFunc(reshape)
+glutDisplayFunc(display)
+glutKeyboardFunc(keyboard)
+glutMainLoop

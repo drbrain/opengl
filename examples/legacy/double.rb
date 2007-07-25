@@ -10,7 +10,7 @@
 # written prior permission. 
 #
 # THE MATERIAL EMBODIED ON THIS SOFTWARE IS PROVIDED TO YOU "AS-IS"
-#AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
+# AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
 # INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY OR
 # FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL SILICON
 # GRAPHICS, INC.  BE LIABLE TO YOU OR ANYONE ELSE FOR ANY DIRECT,
@@ -33,72 +33,73 @@
 # Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
 # OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
-#/
-
 #
-#  double.c
-#  This is a simple double buffered program.
-#  Pressing the left mouse button rotates the rectangle.
-#  Pressing the middle mouse button stops the rotation.
-#/
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
-require "rational"
+# double.c
+# This is a simple double buffered program.
+# Pressing the left mouse button rotates the rectangle.
+# Pressing the middle mouse button stops the rotation.
+require 'opengl'
+require 'rational'
+include Gl,Glu,Glut
 
-$spin = 0.0;
+$spin = 0.0
 
-display = Proc.new {
-   GL.Clear(GL::COLOR_BUFFER_BIT);
-   GL.PushMatrix();
-   GL.Rotate($spin, 0.0, 0.0, 1.0);
-   GL.Color(1.0, 1.0, 1.0);
-   GL.Rect(-25.0, -25.0, 25.0, 25.0);
-   GL.PopMatrix();
-
-   GLUT.SwapBuffers();
-}
-
-$spinDisplay = Proc.new {
-   $spin = $spin + 4.0;
-   $spin = $spin - 360.0 if ($spin > 360.0) 
-   GLUT.PostRedisplay();
-}
-
-def init
-   GL.ClearColor(0.0, 0.0, 0.0, 0.0);
-   GL.ShadeModel(GL::FLAT);
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT)
+	glPushMatrix()
+	glRotate($spin, 0.0, 0.0, 1.0)
+	glColor(1.0, 1.0, 1.0)
+	glRect(-25.0, -25.0, 25.0, 25.0)
+	glPopMatrix()
+	glutSwapBuffers()
 end
 
-reshape = Proc.new {|w, h|
-   GL.Viewport(0, 0, w,  h);
-   GL.MatrixMode(GL::PROJECTION);
-   GL.LoadIdentity();
-   GL.Ortho(-50.0, 50.0, -50.0, 50.0, -1.0, 1.0);
-   GL.MatrixMode(GL::MODELVIEW);
-   GL.LoadIdentity();
-}
+$spinDisplay = Proc.new do
+	$spin = $spin + 4.0
+	$spin = $spin - 360.0 if ($spin > 360.0) 
+	glutPostRedisplay()
+end
 
-mouse = Proc.new {|button, state, x, y|
-   case button
-      when GLUT::LEFT_BUTTON
-          GLUT.IdleFunc($spinDisplay) if (state == GLUT::DOWN)
-      when GLUT::MIDDLE_BUTTON
-          GLUT.IdleFunc(nil) if (state == GLUT::DOWN)
-   end
-}
+def init
+	glClearColor(0.0, 0.0, 0.0, 0.0)
+	glShadeModel(GL_FLAT)
+end
+
+reshape = Proc.new do |w, h|
+	glViewport(0, 0, w,  h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	glOrtho(-50.0, 50.0, -50.0, 50.0, -1.0, 1.0)
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+end
+
+mouse = Proc.new do |button, state, x, y|
+	case button
+		when GLUT_LEFT_BUTTON
+			glutIdleFunc($spinDisplay) if (state == GLUT_DOWN)
+		when GLUT_MIDDLE_BUTTON
+			glutIdleFunc(nil) if (state == GLUT_DOWN)
+	end
+end
+
+keyboard = Proc.new do |key, x, y|
+	case (key)
+		when 27
+		exit(0)
+	end
+end
    
-# 
 #  Request double buffer display mode.
 #  Register mouse input callback functions
-#/
-   GLUT.Init
-   GLUT.InitDisplayMode(GLUT::DOUBLE | GLUT::RGB);
-   GLUT.InitWindowSize(250, 250); 
-   GLUT.InitWindowPosition(100, 100);
-   GLUT.CreateWindow($0);
-   init();
-   GLUT.DisplayFunc(display); 
-   GLUT.ReshapeFunc(reshape); 
-   GLUT.MouseFunc(mouse);
-   GLUT.MainLoop();
+glutInit
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+glutInitWindowSize(500, 500) 
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+init()
+glutDisplayFunc(display) 
+glutReshapeFunc(reshape) 
+glutKeyboardFunc(keyboard)
+glutMouseFunc(mouse)
+glutMainLoop()

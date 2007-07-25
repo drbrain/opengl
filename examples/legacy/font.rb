@@ -1,53 +1,48 @@
-#/*
-# * Copyright (c) 1993-1997, Silicon Graphics, Inc.
-# * ALL RIGHTS RESERVED 
-# * Permission to use, copy, modify, and distribute this software for 
-# * any purpose and without fee is hereby granted, provided that the above
-# * copyright notice appear in all copies and that both the copyright notice
-# * and this permission notice appear in supporting documentation, and that 
-# * the name of Silicon Graphics, Inc. not be used in advertising
-# * or publicity pertaining to distribution of the software without specific,
-# * written prior permission. 
-# *
-# * THE MATERIAL EMBODIED ON THIS SOFTWARE IS PROVIDED TO YOU "AS-IS"
-# * AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
-# * INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY OR
-# * FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL SILICON
-# * GRAPHICS, INC.  BE LIABLE TO YOU OR ANYONE ELSE FOR ANY DIRECT,
-# * SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY
-# * KIND, OR ANY DAMAGES WHATSOEVER, INCLUDING WITHOUT LIMITATION,
-# * LOSS OF PROFIT, LOSS OF USE, SAVINGS OR REVENUE, OR THE CLAIMS OF
-# * THIRD PARTIES, WHETHER OR NOT SILICON GRAPHICS, INC.  HAS BEEN
-# * ADVISED OF THE POSSIBILITY OF SUCH LOSS, HOWEVER CAUSED AND ON
-# * ANY THEORY OF LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE
-# * POSSESSION, USE OR PERFORMANCE OF THIS SOFTWARE.
-# * 
-# * US Government Users Restricted Rights 
-# * Use, duplication, or disclosure by the Government is subject to
-# * restrictions set forth in FAR 52.227.19(c)(2) or subparagraph
-# * (c)(1)(ii) of the Rights in Technical Data and Computer Software
-# * clause at DFARS 252.227-7013 and/or in similar or successor
-# * clauses in the FAR or the DOD or NASA FAR Supplement.
-# * Unpublished-- rights reserved under the copyright laws of the
-# * United States.  Contractor/manufacturer is Silicon Graphics,
-# * Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
-# *
-# * OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
-# */
 #
-#/*
-# *  font.c
-# *
-# *  Draws some text in a bitmapped font.  Uses glBitmap() 
-# *  and other pixel routines.  Also demonstrates use of 
-# *  display lists.
-# */
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
+# Copyright (c) 1993-1997, Silicon Graphics, Inc.
+# ALL RIGHTS RESERVED 
+# Permission to use, copy, modify, and distribute this software for 
+# any purpose and without fee is hereby granted, provided that the above
+# copyright notice appear in all copies and that both the copyright notice
+# and this permission notice appear in supporting documentation, and that 
+# the name of Silicon Graphics, Inc. not be used in advertising
+# or publicity pertaining to distribution of the software without specific,
+# written prior permission. 
+#
+# THE MATERIAL EMBODIED ON THIS SOFTWARE IS PROVIDED TO YOU "AS-IS"
+# AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
+# INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY OR
+# FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL SILICON
+# GRAPHICS, INC.  BE LIABLE TO YOU OR ANYONE ELSE FOR ANY DIRECT,
+# SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY
+# KIND, OR ANY DAMAGES WHATSOEVER, INCLUDING WITHOUT LIMITATION,
+# LOSS OF PROFIT, LOSS OF USE, SAVINGS OR REVENUE, OR THE CLAIMS OF
+# THIRD PARTIES, WHETHER OR NOT SILICON GRAPHICS, INC.  HAS BEEN
+# ADVISED OF THE POSSIBILITY OF SUCH LOSS, HOWEVER CAUSED AND ON
+# ANY THEORY OF LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE
+# POSSESSION, USE OR PERFORMANCE OF THIS SOFTWARE.
+# 
+# US Government Users Restricted Rights 
+# Use, duplication, or disclosure by the Government is subject to
+# restrictions set forth in FAR 52.227.19(c)(2) or subparagraph
+# (c)(1)(ii) of the Rights in Technical Data and Computer Software
+# clause at DFARS 252.227-7013 and/or in similar or successor
+# clauses in the FAR or the DOD or NASA FAR Supplement.
+# Unpublished-- rights reserved under the copyright laws of the
+# United States.  Contractor/manufacturer is Silicon Graphics,
+# Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
+#
+# OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
+#
+# font.c
+#
+# Draws some text in a bitmapped font.  Uses glBitmap() 
+# and other pixel routines.  Also demonstrates use of 
+# display lists.
+require 'opengl'
+include Gl,Glu,Glut
 
-
-$space = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+$space = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
 
 $letters = [
 [0x00, 0x00, 0xc3, 0xc3, 0xc3, 0xc3, 0xff, 0xc3, 0xc3, 0xc3, 0x66, 0x3c, 0x18], 
@@ -76,83 +71,81 @@ $letters = [
 [0x00, 0x00, 0xc3, 0x66, 0x66, 0x3c, 0x3c, 0x18, 0x3c, 0x3c, 0x66, 0x66, 0xc3], 
 [0x00, 0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x3c, 0x3c, 0x66, 0x66, 0xc3], 
 [0x00, 0x00, 0xff, 0xc0, 0xc0, 0x60, 0x30, 0x7e, 0x0c, 0x06, 0x03, 0x03, 0xff]
-];
+]
 
-$fontOffset = 0;
+$fontOffset = 0
 
 def makeRasterFont
-   GL::PixelStorei(GL::UNPACK_ALIGNMENT, 1);
-
-   $fontOffset = GL::GenLists(128);
-   i = 0; j = ?A;
-   for i in 0...26
-      GL::NewList($fontOffset + j, GL::COMPILE);
-      GL::Bitmap(8, 13, 0.0, 2.0, 10.0, 0.0, $letters[i].pack("C*"));
-      GL::EndList();
-      j+=1
-   end
-   GL::NewList($fontOffset + ' '[0], GL::COMPILE);
-   GL::Bitmap(8, 13, 0.0, 2.0, 10.0, 0.0, $space.pack("C*"));
-   GL::EndList();
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+	
+	$fontOffset = glGenLists(128)
+	i = 0
+	j = ?A
+	for i in 0...26
+		glNewList($fontOffset + j, GL_COMPILE)
+		glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, $letters[i].pack("C*"))
+		glEndList()
+		j+=1
+	end
+	glNewList($fontOffset + ' '[0], GL_COMPILE)
+	glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, $space.pack("C*"))
+	glEndList()
 end
 
 def init
-   GL::ShadeModel(GL::FLAT);
-   makeRasterFont();
+	glShadeModel(GL_FLAT)
+	makeRasterFont()
 end
 
 def printString(s)
-   GL::PushAttrib(GL::LIST_BIT);
-   GL::ListBase($fontOffset);
-   GL::CallLists(s);
-   GL::PopAttrib();
+	glPushAttrib(GL_LIST_BIT)
+	glListBase($fontOffset)
+	glCallLists(s)
+	glPopAttrib()
 end
 
-#/* Everything above this line could be in a library 
-# * that defines a font.  To make it work, you've got 
-# * to call makeRasterFont() before you start making 
-# * calls to printString().
-# */
-display = proc {
-   white = [ 1.0, 1.0, 1.0 ];
+# Everything above this line could be in a library 
+# that defines a font.  To make it work, you've got 
+# to call makeRasterFont() before you start making 
+# calls to printString().
+display = proc do
+	white = [ 1.0, 1.0, 1.0 ]
+	
+	glClear(GL_COLOR_BUFFER_BIT)
+	glColor(white)
+	
+	glRasterPos(20, 60)
+	printString("THE QUICK BROWN FOX JUMPS")
+	glRasterPos(20, 40)
+	printString("OVER A LAZY DOG")
+	glutSwapBuffers()
+end
 
-   GL::Clear(GL::COLOR_BUFFER_BIT);
-   GL::Color(white);
+reshape = proc do |w, h|
+	glViewport(0, 0,  w,  h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	glOrtho(0.0, w, 0.0, h, -1.0, 1.0)
+	glMatrixMode(GL_MODELVIEW)
+end
 
-   GL::RasterPos(20, 60);
-   printString("THE QUICK BROWN FOX JUMPS");
-   GL::RasterPos(20, 40);
-   printString("OVER A LAZY DOG");
-   GL::Flush();
-}
+keyboard = proc do |key, x, y|
+	case (key)
+		when 27
+			exit(0)
+	end
+end
 
-reshape = proc {|w, h|
-   GL::Viewport(0, 0,  w,  h);
-   GL::MatrixMode(GL::PROJECTION);
-   GL::LoadIdentity();
-   GL::Ortho(0.0, w, 0.0, h, -1.0, 1.0);
-   GL::MatrixMode(GL::MODELVIEW);
-}
-
-# /* ARGSUSED1 */
-keyboard = proc {|key, x, y|
-   case (key)
-      when 27
-         exit(0);
-   end
-}
-
-#/*  Main Loop
-# *  Open window with initial window size, title bar, 
-# *  RGBA display mode, and handle input events.
-# */
-   GLUT::Init();
-   GLUT::InitDisplayMode(GLUT::SINGLE | GLUT::RGB);
-   GLUT::InitWindowSize(300, 100);
-   GLUT::InitWindowPosition(100, 100);
-   GLUT::CreateWindow();
-   init();
-   GLUT::ReshapeFunc(reshape);
-   GLUT::KeyboardFunc(keyboard);
-   GLUT::DisplayFunc(display);
-   GLUT::MainLoop();
+# Main Loop
+# Open window with initial window size, title bar, 
+# RGBA display mode, and handle input events.
+glutInit()
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+glutInitWindowSize(400, 100)
+glutInitWindowPosition(100, 100)
+glutCreateWindow()
+init()
+glutReshapeFunc(reshape)
+glutKeyboardFunc(keyboard)
+glutDisplayFunc(display)
+glutMainLoop()

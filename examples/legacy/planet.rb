@@ -33,80 +33,76 @@
 # Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
 # OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
-#/
-
 #
-#  planet.c
-#  This program shows how to composite modeling transformations
-#  to draw translated and rotated models.
-#  Interaction:  pressing the d and y keys (day and year)
-#  alters the rotation of the planet around the sun.
-#/
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
-require "rational"
+# planet.c
+# This program shows how to composite modeling transformations
+# to draw translated and rotated models.
+# Interaction:  pressing the d and y keys (day and year)
+# alters the rotation of the planet around the sun.
+require 'opengl'
+require 'rational'
+include Gl,Glu,Glut
 
 STDOUT.sync = TRUE
 
-$year = 0; $day = 0;
+$year = 0
+$day = 0
 
 def init
-   GL.ClearColor(0.0, 0.0, 0.0, 0.0);
-   GL.ShadeModel(GL::FLAT);
+	glClearColor(0.0, 0.0, 0.0, 0.0)
+	glShadeModel(GL_FLAT)
 end
 
-display = Proc.new {
-   GL.Clear(GL::COLOR_BUFFER_BIT);
-   GL.Color(1.0, 1.0, 1.0);
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT)
+	glColor(1.0, 1.0, 1.0)
+	
+	glPushMatrix()
+	glutWireSphere(1.0, 20, 16)   # draw sun
+	glRotate($year, 0.0, 1.0, 0.0)
+	glTranslate(2.0, 0.0, 0.0)
+	glRotate($day, 0.0, 1.0, 0.0)
+	glutWireSphere(0.2, 10, 8)    # draw smaller planet
+	glPopMatrix()
+	glutSwapBuffers()
+end
 
-   GL.PushMatrix();
-   GLUT.WireSphere(1.0, 20, 16);   # draw sun */
-   GL.Rotate($year, 0.0, 1.0, 0.0);
-   GL.Translate(2.0, 0.0, 0.0);
-   GL.Rotate($day, 0.0, 1.0, 0.0);
-   GLUT.WireSphere(0.2, 10, 8);    # draw smaller planet */
-   GL.PopMatrix();
-   GLUT.SwapBuffers();
-}
+reshape = Proc.new do |w, h|
+	glViewport(0, 0,  w,  h) 
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	gluPerspective(60.0,  w.to_f/h.to_f, 1.0, 20.0)
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+	gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+end
 
-reshape = Proc.new { |w, h|
-   GL.Viewport(0, 0,  w,  h); 
-   GL.MatrixMode(GL::PROJECTION);
-   GL.LoadIdentity();
-   GLU.Perspective(60.0,  w.to_f/h.to_f, 1.0, 20.0);
-   GL.MatrixMode(GL::MODELVIEW);
-   GL.LoadIdentity();
-   GLU.LookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-}
+keyboard = Proc.new do |key, x, y|
+	case (key)
+		when 'd'[0]
+			$day = ($day + 10) % 360
+			glutPostRedisplay()
+		when 'D'[0]
+			$day = ($day - 10) % 360
+			glutPostRedisplay()
+		when 'y'[0]
+			$year = ($year + 5) % 360
+			glutPostRedisplay()
+		when 'Y'[0]
+			$year = ($year - 5) % 360
+			glutPostRedisplay()
+		when 27
+			exit(0)
+	end
+end
 
-# ARGSUSED1 */
-keyboard = Proc.new {|key, x, y|
-   case (key)
-      when 'd'[0]
-         $day = ($day + 10) % 360;
-         GLUT.PostRedisplay();
-      when 'D'[0]
-         $day = ($day - 10) % 360;
-         GLUT.PostRedisplay();
-      when 'y'[0]
-         $year = ($year + 5) % 360;
-         GLUT.PostRedisplay();
-      when 'Y'[0]
-         $year = ($year - 5) % 360;
-         GLUT.PostRedisplay();
-      when 27
-         exit(0);
-   end
-}
-
-   GLUT.Init
-   GLUT.InitDisplayMode(GLUT::DOUBLE | GLUT::RGB);
-   GLUT.InitWindowSize(500, 500); 
-   GLUT.InitWindowPosition(100, 100);
-   GLUT.CreateWindow($0);
-   init();
-   GLUT.DisplayFunc(display); 
-   GLUT.ReshapeFunc(reshape);
-   GLUT.KeyboardFunc(keyboard);
-   GLUT.MainLoop();
+glutInit
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+glutInitWindowSize(500, 500) 
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+init()
+glutDisplayFunc(display) 
+glutReshapeFunc(reshape)
+glutKeyboardFunc(keyboard)
+glutMainLoop()

@@ -9,7 +9,7 @@
 # or publicity pertaining to distribution of the software without specific,
 # written prior permission. 
 #
-#THE MATERIAL EMBODIED ON THIS SOFTWARE IS PROVIDED TO YOU "AS-IS"
+# THE MATERIAL EMBODIED ON THIS SOFTWARE IS PROVIDED TO YOU "AS-IS"
 # AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
 # INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY OR
 # FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL SILICON
@@ -33,87 +33,81 @@
 # Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
 # OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
-#/
-
 #
 #  model.c
 #  This program demonstrates modeling transformations
-#/
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
-require "mathn"
+require 'opengl'
+require 'mathn'
+include Gl,Glu,Glut
 
 def init
-   GL.ClearColor(0.0, 0.0, 0.0, 0.0);
-   GL.ShadeModel(GL::FLAT);
+	glClearColor(0.0, 0.0, 0.0, 0.0)
+	glShadeModel(GL_FLAT)
 end
 
 def draw_triangle
-   GL.Begin (GL::LINE_LOOP);
-   GL.Vertex(0.0, 25.0);
-   GL.Vertex(25.0, -25.0);
-   GL.Vertex(-25.0, -25.0);
-   GL.End();
+	glBegin(GL_LINE_LOOP)
+	glVertex(0.0, 25.0)
+	glVertex(25.0, -25.0)
+	glVertex(-25.0, -25.0)
+	glEnd()
 end
 
-display = Proc.new {
-   GL.Clear(GL::COLOR_BUFFER_BIT);
-   GL.Color(1.0, 1.0, 1.0);
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT)
+	glColor(1.0, 1.0, 1.0)
+	
+	glLoadIdentity()
+	glColor(1.0, 1.0, 1.0)
+	draw_triangle()
+	
+	glEnable(GL_LINE_STIPPLE)
+	glLineStipple(1, 0xF0F0)
+	glLoadIdentity()
+	glTranslate(-20.0, 0.0, 0.0)
+	draw_triangle()
+	
+	glLineStipple(1, 0xF00F)
+	glLoadIdentity()
+	glScale(1.5, 0.5, 1.0)
+	draw_triangle()
+	
+	glLineStipple(1, 0x8888)
+	glLoadIdentity()
+	glRotate(90.0, 0.0, 0.0, 1.0)
+	draw_triangle()
+	glDisable(GL_LINE_STIPPLE)
+	
+	glutSwapBuffers()
+end
 
-   GL.LoadIdentity();
-   GL.Color(1.0, 1.0, 1.0);
-   draw_triangle();
+reshape = Proc.new do |w, h|
+	glViewport(0, 0,  w,  h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	if (w <= h)
+		glOrtho(-50.0, 50.0, -50.0*h/w,	50.0*h/w, -1.0, 1.0)
+	else
+		glOrtho(-50.0*w/h,50.0*w/h, -50.0, 50.0, -1.0, 1.0)
+	end
+	glMatrixMode(GL_MODELVIEW)
+end
 
-   GL.Enable(GL::LINE_STIPPLE);
-   GL.LineStipple(1, 0xF0F0);
-   GL.LoadIdentity();
-   GL.Translate(-20.0, 0.0, 0.0);
-   draw_triangle();
+keyboard = Proc.new do |key, x, y|
+	case key
+		when 27
+			exit(0)
+	end
+end
 
-   GL.LineStipple(1, 0xF00F);
-   GL.LoadIdentity();
-   GL.Scale(1.5, 0.5, 1.0);
-   draw_triangle();
-
-   GL.LineStipple(1, 0x8888);
-   GL.LoadIdentity();
-   GL.Rotate(90.0, 0.0, 0.0, 1.0);
-   draw_triangle();
-   GL.Disable(GL::LINE_STIPPLE);
-
-   GL.Flush();
-}
-
-reshape = Proc.new { |w, h|
-   GL.Viewport(0, 0,  w,  h);
-   GL.MatrixMode(GL::PROJECTION);
-   GL.LoadIdentity();
-   if (w <= h)
-      GL.Ortho(-50.0, 50.0, -50.0*h/w,
-         50.0*h/w, -1.0, 1.0);
-   else
-      GL.Ortho(-50.0*w/h,
-         50.0*w/h, -50.0, 50.0, -1.0, 1.0);
-   end
-   GL.MatrixMode(GL::MODELVIEW);
-}
-
-# ARGSUSED1 */
-keyboard = Proc.new {|key, x, y|
-   case key
-      when 27
-         exit(0);
-   end
-}
-
-   GLUT.Init
-   GLUT.InitDisplayMode(GLUT::SINGLE | GLUT::RGB);
-   GLUT.InitWindowSize(500, 500); 
-   GLUT.InitWindowPosition(100, 100);
-   GLUT.CreateWindow($0);
-   init();
-   GLUT.DisplayFunc(display); 
-   GLUT.ReshapeFunc(reshape);
-   GLUT.KeyboardFunc(keyboard);
-   GLUT.MainLoop();
+# main
+glutInit()
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+glutInitWindowSize(500, 500) 
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+init()
+glutDisplayFunc(display) 
+glutReshapeFunc(reshape)
+glutKeyboardFunc(keyboard)
+glutMainLoop()

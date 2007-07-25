@@ -33,8 +33,6 @@
 # Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
 # OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
-#/
-
 #
 #  movelight.c
 #  This program demonstrates when to issue lighting and
@@ -49,92 +47,86 @@
 #  Interaction:  pressing the left mouse button alters
 #  the modeling transformation (x rotation) by 30 degrees.
 #  The scene is then redrawn with the light in a new position.
-#/
 
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
-require "rational"
-require "mathn"
+require 'opengl'
+require 'rational'
+require 'mathn'
+include Gl,Glu,Glut
 
-$spin = 0;
+$spin = 0
 
 #  Initialize material property, light source, lighting model,
 #  and depth buffer.
-#/
 def init
-   GL.ClearColor(0.0, 0.0, 0.0, 0.0);
-   GL.ShadeModel(GL::SMOOTH);
-   GL.Enable(GL::LIGHTING);
-   GL.Enable(GL::LIGHT0);
-   GL.Enable(GL::DEPTH_TEST);
+	glClearColor(0.0, 0.0, 0.0, 0.0)
+	glShadeModel(GL_SMOOTH)
+	glEnable(GL_LIGHTING)
+	glEnable(GL_LIGHT0)
+	glEnable(GL_DEPTH_TEST)
 end
 
 #  Here is where the light position is reset after the modeling
 #  transformation (glRotated) is called.  This places the
 #  light at a new position in world coordinates.  The cube
 #  represents the position of the light.
-#/
-display = Proc.new {
-   position = [ 0.0, 0.0, 1.5, 1.0 ];
+display = Proc.new do
+	position = [ 0.0, 0.0, 1.5, 1.0 ]
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+	glPushMatrix()
+	GLU.LookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+	
+	glPushMatrix()
+	glRotate($spin, 1.0, 0.0, 0.0)
+	glLight(GL_LIGHT0, GL_POSITION, position)
+	
+	glTranslate(0.0, 0.0, 1.5)
+	glDisable(GL_LIGHTING)
+	glColor(0.0, 1.0, 1.0)
+	glutWireCube(0.1)
+	glEnable(GL_LIGHTING)
+	glPopMatrix()
+	
+	glutSolidTorus(0.275, 0.85, 8, 15)
+	glPopMatrix()
+	glutSwapBuffers()
+end
 
-   GL.Clear(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT);
-   GL.PushMatrix();
-   GLU.LookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+reshape = Proc.new do |w, h|
+	glViewport(0, 0,  w,  h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	gluPerspective(40.0,  w/h, 1.0, 20.0)
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+end
 
-   GL.PushMatrix();
-   GL.Rotate($spin, 1.0, 0.0, 0.0);
-   GL.Light(GL::LIGHT0, GL::POSITION, position);
+mouse = Proc.new do |button, state, x, y|
+	case button
+		when GLUT_LEFT_BUTTON
+			if (state == GLUT_DOWN)
+				$spin = ($spin + 30) % 360
+				glutPostRedisplay()
+			end
+	end
+end
 
-   GL.Translate(0.0, 0.0, 1.5);
-   GL.Disable(GL::LIGHTING);
-   GL.Color(0.0, 1.0, 1.0);
-   GLUT.WireCube(0.1);
-   GL.Enable(GL::LIGHTING);
-   GL.PopMatrix();
+keyboard = Proc.new do |key, x, y|
+	case key
+		when 27
+			exit(0)
+	end
+end
 
-   GLUT.SolidTorus(0.275, 0.85, 8, 15);
-   GL.PopMatrix();
-   GL.Flush();
-}
-
-reshape = Proc.new {|w, h|
-   GL.Viewport(0, 0,  w,  h);
-   GL.MatrixMode(GL::PROJECTION);
-   GL.LoadIdentity();
-#   GLU.Perspective(40.0,  Rational(w,h), 1.0, 20.0);
-   GLU.Perspective(40.0,  w/h, 1.0, 20.0);
-   GL.MatrixMode(GL::MODELVIEW);
-   GL.LoadIdentity();
-}
-
-# ARGSUSED2 */
-mouse = Proc.new {|button, state, x, y|
-   case button
-      when GLUT::LEFT_BUTTON
-         if (state == GLUT::DOWN)
-            $spin = ($spin + 30) % 360;
-            GLUT.PostRedisplay();
-         end
-   end
-}
-
-# ARGSUSED1 */
-keyboard = Proc.new {|key, x, y|
-   case key
-      when 27
-         exit(0);
-   end
-}
-
-   GLUT.Init
-   GLUT.InitDisplayMode(GLUT::SINGLE | GLUT::RGB | GLUT::DEPTH);
-   GLUT.InitWindowSize(500, 500); 
-   GLUT.InitWindowPosition(100, 100);
-   GLUT.CreateWindow($0);
-   init();
-   GLUT.DisplayFunc(display); 
-   GLUT.ReshapeFunc(reshape);
-   GLUT.MouseFunc(mouse);
-   GLUT.KeyboardFunc(keyboard);
-   GLUT.MainLoop();
+# main
+glutInit
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+glutInitWindowSize(500, 500) 
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+init()
+glutDisplayFunc(display) 
+glutReshapeFunc(reshape)
+glutMouseFunc(mouse)
+glutKeyboardFunc(keyboard)
+glutMainLoop()

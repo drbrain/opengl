@@ -1,83 +1,81 @@
-#/*
-# * (c) Copyright 1993, Silicon Graphics, Inc.
-# * ALL RIGHTS RESERVED 
-# * Permission to use, copy, modify, and distribute this software for 
-# * any purpose and without fee is hereby granted, provided that the above
-# * copyright notice appear in all copies and that both the copyright notice
-# * and this permission notice appear in supporting documentation, and that 
-# * the name of Silicon Graphics, Inc. not be used in advertising
-# * or publicity pertaining to distribution of the software without specific,
-# * written prior permission. 
-# *
-# * THE MATERIAL EMBODIED ON THIS SOFTWARE IS PROVIDED TO YOU "AS-IS"
-# * AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
-# * INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY OR
-# * FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL SILICON
-# * GRAPHICS, INC.  BE LIABLE TO YOU OR ANYONE ELSE FOR ANY DIRECT,
-# * SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY
-# * KIND, OR ANY DAMAGES WHATSOEVER, INCLUDING WITHOUT LIMITATION,
-# * LOSS OF PROFIT, LOSS OF USE, SAVINGS OR REVENUE, OR THE CLAIMS OF
-# * THIRD PARTIES, WHETHER OR NOT SILICON GRAPHICS, INC.  HAS BEEN
-# * ADVISED OF THE POSSIBILITY OF SUCH LOSS, HOWEVER CAUSED AND ON
-# * ANY THEORY OF LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE
-# * POSSESSION, USE OR PERFORMANCE OF THIS SOFTWARE.
-# * 
-# * US Government Users Restricted Rights 
-# * Use, duplication, or disclosure by the Government is subject to
-# * restrictions set forth in FAR 52.227.19(c)(2) or subparagraph
-# * (c)(1)(ii) of the Rights in Technical Data and Computer Software
-# * clause at DFARS 252.227-7013 and/or in similar or successor
-# * clauses in the FAR or the DOD or NASA FAR Supplement.
-# * Unpublished-- rights reserved under the copyright laws of the
-# * United States.  Contractor/manufacturer is Silicon Graphics,
-# * Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
-# *
-# * OpenGL(TM) is a trademark of Silicon Graphics, Inc.
-# */
-#/*
-#jitter.h
 #
-#This file contains jitter point arrays for 2,3,4,8,15,24 and 66 jitters.
+# (c) Copyright 1993, Silicon Graphics, Inc.
+# ALL RIGHTS RESERVED 
+# Permission to use, copy, modify, and distribute this software for 
+# any purpose and without fee is hereby granted, provided that the above
+# copyright notice appear in all copies and that both the copyright notice
+# and this permission notice appear in supporting documentation, and that 
+# the name of Silicon Graphics, Inc. not be used in advertising
+# or publicity pertaining to distribution of the software without specific,
+# written prior permission. 
 #
-#The arrays are named j2, j3, etc. Each element in the array has the form,
-#for example, j8[0].x and j8[0].y
+# THE MATERIAL EMBODIED ON THIS SOFTWARE IS PROVIDED TO YOU "AS-IS"
+# AND WITHOUT WARRANTY OF ANY KIND, EXPRESS, IMPLIED OR OTHERWISE,
+# INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY OR
+# FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL SILICON
+# GRAPHICS, INC.  BE LIABLE TO YOU OR ANYONE ELSE FOR ANY DIRECT,
+# SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY
+# KIND, OR ANY DAMAGES WHATSOEVER, INCLUDING WITHOUT LIMITATION,
+# LOSS OF PROFIT, LOSS OF USE, SAVINGS OR REVENUE, OR THE CLAIMS OF
+# THIRD PARTIES, WHETHER OR NOT SILICON GRAPHICS, INC.  HAS BEEN
+# ADVISED OF THE POSSIBILITY OF SUCH LOSS, HOWEVER CAUSED AND ON
+# ANY THEORY OF LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE
+# POSSESSION, USE OR PERFORMANCE OF THIS SOFTWARE.
+# 
+# US Government Users Restricted Rights 
+# Use, duplication, or disclosure by the Government is subject to
+# restrictions set forth in FAR 52.227.19(c)(2) or subparagraph
+# (c)(1)(ii) of the Rights in Technical Data and Computer Software
+# clause at DFARS 252.227-7013 and/or in similar or successor
+# clauses in the FAR or the DOD or NASA FAR Supplement.
+# Unpublished-- rights reserved under the copyright laws of the
+# United States.  Contractor/manufacturer is Silicon Graphics,
+# Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
-#Values are floating point in the range -.5 < x < .5, -.5 < y < .5, and
-#have a gaussian distribution around the origin.
+# OpenGL(TM) is a trademark of Silicon Graphics, Inc.
 #
-#Use these to do model jittering for scene anti-aliasing and view volume
-#jittering for depth of field effects. Use in conjunction with the 
-#accwindow() routine.
-#*/
+# jitter.h
+#
+# This file contains jitter point arrays for 2,3,4,8,15,24 and 66 jitters.
+#
+# The arrays are named j2, j3, etc. Each element in the array has the form,
+# for example, j8[0].x and j8[0].y
+#
+# Values are floating point in the range -.5 < x < .5, -.5 < y < .5, and
+# have a gaussian distribution around the origin.
+#
+# Use these to do model jittering for scene anti-aliasing and view volume
+# jittering for depth of field effects. Use in conjunction with the 
+# accwindow() routine.
+#
 
 MAX_SAMPLES=66
 
-
-#/* 2 jitter points */
+# 2 jitter points
 $j2 = [
 	[ 0.246490,  0.249999],
 	[-0.246490, -0.249999]
-];
+]
 
 
-# /* 3 jitter points */
+# 3 jitter points
 $j3 = [
 	[-0.373411, -0.250550],
 	[ 0.256263,  0.368119],
 	[ 0.117148, -0.117570]
-];
+]
 
 
-# /* 4 jitter points */
+# 4 jitter points
 $j4 = [
 	[-0.208147,  0.353730],
 	[ 0.203849, -0.353780],
 	[-0.292626, -0.149945],
 	[ 0.296924,  0.149994]
-];
+]
 
 
-# /* 8 jitter points */
+# 8 jitter points
 $j8 = [
 	[-0.334818,  0.435331],
 	[ 0.286438, -0.393495],
@@ -87,10 +85,10 @@ $j8 = [
 	[-0.079263, -0.317383],
 	[ 0.102254,  0.299133],
 	[ 0.164216, -0.054399]
-];
+]
 
 
-# /* 15 jitter points */
+# 15 jitter points 
 $j15 = [
 	[ 0.285561,  0.188437],
 	[ 0.360176, -0.065688],
@@ -107,9 +105,9 @@ $j15 = [
 	[-0.370135, -0.116425],
 	[ 0.451636, -0.300013],
 	[-0.370610,  0.387504]
-];
+]
 
-# /* 24 jitter points */
+# 24 jitter points 
 $j24 = [
 	[ 0.030245,  0.136384],
 	[ 0.018865, -0.348867],
@@ -135,10 +133,10 @@ $j24 = [
 	[-0.234392,  0.354659],
 	[-0.003102, -0.154402],
 	[ 0.297997, -0.417965]
-];
+]
 
 
-# /* 66 jitter points */
+# 66 jitter points
 $j66 = [
 	[ 0.266377, -0.218171],
 	[-0.170919, -0.429368],
@@ -206,4 +204,4 @@ $j66 = [
 	[ 0.076248,  0.478538],
 	[-0.073036, -0.355064],
 	[ 0.145087,  0.221726]
-];
+]

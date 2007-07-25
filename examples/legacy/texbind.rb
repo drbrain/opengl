@@ -33,125 +33,115 @@
 # Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
 # OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
-#/
+#
 
-#  texbind.c
-#  This program demonstrates using glBindTexture() by 
-#  creating and managing two textures.
-#/
-
-#define	checkImageWidth 64
-#define	checkImageHeight 64
-
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
-require "mathn"
+# texbind.c
+# This program demonstrates using glBindTexture() by 
+# creating and managing two textures.
+require 'opengl'
+require 'mathn'
+include Gl,Glu,Glut
 
 CheckImageWidth = 64
 CheckImageHeight = 64
-#$checkImage = MDArray.new(CheckImageHeight, CheckImageWidth, 4)
-#$otherImage = MDArray.new(CheckImageHeight, CheckImageWidth, 4)
 $checkImage = []
 $otherImage = []
 
-$texName = [];
+$texName = []
 
 def makeCheckImages
-   for i in (0..CheckImageHeight-1)
-      for j in (0..CheckImageWidth-1)
- 	 if ((i&0x8==0)!=(j&0x8==0)) then tmp = 1; else tmp=0; end
-         #c = ((((i&0x8)==0)^((j&0x8))==0))*255;
-         c = tmp * 255;
-         $checkImage[i*CheckImageWidth*4+j*4+0] = c;
-         $checkImage[i*CheckImageWidth*4+j*4+1] = c;
-         $checkImage[i*CheckImageWidth*4+j*4+2] = c;
-         $checkImage[i*CheckImageWidth*4+j*4+3] = 255;
-         #c = ((((i&0x10)==0)^((j&0x10))==0))*255;
- 	 if ((i&0x10==0)!=(j&0x10==0)) then tmp = 1; else tmp=0; end
-         c = tmp * 255;
-         $otherImage[i*CheckImageWidth*4+j*4+0] = c;
-         $otherImage[i*CheckImageWidth*4+j*4+1] = 0;
-         $otherImage[i*CheckImageWidth*4+j*4+2] = 0;
-         $otherImage[i*CheckImageWidth*4+j*4+3] = 255;
-      end
-   end
+	for i in (0..CheckImageHeight-1)
+		for j in (0..CheckImageWidth-1)
+			if ((i&0x8==0)!=(j&0x8==0)) then tmp = 1 else tmp=0 end
+			#c = ((((i&0x8)==0)^((j&0x8))==0))*255
+			c = tmp * 255
+			$checkImage[i*CheckImageWidth*4+j*4+0] = c
+			$checkImage[i*CheckImageWidth*4+j*4+1] = c
+			$checkImage[i*CheckImageWidth*4+j*4+2] = c
+			$checkImage[i*CheckImageWidth*4+j*4+3] = 255
+			#c = ((((i&0x10)==0)^((j&0x10))==0))*255
+			if ((i&0x10==0)!=(j&0x10==0)) then tmp = 1 else tmp=0 end
+			c = tmp * 255
+			$otherImage[i*CheckImageWidth*4+j*4+0] = c
+			$otherImage[i*CheckImageWidth*4+j*4+1] = 0
+			$otherImage[i*CheckImageWidth*4+j*4+2] = 0
+			$otherImage[i*CheckImageWidth*4+j*4+3] = 255
+		end
+	end
 end
 
 def init
-   GL.ClearColor(0.0, 0.0, 0.0, 0.0);
-   GL.ShadeModel(GL::FLAT);
-   GL.Enable(GL::DEPTH_TEST);
-
-   makeCheckImages();
-   GL.PixelStorei(GL::UNPACK_ALIGNMENT, 1);
-
-   $texName = GL.GenTextures(2);
-   GL.BindTexture(GL::TEXTURE_2D, $texName[0]);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_WRAP_S, GL::CLAMP);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_WRAP_T, GL::CLAMP);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_MAG_FILTER,GL::NEAREST);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_MIN_FILTER,GL::NEAREST);
-   GL.TexImage2D(GL::TEXTURE_2D, 0, GL::RGBA, CheckImageWidth,
-		CheckImageHeight, 0, GL::RGBA, GL::UNSIGNED_BYTE,
-                $checkImage.pack("C*"));
-
-   GL.BindTexture(GL::TEXTURE_2D, $texName[1]);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_WRAP_S, GL::CLAMP);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_WRAP_T, GL::CLAMP);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_MAG_FILTER, GL::NEAREST);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_MIN_FILTER, GL::NEAREST);
-   GL.TexEnvf(GL::TEXTURE_ENV, GL::TEXTURE_ENV_MODE, GL::DECAL);
-   GL.TexImage2D(GL::TEXTURE_2D, 0, GL::RGBA, CheckImageWidth, 
-                CheckImageHeight, 0, GL::RGBA, GL::UNSIGNED_BYTE, 
-                $otherImage.pack("C*"));
-   GL.Enable(GL::TEXTURE_2D);
+	glClearColor(0.0, 0.0, 0.0, 0.0)
+	glShadeModel(GL_FLAT)
+	glEnable(GL_DEPTH_TEST)
+	
+	makeCheckImages()
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+	
+	$texName = glGenTextures(2)
+	glBindTexture(GL_TEXTURE_2D, $texName[0])
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_NEAREST)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_NEAREST)
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CheckImageWidth,
+	CheckImageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE,	$checkImage.pack("C*"))
+	
+	glBindTexture(GL_TEXTURE_2D, $texName[1])
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, CheckImageWidth, CheckImageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
+		$otherImage.pack("C*"))
+	glEnable(GL_TEXTURE_2D)
 end
 
-display = Proc.new {
-   GL.Clear(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT);
-   GL.BindTexture(GL::TEXTURE_2D, $texName[0]);
-   GL.Begin(GL::QUADS);
-   GL.TexCoord(0.0, 0.0); GL.Vertex(-2.0, -1.0, 0.0);
-   GL.TexCoord(0.0, 1.0); GL.Vertex(-2.0, 1.0, 0.0);
-   GL.TexCoord(1.0, 1.0); GL.Vertex(0.0, 1.0, 0.0);
-   GL.TexCoord(1.0, 0.0); GL.Vertex(0.0, -1.0, 0.0);
-   GL.End();
-   GL.BindTexture(GL::TEXTURE_2D, $texName[1]);
-   GL.Begin(GL::QUADS);
-   GL.TexCoord(0.0, 0.0); GL.Vertex(1.0, -1.0, 0.0);
-   GL.TexCoord(0.0, 1.0); GL.Vertex(1.0, 1.0, 0.0);
-   GL.TexCoord(1.0, 1.0); GL.Vertex(2.41421, 1.0, -1.41421);
-   GL.TexCoord(1.0, 0.0); GL.Vertex(2.41421, -1.0, -1.41421);
-   GL.End();
-   GL.Flush();
-}
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+	glBindTexture(GL_TEXTURE_2D, $texName[0])
+	glBegin(GL_QUADS)
+	glTexCoord(0.0, 0.0); glVertex(-2.0, -1.0, 0.0)
+	glTexCoord(0.0, 1.0); glVertex(-2.0, 1.0, 0.0)
+	glTexCoord(1.0, 1.0); glVertex(0.0, 1.0, 0.0)
+	glTexCoord(1.0, 0.0); glVertex(0.0, -1.0, 0.0)
+	glEnd()
+	glBindTexture(GL_TEXTURE_2D, $texName[1])
+	glBegin(GL_QUADS)
+	glTexCoord(0.0, 0.0); glVertex(1.0, -1.0, 0.0)
+	glTexCoord(0.0, 1.0); glVertex(1.0, 1.0, 0.0)
+	glTexCoord(1.0, 1.0); glVertex(2.41421, 1.0, -1.41421)
+	glTexCoord(1.0, 0.0); glVertex(2.41421, -1.0, -1.41421)
+	glEnd()
+	glutSwapBuffers()
+end
 
-reshape = Proc.new {|w, h|
-   GL.Viewport(0, 0,  w, h);
-   GL.MatrixMode(GL::PROJECTION);
-   GL.LoadIdentity();
-   GLU.Perspective(60.0, w/h, 1.0, 30.0);
-   GL.MatrixMode(GL::MODELVIEW);
-   GL.LoadIdentity();
-   GL.Translate(0.0, 0.0, -3.6);
-}
+reshape = Proc.new do |w, h|
+	glViewport(0, 0,  w, h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	gluPerspective(60.0, w/h, 1.0, 30.0)
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+	glTranslate(0.0, 0.0, -3.6)
+end
 
-#* ARGSUSED1 */
-keyboard = Proc.new {|key, x, y|
-   case (key)
-      when 27
-         exit(0);
-   end
-}
+keyboard = Proc.new do |key, x, y|
+	case (key)
+		when 27
+			exit(0)
+	end
+end
 
-   GLUT.Init
-   GLUT.InitDisplayMode(GLUT::SINGLE | GLUT::RGB | GLUT::DEPTH);
-   GLUT.InitWindowSize(250, 250);
-   GLUT.InitWindowPosition(100, 100);
-   GLUT.CreateWindow($0);
-   init();
-   GLUT.ReshapeFunc(reshape);
-   GLUT.DisplayFunc(display);
-   GLUT.KeyboardFunc(keyboard);
-   GLUT.MainLoop();
+# main
+glutInit
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+glutInitWindowSize(500, 500)
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+init()
+glutReshapeFunc(reshape)
+glutDisplayFunc(display)
+glutKeyboardFunc(keyboard)
+glutMainLoop()

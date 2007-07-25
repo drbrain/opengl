@@ -33,139 +33,137 @@
 # Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
 # OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
-#/
+#
+# texgen.c
+# This program draws a texture mapped teapot with 
+# automatically generated texture coordinates.  The
+# texture is rendered as stripes on the teapot.
+# Initially, the object is drawn with texture coordinates
+# based upon the object coordinates of the vertex
+# and distance from the plane x = 0.  Pressing the 'e'
+# key changes the coordinate generation to eye coordinates
+# of the vertex.  Pressing the 'o' key switches it back
+# to the object coordinates.  Pressing the 's' key 
+# changes the plane to a slanted one (x + y + z = 0).
+# Pressing the 'x' key switches it back to x = 0.
 
-#  texgen.c
-#  This program draws a texture mapped teapot with 
-#  automatically generated texture coordinates.  The
-#  texture is rendered as stripes on the teapot.
-#  Initially, the object is drawn with texture coordinates
-#  based upon the object coordinates of the vertex
-#  and distance from the plane x = 0.  Pressing the 'e'
-#  key changes the coordinate generation to eye coordinates
-#  of the vertex.  Pressing the 'o' key switches it back
-#  to the object coordinates.  Pressing the 's' key 
-#  changes the plane to a slanted one (x + y + z = 0).
-#  Pressing the 'x' key switches it back to x = 0.
-#/
+require 'opengl'
+require 'mathn'
+include Gl,Glu,Glut
 
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
-require "mathn"
 StripeImageWidth =  32
 $stripeImage = []
 
-$texName;
+$texName
 
 def makeStripeImage
-   for j in (0..StripeImageWidth-1)
-      $stripeImage[4*j] = if (j<=4) then 255; else 0; end;
-      $stripeImage[4*j+1] = if (j>4) then 255 else 0; end;
-      $stripeImage[4*j+2] = 0;
-      $stripeImage[4*j+3] = 255;
-   end
+	for j in (0..StripeImageWidth-1)
+		$stripeImage[4*j] = if (j<=4) then 255 else 0 end
+		$stripeImage[4*j+1] = if (j>4) then 255 else 0 end
+		$stripeImage[4*j+2] = 0
+		$stripeImage[4*j+3] = 255
+	end
 end
 
-#*  planes for texture coordinate generation  */
-$xequalzero = [1.0, 0.0, 0.0, 0.0];
-$slanted = [1.0, 1.0, 1.0, 0.0];
-$currentCoeff = nil;
-$currentPlane = nil;
-$currentGenMode = nil;
+# planes for texture coordinate generation
+$xequalzero = [1.0, 0.0, 0.0, 0.0]
+$slanted = [1.0, 1.0, 1.0, 0.0]
+$currentCoeff = nil
+$currentPlane = nil
+$currentGenMode = nil
 
 def init
-   GL.ClearColor(0.0, 0.0, 0.0, 0.0);
-   GL.Enable(GL::DEPTH_TEST);
-   GL.ShadeModel(GL::SMOOTH);
-
-   makeStripeImage();
-   GL.PixelStorei(GL::UNPACK_ALIGNMENT, 1);
-
-   $texName = GL.GenTextures(1);
-   GL.BindTexture(GL::TEXTURE_2D, $texName[0]);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_WRAP_S, GL::REPEAT);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_MAG_FILTER, GL::LINEAR);
-   GL.TexParameteri(GL::TEXTURE_2D, GL::TEXTURE_MIN_FILTER, GL::LINEAR);
-   GL.TexImage2D(GL::TEXTURE_2D, 0, GL::RGBA, StripeImageWidth, 1, 0,
-                GL::RGBA, GL::UNSIGNED_BYTE, $stripeImage.pack("C*"));
-   GL.TexEnvf(GL::TEXTURE_ENV, GL::TEXTURE_ENV_MODE, GL::MODULATE);
-   $currentCoeff = $xequalzero;
-   $currentGenMode = GL::OBJECT_LINEAR;
-   $currentPlane = GL::OBJECT_PLANE;
-   GL.TexGen(GL::S, GL::TEXTURE_GEN_MODE, $currentGenMode);
-   GL.TexGen(GL::S, $currentPlane, $currentCoeff);
-
-   GL.Enable(GL::TEXTURE_GEN_S);
-   GL.Enable(GL::TEXTURE_2D);
-   GL.Enable(GL::CULL_FACE);
-   GL.Enable(GL::LIGHTING);
-   GL.Enable(GL::LIGHT0);
-   GL.Enable(GL::AUTO_NORMAL);
-   GL.Enable(GL::NORMALIZE);
-   GL.FrontFace(GL::CW);
-   GL.CullFace(GL::BACK);
-   GL.Material(GL::FRONT, GL::SHININESS, 64.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0)
+	glEnable(GL_DEPTH_TEST)
+	glShadeModel(GL_SMOOTH)
+	
+	makeStripeImage()
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+	
+	$texName = glGenTextures(1)
+	glBindTexture(GL_TEXTURE_2D, $texName[0])
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, StripeImageWidth, 1, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, $stripeImage.pack("C*"))
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+	$currentCoeff = $xequalzero
+	$currentGenMode = GL_OBJECT_LINEAR
+	$currentPlane = GL_OBJECT_PLANE
+	glTexGen(GL_S, GL_TEXTURE_GEN_MODE, $currentGenMode)
+	glTexGen(GL_S, $currentPlane, $currentCoeff)
+	
+	glEnable(GL_TEXTURE_GEN_S)
+	glEnable(GL_TEXTURE_2D)
+	glEnable(GL_CULL_FACE)
+	glEnable(GL_LIGHTING)
+	glEnable(GL_LIGHT0)
+	glEnable(GL_AUTO_NORMAL)
+	glEnable(GL_NORMALIZE)
+	glFrontFace(GL_CW)
+	glCullFace(GL_BACK)
+	glMaterial(GL_FRONT, GL_SHININESS, 64.0)
 end
 
-display = Proc.new {
-   GL.Clear(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT);
-   GL.PushMatrix();
-   GL.Rotate(45.0, 0.0, 0.0, 1.0);
-   GL.BindTexture(GL::TEXTURE_2D, $texName[0]);
-   GLUT.SolidTeapot(2.0);
-   GL.PopMatrix();
-   GL.Flush();
-}
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+	glPushMatrix()
+	glRotate(45.0, 0.0, 0.0, 1.0)
+	glBindTexture(GL_TEXTURE_2D, $texName[0])
+	glutSolidTeapot(2.0)
+	glPopMatrix()
+	glutSwapBuffers()
+end
 
-reshape = Proc.new {|w, h|
-   GL.Viewport(0, 0, w, h);
-   GL.MatrixMode(GL::PROJECTION);
-   GL.LoadIdentity();
-   if (w <= h)
-      GL.Ortho(-3.5, 3.5, -3.5*h/w,3.5*h/w, -3.5, 3.5);
-   else
-      GL.Ortho(-3.5*w/h, 3.5*w/h, -3.5, 3.5, -3.5, 3.5);
-   end
-   GL.MatrixMode(GL::MODELVIEW);
-   GL.LoadIdentity();
-}
+reshape = Proc.new do |w, h|
+	glViewport(0, 0, w, h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	if (w <= h)
+		glOrtho(-3.5, 3.5, -3.5*h/w,3.5*h/w, -3.5, 3.5)
+	else
+		glOrtho(-3.5*w/h, 3.5*w/h, -3.5, 3.5, -3.5, 3.5)
+	end
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+end
 
-#* ARGSUSED1 */
-keyboard = Proc.new {|key, x, y|
-   case (key)
-      when 'e'[0],'E'[0]
-         $currentGenMode = GL::EYE_LINEAR;
-         $currentPlane = GL::EYE_PLANE;
-         GL.TexGen(GL::S, GL::TEXTURE_GEN_MODE, $currentGenMode);
-         GL.TexGen(GL::S, $currentPlane, $currentCoeff);
-         GLUT.PostRedisplay();
-      when 'o'[0], 'O'[0]
-         $currentGenMode = GL::OBJECT_LINEAR;
-         $currentPlane = GL::OBJECT_PLANE;
-         GL.TexGen(GL::S, GL::TEXTURE_GEN_MODE, $currentGenMode);
-         GL.TexGen(GL::S, $currentPlane, $currentCoeff);
-         GLUT.PostRedisplay();
-      when 's'[0],'S'[0]
-         $currentCoeff = $slanted;
-         GL.TexGen(GL::S, $currentPlane, $currentCoeff);
-         GLUT.PostRedisplay();
-      when 'x'[0],'X'[0]
-         $currentCoeff = $xequalzero;
-         GL.TexGen(GL::S, $currentPlane, $currentCoeff);
-         GLUT.PostRedisplay();
-      when 27
-         exit(0);
-   end
-}
+keyboard = Proc.new do |key, x, y|
+	case (key)
+		when 'e'[0],'E'[0]
+			$currentGenMode = GL_EYE_LINEAR
+			$currentPlane = GL_EYE_PLANE
+			glTexGen(GL_S, GL_TEXTURE_GEN_MODE, $currentGenMode)
+			glTexGen(GL_S, $currentPlane, $currentCoeff)
+			glutPostRedisplay()
+		when 'o'[0], 'O'[0]
+			$currentGenMode = GL_OBJECT_LINEAR
+			$currentPlane = GL_OBJECT_PLANE
+			glTexGen(GL_S, GL_TEXTURE_GEN_MODE, $currentGenMode)
+			glTexGen(GL_S, $currentPlane, $currentCoeff)
+			glutPostRedisplay()
+		when 's'[0],'S'[0]
+			$currentCoeff = $slanted
+			glTexGen(GL_S, $currentPlane, $currentCoeff)
+			glutPostRedisplay()
+		when 'x'[0],'X'[0]
+			$currentCoeff = $xequalzero
+			glTexGen(GL_S, $currentPlane, $currentCoeff)
+			glutPostRedisplay()
+		when 27
+			exit(0)
+	end
+end
 
-   GLUT.Init
-   GLUT.InitDisplayMode (GLUT::SINGLE | GLUT::RGB | GLUT::DEPTH);
-   GLUT.InitWindowSize(256, 256);
-   GLUT.InitWindowPosition(100, 100);
-   GLUT.CreateWindow ($0);
-   init();
-   GLUT.DisplayFunc(display);
-   GLUT.ReshapeFunc(reshape);
-   GLUT.KeyboardFunc(keyboard);
-   GLUT.MainLoop();
+# main
+glutInit
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+glutInitWindowSize(500, 500)
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+init()
+glutDisplayFunc(display)
+glutReshapeFunc(reshape)
+glutKeyboardFunc(keyboard)
+glutMainLoop()

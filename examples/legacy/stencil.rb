@@ -1,6 +1,5 @@
-
-# Copyright (c) Mark J. Kilgard, 1994. */
-
+#
+# Copyright (c) Mark J. Kilgard, 1994.
 #
 # (c) Copyright 1993, Silicon Graphics, Inc.
 # ALL RIGHTS RESERVED 
@@ -36,119 +35,129 @@
 # Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
 # OpenGL(TM) is a trademark of Silicon Graphics, Inc.
-#/
-#  stencil.c
-#  This program draws two rotated tori in a window.  
-#  A diamond in the center of the window masks out part 
-#  of the scene.  Within this mask, a different model 
-#  (a sphere) is drawn in a different color.
-#/
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
-require "rational"
+#
+# stencil.c
+# This program draws two rotated tori in a window.  
+# A diamond in the center of the window masks out part 
+# of the scene.  Within this mask, a different model 
+# (a sphere) is drawn in a different color.
+#
+require 'opengl'
+require 'rational'
+include Gl,Glu,Glut
 
 YELLOWMAT=1
 BLUEMAT=2
 
 def myinit
-    yellow_diffuse = [ 0.7, 0.7, 0.0, 1.0 ];
-    yellow_specular = [ 1.0, 1.0, 1.0, 1.0 ];
-
-    blue_diffuse = [ 0.1, 0.1, 0.7, 1.0 ];
-    blue_specular = [ 0.1, 1.0, 1.0, 1.0 ];
-
-    position_one = [ 1.0, 1.0, 1.0, 0.0 ];
-
-    GL.NewList(YELLOWMAT, GL::COMPILE);
-    GL.Material(GL::FRONT, GL::DIFFUSE, yellow_diffuse);
-    GL.Material(GL::FRONT, GL::SPECULAR, yellow_specular);
-    GL.Material(GL::FRONT, GL::SHININESS, 64.0);
-    GL.EndList();
-
-    GL.NewList(BLUEMAT, GL::COMPILE);
-    GL.Material(GL::FRONT, GL::DIFFUSE, blue_diffuse);
-    GL.Material(GL::FRONT, GL::SPECULAR, blue_specular);
-    GL.Material(GL::FRONT, GL::SHININESS, 45.0);
-    GL.EndList();
-
-    GL.Light(GL::LIGHT0, GL::POSITION, position_one);
-
-    GL.Enable(GL::LIGHT0);
-    GL.Enable(GL::LIGHTING);
-    GL.DepthFunc(GL::LESS);
-    GL.Enable(GL::DEPTH_TEST);
-
-    GL.ClearStencil(0x0);
-    GL.Enable(GL::STENCIL_TEST);
+	yellow_diffuse = [ 0.7, 0.7, 0.0, 1.0 ]
+	yellow_specular = [ 1.0, 1.0, 1.0, 1.0 ]
+	
+	blue_diffuse = [ 0.1, 0.1, 0.7, 1.0 ]
+	blue_specular = [ 0.1, 1.0, 1.0, 1.0 ]
+	
+	position_one = [ 1.0, 1.0, 1.0, 0.0 ]
+	
+	glNewList(YELLOWMAT, GL_COMPILE)
+	glMaterial(GL_FRONT, GL_DIFFUSE, yellow_diffuse)
+	glMaterial(GL_FRONT, GL_SPECULAR, yellow_specular)
+	glMaterial(GL_FRONT, GL_SHININESS, 64.0)
+	glEndList()
+	
+	glNewList(BLUEMAT, GL_COMPILE)
+	glMaterial(GL_FRONT, GL_DIFFUSE, blue_diffuse)
+	glMaterial(GL_FRONT, GL_SPECULAR, blue_specular)
+	glMaterial(GL_FRONT, GL_SHININESS, 45.0)
+	glEndList()
+	
+	glLight(GL_LIGHT0, GL_POSITION, position_one)
+	
+	glEnable(GL_LIGHT0)
+	glEnable(GL_LIGHTING)
+	glEnable(GL_DEPTH_TEST)
+	
+	glClearStencil(0x0)
+	glEnable(GL_STENCIL_TEST)
 end
 
 #  Draw a sphere in a diamond-shaped section in the
 #  middle of a window with 2 tori.
-#/
-display = Proc.new {
-    GL.Clear(GL::COLOR_BUFFER_BIT | GL::DEPTH_BUFFER_BIT);
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+	
+	# draw blue sphere where the stencil is 1
+	glStencilFunc(GL_EQUAL, 0x1, 0x1)
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP)
+	glCallList(BLUEMAT)
+	glutSolidSphere(0.5, 15, 15)
+	
+	# draw the tori where the stencil is not 1
+	glStencilFunc(GL_NOTEQUAL, 0x1, 0x1)
+	glPushMatrix()
+	glRotate(45.0, 0.0, 0.0, 1.0)
+	glRotate(45.0, 0.0, 1.0, 0.0)
+	glCallList(YELLOWMAT)
+	glutSolidTorus(0.275, 0.85, 15, 15)
+	glPushMatrix()
+	glRotate(90.0, 1.0, 0.0, 0.0)
+	glutSolidTorus(0.275, 0.85, 15, 15)
+	glPopMatrix()
+	glPopMatrix()
 
-# draw blue sphere where the stencil is 1 */
-    GL.StencilFunc(GL::EQUAL, 0x1, 0x1);
-    GL.CallList(BLUEMAT);
-    GLUT.SolidSphere(0.5, 15, 15);
-
-# draw the tori where the stencil is not 1 */
-    GL.StencilFunc(GL::NOTEQUAL, 0x1, 0x1);
-    GL.StencilOp(GL::KEEP, GL::KEEP, GL::KEEP);
-    GL.PushMatrix();
-	GL.Rotate(45.0, 0.0, 0.0, 1.0);
-	GL.Rotate(45.0, 0.0, 1.0, 0.0);
-	GL.CallList(YELLOWMAT);
-	GLUT.SolidTorus(0.275, 0.85, 15, 15);
-	GL.PushMatrix();
-	    GL.Rotate(90.0, 1.0, 0.0, 0.0);
-	    GLUT.SolidTorus(0.275, 0.85, 15, 15);
-	GL.PopMatrix();
-    GL.PopMatrix();
-}
+	glutSwapBuffers()
+end
 
 #  Whenever the window is reshaped, redefine the 
 #  coordinate system and redraw the stencil area.
-#/
-myReshape = Proc.new {|w, h|
-    GL.Viewport(0, 0, w, h);
+myReshape = Proc.new do |w, h|
+	glViewport(0, 0, w, h)
+	
+	# create a diamond shaped stencil area
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	if w<=h
+		gluOrtho2D(-3.0, 3.0, -3.0*h/w, 3*h/w)
+	else
+		gluOrtho2D(-3.0*w/h, 3.0*w/h, -3.0, 3)
+	end
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+	
+	glClear(GL_STENCIL_BUFFER_BIT)
+	glStencilFunc(GL_ALWAYS, 0x1, 0x1)
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE)
+	glBegin(GL_QUADS)
+	glVertex2f(-1.0, 0.0)
+	glVertex2f(0.0, 1.0)
+	glVertex2f(1.0, 0.0)
+	glVertex2f(0.0, -1.0)
+	glEnd()
+	
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	GLU.Perspective(45.0,  w.to_f/h.to_f, 3.0, 7.0)
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+	glTranslate(0.0, 0.0, -5.0)
+end
 
-    GL.Clear(GL::STENCIL_BUFFER_BIT);
-# create a diamond shaped stencil area */
-    GL.MatrixMode(GL::PROJECTION);
-    GL.LoadIdentity();
-    GL.Ortho(-3.0, 3.0, -3.0, 3.0, -1.0, 1.0);
-    GL.MatrixMode(GL::MODELVIEW);
-    GL.LoadIdentity();
-
-    GL.StencilFunc(GL::ALWAYS, 0x1, 0x1);
-    GL.StencilOp(GL::REPLACE, GL::REPLACE, GL::REPLACE);
-    GL.Begin(GL::QUADS);
-	GL.Vertex(-1.0, 0.0, 0.0);
-	GL.Vertex(0.0, 1.0, 0.0);
-	GL.Vertex(1.0, 0.0, 0.0);
-	GL.Vertex(0.0, -1.0, 0.0);
-    GL.End();
-
-    GL.MatrixMode(GL::PROJECTION);
-    GL.LoadIdentity();
-    GLU.Perspective(45.0,  w.to_f/h.to_f, 3.0, 7.0);
-    GL.MatrixMode(GL::MODELVIEW);
-    GL.LoadIdentity();
-    GL.Translate(0.0, 0.0, -5.0);
-}
+keyboard = Proc.new do |key, x, y|
+	case (key)
+		when 27
+		exit(0);
+	end
+end
 
 #  Main Loop
 #  Open window with initial window size, title bar, 
-#  RGBA display mode, and handle input events.
-#/
-    GLUT.Init()
-    GLUT.InitDisplayMode(GLUT::SINGLE | GLUT::RGB | GLUT::DEPTH | GLUT::STENCIL);
-    GLUT.InitWindowSize(400, 400);
-    GLUT.CreateWindow($0);
-    myinit
-    GLUT.ReshapeFunc(myReshape);
-    GLUT.DisplayFunc(display);
-    GLUT.MainLoop();
+#  RGB display mode, and handle input events.
+glutInit()
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_STENCIL)
+glutInitWindowSize(500, 500)
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+myinit
+glutReshapeFunc(myReshape)
+glutDisplayFunc(display)
+glutKeyboardFunc(keyboard)
+glutMainLoop()

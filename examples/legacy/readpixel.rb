@@ -1,59 +1,65 @@
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
+require 'opengl'
+include Gl,Glu,Glut
 
 begin
-require "RMagick"
+	require "RMagick"
 rescue Exception
-    print "This sample needs RMagick Module.\n"
-    exit
+	print "This sample needs RMagick Module.\n"
+	exit
 end
 
-WIDTH = 200
-HEIGHT = 200
+WIDTH = 500
+HEIGHT = 500
 
-display = Proc.new {
-   GL.Clear(GL::COLOR_BUFFER_BIT);
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT)
+	
+	glBegin(GL_LINES)
+	glVertex(0.5, 0.5)
+	glVertex(-0.5, -0.5)
+	glEnd
+	
+	glFlush()
+	
+	pixels = glReadPixels(0, 0, WIDTH, HEIGHT, GL_RGBA, GL_UNSIGNED_SHORT)
+	
+	image = Magick::Image.new(WIDTH, HEIGHT)
+	image.import_pixels(0, 0, WIDTH, HEIGHT, "RGBA", pixels,Magick::ShortPixel)
+	image.flip!
+	image.write("opengl_window.gif")
+end
 
-   GL.Begin(GL::LINES);
-      GL.Vertex(0.5, 0.5);
-      GL.Vertex(-0.5, -0.5);
-   GL.End
+reshape = Proc.new do |w, h|
+	glViewport(0, 0,  w,  h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	if (w <= h) 
+		gluOrtho2D(-1.0, 1.0, -h.to_f/w.to_f, h.to_f/w.to_f)
+	else 
+		gluOrtho2D(w.to_f/h.to_f, w.to_f/h.to_f, -1.0, 1.0)
+	end
+	glMatrixMode(GL_MODELVIEW)
+	glLoadIdentity()
+end
 
-   GL.Flush();
 
-   pixel_str = GL.ReadPixels(0, 0, WIDTH, HEIGHT, GL::RGBA, GL::SHORT)
-   pixels = pixel_str.unpack("s*")
-    
-   image = Magick::Image.new(WIDTH, HEIGHT)
-   image.import_pixels(0, 0, WIDTH, HEIGHT, "RGBA", pixels)
-   image.flip!
-#   image.write("opengl_window.gif")
-}
-
-reshape = Proc.new {|w, h|
-   GL.Viewport(0, 0,  w,  h);
-   GL.MatrixMode(GL::PROJECTION);
-   GL.LoadIdentity();
-   if (w <= h) 
-      GLU.Ortho2D(-1.0, 1.0, -h.to_f/w.to_f, h.to_f/w.to_f);
-   else 
-      GLU.Ortho2D(w.to_f/h.to_f, w.to_f/h.to_f, -1.0, 1.0);
-   end
-   GL.MatrixMode(GL::MODELVIEW);
-   GL.LoadIdentity();
-}
-
+keyboard = Proc.new do |key, x, y|
+	case (key)
+		when 27
+		exit(0);
+	end
+end
 
 #  Main Loop
 #  Open window with initial window size, title bar, 
 #  color index display mode, and handle input events.
-#
-   GLUT.Init
-   GLUT.InitDisplayMode(GLUT::SINGLE | GLUT::RGB | GLUT::ALPHA);
-   GLUT.InitWindowSize(WIDTH, HEIGHT);
-   GLUT.CreateWindow($0);
-   GLUT.ReshapeFunc(reshape);
-   GLUT.DisplayFunc(display);
-   GLUT.MainLoop
+glutInit
+glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_ALPHA)
+glutInitWindowSize(WIDTH, HEIGHT)
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+glutReshapeFunc(reshape)
+glutDisplayFunc(display)
+glutKeyboardFunc(keyboard)
+glutMainLoop
 

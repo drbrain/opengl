@@ -33,66 +33,59 @@
 # Inc., 2011 N.  Shoreline Blvd., Mountain View, CA 94039-7311.
 #
 # OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
-#/
-
-#*
-#*  drawf.c
-#*  Draws the bitmapped letter F on the screen (several times).
-#*  This demonstrates use of the glBitmap() call.
-#*/
-
-require "gl_prev"
-require "glu_prev"
-require "glut_prev"
-
+#
+# drawf.c
+# Draws the bitmapped letter F on the screen (several times).
+# This demonstrates use of the glBitmap() call.
+require 'opengl'
+include Gl,Glu,Glut
 
 $rasters = [
-   0xc0, 0x00, 0xc0, 0x00, 0xc0, 0x00, 0xc0, 0x00, 0xc0, 0x00,
-   0xff, 0x00, 0xff, 0x00, 0xc0, 0x00, 0xc0, 0x00, 0xc0, 0x00,
-   0xff, 0xc0, 0xff, 0xc0].pack("C*");
+	0xc0, 0x00, 0xc0, 0x00, 0xc0, 0x00, 0xc0, 0x00, 0xc0, 0x00,
+	0xff, 0x00, 0xff, 0x00, 0xc0, 0x00, 0xc0, 0x00, 0xc0, 0x00,
+	0xff, 0xc0, 0xff, 0xc0
+].pack("C*")
 
 def init
-   GL.PixelStorei(GL::UNPACK_ALIGNMENT, 1);
-   GL.ClearColor(0.0, 0.0, 0.0, 0.0);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+	glClearColor(0.0, 0.0, 0.0, 0.0)
 end
 
-display = Proc.new {
-   GL.Clear(GL::COLOR_BUFFER_BIT);
-   GL.Color(1.0, 1.0, 1.0);
-   GL.RasterPos2i(20, 20);
-   GL.Bitmap(10, 12, 0.0, 0.0, 11.0, 0.0, $rasters);
-   GL.Bitmap(10, 12, 0.0, 0.0, 11.0, 0.0, $rasters);
-   GL.Bitmap(10, 12, 0.0, 0.0, 11.0, 0.0, $rasters);
-   GL.Flush();
-}
+display = Proc.new do
+	glClear(GL_COLOR_BUFFER_BIT)
+	glColor(1.0, 1.0, 1.0)
+	glRasterPos2i(20, 20)
+	glBitmap(10, 12, 0.0, 0.0, 11.0, 0.0, $rasters)
+	glBitmap(10, 12, 0.0, 0.0, 11.0, 0.0, $rasters)
+	glBitmap(10, 12, 0.0, 0.0, 11.0, 0.0, $rasters)
+	glutSwapBuffers()
+end
 
-reshape = Proc.new {|w, h|
-   GL.Viewport(0, 0, w,  h);
-   GL.MatrixMode(GL::PROJECTION);
-   GL.LoadIdentity();
-   GL.Ortho(0, w, 0, h, -1.0, 1.0);
-   GL.MatrixMode(GL::MODELVIEW);
-}
+reshape = Proc.new do |w, h|
+	glViewport(0, 0, w,  h)
+	glMatrixMode(GL_PROJECTION)
+	glLoadIdentity()
+	glOrtho(0, w, 0, h, -1.0, 1.0)
+	glMatrixMode(GL_MODELVIEW)
+end
 
-#* ARGSUSED1 */
-keyboard = Proc.new {|key, x, y|
-   case (key)
-      when 27
-         exit(0);
-   end
-}
+keyboard = Proc.new do |key, x, y|
+	case (key)
+		when 27
+			exit(0)
+	end
+end
 
-#*  Main Loop
-#*  Open window with initial window size, title bar, 
-#*  RGBA display mode, and handle input events.
-#*/
-   GLUT.Init
-   GLUT.InitDisplayMode(GLUT::SINGLE | GLUT::RGB);
-   GLUT.InitWindowSize(100, 100);
-   GLUT.InitWindowPosition(100, 100);
-   GLUT.CreateWindow($0);
-   init();
-   GLUT.ReshapeFunc(reshape);
-   GLUT.KeyboardFunc(keyboard);
-   GLUT.DisplayFunc(display);
-   GLUT.MainLoop();
+# Main Loop
+# Open window with initial window size, title bar, 
+# RGBA display mode, and handle input events.
+glutInit
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+glutInitWindowSize(100, 100)
+glutInitWindowPosition(100, 100)
+glutCreateWindow($0)
+init()
+glutReshapeFunc(reshape)
+glutKeyboardFunc(keyboard)
+glutDisplayFunc(display)
+glutMainLoop()
