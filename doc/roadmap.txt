@@ -2,22 +2,24 @@ Roadmap
 =======
 
 * Ensure support for 2.0 and 2.1 is solid 
-* Make sure OpenGL 1.0 and 1.1 are solidly supported
-* Continue testing 1.2+ support
-* Create a set of test images for functional test comparison
-* Get BaseGLUT updated.
+* Update and cleanup GLU
+* Update and cleanup GLUT
 * Add RDoc documentation comments to C API
-* Make sure this can build cleanly under Windows under the current
-  build system.
-* Add the ESC keyboard handler to smooth.rb
-* Add all of Yoshi's examples into examples
 * Create more example code
 * Write a getting started tutorial
-
+* Write documentation on things that are different from C API
+* Add support for pixel pack/unpack buffer (2.1 functionality)
+* Account for alignment in size check when sending data in GL_BITMAP mode
+  (functions glTexImage* and other)
+* Add ARB and other core OpenGL extensions
 
 Possible Features
 ========
 * Possibly port GLU to use Ruby/DL
+* Support for r/w VBO buffer mapping - gl(Un)MapBuffer (is it needed?)
+* Support all pixelstore modes (currently forced to default values by
+  any function getting/setting data affected by it)
+* Add *all* OpenGL extensions
 
 <br/>
 <br/>
