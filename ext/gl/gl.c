@@ -41,9 +41,28 @@ static VALUE
 IsAvailable(obj,arg1)
 VALUE obj,arg1;
 {
-	char *name = RSTRING(arg1)->ptr;
-	Check_Type(arg1, T_STRING);
-	if (name && name[0] && (name[0]=='G' || name[0]=='W')) { /* GL_, GLX_, WGL_ extension */
+	char *name = NULL;
+	VALUE s;
+
+	s = rb_funcall(arg1, rb_intern("to_s"),0);
+	name = RSTRING(s)->ptr;
+
+	if (name && name[0] && name[0]>='0' && name[0]<='9') { /* GL version query */
+		int major,minor,q_major,q_minor;
+		const char *vstr = (const char *) glGetString(GL_VERSION);
+
+    if (!vstr ||
+				(sscanf( vstr, "%d.%d", &q_major, &q_minor ) != 2) ||
+				(sscanf( name, "%d.%d", &major, &minor ) != 2)
+				)
+			return Qfalse;
+
+		if (q_major>major || (q_major==major && q_minor >=minor))
+			return Qtrue;
+		else
+			return Qfalse;
+
+	} else if (name && name[0] && (name[0]=='G' || name[0]=='W')) { /* GL_, GLX_, WGL_ extension */
 		char buf[512+128];
 		if (strlen(name)>(512))
 			return Qfalse;
@@ -59,7 +78,7 @@ VALUE obj,arg1;
 
 DLLEXPORT void Init_gl()
 {
-    module = rb_define_module("Gl");
+	module = rb_define_module("Gl");
 	gl_init_enums(module);
 	gl_init_functions_1_0__1_1(module);
 	gl_init_functions_1_2(module);
