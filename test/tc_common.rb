@@ -14,9 +14,9 @@
 #
 
 if __FILE__ == $0
-    # If we are being called from the command line, e.g., ruby foo.rb, then
-    # fixup the load path so we can find the OpenGL extension libs
-    $: << File.join(File.dirname(__FILE__), '..', 'lib')
+	# If we are being called from the command line, e.g., ruby foo.rb, then
+	# fixup the load path so we can find the OpenGL extension libs
+	$: << File.join(File.dirname(__FILE__), '..', 'lib')
 end
 
 require 'test/unit'
@@ -28,11 +28,11 @@ include Glut
 $window_size = 512
 
 def glut_init()
-		glutInit
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_ACCUM | GLUT_ALPHA)
-	  glutInitWindowPosition(1, 1)
-	  glutInitWindowSize($window_size, $window_size)
-	  glutCreateWindow("test")
+	glutInit
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_ACCUM | GLUT_ALPHA)
+	glutInitWindowPosition(1, 1)
+	glutInitWindowSize($window_size, $window_size)
+	glutCreateWindow("test")
 end
 
 def approx_equal(a,b,epsilon=0.01)
@@ -68,11 +68,11 @@ def common_teardown
 end
 
 def supported?(funcs)
-	funcs.each do |name|
+	Array(funcs).each do |name| # convert to array if it isn't already
 		if !Gl.is_available?(name)
-				puts ""				
-				puts "Function/extension #{name} not supported, test skipped"
-				return false
+			puts ""				
+			puts "#{name} not supported, test skipped"
+			return false
 		end
 	end
 	return true

@@ -25,7 +25,7 @@ class Test_13 < Test::Unit::TestCase
 	end
 
 	def test_glsamplecoverage
-		return if not supported?("glSampleCoverage")
+		return if not supported?(1.3)
 		glSampleCoverage(0.0,GL_TRUE)
 		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_VALUE),0.0)
 		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_INVERT),GL_TRUE)
@@ -35,7 +35,7 @@ class Test_13 < Test::Unit::TestCase
 	end
 
 	def test_multitexture
-		return if not supported?(["glActiveTexture","glClientActiveTexture"])
+		return if not supported?(1.3)
 		glActiveTexture(GL_TEXTURE1)
 		glClientActiveTexture(GL_TEXTURE2)
 		assert_equal(glGetIntegerv(GL_ACTIVE_TEXTURE),GL_TEXTURE1)
@@ -43,7 +43,7 @@ class Test_13 < Test::Unit::TestCase
 	end
 
 	def test_transposematrix
-		return if not supported?(["glLoadTransposeMatrixf","glLoadTransposeMatrixd","glMultTransposeMatrixf","glMultTransposeMatrixd"])
+		return if not supported?(1.3)
 		m_a = [[2.0,0.0,0.0,0.0],
 					 [0.0,2.0,0.0,0.0],
 					 [0.0,0.0,2.0,0.0],
@@ -71,7 +71,7 @@ class Test_13 < Test::Unit::TestCase
 	end
 	
 	def test_texturecompression
-		return if not supported?(["GL_EXT_texture_compression_s3tc","glCompressedTexImage1D","glCompressedTexImage2D","glCompressedTexImage3D","glCompressedTexSubImage1D","glCompressedTexSubImage2D","glCompressedTexSubImage3D"])
+		return if not supported?(1.3)
 
 		# S3TC/DXT5 compressed 2x2 pixels stipple patterns [w,b,b,w] and [b,w,w,b]
 		image_1 = [0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x01,0x54,0x5C,0x5C].pack("C*")
@@ -125,7 +125,7 @@ class Test_13 < Test::Unit::TestCase
 	end
 	
 	def test_glmultitexcoord
-		return if not supported?(["glMultiTexCoord1d"])
+		return if not supported?(1.3)
 	
 		glActiveTexture(GL_TEXTURE1)
 

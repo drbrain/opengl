@@ -25,7 +25,7 @@ class Test_15 < Test::Unit::TestCase
 	end
 
 	def test_query
-		return if not supported?(["glGenQueries","glDeleteQueries","glIsQuery","glBeginQuery","glGetQueryiv","glGetQueryObjectiv","glGetQueryObjectuiv"])
+		return if not supported?(1.5)
 		queries = glGenQueries(2)
 		assert_equal(queries.size,2)
 
@@ -55,7 +55,7 @@ class Test_15 < Test::Unit::TestCase
 	end
 	
 	def test_buffers
-		return if not supported?(["glGenBuffers","glDeleteBuffers","glIsBuffer","glBindBuffer","glBufferData","glBufferSubData","glGetBufferSubData","glMapBuffer","glUnmapBuffer","glGetBufferParameteriv","glGetBufferPointerv"])
+		return if not supported?(1.5)
 		buffers = glGenBuffers(2)
 		glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
 		assert_equal(glIsBuffer(buffers[0]),GL_TRUE)		

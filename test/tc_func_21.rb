@@ -25,7 +25,7 @@ class Test_21 < Test::Unit::TestCase
 	end
 
 	def test_gluniformmatrix21
-		return if not supported?(["glCreateProgram","glUniformMatrix2x3fv"])
+		return if not supported?(2.1)
 
 		vertex_shader_source = "#version 120\n uniform mat2x3 testmat23; uniform mat3x2 testmat32; uniform mat2x4 testmat24; uniform mat4x2 testmat42; uniform mat3x4 testmat34; uniform mat4x3 testmat43; void main() { gl_Position = gl_Vertex * testmat23[0].x * testmat32[0].x * testmat24[0].x * testmat42[0].x * testmat34[0].x * testmat43[0].x;}"
 

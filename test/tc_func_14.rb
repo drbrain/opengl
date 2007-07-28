@@ -25,7 +25,7 @@ class Test_14 < Test::Unit::TestCase
 	end
 
 	def test_arrays_2
-		return if not supported?(["glSecondaryColorPointer","glFogCoordPointer"])
+		return if not supported?(1.4)
 		sc = [0,1,0, 1,0,1].pack("f*")
 		fc = [1, 0].pack("f*")
 
@@ -61,7 +61,7 @@ class Test_14 < Test::Unit::TestCase
 	end
 
 	def test_arrays_3
-		return if not supported?(["glMultiDrawArrays","glMultiDrawElements"])
+		return if not supported?(1.4)
 		va = [0,0, 1,0, 1,1, 0,0, 1,0, 0,1].pack("f*")
 		glVertexPointer(2,GL_FLOAT,0,va)
 		
@@ -82,7 +82,7 @@ class Test_14 < Test::Unit::TestCase
 	end
 
 	def test_glblendfuncseparate
-		return if not supported?(["glBlendFuncSeparate"])
+		return if not supported?(1.4)
 		glBlendFuncSeparate(GL_SRC_COLOR,GL_SRC_COLOR,GL_SRC_COLOR,GL_SRC_COLOR)
 		assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB),GL_SRC_COLOR)
 		assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA),GL_SRC_COLOR)
@@ -91,7 +91,7 @@ class Test_14 < Test::Unit::TestCase
 	end
 
 	def test_glpointparameter
-		return if not supported?(["glPointParameterf","glPointParameterfv","glPointParameteri","glPointParameteriv"])
+		return if not supported?(1.4)
 		glPointParameterf(GL_POINT_SIZE_MIN,2.0)
 		assert_equal(glGetDoublev(GL_POINT_SIZE_MIN),2.0)
 
@@ -106,7 +106,7 @@ class Test_14 < Test::Unit::TestCase
 	end
 
 	def test_glfogcoord
-		return if not supported?(["glFogCoordf","glFogCoordd","glFogCoordfv","glFogCoorddv",])
+		return if not supported?(1.4)
 
 		glFogCoordf(2.0)
 		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),2.0)
@@ -120,7 +120,7 @@ class Test_14 < Test::Unit::TestCase
 	end
 
 	def test_glsecondarycolor
-		return if not supported?(["glSecondaryColor3b"])
+		return if not supported?(1.4)
 
 		glSecondaryColor3b(2**7-1,0,2**7-1)
 		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
@@ -157,7 +157,7 @@ class Test_14 < Test::Unit::TestCase
 	end
 
 	def test_glwindowpos
-		return if not supported?(["glWindowPos2d"])
+		return if not supported?(1.4)
 		# 2
 		glWindowPos2d(1.0,2.0)
 		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])

@@ -25,7 +25,7 @@ class Test_20 < Test::Unit::TestCase
 	end
 
 	def test_glblendequationseparate
-		return if not supported?("glBlendEquationSeparate")
+		return if not supported?(2.0)
 		glBlendEquationSeparate(GL_MIN,GL_MAX)
 		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB),GL_MIN)
 		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA),GL_MAX)
@@ -35,7 +35,7 @@ class Test_20 < Test::Unit::TestCase
 	end
 
 	def test_stencilops
-		return if not supported?(["glStencilOpSeparate","glStencilFuncSeparate","glStencilMaskSeparate"])
+		return if not supported?(2.0)
 
 		glStencilOpSeparate(GL_FRONT, GL_ZERO, GL_INCR, GL_DECR)
 		assert_equal(glGetIntegerv(GL_STENCIL_FAIL), GL_ZERO)
@@ -62,13 +62,13 @@ class Test_20 < Test::Unit::TestCase
 	end
 
 	def test_gldrawbuf
-		return if not supported?("glDrawBuffers")
+		return if not supported?(2.0)
 		glDrawBuffers([GL_NONE])
 		assert_equal(glGetIntegerv(GL_DRAW_BUFFER0),GL_NONE)
 	end
 
 	def test_glvertexattrib
-		return if not supported?(["glVertexAttrib1f","glGetVertexAttribdv"])
+		return if not supported?(2.0)
 		# 1
 		glVertexAttrib1d(1,2.0)
 		assert_equal(glGetVertexAttribdv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,0.0,0.0,1.0])
@@ -149,7 +149,7 @@ class Test_20 < Test::Unit::TestCase
 	end
 
 	def test_vertexattribpointer
-		return if not supported?(["glVertexAttribPointer","glGetVertexAttribPointerv","glEnableVertexAttribArray","glDisableVertexAttribArray"])
+		return if not supported?(2.0)
 		
 		vaa = [1,1,1,1, 2,2,2,2].pack("f*")
 		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,vaa)
@@ -166,7 +166,7 @@ class Test_20 < Test::Unit::TestCase
 	end
 
 	def test_shaders
-		return if not supported?(["glCreateProgram","glIsProgram","glDeleteProgram","glCreateShader","glIsShader","glDeleteShader","glShaderSource","glGetShaderSource","glGetShaderiv","glGetProgramiv","glGetShaderInfoLog","glGetProgramInfoLog","glAttachShader","glDetachShader","glGetAttachedShaders","glValidateProgram","glUseProgram","glLinkProgram"])
+		return if not supported?(2.0)
 
 		vertex_shader_source = "void main() { gl_Position = ftransform();}"
 	
@@ -214,7 +214,7 @@ class Test_20 < Test::Unit::TestCase
 	end
 
 	def test_shaders_2
-		return if not supported?(["glCreateProgram","glBindAttribLocation","glGetAttribLocation"])
+		return if not supported?(2.0)
 
 		vertex_shader_source = "attribute vec4 test; uniform float testvec1; uniform vec2 testvec2; uniform vec3 testvec3; uniform vec4 testvec4; uniform int testivec1; uniform ivec2 testivec2; uniform ivec3 testivec3; uniform ivec4 testivec4; void main() { gl_Position = testvec1 * test * testvec2.x * testvec3.x * testivec1 * testivec2.x * testivec3.x * testivec4.x + testvec4;}"
 		program = glCreateProgram()
@@ -287,7 +287,7 @@ class Test_20 < Test::Unit::TestCase
 	end
 
 	def test_shaders_3
-		return if not supported?(["glCreateProgram","glUniformMatrix2fv"])
+		return if not supported?(2.0)
 
 		vertex_shader_source = "uniform mat2 testmat2; uniform mat3 testmat3; uniform mat4 testmat4; void main() { gl_Position = gl_Vertex * testmat4[0].x * testmat3[0].x * testmat2[0].x;}"
 
