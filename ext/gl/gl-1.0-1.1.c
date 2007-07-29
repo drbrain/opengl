@@ -4058,6 +4058,7 @@ VALUE obj,arg1,arg2,arg3;
 	format = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
+	rb_str_freeze(arg3);
 	glInterleavedArrays(format, stride, (const GLvoid*)RSTRING(arg3)->ptr);
 	return Qnil;
 }
