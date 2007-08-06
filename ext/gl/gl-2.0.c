@@ -1511,10 +1511,16 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	stride = (GLsizei)NUM2UINT(arg5);
 	if (index>_MAX_VERTEX_ATTRIBS)
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
-	Check_Type(arg6, T_STRING);
-	rb_str_freeze(arg6);
-	g_VertexAttrib_ptr[index] = arg6;
-	fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING(arg6)->ptr);
+
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_VertexAttrib_ptr[index] = arg6;
+		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)NUM2INT(arg6));
+	} else {
+		Check_Type(arg6, T_STRING);
+		rb_str_freeze(arg6);
+		g_VertexAttrib_ptr[index] = arg6;
+		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING(arg6)->ptr);
+	}
 	return Qnil;
 }
 

@@ -65,8 +65,12 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	end = (GLuint)NUM2UINT(arg3);
 	count = (GLsizei)NUM2UINT(arg4);
 	type = (GLenum)NUM2INT(arg5);
-	Check_Type(arg6, T_STRING);
-	fptr_glDrawRangeElements(mode, start, end, count, type, RSTRING(arg6)->ptr);
+	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
+		fptr_glDrawRangeElements(mode, start, end, count, type, (GLvoid *)NUM2INT(arg6));
+	} else {
+		Check_Type(arg6, T_STRING);
+		fptr_glDrawRangeElements(mode, start, end, count, type, RSTRING(arg6)->ptr);
+	}
 	return Qnil;
 }
 

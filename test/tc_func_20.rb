@@ -317,4 +317,29 @@ class Test_20 < Test::Unit::TestCase
 		glUniformMatrix4fv(tm4l, 1, GL_TRUE, [0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
 		assert_equal(glGetUniformfv(program,tm4l),[0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
 	end
+
+
+	def test_buffered_vertexattribpointer
+		return if not supported?(2.0)
+
+		vaa = [1,1,1,1, 2,2,2,2].pack("f*")
+
+		buffers = glGenBuffers(1)
+
+		glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
+		glBufferData(GL_ARRAY_BUFFER,8*4,vaa,GL_DYNAMIC_DRAW)
+		
+		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,0)
+		assert_equal(glGetVertexAttribPointerv(1),0)
+		
+		glEnableVertexAttribArray(1)
+		
+		glBegin(GL_POINTS)
+		glArrayElement(1)
+		glEnd()
+		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB),[2,2,2,2])
+		
+		glDisableVertexAttribArray(1)
+		glDeleteBuffers(buffers)
+	end
 end

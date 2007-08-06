@@ -3925,10 +3925,15 @@ VALUE obj, arg1, arg2, arg3, arg4; \
 	size = (GLint)NUM2INT(arg1); \
 	type = (GLenum)NUM2INT(arg2); \
 	stride = (GLsizei)NUM2UINT(arg3); \
-	Check_Type(arg4, T_STRING); \
-	rb_str_freeze(arg4); \
-	g_##_func_##_ptr = arg4; \
-	gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING(arg4)->ptr); \
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) { \
+		g_##_func_##_ptr = arg4; \
+		gl##_func_##Pointer(size, type, stride, (const GLvoid*)NUM2INT(arg4)); \
+	} else { \
+		Check_Type(arg4, T_STRING); \
+		rb_str_freeze(arg4); \
+		g_##_func_##_ptr = arg4; \
+		gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING(arg4)->ptr); \
+	} \
 	return Qnil; \
 }
 
@@ -3972,8 +3977,12 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	mode = (GLenum)NUM2INT(arg1);
 	count = (GLsizei)NUM2UINT(arg2);
 	type = (GLenum)NUM2INT(arg3);
-	Check_Type(arg4, T_STRING);
-	glDrawElements(mode, count, type, (const GLvoid*)RSTRING(arg4)->ptr);
+	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
+		glDrawElements(mode, count, type, (const GLvoid*)NUM2INT(arg4));
+	} else {
+		Check_Type(arg4, T_STRING);
+		glDrawElements(mode, count, type, (const GLvoid*)RSTRING(arg4)->ptr);
+	}
 	return Qnil;
 }
 
@@ -3983,10 +3992,15 @@ VALUE obj,arg1,arg2;
 {
 	GLsizei stride;
 	stride = (GLsizei)NUM2UINT(arg1);
-	Check_Type(arg2, T_STRING);
-	rb_str_freeze(arg2);
-	g_EdgeFlag_ptr = arg2;
-	glEdgeFlagPointer(stride, (const GLboolean*)RSTRING(arg2)->ptr);
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_EdgeFlag_ptr = arg2;
+		glEdgeFlagPointer(stride, (const GLboolean*) NUM2INT(arg2));
+	} else {
+		Check_Type(arg2, T_STRING);
+		rb_str_freeze(arg2);
+		g_EdgeFlag_ptr = arg2;
+		glEdgeFlagPointer(stride, (const GLboolean*)RSTRING(arg2)->ptr);
+	}
 	return Qnil;
 }
 
@@ -4042,10 +4056,15 @@ VALUE obj,arg1,arg2,arg3;
 	GLsizei stride;
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
-	Check_Type(arg3, T_STRING);
-	rb_str_freeze(arg3);
-	g_Index_ptr = arg3;
-	glIndexPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_Index_ptr = arg3;
+		glIndexPointer(type, stride, (const GLvoid*)NUM2INT(arg3));
+	} else {
+		Check_Type(arg3, T_STRING);
+		rb_str_freeze(arg3);
+		g_Index_ptr = arg3;
+		glIndexPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+	}
 	return Qnil;
 }
 
@@ -4071,10 +4090,15 @@ VALUE obj,arg1,arg2,arg3;
 	GLsizei stride;
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
-	Check_Type(arg3, T_STRING);
-	rb_str_freeze(arg3);
-	g_Normal_ptr = arg3;
-	glNormalPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_Normal_ptr = arg3;
+		glNormalPointer(type, stride, (const GLvoid*)NUM2INT(arg3));
+	} else {
+		Check_Type(arg3, T_STRING);
+		rb_str_freeze(arg3);
+		g_Normal_ptr = arg3;
+		glNormalPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+	}
 	return Qnil;
 }
 

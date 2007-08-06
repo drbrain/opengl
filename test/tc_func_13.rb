@@ -72,6 +72,7 @@ class Test_13 < Test::Unit::TestCase
 	
 	def test_texturecompression
 		return if not supported?(1.3)
+		return if not supported?("GL_EXT_texture_compression_s3tc")
 
 		# S3TC/DXT5 compressed 2x2 pixels stipple patterns [w,b,b,w] and [b,w,w,b]
 		image_1 = [0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x01,0x54,0x5C,0x5C].pack("C*")

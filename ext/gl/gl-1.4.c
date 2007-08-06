@@ -96,10 +96,15 @@ VALUE obj,arg1,arg2,arg3;
 	LOAD_GL_FUNC(glFogCoordPointer)
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
-	Check_Type(arg3, T_STRING);
-	rb_str_freeze(arg3);
-	g_FogCoord_ptr = arg3;
-	fptr_glFogCoordPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_FogCoord_ptr = arg3;
+		fptr_glFogCoordPointer(type, stride, (const GLvoid*)NUM2INT(arg3));
+	} else {
+		Check_Type(arg3, T_STRING);
+		rb_str_freeze(arg3);
+		g_FogCoord_ptr = arg3;
+		fptr_glFogCoordPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+	}
 	return Qnil;
 }
 
@@ -411,10 +416,15 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	size = (GLint)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
 	stride = (GLsizei)NUM2UINT(arg3);
-	Check_Type(arg4, T_STRING);
-	rb_str_freeze(arg4);
-	g_SecondaryColor_ptr = arg4;
-	fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)RSTRING(arg4)->ptr);
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_SecondaryColor_ptr = arg4;
+		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)NUM2INT(arg4));
+	} else {
+		Check_Type(arg4, T_STRING);
+		rb_str_freeze(arg4);
+		g_SecondaryColor_ptr = arg4;
+		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)RSTRING(arg4)->ptr);
+	}
 	return Qnil;
 }
 
