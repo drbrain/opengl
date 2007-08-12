@@ -93,15 +93,19 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	width = (GLsizei)NUM2UINT(arg3);
 	format = (GLenum)NUM2INT(arg4);
 	type = (GLenum)NUM2INT(arg5);
-	Check_Type(arg6,T_STRING);
-	format_size = glformat_size(format);	
-	type_size = gltype_size(type);	
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
-	size = format_size*type_size*width;
-	if (RSTRING(arg6)->len < size)
-		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
-	fptr_glColorTable(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glColorTable(target,internalformat,width,format,type,(GLvoid *)NUM2INT(arg6));
+	} else {
+		Check_Type(arg6,T_STRING);
+		format_size = glformat_size(format);	
+		type_size = gltype_size(type);	
+		if (type_size == -1 || format_size == -1)
+			rb_raise(rb_eTypeError, "type/format mismatch");
+		size = format_size*type_size*width;
+		if (RSTRING(arg6)->len < size)
+			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
+		fptr_glColorTable(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
+	}
 	return Qnil;
 }
 
@@ -272,15 +276,19 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	count = (GLsizei)NUM2UINT(arg3);	
 	format = (GLenum)NUM2INT(arg4);	
 	type = (GLenum)NUM2INT(arg5);	
-	Check_Type(arg6,T_STRING);
-	format_size = glformat_size(format);	
-	type_size = gltype_size(type);	
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
-	size = format_size*type_size*count;
-	if (RSTRING(arg6)->len < size)
-		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
-	fptr_glColorSubTable(target,start,count,format,type,RSTRING(arg6)->ptr);
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glColorSubTable(target,start,count,format,type,(GLvoid *)NUM2INT(arg6));
+	} else {
+		Check_Type(arg6,T_STRING);
+		format_size = glformat_size(format);	
+		type_size = gltype_size(type);	
+		if (type_size == -1 || format_size == -1)
+			rb_raise(rb_eTypeError, "type/format mismatch");
+		size = format_size*type_size*count;
+		if (RSTRING(arg6)->len < size)
+			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
+		fptr_glColorSubTable(target,start,count,format,type,RSTRING(arg6)->ptr);
+	}
 	return Qnil;
 }
 
@@ -323,18 +331,22 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	width = (GLsizei)NUM2UINT(arg3);
 	format = (GLenum)NUM2INT(arg4);
 	type = (GLenum)NUM2INT(arg5);
-	Check_Type(arg6,T_STRING);
-	format_size = glformat_size(format);	
-	type_size = gltype_size(type);	
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
-	if (type==GL_BITMAP)
-		size = format_size*(width/8);
-	else
-		size = type_size*format_size*width;
-	if (RSTRING(arg6)->len < size)
-		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
-	fptr_glConvolutionFilter1D(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,(GLvoid *)NUM2INT(arg6));
+	} else {
+		Check_Type(arg6,T_STRING);
+		format_size = glformat_size(format);	
+		type_size = gltype_size(type);	
+		if (type_size == -1 || format_size == -1)
+			rb_raise(rb_eTypeError, "type/format mismatch");
+		if (type==GL_BITMAP)
+			size = format_size*(width/8);
+		else
+			size = type_size*format_size*width;
+		if (RSTRING(arg6)->len < size)
+			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
+		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
+	}
 	return Qnil;
 }
 
@@ -359,18 +371,22 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	height = (GLsizei)NUM2UINT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
-	Check_Type(arg7,T_STRING);
-	format_size = glformat_size(format);
-	type_size = gltype_size(type);
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
-	if (type==GL_BITMAP)
-		size = format_size*((width*height)/8);
-	else
-		size = type_size*format_size*width*height;
-	if (RSTRING(arg7)->len < size)
-		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
-	fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr);
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2INT(arg7));
+	} else {
+		Check_Type(arg7,T_STRING);
+		format_size = glformat_size(format);
+		type_size = gltype_size(type);
+		if (type_size == -1 || format_size == -1)
+			rb_raise(rb_eTypeError, "type/format mismatch");
+		if (type==GL_BITMAP)
+			size = format_size*((width*height)/8);
+		else
+			size = type_size*format_size*width*height;
+		if (RSTRING(arg7)->len < size)
+			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
+		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr);
+	}
 	return Qnil;
 }
 
@@ -650,25 +666,29 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	height = (GLsizei)NUM2UINT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
-	Check_Type(arg7,T_STRING);
-	Check_Type(arg8,T_STRING);
-	format_size = glformat_size(format);
-	type_size = gltype_size(type);
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
-	if (type==GL_BITMAP) {
-		size_row = format_size*(width/8);
-		size_column = format_size*(height/8);
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2INT(arg7),(GLvoid *)NUM2INT(arg8));
 	} else {
-		size_row = type_size*format_size*width;		
-		size_column = type_size*format_size*height;		
+		Check_Type(arg7,T_STRING);
+		Check_Type(arg8,T_STRING);
+		format_size = glformat_size(format);
+		type_size = gltype_size(type);
+		if (type_size == -1 || format_size == -1)
+			rb_raise(rb_eTypeError, "type/format mismatch");
+		if (type==GL_BITMAP) {
+			size_row = format_size*(width/8);
+			size_column = format_size*(height/8);
+		} else {
+			size_row = type_size*format_size*width;		
+			size_column = type_size*format_size*height;		
+		}
+		if (RSTRING(arg7)->len < size_row)
+			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
+		if (RSTRING(arg8)->len < size_column)
+			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg8)->len);
+	
+		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr,RSTRING(arg8)->ptr);
 	}
-	if (RSTRING(arg7)->len < size_row)
-		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
-	if (RSTRING(arg8)->len < size_column)
-		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg8)->len);
-
-	fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr,RSTRING(arg8)->ptr);
 	return Qnil;
 }
 
@@ -898,7 +918,13 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	border = (GLint)NUM2INT(arg7);
 	format = (GLenum)NUM2INT(arg8);
 	type = (GLenum)NUM2INT(arg9);
-	Check_Type(arg10, T_STRING);
+
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glTexImage3D( target, level, internalFormat, width, height,
+					  depth, border, format, type,(GLvoid *)NUM2INT(arg10));
+		return Qnil;
+	}
+
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
 	if (type_size == -1 || format_size == -1)
@@ -911,16 +937,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	if (target == GL_PROXY_TEXTURE_3D || NIL_P(arg10)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
-		if (TYPE(arg10) == T_FIXNUM || TYPE(arg10) == T_BIGNUM) { /* arg10 is offset to unpack buffer */
-			pixels = (const char *)NUM2UINT(arg10);
-		} else if (TYPE(arg10) == T_STRING) { /* image data */
-			if (RSTRING(arg10)->len < size)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg10)->len);
-			pixels = RSTRING(arg10)->ptr;
-		} else {
-			Check_Type(arg10,T_STRING); /* force exception */
-			return Qnil;
-		}
+		Check_Type(arg10,T_STRING);
+		if (RSTRING(arg10)->len < size)
+			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg10)->len);
+		pixels = RSTRING(arg10)->ptr;
 	}
 	fptr_glTexImage3D( target, level, internalFormat, width, height,
 				  depth, border, format, type,pixels);
@@ -942,7 +962,6 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	GLsizei depth;
 	GLenum format;
 	GLenum type;
-	const char *pixels;
 	int size;
 	int type_size;
 	int format_size;
@@ -957,6 +976,12 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	depth = (GLsizei)NUM2UINT(arg8);
 	format = (GLenum)NUM2INT(arg9);
 	type = (GLenum)NUM2INT(arg10);
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
+				width, height, depth,
+				format, type, (GLvoid *)NUM2INT(arg11));
+		return Qnil;
+	}
 	Check_Type(arg11, T_STRING);
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
@@ -967,20 +992,14 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	else	
 		size = type_size*format_size*height*width*depth;
 
-	if (TYPE(arg11) == T_STRING) {
-		if (RSTRING(arg11)->len < size)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
-		 pixels = RSTRING(arg11)->ptr;
-	} else if (TYPE(arg11) == T_FIXNUM || TYPE(arg11) == T_BIGNUM) { /* arg11 is offset to unpack buffer */
-			pixels = (const char *)NUM2UINT(arg11);
-	} else {
-		Check_Type(arg11,T_STRING); /* force exception */
-		return Qnil;
-	}
+	Check_Type(arg11,T_STRING);
+
+	if (RSTRING(arg11)->len < size)
+		rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
 
 	fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 			width, height, depth,
-			format, type, pixels);
+			format, type, RSTRING(arg11)->ptr);
 	return Qnil;
 }
 

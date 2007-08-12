@@ -457,17 +457,21 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	depth = (GLsizei)NUM2UINT(arg6);
 	border = (GLint)NUM2INT(arg7);
 	imagesize = (GLsizei)NUM2UINT(arg8);
-	if (TYPE(arg9) == T_STRING) {
-		if (RSTRING(arg9)->len < imagesize)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
-		pixels = RSTRING(arg9)->ptr;
-	} else if (NIL_P(arg9)) {
-		pixels = NULL;
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,(GLvoid *)NUM2INT(arg9));
 	} else {
-		Check_Type(arg9,T_STRING); /* force exception */
-		return Qnil;
+		if (TYPE(arg9) == T_STRING) {
+			if (RSTRING(arg9)->len < imagesize)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
+			pixels = RSTRING(arg9)->ptr;
+		} else if (NIL_P(arg9)) {
+			pixels = NULL;
+		} else {
+			Check_Type(arg9,T_STRING); /* force exception */
+			return Qnil;
+		}
+		fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,pixels);
 	}
-	fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,pixels);
 	return Qnil;
 }
 
@@ -492,17 +496,21 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	height = (GLsizei)NUM2UINT(arg5);
 	border = (GLint)NUM2INT(arg6);
 	imagesize = (GLsizei)NUM2UINT(arg7);
-	if (TYPE(arg8) == T_STRING) {
-		if (RSTRING(arg8)->len < imagesize)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
-		pixels = RSTRING(arg8)->ptr;
-	} else if (NIL_P(arg8)) {
-		pixels = NULL;
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,(GLvoid *)NUM2INT(arg8));
 	} else {
-		Check_Type(arg8,T_STRING); /* force exception */
-		return Qnil;
+		if (TYPE(arg8) == T_STRING) {
+			if (RSTRING(arg8)->len < imagesize)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
+			pixels = RSTRING(arg8)->ptr;
+		} else if (NIL_P(arg8)) {
+			pixels = NULL;
+		} else {
+			Check_Type(arg8,T_STRING); /* force exception */
+			return Qnil;
+		}
+		fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,pixels);
 	}
-	fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,pixels);
 	return Qnil;
 }
 
@@ -525,17 +533,21 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	width = (GLsizei)NUM2UINT(arg4);
 	border = (GLint)NUM2INT(arg5);
 	imagesize = (GLsizei)NUM2UINT(arg6);
-	if (TYPE(arg7) == T_STRING) {
-		if (RSTRING(arg7)->len < imagesize)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
-		pixels = RSTRING(arg7)->ptr;
-	} else if (NIL_P(arg7)) {
-		pixels = NULL;
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,(GLvoid *)NUM2INT(arg7));
 	} else {
-		Check_Type(arg7,T_STRING); /* force exception */
-		return Qnil;
+		if (TYPE(arg7) == T_STRING) {
+			if (RSTRING(arg7)->len < imagesize)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
+			pixels = RSTRING(arg7)->ptr;
+		} else if (NIL_P(arg7)) {
+			pixels = NULL;
+		} else {
+			Check_Type(arg7,T_STRING); /* force exception */
+			return Qnil;
+		}
+		fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,pixels);
 	}
-	fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,pixels);
 	return Qnil;
 }
 
@@ -566,15 +578,19 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	depth = (GLsizei)NUM2UINT(arg8);
 	format = (GLenum)NUM2INT(arg9);
 	imagesize = (GLsizei)NUM2UINT(arg10);
-	if (TYPE(arg11) == T_STRING) {
-		if (RSTRING(arg11)->len < imagesize)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
-		 pixels = RSTRING(arg11)->ptr;
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,(GLvoid *)NUM2INT(arg11));
 	} else {
-		Check_Type(arg11,T_STRING); /* force exception */
-		return Qnil;
+		if (TYPE(arg11) == T_STRING) {
+			if (RSTRING(arg11)->len < imagesize)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
+			 pixels = RSTRING(arg11)->ptr;
+		} else {
+			Check_Type(arg11,T_STRING); /* force exception */
+			return Qnil;
+		}
+		fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,pixels);
 	}
-	fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,pixels);
 	return Qnil;
 }
 
@@ -601,15 +617,19 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	height = (GLsizei)NUM2UINT(arg6);
 	format = (GLenum)NUM2INT(arg7);
 	imagesize = (GLsizei)NUM2UINT(arg8);
-	if (TYPE(arg9) == T_STRING) {
-		if (RSTRING(arg9)->len < imagesize)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
-		 pixels = RSTRING(arg9)->ptr;
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,(GLvoid *)NUM2INT(arg9));
 	} else {
-		Check_Type(arg9,T_STRING); /* force exception */
-		return Qnil;
+		if (TYPE(arg9) == T_STRING) {
+			if (RSTRING(arg9)->len < imagesize)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
+			 pixels = RSTRING(arg9)->ptr;
+		} else {
+			Check_Type(arg9,T_STRING); /* force exception */
+			return Qnil;
+		}
+		fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,pixels);
 	}
-	fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,pixels);
 	return Qnil;
 }
 
@@ -632,15 +652,19 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	width = (GLsizei)NUM2UINT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	imagesize = (GLsizei)NUM2UINT(arg6);
-	if (TYPE(arg7) == T_STRING) {
-		if (RSTRING(arg7)->len < imagesize)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
-		 pixels = RSTRING(arg7)->ptr;
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,(GLvoid *)NUM2INT(arg7));
 	} else {
-		Check_Type(arg7,T_STRING); /* force exception */
-		return Qnil;
+		if (TYPE(arg7) == T_STRING) {
+			if (RSTRING(arg7)->len < imagesize)
+				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
+			 pixels = RSTRING(arg7)->ptr;
+		} else {
+			Check_Type(arg7,T_STRING); /* force exception */
+			return Qnil;
+		}
+		fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,pixels);
 	}
-	fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,pixels);
 	return Qnil;
 }
 

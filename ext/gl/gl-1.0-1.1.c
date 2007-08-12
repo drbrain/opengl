@@ -135,18 +135,17 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	yorig = (GLfloat)NUM2DBL(arg4);
 	xmove = (GLfloat)NUM2DBL(arg5);
 	ymove = (GLfloat)NUM2DBL(arg6);
-	if (TYPE(arg7) == T_FIXNUM || TYPE(arg7) == T_BIGNUM) { /* offset to unpack buffer */
-		GLuint offset = NUM2UINT(arg7);
-		glBitmap(width, height, xorig, yorig, xmove, ymove, (GLvoid *)offset);
-	} else if (TYPE(arg7) == T_STRING) {
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		glBitmap(width, height, xorig, yorig, xmove, ymove, (GLvoid *)NUM2INT(arg7));
+	} else {
 		const GLubyte *bitmap;
+		Check_Type(arg7,T_STRING); 
+
 		if (RSTRING(arg7)->len < (width * height / 8))
 			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
 
 		bitmap = (const GLubyte*)RSTRING(arg7)->ptr;
 		glBitmap(width, height, xorig, yorig, xmove, ymove, bitmap);
-	} else {
-		Check_Type(arg7,T_STRING); /* force exception */
 	}
 	return Qnil;
 }
@@ -1504,18 +1503,23 @@ gl_PolygonStipple(obj,arg1)
 VALUE obj,arg1;
 {
 	GLubyte mask[128];
-	memset(mask, 0x0, sizeof(GLubyte)*128);
-	if (TYPE(arg1) == T_ARRAY) {
-		ary2cubyte(arg1,mask,128);
+
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		glPolygonStipple((GLvoid *)NUM2INT(arg1));
+	} else {
+		memset(mask, 0x0, sizeof(GLubyte)*128);
+		if (TYPE(arg1) == T_ARRAY) {
+			ary2cubyte(arg1,mask,128);
+		}
+		else if (TYPE(arg1) == T_STRING) {
+			if (RSTRING(arg1)->len < 128)
+				rb_raise(rb_eArgError, "string length:%d", RSTRING(arg1)->len);
+			memcpy(mask, RSTRING(arg1)->ptr, 128);
+		}
+		else
+			Check_Type(arg1,T_STRING); /* force exception */
+		glPolygonStipple(mask);
 	}
-	else if (TYPE(arg1) == T_STRING) {
-		if (RSTRING(arg1)->len < 128)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg1)->len);
-		memcpy(mask, RSTRING(arg1)->ptr, 128);
-	}
-	else
-		Check_Type(arg1,T_STRING); /* force exception */
-	glPolygonStipple(mask);
 	return Qnil;
 }
 
@@ -1603,7 +1607,6 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-/* FIXME: spatna funkce ? */
 static VALUE
 gl_TexImage1D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
@@ -1626,6 +1629,12 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	border = (GLint)NUM2INT(arg5);
 	format = (GLenum)NUM2INT(arg6);
 	type = (GLenum)NUM2INT(arg7);
+
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		glTexImage1D(target,level,components,width,border,format,type,(GLvoid *)NUM2INT(arg8));
+		return Qnil;
+	}
+
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
 
@@ -1639,16 +1648,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	if (target == GL_PROXY_TEXTURE_1D || NIL_P(arg8)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
-		if (TYPE(arg8) == T_FIXNUM || TYPE(arg8) == T_BIGNUM) { /* arg8 is offset to unpack buffer */
-			pixels = (const char *)NUM2UINT(arg8);
-		} else if (TYPE(arg8) == T_STRING) { /* image data */
-			if (RSTRING(arg8)->len < size)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
-			pixels = RSTRING(arg8)->ptr;
-		} else {
-			Check_Type(arg8,T_STRING); /* force exception */
-			return Qnil;
-		}
+		Check_Type(arg8,T_STRING);
+		if (RSTRING(arg8)->len < size)
+			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
+		pixels = RSTRING(arg8)->ptr;
 	}
 	glTexImage1D(target,level,components,width,border,format,type,pixels);
 	return Qnil;
@@ -1678,6 +1681,12 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	border = (GLint)NUM2INT(arg6);
 	format = (GLenum)NUM2INT(arg7);
 	type = (GLenum)NUM2INT(arg8);
+
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		glTexImage2D(target,level,components,width,height,border,format,type,(GLvoid *)NUM2INT(arg9));
+		return Qnil;
+	}
+	
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
 
@@ -1691,16 +1700,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	if (target == GL_PROXY_TEXTURE_2D || target == GL_PROXY_TEXTURE_CUBE_MAP || NIL_P(arg9)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
-		if (TYPE(arg9) == T_FIXNUM || TYPE(arg9) == T_BIGNUM) { /* arg9 is offset to unpack buffer */
-			pixels = (const char *)NUM2UINT(arg9);
-		} else if (TYPE(arg9) == T_STRING) { /* image data */
-			if (RSTRING(arg9)->len < size)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
-			pixels = RSTRING(arg9)->ptr;
-		} else {
-			Check_Type(arg9,T_STRING); /* force exception */
-			return Qnil;
-		}
+		Check_Type(arg9,T_STRING);
+		if (RSTRING(arg9)->len < size)
+			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
+		pixels = RSTRING(arg9)->ptr;
 	}
 	glTexImage2D(target,level,components,width,height,border,format,type,pixels);
 	return Qnil;
@@ -2727,19 +2730,23 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	height = (GLsizei)NUM2UINT(arg2);
 	format = (GLenum)NUM2INT(arg3);
 	type = (GLenum)NUM2INT(arg4);
-	Check_Type(arg5,T_STRING);
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eArgError, "type/format mismatch");
-	if (type==GL_BITMAP)
-		size = format_size*(width/8);
-	else
-		size = type_size*format_size*width*height;
-	if (RSTRING(arg5)->len < size)
-		rb_raise(rb_eArgError, "string length:%d", RSTRING(arg5)->len);
-	pixels = RSTRING(arg5)->ptr;
-	glDrawPixels(width,height,format,type,pixels);
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		glDrawPixels(width,height,format,type,(GLvoid *)NUM2INT(arg5));
+	} else {
+		Check_Type(arg5,T_STRING);
+		type_size = gltype_size(type);
+		format_size = glformat_size(format);
+		if (type_size == -1 || format_size == -1)
+			rb_raise(rb_eArgError, "type/format mismatch");
+		if (type==GL_BITMAP)
+			size = format_size*(width/8);
+		else
+			size = type_size*format_size*width*height;
+		if (RSTRING(arg5)->len < size)
+			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg5)->len);
+		pixels = RSTRING(arg5)->ptr;
+		glDrawPixels(width,height,format,type,pixels);
+	}
 	return Qnil;
 }
 
@@ -4214,7 +4221,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLsizei width;
 	GLenum format;
 	GLenum type;
-	const char *pixels;
 	int size;
 	int type_size;
 	int format_size;
@@ -4224,27 +4230,27 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	width = (GLsizei)NUM2UINT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
+
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		glTexSubImage1D(target,level,xoffset,width,format,type,(GLvoid *)NUM2INT(arg7));
+		return Qnil;
+	}
+	
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
 	if (type_size == -1 || format_size == -1)
 		return Qnil;
-
 	if (type==GL_BITMAP)
 		size = format_size*(width/8);
 	else
 		size = type_size*format_size*width;
 
-	if (TYPE(arg7) == T_STRING) {
-		if (RSTRING(arg7)->len < size)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
-		 pixels = RSTRING(arg7)->ptr;
-	} else if (TYPE(arg7) == T_FIXNUM || TYPE(arg7) == T_BIGNUM) { /* arg7 is offset to unpack buffer */
-			pixels = (const char *)NUM2UINT(arg7);
-	} else {
-		Check_Type(arg7,T_STRING); /* force exception */
-		return Qnil;
-	}
-	glTexSubImage1D(target,level,xoffset,width,format,type,pixels);
+	Check_Type(arg7,T_STRING);
+
+	if (RSTRING(arg7)->len < size)
+		rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
+
+	glTexSubImage1D(target,level,xoffset,width,format,type,RSTRING(arg7)->ptr);
 	return Qnil;
 }
 
@@ -4260,7 +4266,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLsizei height;
 	GLenum format;
 	GLenum type;
-	const char *pixels;
 	int size;
 	int type_size;
 	int format_size;
@@ -4272,6 +4277,12 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	height = (GLsizei)NUM2UINT(arg6);
 	format = (GLenum)NUM2INT(arg7);
 	type = (GLenum)NUM2INT(arg8);
+
+	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+		glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,(GLvoid *)NUM2INT(arg9));
+		return Qnil;
+	}
+	
 	type_size = gltype_size(type);
 	format_size = glformat_size(format);
 	if (type_size == -1 || format_size == -1)
@@ -4280,17 +4291,12 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		size = format_size*((height*width)/8);
 	else
 		size = type_size*format_size*height*width;
-	if (TYPE(arg9) == T_STRING) {
-		if (RSTRING(arg9)->len < size)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
-		 pixels = RSTRING(arg9)->ptr;
-	} else if (TYPE(arg9) == T_FIXNUM || TYPE(arg9) == T_BIGNUM) { /* arg9 is offset to unpack buffer */
-			pixels = (const char *)NUM2UINT(arg9);
-	} else {
-		Check_Type(arg9,T_STRING); /* force exception */
-		return Qnil;
-	}
-	glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,pixels);
+	Check_Type(arg9,T_STRING);
+
+	if (RSTRING(arg9)->len < size)
+		rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
+
+	glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,(RSTRING(arg9)->ptr));
 	return Qnil;
 }
 

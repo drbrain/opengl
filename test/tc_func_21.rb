@@ -64,4 +64,222 @@ class Test_21 < Test::Unit::TestCase
 		glUniformMatrix4x3fv(tm43l, 1, GL_FALSE, [1,0,0, 0,1,0, 1,0,0, 0,1,0])
 		assert_equal(glGetUniformfv(program,tm43l),[1,0,0, 0,1,0, 1,0,0, 0,1,0])
 	end
+
+	def test_pixelunpack_bitmap
+		return if not supported?(2.1)
+		glOrtho(0,$window_size,0,$window_size,0,-1)
+
+		bitmap = [ 0x55 ] * 8 # 64 bits (8x8 bitmap), stipple pattern
+		glPixelStorei(GL_PACK_ALIGNMENT,1)
+		glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,8,bitmap.pack("C*"),GL_DYNAMIC_DRAW)
+
+		glBitmap(8,8,0,0,0,0,0)
+		data = glReadPixels(0,0,8,8,GL_RED,GL_UNSIGNED_BYTE)
+		assert_equal(data.unpack("C*"),[0,255] * 32)
+	
+		glDeleteBuffers(buffers)
+	end
+
+	def test_pixelunpack_color_convolution
+		return if not supported?(2.1)
+
+		ct = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
+		ct2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
+
+		buffers = glGenBuffers(2)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,4*3*4,ct,GL_DYNAMIC_DRAW)
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,4*3*4,ct2,GL_DYNAMIC_DRAW)
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glColorTable(GL_COLOR_TABLE,GL_RGB8,4,GL_RGB,GL_FLOAT,0)
+		assert_equal(glGetColorTable(GL_COLOR_TABLE,GL_RGB,GL_FLOAT),ct)
+		glConvolutionFilter1D(GL_CONVOLUTION_1D, GL_RGB8, 4, GL_RGB, GL_FLOAT,0)
+		assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT),ct)
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glColorSubTable(GL_COLOR_TABLE,0,4,GL_RGB,GL_FLOAT,0)
+		assert_equal(glGetColorTable(GL_COLOR_TABLE,GL_RGB,GL_FLOAT),ct2)
+		glConvolutionFilter2D(GL_CONVOLUTION_2D, GL_RGB8, 2,2, GL_RGB, GL_FLOAT,0)
+		assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_2D, GL_RGB, GL_FLOAT),ct2)
+
+		glDeleteBuffers(buffers)
+	end
+
+	def test_pixelunpack_separable
+		return if not supported?(2.1)
+
+		sf_a = ([0]*3+[1]*3).pack("f*")
+		sf_b = ([1]*3+[0]*3).pack("f*")
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,2*3*4 *2,sf_a + sf_b,GL_DYNAMIC_DRAW)
+		
+		glSeparableFilter2D(GL_SEPARABLE_2D,GL_RGB8, 2,2,GL_RGB,GL_FLOAT,0,2*3*4)
+		assert_equal(glGetSeparableFilter(GL_SEPARABLE_2D,GL_RGB,GL_FLOAT), [sf_a,sf_b])
+
+		glDeleteBuffers(buffers)
+	end
+
+	def test_pixelunpack_drawpixels
+		return if not supported?(2.1)
+
+		glClearColor(0,0,0,0)
+		glClear(GL_COLOR_BUFFER_BIT)
+
+		image = ([1.0] * 3 * 16).pack("f*")
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,3*16*4,image,GL_DYNAMIC_DRAW)
+	
+		glDrawPixels(4,4,GL_RGB,GL_FLOAT,0)
+
+		data = glReadPixels(0,0,4,4,GL_RGB,GL_FLOAT)
+		assert_equal(data,image)
+
+		glDeleteBuffers(buffers)
+	end
+
+	def test_pixelunpack_polygonstipple
+		return if not supported?(2.1)
+
+		stipple = ([0x12] * 128).pack("c*")
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,128,stipple,GL_DYNAMIC_DRAW)
+
+		glPolygonStipple(0)
+		assert_equal(glGetPolygonStipple(),stipple)
+		glDeleteBuffers(buffers)
+	end
+
+
+	def test_pixelunpack_texturecompression
+		return if not supported?(2.1)
+		return if not supported?("GL_EXT_texture_compression_s3tc")
+
+		# S3TC/DXT5 compressed 2x2 pixels stipple patterns [w,b,b,w] and [b,w,w,b]
+		image_1 = [0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x01,0x54,0x5C,0x5C].pack("C*")
+		image_2 = [0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x54,0x01,0x0D,0x0D].pack("C*")
+
+		textures = glGenTextures(3)
+		glBindTexture(GL_TEXTURE_1D,textures[0])
+		glBindTexture(GL_TEXTURE_2D,textures[1])
+		glBindTexture(GL_TEXTURE_3D,textures[2])
+
+		buffers = glGenBuffers(2)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,16,image_1,GL_DYNAMIC_DRAW)
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,16,image_2,GL_DYNAMIC_DRAW)
+
+		# Note: 1D and 3D compressed textures are not supported by S3TC/DXTn, and usually not supported at all
+
+		# 1D
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glCompressedTexImage1D(GL_TEXTURE_1D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,4,0,16,0)
+		err = glGetError()
+		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
+		if (err == 0)
+			assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D,0), image_1)
+		end
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glCompressedTexSubImage1D(GL_TEXTURE_1D,0,0,4,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,0)
+		err = glGetError()
+		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
+		if (err == 0)
+			assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D,0), image_2)
+		end
+		
+		# 2D
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glCompressedTexImage2D(GL_TEXTURE_2D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,0,16,0)
+		assert_equal(glGetCompressedTexImage(GL_TEXTURE_2D,0), image_1)
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glCompressedTexSubImage2D(GL_TEXTURE_2D,0,0,0,2,2,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,0)
+		assert_equal(glGetCompressedTexImage(GL_TEXTURE_2D,0), image_2)
+		
+		# 3D
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glCompressedTexImage3D(GL_TEXTURE_3D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,1,0,16,0)
+		err = glGetError()
+		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
+		if (err == 0)
+			assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D,0), image_1)
+		end
+		
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glCompressedTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, 0)
+		err = glGetError()
+		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
+		if (err == 0)
+			assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D,0), image_2)
+		end
+
+		glDeleteBuffers(buffers)
+		glDeleteTextures(textures)
+	end
+
+	def test_pixelunpack_texture
+		return if not supported?(2.1)
+
+		textures = glGenTextures(3)
+		image_1 = ([0,0,0,1,1,1] * 8).pack("f*") # 16 RGB pixels
+		image_2 = ([1,1,1,0,0,0] * 8).pack("f*") # 16 RGB pixels
+
+		buffers = glGenBuffers(2)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,6*8*4,image_1,GL_DYNAMIC_DRAW)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,6*8*4,image_2,GL_DYNAMIC_DRAW)
+
+		# 3D
+		glBindTexture(GL_TEXTURE_3D,textures[0])
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glTexImage3D(GL_TEXTURE_3D,0,GL_RGB8,2,2,4,0,GL_RGB,GL_FLOAT,0)
+		assert_equal(glGetTexImage(GL_TEXTURE_3D,0,GL_RGB,GL_FLOAT),image_1)
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,4,GL_RGB,GL_FLOAT,0)
+		assert_equal(glGetTexImage(GL_TEXTURE_3D,0,GL_RGB,GL_FLOAT),image_2)
+
+		# 2D
+		glBindTexture(GL_TEXTURE_2D,textures[1])
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8, 4, 4, 0, GL_RGB, GL_FLOAT, 0)
+		assert_equal(glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_FLOAT), image_1)
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glTexSubImage2D(GL_TEXTURE_2D,0, 0,0, 4,4,GL_RGB,GL_FLOAT,0)
+		assert_equal(glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_FLOAT),image_2)
+	
+		# 1D
+		glBindTexture(GL_TEXTURE_1D,textures[2])
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+
+		glTexImage1D(GL_TEXTURE_1D,0,GL_RGB8, 16, 0, GL_RGB, GL_FLOAT, 0)
+		assert_equal(glGetTexImage(GL_TEXTURE_1D,0,GL_RGB,GL_FLOAT), image_1)
+
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
+		glTexSubImage1D(GL_TEXTURE_1D,0, 0, 16,GL_RGB,GL_FLOAT,0)
+		assert_equal(glGetTexImage(GL_TEXTURE_1D,0,GL_RGB,GL_FLOAT),image_2)
+
+		glDeleteBuffers(buffers)
+		glDeleteTextures(textures)
+	end
+
 end
