@@ -134,8 +134,10 @@ VALUE obj,arg1,arg2,arg3,arg4;
 
 static void (APIENTRY * fptr_glMultiDrawElements)(GLenum,const GLsizei *,GLenum,GLvoid **,GLsizei);
 static VALUE
-gl_MultiDrawElements(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
+gl_MultiDrawElements(argc,argv,obj)
+int argc;
+VALUE *argv;
+VALUE obj;
 {
 	GLenum mode;
 	GLenum type;
@@ -145,20 +147,50 @@ VALUE obj,arg1,arg2,arg3;
 	RArray *ary;
 	int i;
 	LOAD_GL_FUNC(glMultiDrawElements)
-	mode = (GLenum)NUM2INT(arg1);
-	type = (GLenum)NUM2INT(arg2);
-	Check_Type(arg3,T_ARRAY);
-	ary = RARRAY(arg3);
-	size = ary->len;
-	counts = ALLOC_N(GLsizei,size);
-	indices = ALLOC_N(GLvoid*,size);
-	for (i=0;i<size;i++) {
-		indices[i] = RSTRING(ary->ptr[i])->ptr;
-		counts[i] = RSTRING(ary->ptr[i])->len;
+	VALUE args[4];
+	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
+		default:
+		case 3:
+			if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Element array buffer bound, but offsets array missing");
+			mode = (GLenum)NUM2INT(args[0]);
+			type = (GLenum)NUM2INT(args[1]);
+			Check_Type(args[2],T_ARRAY);
+			ary = RARRAY(args[2]);
+			size = ary->len;
+			counts = ALLOC_N(GLsizei,size);
+			indices = ALLOC_N(GLvoid*,size);
+			for (i=0;i<size;i++) {
+				indices[i] = RSTRING(ary->ptr[i])->ptr;
+				counts[i] = RSTRING(ary->ptr[i])->len;
+			}
+			fptr_glMultiDrawElements(mode,counts,type,indices,size);
+			xfree(counts);
+			xfree(indices);
+			break;
+		case 4:
+			if (!CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Element array buffer not bound");
+			mode = (GLenum)NUM2INT(args[0]);
+			type = (GLenum)NUM2INT(args[1]);
+			Check_Type(args[2],T_ARRAY);
+			Check_Type(args[3],T_ARRAY);
+			if (RARRAY(args[2])->len != RARRAY(args[3])->len)
+				rb_raise(rb_eArgError, "Count and indices offset array must have same length");
+
+			size = RARRAY(args[2])->len;
+
+			counts = ALLOC_N(GLsizei,size);
+			indices = ALLOC_N(GLvoid*,size);
+			for (i=0;i<size;i++) {
+				counts[i] = NUM2INT(rb_ary_entry(args[2],i));
+				indices[i] = (GLvoid *) NUM2INT(rb_ary_entry(args[3],i));
+			}
+			fptr_glMultiDrawElements(mode,counts,type,indices,size);
+			xfree(counts);
+			xfree(indices);
+			break;
 	}
-	fptr_glMultiDrawElements(mode,counts,type,indices,size);
-	xfree(counts);
-	xfree(indices);
 	return Qnil;
 }
 
@@ -605,7 +637,7 @@ void gl_init_functions_1_4(VALUE module)
 	rb_define_module_function(module, "glFogCoorddv", gl_FogCoorddv, 1);
 	rb_define_module_function(module, "glFogCoordPointer", gl_FogCoordPointer, 3);
 	rb_define_module_function(module, "glMultiDrawArrays", gl_MultiDrawArrays, 4);
-	rb_define_module_function(module, "glMultiDrawElements", gl_MultiDrawElements, 3);
+	rb_define_module_function(module, "glMultiDrawElements", gl_MultiDrawElements, -1);
 	rb_define_module_function(module, "glPointParameterf", gl_PointParameterf, 2);
 	rb_define_module_function(module, "glPointParameterfv", gl_PointParameterfv, 2);
 	rb_define_module_function(module, "glPointParameteri", gl_PointParameteri, 2);

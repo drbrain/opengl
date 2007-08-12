@@ -2599,56 +2599,45 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static VALUE
-gl_PixelMapfv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum map;
-	GLfloat *values;
-	GLsizei size;
-	map = (GLenum)NUM2INT(arg1);	
-	Check_Type(arg2,T_ARRAY);
-	size = RARRAY(arg2)->len;
-	values = ALLOC_N(GLfloat,size);
-	ary2cflt(arg2,values,size);
-	glPixelMapfv(map,size,values);
-	xfree(values);
-	return Qnil;
+#define GLPIXELMAP_FUNC(_type_,_vartype_,_convert_) \
+static VALUE \
+gl_PixelMap##_type_##v(argc,argv,obj) \
+int argc; \
+VALUE *argv; \
+VALUE obj; \
+{ \
+	GLenum map; \
+	_vartype_ *values; \
+	GLsizei size; \
+	VALUE args[4]; \
+	switch(rb_scan_args(argc, argv, "21", &args[0], &args[1], &args[2])) { \
+		default: \
+		case 2: \
+			if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) \
+				rb_raise(rb_eArgError, "Pixel unpack buffer bound, but offset argument missing"); \
+			map = (GLenum)NUM2INT(args[0]); \
+			Check_Type(args[1],T_ARRAY); \
+			size = RARRAY(args[1])->len; \
+			values = ALLOC_N(_vartype_,size); \
+			_convert_(args[1],values,size); \
+			glPixelMap##_type_##v(map,size,values); \
+			xfree(values); \
+			break; \
+		case 3: \
+			if (!CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) \
+				rb_raise(rb_eArgError, "Pixel unpack buffer not bound"); \
+			map = (GLenum)NUM2INT(args[0]);	 \
+			size = (GLsizei)NUM2INT(args[1]); \
+			glPixelMap##_type_##v(map,size,(GLvoid *)NUM2INT(args[2])); \
+			break; \
+	} \
+	return Qnil; \
 }
 
-static VALUE
-gl_PixelMapuiv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum map;
-	GLuint *values;
-	GLsizei size;
-	map = (GLenum)NUM2INT(arg1);
-	Check_Type(arg2,T_ARRAY);
-	size = RARRAY(arg2)->len;
-	values = ALLOC_N(GLuint,size);
-	ary2cuint(arg2,values,size);
-	glPixelMapuiv(map,size,values);
-	xfree(values);
-	return Qnil;
-}
-
-static VALUE
-gl_PixelMapusv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum map;
-	GLushort *values;
-	GLsizei size;
-	map = (GLenum)NUM2INT(arg1);
-	Check_Type(arg2,T_ARRAY);
-	size = RARRAY(arg2)->len;
-	values = ALLOC_N(GLushort,size);
-	ary2cushort(arg2,values,size);
-	glPixelMapusv(map,size,values);
-	xfree(values);
-	return Qnil;
-}
+GLPIXELMAP_FUNC(f,GLfloat,ary2cflt)
+GLPIXELMAP_FUNC(ui,GLuint,ary2cuint)
+GLPIXELMAP_FUNC(us,GLushort,ary2cushort)
+#undef GLPIXELMAP_FUNC
 
 static VALUE
 gl_ReadBuffer(obj,arg1)
@@ -5018,9 +5007,9 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glPixelTransferi", gl_PixelTransferi, 2);
 	rb_define_module_function(module, "glPixelStoref", gl_PixelStoref, 2);
 	rb_define_module_function(module, "glPixelStorei", gl_PixelStorei, 2);
-	rb_define_module_function(module, "glPixelMapfv", gl_PixelMapfv, 2);
-	rb_define_module_function(module, "glPixelMapuiv", gl_PixelMapuiv, 2);
-	rb_define_module_function(module, "glPixelMapusv", gl_PixelMapusv, 2);
+	rb_define_module_function(module, "glPixelMapfv", gl_PixelMapfv, -1);
+	rb_define_module_function(module, "glPixelMapuiv", gl_PixelMapuiv, -1);
+	rb_define_module_function(module, "glPixelMapusv", gl_PixelMapusv, -1);
 	rb_define_module_function(module, "glReadBuffer", gl_ReadBuffer, 1);
 	rb_define_module_function(module, "glCopyPixels", gl_CopyPixels, 5);
 	rb_define_module_function(module, "glReadPixels", gl_ReadPixels, 6);

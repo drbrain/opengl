@@ -242,5 +242,29 @@ class Test_15 < Test::Unit::TestCase
 		
 		glDeleteBuffers(buffers)
 	end
-	
+
+	def test_buffer_binding_array_4
+		return if not supported?(1.5)
+		va = [0,0, 1,0, 1,1, 0,0, 1,0, 0,1].pack("f*")
+		glVertexPointer(2,GL_FLOAT,0,va)
+		
+		glEnable(GL_VERTEX_ARRAY)
+
+		buf = glFeedbackBuffer(256,GL_3D)
+		glRenderMode(GL_FEEDBACK)
+
+		data = [0,1,2,3,4,5]
+		buffers = glGenBuffers(3)
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,buffers[0])
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER,6,data.pack("C*"),GL_DYNAMIC_DRAW)
+
+		glMultiDrawElements(GL_TRIANGLES,GL_UNSIGNED_BYTE,[3,3],[0,3])
+
+		count = glRenderMode(GL_RENDER)
+		assert_equal(count,(3*3+2)*2)
+
+		glDisable(GL_VERTEX_ARRAY)
+		glDeleteBuffers(buffers)
+	end
+
 end

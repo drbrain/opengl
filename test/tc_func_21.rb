@@ -282,4 +282,25 @@ class Test_21 < Test::Unit::TestCase
 		glDeleteTextures(textures)
 	end
 
+	def test_pixelunpack_pixelmap
+		return if not supported?(2.1)
+		data_1 = [1,2,3,4].pack("f*")
+		data_2 = [5,6,7,8].pack("I*")
+		data_3 = [9,10,11,12].pack("S*")
+
+		buffers = glGenBuffers(3)
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_UNPACK_BUFFER,4*4+4*4+4*2,data_1+data_2+data_3,GL_DYNAMIC_DRAW)
+
+		glPixelMapfv(GL_PIXEL_MAP_I_TO_I,4,0)
+		assert_equal(glGetPixelMapfv(GL_PIXEL_MAP_I_TO_I), [1,2,3,4])
+
+		glPixelMapuiv(GL_PIXEL_MAP_I_TO_I,4,4*4)
+		assert_equal(glGetPixelMapuiv(GL_PIXEL_MAP_I_TO_I),[5,6,7,8])
+		
+		glPixelMapusv(GL_PIXEL_MAP_I_TO_I,4,4*4+4*4)
+		assert_equal(glGetPixelMapusv(GL_PIXEL_MAP_I_TO_I),[9,10,11,12])
+
+		glDeleteBuffers(buffers)
+	end
 end
