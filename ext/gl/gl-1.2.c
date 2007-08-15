@@ -562,8 +562,10 @@ VALUE obj,arg1,arg2;
 
 static void (APIENTRY * fptr_glGetConvolutionFilter)(GLenum,GLenum,GLenum,GLvoid *);
 static VALUE
-gl_GetConvolutionFilter(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
+gl_GetConvolutionFilter(argc,argv,obj)
+int argc;
+VALUE *argv;
+VALUE obj;
 {
 	GLenum target;
 	GLenum format;
@@ -572,38 +574,60 @@ VALUE obj,arg1,arg2,arg3;
 	GLsizei type_size;
 	GLint size = 0;
 	VALUE data;
+	VALUE args[4];
+	int numargs;
 	LOAD_GL_FUNC(glGetConvolutionFilter)
 	LOAD_GL_FUNC(glGetConvolutionParameteriv)
-	target = (GLenum)NUM2INT(arg1);
-	format = (GLenum)NUM2INT(arg2);
-	type = (GLenum)NUM2INT(arg3);
+	numargs = rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2], &args[3]);
+
+	target = (GLenum)NUM2INT(args[0]);
+	format = (GLenum)NUM2INT(args[1]);
+	type = (GLenum)NUM2INT(args[2]);
 	format_size = glformat_size(format);
 	type_size = gltype_size(type);
 	if (type_size == -1 || format_size == -1)
 		rb_raise(rb_eTypeError, "type/format mismatch");
-	if (target==GL_CONVOLUTION_1D) {
-		fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH,&size);
-	} else {
-		GLint tmp = 0;
-		fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH,&tmp);
-		fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT,&size);
-		size *=tmp;
+
+	switch(numargs) {
+		default:
+		case 3:
+			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+			rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
+	
+			if (target==GL_CONVOLUTION_1D) {
+				fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH,&size);
+			} else {
+				GLint tmp = 0;
+				fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH,&tmp);
+				fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT,&size);
+				size *=tmp;
+			}
+			if (type==GL_BITMAP)
+				size = (size/8)*format_size;
+			else
+				size = size*type_size*format_size;
+			data = allocate_buffer_with_string(size);
+			FORCE_PIXEL_STORE_MODE
+			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)RSTRING(data)->ptr);
+			RESTORE_PIXEL_STORE_MODE
+			return data;
+		case 4:
+			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
+
+			FORCE_PIXEL_STORE_MODE
+			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)NUM2INT(args[3]));
+			RESTORE_PIXEL_STORE_MODE
+			return Qnil;
 	}
-	if (type==GL_BITMAP)
-		size = (size/8)*format_size;
-	else
-		size = size*type_size*format_size;
-	data = allocate_buffer_with_string(size);
-	FORCE_PIXEL_STORE_MODE
-	fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)RSTRING(data)->ptr);
-	RESTORE_PIXEL_STORE_MODE
-	return data;
 }
 
 static void (APIENTRY * fptr_glGetSeparableFilter)(GLenum,GLenum,GLenum,GLvoid*,GLvoid*,GLvoid*);
 static VALUE
-gl_GetSeparableFilter(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
+gl_GetSeparableFilter(argc,argv,obj)
+int argc;
+VALUE *argv;
+VALUE obj;
 {
 	GLenum target;
 	GLenum format;
@@ -615,33 +639,52 @@ VALUE obj,arg1,arg2,arg3;
 	VALUE data_row;
 	VALUE data_column;
 	VALUE retary;
+	VALUE args[6];
+	int numargs;
 	LOAD_GL_FUNC(glGetSeparableFilter)
 	LOAD_GL_FUNC(glGetConvolutionParameteriv)
-	target = (GLenum)NUM2INT(arg1);
-	format = (GLenum)NUM2INT(arg2);
-	type = (GLenum)NUM2INT(arg3);
+	numargs = rb_scan_args(argc, argv, "33", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5]);
+	target = (GLenum)NUM2INT(args[0]);
+	format = (GLenum)NUM2INT(args[1]);
+	type = (GLenum)NUM2INT(args[2]);
 	format_size = glformat_size(format);
 	type_size = gltype_size(type);
 	if (type_size == -1 || format_size == -1)
 		rb_raise(rb_eTypeError, "type/format mismatch");
-	fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH,&size_row);
-	fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT,&size_column);
-	if (type==GL_BITMAP) {
-		size_row = (size_row/8)*format_size;
-		size_column = (size_column/8)*format_size;
-	} else {
-		size_row *= type_size*format_size;
-		size_column *= type_size*format_size;
-	}
-	data_row = allocate_buffer_with_string(size_row);
-	data_column = allocate_buffer_with_string(size_column);
-	FORCE_PIXEL_STORE_MODE
-	fptr_glGetSeparableFilter(target,format,type,(GLvoid*)RSTRING(data_row)->ptr,(GLvoid*)RSTRING(data_column)->ptr,0);
-	RESTORE_PIXEL_STORE_MODE
-	retary = rb_ary_new2(2);
-	rb_ary_push(retary, data_row);
-	rb_ary_push(retary, data_column);
-	return retary;
+
+	switch(numargs) {
+		default:
+		case 3:
+			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset arguments missing");
+
+			fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH,&size_row);
+			fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT,&size_column);
+			if (type==GL_BITMAP) {
+				size_row = (size_row/8)*format_size;
+				size_column = (size_column/8)*format_size;
+			} else {
+				size_row *= type_size*format_size;
+				size_column *= type_size*format_size;
+			}
+			data_row = allocate_buffer_with_string(size_row);
+			data_column = allocate_buffer_with_string(size_column);
+			FORCE_PIXEL_STORE_MODE
+			fptr_glGetSeparableFilter(target,format,type,(GLvoid*)RSTRING(data_row)->ptr,(GLvoid*)RSTRING(data_column)->ptr,0);
+			RESTORE_PIXEL_STORE_MODE
+			retary = rb_ary_new2(2);
+			rb_ary_push(retary, data_row);
+			rb_ary_push(retary, data_column);
+			return retary;
+			break;
+		case 6:
+			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
+			FORCE_PIXEL_STORE_MODE
+			fptr_glGetSeparableFilter(target,format,type,(GLvoid*)NUM2INT(args[3]),(GLvoid*)NUM2INT(args[4]),(GLvoid*)NUM2INT(args[5]));
+			RESTORE_PIXEL_STORE_MODE
+			return Qnil;		
+		}
 }
 
 static void (APIENTRY * fptr_glSeparableFilter2D)(GLenum,GLenum,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *,const GLvoid *);
@@ -730,8 +773,10 @@ VALUE obj,arg1,arg2,arg3;
 
 static void (APIENTRY * fptr_glGetHistogram)(GLenum,GLboolean,GLenum,GLenum,GLvoid*);
 static VALUE
-gl_GetHistogram(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
+gl_GetHistogram(argc,argv,obj)
+int argc;
+VALUE *argv;
+VALUE obj;
 {
 	GLenum target;
 	GLboolean reset;
@@ -741,32 +786,54 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLsizei type_size;
 	GLint size = 0;
 	VALUE data;
+	VALUE args[5];
+	int numargs;
 	LOAD_GL_FUNC(glGetHistogram)
 	LOAD_GL_FUNC(glGetHistogramParameteriv)
-	target = (GLenum)NUM2INT(arg1);
-	reset = (GLboolean)NUM2INT(arg2);
-	format = (GLenum)NUM2INT(arg3);
-	type = (GLenum)NUM2INT(arg4);
+	numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
+	target = (GLenum)NUM2INT(args[0]);
+	reset = (GLboolean)NUM2INT(args[1]);
+	format = (GLenum)NUM2INT(args[2]);
+	type = (GLenum)NUM2INT(args[3]);
 	format_size = glformat_size(format);
 	type_size = gltype_size(type);
 	if (type_size == -1 || format_size == -1)
 		rb_raise(rb_eTypeError, "type/format mismatch");
-	fptr_glGetHistogramParameteriv(target,GL_HISTOGRAM_WIDTH,&size);
-	if (type==GL_BITMAP)
-		size = (size/8)*format_size;
-	else
-		size = size*type_size*format_size;
-	data = allocate_buffer_with_string(size);
-	FORCE_PIXEL_STORE_MODE
-	fptr_glGetHistogram(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
-	RESTORE_PIXEL_STORE_MODE
-	return data;
+
+	switch(numargs) {
+		default:
+		case 4:
+			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
+
+			fptr_glGetHistogramParameteriv(target,GL_HISTOGRAM_WIDTH,&size);
+			if (type==GL_BITMAP)
+				size = (size/8)*format_size;
+			else
+				size = size*type_size*format_size;
+			data = allocate_buffer_with_string(size);
+			FORCE_PIXEL_STORE_MODE
+			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
+			RESTORE_PIXEL_STORE_MODE
+			return data;
+			break;
+		case 5:
+			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
+
+			FORCE_PIXEL_STORE_MODE
+			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)NUM2INT(args[4]));
+			RESTORE_PIXEL_STORE_MODE
+			return Qnil;
+	}
 }
 
 static void (APIENTRY * fptr_glGetMinmax)(GLenum,GLboolean,GLenum,GLenum,GLvoid *);
 static VALUE
-gl_GetMinmax(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
+gl_GetMinmax(argc,argv,obj)
+int argc;
+VALUE *argv;
+VALUE obj;
 {
 	GLenum target;
 	GLboolean reset;
@@ -776,24 +843,44 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLsizei type_size;
 	GLint size;
 	VALUE data;
+	VALUE args[5];
+	int numargs;
 	LOAD_GL_FUNC(glGetMinmax)
-	target = (GLenum)NUM2INT(arg1);
-	reset = (GLboolean)NUM2INT(arg2);
-	format = (GLenum)NUM2INT(arg3);
-	type = (GLenum)NUM2INT(arg4);
+	numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
+	target = (GLenum)NUM2INT(args[0]);
+	reset = (GLboolean)NUM2INT(args[1]);
+	format = (GLenum)NUM2INT(args[2]);
+	type = (GLenum)NUM2INT(args[3]);
 	format_size = glformat_size(format);
 	type_size = gltype_size(type);
 	if (type_size == -1 || format_size == -1)
 		rb_raise(rb_eTypeError, "type/format mismatch");
-	if (type==GL_BITMAP)
-		size = format_size*(2/8);
-	else
-		size = type_size*format_size*2;
-	data = allocate_buffer_with_string(size);
-	FORCE_PIXEL_STORE_MODE
-	fptr_glGetMinmax(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
-	RESTORE_PIXEL_STORE_MODE
-	return data;
+
+	switch(numargs) {
+		default:
+		case 4:
+			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
+
+			if (type==GL_BITMAP)
+				size = format_size*(2/8);
+			else
+				size = type_size*format_size*2;
+			data = allocate_buffer_with_string(size);
+			FORCE_PIXEL_STORE_MODE
+			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
+			RESTORE_PIXEL_STORE_MODE
+			return data;
+			break;
+		case 5:
+			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
+
+			FORCE_PIXEL_STORE_MODE
+			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)NUM2INT(args[4]));
+			RESTORE_PIXEL_STORE_MODE
+			return Qnil;
+	}
 }
 
 static void (APIENTRY * fptr_glGetMinmaxParameterfv)(GLenum,GLenum,GLfloat *);
@@ -1055,15 +1142,15 @@ void gl_init_functions_1_2(VALUE module)
 	rb_define_module_function(module, "glConvolutionParameteriv", gl_ConvolutionParameteriv, 3);
 	rb_define_module_function(module, "glCopyConvolutionFilter1D", gl_CopyConvolutionFilter1D, 5);
 	rb_define_module_function(module, "glCopyConvolutionFilter2D", gl_CopyConvolutionFilter2D, 6);
-	rb_define_module_function(module, "glGetConvolutionFilter", gl_GetConvolutionFilter, 3);
+	rb_define_module_function(module, "glGetConvolutionFilter", gl_GetConvolutionFilter, -1);
 	rb_define_module_function(module, "glGetConvolutionParameterfv", gl_GetConvolutionParameterfv, 2);
 	rb_define_module_function(module, "glGetConvolutionParameteriv", gl_GetConvolutionParameteriv, 2);
-	rb_define_module_function(module, "glGetSeparableFilter", gl_GetSeparableFilter, 3);
+	rb_define_module_function(module, "glGetSeparableFilter", gl_GetSeparableFilter, -1);
 	rb_define_module_function(module, "glSeparableFilter2D", gl_SeparableFilter2D, 8);
-	rb_define_module_function(module, "glGetHistogram", gl_GetHistogram, 4);
+	rb_define_module_function(module, "glGetHistogram", gl_GetHistogram, -1);
 	rb_define_module_function(module, "glGetHistogramParameterfv", gl_GetHistogramParameterfv, 2);
 	rb_define_module_function(module, "glGetHistogramParameteriv", gl_GetHistogramParameteriv, 2);
-	rb_define_module_function(module, "glGetMinmax", gl_GetMinmax, 4);
+	rb_define_module_function(module, "glGetMinmax", gl_GetMinmax, -1);
 	rb_define_module_function(module, "glGetMinmaxParameterfv", gl_GetMinmaxParameterfv, 2);
 	rb_define_module_function(module, "glGetMinmaxParameteriv", gl_GetMinmaxParameteriv, 2);
 	rb_define_module_function(module, "glHistogram", gl_Histogram, 4);

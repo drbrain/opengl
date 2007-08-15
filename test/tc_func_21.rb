@@ -303,4 +303,208 @@ class Test_21 < Test::Unit::TestCase
 
 		glDeleteBuffers(buffers)
 	end
+
+	def test_pixelpack_readpixels
+		return if not supported?(2.1)
+		glClearColor(0,0,0,0)
+		glClear(GL_COLOR_BUFFER_BIT)
+
+		image = ([1.0] * 3 * 16).pack("f*")
+		glDrawPixels(4,4,GL_RGB,GL_FLOAT,image)
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,4*4*4*3, nil, GL_STREAM_READ)
+		glReadPixels(0,0,4,4,GL_RGB,GL_FLOAT,0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal(data,image)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		glDeleteBuffers(buffers)
+	end
+
+	def test_pixelpack_pixelmap
+		return if not supported?(2.1)
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,4*4, nil, GL_STREAM_READ)
+
+		# fv	
+		glPixelMapfv(GL_PIXEL_MAP_I_TO_I,[1,2,3,4])
+		glGetPixelMapfv(GL_PIXEL_MAP_I_TO_I,0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal([1,2,3,4].pack("f*"),data)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		# uiv
+		glPixelMapuiv(GL_PIXEL_MAP_I_TO_I,[5,6,7,8])
+		glGetPixelMapuiv(GL_PIXEL_MAP_I_TO_I,0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal([5,6,7,8].pack("I*"),data)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		# usv	
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,4*2, nil, GL_STREAM_READ)
+
+		glPixelMapusv(GL_PIXEL_MAP_I_TO_I,[9,10,11,12])
+		glGetPixelMapusv(GL_PIXEL_MAP_I_TO_I,0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal([9,10,11,12].pack("S*"),data)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		glDeleteBuffers(buffers)
+	end
+
+	def test_pixelpack_polygonstipple
+		return if not supported?(2.1)
+
+		stipple = [0x12] * 128
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,128, nil, GL_STREAM_READ)
+
+		glPolygonStipple(stipple.pack("c*"))
+		glGetPolygonStipple(0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal(stipple.pack("c*"),data)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+	
+		glDeleteBuffers(buffers)
+	end
+	
+	def test_pixelpack_separablefilter
+		return if not supported?(2.1)
+		sf_a = ([0]*3+[1]*3).pack("f*")
+		sf_b = ([1]*3+[0]*3).pack("f*")
+	
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,6*4 + 6*4, nil, GL_STREAM_READ)
+	
+		glSeparableFilter2D(GL_SEPARABLE_2D,GL_RGB8, 2,2,GL_RGB,GL_FLOAT,sf_a,sf_b)
+		glGetSeparableFilter(GL_SEPARABLE_2D,GL_RGB,GL_FLOAT,0,6*4,0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal(data,sf_a + sf_b)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		glDeleteBuffers(buffers)
+	end
+
+	def test_pixelpack_convolutionfilter
+		return if not supported?(2.1)
+
+		cf = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,3*4*4, nil, GL_STREAM_READ)
+
+		glConvolutionFilter1D(GL_CONVOLUTION_1D, GL_RGB8, 4, GL_RGB, GL_FLOAT,cf)
+
+		glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT,0)
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal(data,cf)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		glDeleteBuffers(buffers)
+	end
+
+	def test_pixelpack_histogram
+		return if not supported?(2.1)
+
+		glEnable(GL_HISTOGRAM)
+
+		glHistogram(GL_HISTOGRAM,1,GL_RGB8,GL_FALSE)
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,3*4, nil, GL_STREAM_READ)
+
+		glDrawPixels(2,1,GL_RGB,GL_FLOAT,[1,1,1,1,1,1].pack("f*"))
+		glGetHistogram(GL_HISTOGRAM,GL_FALSE,GL_RGB,GL_FLOAT,0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal(data.unpack("f*"),[2,2,2])
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		glDeleteBuffers(buffers)
+		glDisable(GL_HISTOGRAM)
+	end
+
+	def test_pixelpack_minmax
+		return if not supported?(2.1)
+
+		glEnable(GL_MINMAX)		
+
+		glMinmax(GL_MINMAX,GL_RGB8,GL_FALSE)
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,6*4, nil, GL_STREAM_READ)
+
+		glDrawPixels(2,1,GL_RGB,GL_FLOAT,[0,0,0,1,1,1].pack("f*"))
+		glGetMinmax(GL_MINMAX,GL_FALSE,GL_RGB,GL_FLOAT,0)
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal(data.unpack("f*"),[0,0,0,1,1,1])
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		glDeleteBuffers(buffers)
+		glDisable(GL_MINMAX)
+	end
+
+	def test_pixelpack_teximage
+		return if not supported?(2.1)
+
+		textures = glGenTextures(1)
+		glBindTexture(GL_TEXTURE_2D,textures[0])
+
+		image = ([0,0,0,1,1,1] * 8).pack("f*") # 16 RGB pixels
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,16*3*4, nil, GL_STREAM_READ)
+
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGB8, 4, 4, 0, GL_RGB, GL_FLOAT, image)
+		glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_FLOAT,0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal(data,image)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		glDeleteBuffers(buffers)
+		glDeleteTextures(textures)
+	end
+
+	def test_pixelpack_compressedteximage
+		return if not supported?(2.1)
+		return if not supported?("GL_EXT_texture_compression_s3tc")
+
+		# S3TC/DXT5 compressed 2x2 pixels stipple pattern [w,b,b,w]
+		image = [0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x01,0x54,0x5C,0x5C].pack("C*")
+
+		textures = glGenTextures(1)
+		glBindTexture(GL_TEXTURE_2D,textures[0])
+
+		buffers = glGenBuffers(1)
+		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
+		glBufferData(GL_PIXEL_PACK_BUFFER_ARB,image.size, nil, GL_STREAM_READ)
+
+		glCompressedTexImage2D(GL_TEXTURE_2D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,0,16,image)
+    glGetCompressedTexImage(GL_TEXTURE_2D,0,0)
+
+		data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+		assert_equal(data,image)
+		glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+
+		glDeleteBuffers(buffers)
+		glDeleteTextures(textures)
+	end
 end

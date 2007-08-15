@@ -670,20 +670,34 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 
 static void (APIENTRY * fptr_glGetCompressedTexImage)(GLenum,GLint,GLvoid*);
 static VALUE
-gl_GetCompressedTexImage(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
+gl_GetCompressedTexImage(argc,argv,obj)
+int argc;
+VALUE *argv;
+VALUE obj;
 {
 	GLenum target;
 	GLint lod;
 	GLsizei size = 0;
 	VALUE data;
+	VALUE args[3];
+	int numargs;
 	LOAD_GL_FUNC(glGetCompressedTexImage)
-	target = (GLenum)NUM2INT(arg1);
-	lod = (GLenum)NUM2INT(arg2);
-	glGetTexLevelParameteriv(target,lod,GL_TEXTURE_COMPRESSED_IMAGE_SIZE,&size); /* 1.0 function */
-	data = allocate_buffer_with_string(size);
-	fptr_glGetCompressedTexImage(target,lod,(GLvoid*)RSTRING(data)->ptr);
-	return data;
+	numargs = rb_scan_args(argc, argv, "21", &args[0], &args[1], &args[2]);
+	target = (GLenum)NUM2INT(args[0]);
+	lod = (GLenum)NUM2INT(args[1]);
+	switch(numargs) {
+		default:
+		case 2:
+			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
+			glGetTexLevelParameteriv(target,lod,GL_TEXTURE_COMPRESSED_IMAGE_SIZE,&size); /* 1.0 function */
+			data = allocate_buffer_with_string(size);
+			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)RSTRING(data)->ptr);
+			return data;
+		case 3:
+			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)NUM2INT(args[2]));
+			return Qnil;	
+	}
 }
 
 void gl_init_functions_1_3(VALUE module)
@@ -717,7 +731,7 @@ void gl_init_functions_1_3(VALUE module)
 	rb_define_module_function(module, "glCompressedTexSubImage3D", gl_CompressedTexSubImage3D, 11);
 	rb_define_module_function(module, "glCompressedTexSubImage2D", gl_CompressedTexSubImage2D, 9);
 	rb_define_module_function(module, "glCompressedTexSubImage1D", gl_CompressedTexSubImage1D, 7);
-	rb_define_module_function(module, "glGetCompressedTexImage", gl_GetCompressedTexImage, 2);
+	rb_define_module_function(module, "glGetCompressedTexImage", gl_GetCompressedTexImage, -1);
 
 	/* Additional functions */
 
