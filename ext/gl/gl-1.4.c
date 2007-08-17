@@ -110,23 +110,24 @@ VALUE obj,arg1,arg2,arg3;
 
 static void (APIENTRY * fptr_glMultiDrawArrays)(GLenum,GLint*,GLsizei*,GLsizei);
 static VALUE
-gl_MultiDrawArrays(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
+gl_MultiDrawArrays(obj,arg1,arg2,arg3)
+VALUE obj,arg1,arg2,arg3;
 {
-	/* TODO: check ary1,ary2 if len < primcount then raise */
-	/* stringy ? */
 	GLenum mode;
-	GLsizei primcount;
 	GLint *ary1;
 	GLsizei *ary2;
+  int len1,len2;
 	LOAD_GL_FUNC(glMultiDrawArrays)
+  len1 = RARRAY(arg2)->len;
+  len2 = RARRAY(arg3)->len;
+	if (len1!=len2)
+			rb_raise(rb_eArgError, "Passed arrays must have same length");
 	mode = (GLenum)NUM2INT(arg1);
-	primcount = (GLsizei)NUM2UINT(arg4);
-	ary1 = ALLOC_N(GLint,primcount);
-	ary2 = ALLOC_N(GLsizei,primcount);
-	ary2cint(arg2,ary1,primcount);
-	ary2cint(arg3,ary2,primcount);
-	fptr_glMultiDrawArrays(mode,ary1,ary2,primcount);
+	ary1 = ALLOC_N(GLint,len1);
+	ary2 = ALLOC_N(GLsizei,len2);
+	ary2cint(arg2,ary1,len1);
+	ary2cint(arg3,ary2,len2);
+	fptr_glMultiDrawArrays(mode,ary1,ary2,len1);
 	xfree(ary1);
 	xfree(ary2);
 	return Qnil;
@@ -146,8 +147,8 @@ VALUE obj;
 	GLint size;
 	RArray *ary;
 	int i;
-	LOAD_GL_FUNC(glMultiDrawElements)
 	VALUE args[4];
+	LOAD_GL_FUNC(glMultiDrawElements)
 	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
 		default:
 		case 3:
@@ -636,7 +637,7 @@ void gl_init_functions_1_4(VALUE module)
 	rb_define_module_function(module, "glFogCoordd", gl_FogCoordd, 1);
 	rb_define_module_function(module, "glFogCoorddv", gl_FogCoorddv, 1);
 	rb_define_module_function(module, "glFogCoordPointer", gl_FogCoordPointer, 3);
-	rb_define_module_function(module, "glMultiDrawArrays", gl_MultiDrawArrays, 4);
+	rb_define_module_function(module, "glMultiDrawArrays", gl_MultiDrawArrays, 3);
 	rb_define_module_function(module, "glMultiDrawElements", gl_MultiDrawElements, -1);
 	rb_define_module_function(module, "glPointParameterf", gl_PointParameterf, 2);
 	rb_define_module_function(module, "glPointParameterfv", gl_PointParameterfv, 2);

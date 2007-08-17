@@ -70,7 +70,7 @@ class Test_14 < Test::Unit::TestCase
 		buf = glFeedbackBuffer(256,GL_3D)
 		glRenderMode(GL_FEEDBACK)
 
-		glMultiDrawArrays(GL_POLYGON, [0,3], [3,3], 2)		
+		glMultiDrawArrays(GL_POLYGON, [0,3], [3,3])
 
 		i1 = [0,1,2].pack("C*")
 		i2 = [3,4,5].pack("C*")

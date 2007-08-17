@@ -45,12 +45,17 @@ VALUE obj,arg1;
 	GLsizei n;
 	GLuint *queries;
 	LOAD_GL_FUNC(glDeleteQueries)
-	Check_Type(arg1,T_ARRAY);
-	n = RARRAY(arg1)->len;
-	queries = ALLOC_N(GLuint,n);
-	ary2cuint(arg1,queries,n); 
-	fptr_glDeleteQueries( n, queries);
-	xfree(queries);
+	if (TYPE(arg1)==T_ARRAY) {
+		n = RARRAY(arg1)->len;
+		queries = ALLOC_N(GLuint,n);
+		ary2cuint(arg1,queries,n); 
+		fptr_glDeleteQueries( n, queries);
+		xfree(queries);
+	} else {
+		GLuint query;
+		query = NUM2INT(arg1);
+		fptr_glDeleteQueries( 1, &query);
+	}
 	return Qnil;
 }
 
@@ -169,12 +174,17 @@ VALUE obj,arg1;
 	GLsizei n;
 	GLuint *buffers;
 	LOAD_GL_FUNC(glDeleteBuffers)
-	Check_Type(arg1,T_ARRAY);
-	n = RARRAY(arg1)->len;
-	buffers = ALLOC_N(GLuint,n);
-	ary2cuint(arg1,buffers,n); 
-	fptr_glDeleteBuffers(n, buffers);
-	xfree(buffers);
+	if (TYPE(arg1)==T_ARRAY) {
+		n = RARRAY(arg1)->len;
+		buffers = ALLOC_N(GLuint,n);
+		ary2cuint(arg1,buffers,n); 
+		fptr_glDeleteBuffers(n, buffers);
+		xfree(buffers);
+	} else {
+		GLuint buffer;
+		buffer = NUM2INT(arg1);
+		fptr_glDeleteBuffers(1, &buffer);
+	}
 	return Qnil;
 }
 

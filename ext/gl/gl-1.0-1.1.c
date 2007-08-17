@@ -4342,12 +4342,17 @@ VALUE obj,arg1;
 {
 	GLsizei n;
 	GLuint *textures;
-	Check_Type(arg1,T_ARRAY);
-	n = RARRAY(arg1)->len;
-	textures = ALLOC_N(GLuint,n);
-	ary2cuint(arg1,textures,n); 
-	glDeleteTextures( n, textures);
-	xfree(textures);
+	if (TYPE(arg1)==T_ARRAY) {
+		n = RARRAY(arg1)->len;
+		textures = ALLOC_N(GLuint,n);
+		ary2cuint(arg1,textures,n); 
+		glDeleteTextures( n, textures);
+		xfree(textures);
+	} else {
+		GLuint texture;
+		texture = NUM2INT(arg1);
+		glDeleteTextures( 1, &texture);
+	}
 	return Qnil;
 }
 
