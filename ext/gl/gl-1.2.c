@@ -84,9 +84,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLsizei width;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
-	GLsizei size;
 	LOAD_GL_FUNC(glColorTable)
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
@@ -97,13 +94,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		fptr_glColorTable(target,internalformat,width,format,type,(GLvoid *)NUM2INT(arg6));
 	} else {
 		Check_Type(arg6,T_STRING);
-		format_size = glformat_size(format);	
-		type_size = gltype_size(type);	
-		if (type_size == -1 || format_size == -1)
-			rb_raise(rb_eTypeError, "type/format mismatch");
-		size = format_size*type_size*width;
-		if (RSTRING(arg6)->len < size)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
+		CheckDataSize(type,format,width,arg6);
 		fptr_glColorTable(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
 	}
 	return Qnil;
@@ -231,9 +222,6 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
-	GLsizei size;
 	GLsizei width = 0;
 	VALUE data;
 	LOAD_GL_FUNC(glGetColorTable)
@@ -241,16 +229,8 @@ VALUE obj,arg1,arg2,arg3;
 	target = (GLenum)NUM2INT(arg1);
 	format = (GLenum)NUM2INT(arg2);
 	type = (GLenum)NUM2INT(arg3);
-	format_size = glformat_size(format);
-	type_size = gltype_size(type);
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
 	fptr_glGetColorTableParameteriv(target,GL_COLOR_TABLE_WIDTH,&width);
-	if (type==GL_BITMAP)
-		size = format_size*(width/8);
-	else
-		size = type_size*format_size*width;
-	data = allocate_buffer_with_string(size);
+	data = allocate_buffer_with_string(GetDataSize(type,format,width));
 	FORCE_PIXEL_STORE_MODE
 	fptr_glGetColorTable(target,format,type,(GLvoid*)RSTRING(data)->ptr);	
 	RESTORE_PIXEL_STORE_MODE
@@ -267,9 +247,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLsizei count;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
-	GLsizei size;
 	LOAD_GL_FUNC(glColorSubTable)
 	target = (GLenum)NUM2INT(arg1);	
 	start = (GLsizei)NUM2UINT(arg2);	
@@ -280,13 +257,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		fptr_glColorSubTable(target,start,count,format,type,(GLvoid *)NUM2INT(arg6));
 	} else {
 		Check_Type(arg6,T_STRING);
-		format_size = glformat_size(format);	
-		type_size = gltype_size(type);	
-		if (type_size == -1 || format_size == -1)
-			rb_raise(rb_eTypeError, "type/format mismatch");
-		size = format_size*type_size*count;
-		if (RSTRING(arg6)->len < size)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
+		CheckDataSize(type,format,count,arg6);
 		fptr_glColorSubTable(target,start,count,format,type,RSTRING(arg6)->ptr);
 	}
 	return Qnil;
@@ -322,9 +293,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLsizei width;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
-	GLsizei size;
 	LOAD_GL_FUNC(glConvolutionFilter1D)
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
@@ -335,16 +303,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,(GLvoid *)NUM2INT(arg6));
 	} else {
 		Check_Type(arg6,T_STRING);
-		format_size = glformat_size(format);	
-		type_size = gltype_size(type);	
-		if (type_size == -1 || format_size == -1)
-			rb_raise(rb_eTypeError, "type/format mismatch");
-		if (type==GL_BITMAP)
-			size = format_size*(width/8);
-		else
-			size = type_size*format_size*width;
-		if (RSTRING(arg6)->len < size)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg6)->len);
+		CheckDataSize(type,format,width,arg6);
 		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
 	}
 	return Qnil;
@@ -361,9 +320,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLsizei height;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
-	GLsizei size;
 	LOAD_GL_FUNC(glConvolutionFilter2D)
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
@@ -375,16 +331,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2INT(arg7));
 	} else {
 		Check_Type(arg7,T_STRING);
-		format_size = glformat_size(format);
-		type_size = gltype_size(type);
-		if (type_size == -1 || format_size == -1)
-			rb_raise(rb_eTypeError, "type/format mismatch");
-		if (type==GL_BITMAP)
-			size = format_size*((width*height)/8);
-		else
-			size = type_size*format_size*width*height;
-		if (RSTRING(arg7)->len < size)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
+		CheckDataSize(type,format,width*height,arg7);
 		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr);
 	}
 	return Qnil;
@@ -570,8 +517,8 @@ VALUE obj;
 	GLenum target;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
+	//GLsizei format_size;
+	//GLsizei type_size;
 	GLint size = 0;
 	VALUE data;
 	VALUE args[4];
@@ -579,14 +526,9 @@ VALUE obj;
 	LOAD_GL_FUNC(glGetConvolutionFilter)
 	LOAD_GL_FUNC(glGetConvolutionParameteriv)
 	numargs = rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2], &args[3]);
-
 	target = (GLenum)NUM2INT(args[0]);
 	format = (GLenum)NUM2INT(args[1]);
 	type = (GLenum)NUM2INT(args[2]);
-	format_size = glformat_size(format);
-	type_size = gltype_size(type);
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
 
 	switch(numargs) {
 		default:
@@ -602,11 +544,7 @@ VALUE obj;
 				fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT,&size);
 				size *=tmp;
 			}
-			if (type==GL_BITMAP)
-				size = (size/8)*format_size;
-			else
-				size = size*type_size*format_size;
-			data = allocate_buffer_with_string(size);
+			data = allocate_buffer_with_string(GetDataSize(type,format,size));
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)RSTRING(data)->ptr);
 			RESTORE_PIXEL_STORE_MODE
@@ -632,8 +570,6 @@ VALUE obj;
 	GLenum target;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
 	GLint size_row = 0;
 	GLint size_column = 0;
 	VALUE data_row;
@@ -647,10 +583,6 @@ VALUE obj;
 	target = (GLenum)NUM2INT(args[0]);
 	format = (GLenum)NUM2INT(args[1]);
 	type = (GLenum)NUM2INT(args[2]);
-	format_size = glformat_size(format);
-	type_size = gltype_size(type);
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
 
 	switch(numargs) {
 		default:
@@ -660,15 +592,8 @@ VALUE obj;
 
 			fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH,&size_row);
 			fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT,&size_column);
-			if (type==GL_BITMAP) {
-				size_row = (size_row/8)*format_size;
-				size_column = (size_column/8)*format_size;
-			} else {
-				size_row *= type_size*format_size;
-				size_column *= type_size*format_size;
-			}
-			data_row = allocate_buffer_with_string(size_row);
-			data_column = allocate_buffer_with_string(size_column);
+			data_row = allocate_buffer_with_string(GetDataSize(type,format,size_row));
+			data_column = allocate_buffer_with_string(GetDataSize(type,format,size_column));
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetSeparableFilter(target,format,type,(GLvoid*)RSTRING(data_row)->ptr,(GLvoid*)RSTRING(data_column)->ptr,0);
 			RESTORE_PIXEL_STORE_MODE
@@ -698,10 +623,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	GLsizei height;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
-	GLsizei size_row;
-	GLsizei size_column;
 	LOAD_GL_FUNC(glSeparableFilter2D)
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
@@ -714,22 +635,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	} else {
 		Check_Type(arg7,T_STRING);
 		Check_Type(arg8,T_STRING);
-		format_size = glformat_size(format);
-		type_size = gltype_size(type);
-		if (type_size == -1 || format_size == -1)
-			rb_raise(rb_eTypeError, "type/format mismatch");
-		if (type==GL_BITMAP) {
-			size_row = format_size*(width/8);
-			size_column = format_size*(height/8);
-		} else {
-			size_row = type_size*format_size*width;		
-			size_column = type_size*format_size*height;		
-		}
-		if (RSTRING(arg7)->len < size_row)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
-		if (RSTRING(arg8)->len < size_column)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg8)->len);
-	
+		CheckDataSize(type,format,width,arg7);
+		CheckDataSize(type,format,height,arg8);
 		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr,RSTRING(arg8)->ptr);
 	}
 	return Qnil;
@@ -782,8 +689,6 @@ VALUE obj;
 	GLboolean reset;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
 	GLint size = 0;
 	VALUE data;
 	VALUE args[5];
@@ -795,10 +700,6 @@ VALUE obj;
 	reset = (GLboolean)NUM2INT(args[1]);
 	format = (GLenum)NUM2INT(args[2]);
 	type = (GLenum)NUM2INT(args[3]);
-	format_size = glformat_size(format);
-	type_size = gltype_size(type);
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
 
 	switch(numargs) {
 		default:
@@ -807,11 +708,7 @@ VALUE obj;
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
 
 			fptr_glGetHistogramParameteriv(target,GL_HISTOGRAM_WIDTH,&size);
-			if (type==GL_BITMAP)
-				size = (size/8)*format_size;
-			else
-				size = size*type_size*format_size;
-			data = allocate_buffer_with_string(size);
+			data = allocate_buffer_with_string(GetDataSize(type,format,size));
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
 			RESTORE_PIXEL_STORE_MODE
@@ -839,9 +736,6 @@ VALUE obj;
 	GLboolean reset;
 	GLenum format;
 	GLenum type;
-	GLsizei format_size;
-	GLsizei type_size;
-	GLint size;
 	VALUE data;
 	VALUE args[5];
 	int numargs;
@@ -851,10 +745,6 @@ VALUE obj;
 	reset = (GLboolean)NUM2INT(args[1]);
 	format = (GLenum)NUM2INT(args[2]);
 	type = (GLenum)NUM2INT(args[3]);
-	format_size = glformat_size(format);
-	type_size = gltype_size(type);
-	if (type_size == -1 || format_size == -1)
-		rb_raise(rb_eTypeError, "type/format mismatch");
 
 	switch(numargs) {
 		default:
@@ -862,11 +752,7 @@ VALUE obj;
 			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
 
-			if (type==GL_BITMAP)
-				size = format_size*(2/8);
-			else
-				size = type_size*format_size*2;
-			data = allocate_buffer_with_string(size);
+			data = allocate_buffer_with_string(GetDataSize(type,format,2));
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
 			RESTORE_PIXEL_STORE_MODE
@@ -992,9 +878,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	GLenum format;
 	GLenum type;
 	const char *pixels;
-	int size;
-	int type_size;
-	int format_size;
 	LOAD_GL_FUNC(glTexImage3D)
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -1012,21 +895,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 		return Qnil;
 	}
 
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
-	if (type_size == -1 || format_size == -1)
-		return Qnil;
-	if (type==GL_BITMAP)
-		size = format_size*((height*width*depth)/8);
-	else	
-		size = type_size*format_size*height*width*depth;
-
 	if (target == GL_PROXY_TEXTURE_3D || NIL_P(arg10)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
 		Check_Type(arg10,T_STRING);
-		if (RSTRING(arg10)->len < size)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg10)->len);
+		CheckDataSize(type,format,width*height*depth,arg10);
 		pixels = RSTRING(arg10)->ptr;
 	}
 	fptr_glTexImage3D( target, level, internalFormat, width, height,
@@ -1049,9 +922,6 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	GLsizei depth;
 	GLenum format;
 	GLenum type;
-	int size;
-	int type_size;
-	int format_size;
 	LOAD_GL_FUNC(glTexSubImage3D)
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -1067,26 +937,13 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 		fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 				width, height, depth,
 				format, type, (GLvoid *)NUM2INT(arg11));
-		return Qnil;
-	}
-	Check_Type(arg11, T_STRING);
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
-	if (type_size == -1 || format_size == -1)
-		return Qnil;
-	if (type==GL_BITMAP)
-		size = format_size*((height*width*depth)/8);
-	else	
-		size = type_size*format_size*height*width*depth;
-
-	Check_Type(arg11,T_STRING);
-
-	if (RSTRING(arg11)->len < size)
-		rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
-
-	fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
+	} else {
+		Check_Type(arg11, T_STRING);
+		CheckDataSize(type,format,height*width*depth,arg11);
+		fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 			width, height, depth,
 			format, type, RSTRING(arg11)->ptr);
+	}
 	return Qnil;
 }
 

@@ -1260,36 +1260,23 @@ static VALUE
 glu_Build2DMipmaps(obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
 {
-    GLenum target;
-    GLint components;
-    GLint width;
-    GLint height;
-    GLenum format;
-    GLenum type;
-    void* data;
+	GLenum target;
+	GLint components;
+	GLint width;
+	GLint height;
+	GLenum format;
+	GLenum type;
+	
+	target = (GLenum)NUM2INT(arg1);
+	components = (GLint)NUM2INT(arg2);
+	width = (GLint)NUM2INT(arg3);
+	height = (GLint)NUM2INT(arg4);
+	format = (GLenum)NUM2INT(arg5);
+	type = (GLenum)NUM2INT(arg6);
+	Check_Type(arg7,T_STRING);
+	CheckDataSize(type,format,width*height,arg7);
 
-    int type_size;
-    int format_size;
-    int size;
-
-    target = (GLenum)NUM2INT(arg1);
-    components = (GLint)NUM2INT(arg2);
-    width = (GLint)NUM2INT(arg3);
-    height = (GLint)NUM2INT(arg4);
-    format = (GLenum)NUM2INT(arg5);
-    type = (GLenum)NUM2INT(arg6);
-    if (TYPE(arg7) == T_STRING) {
-        type_size = gltype_size(type) / 8;
-        format_size = glformat_size(format);
-        if (type_size == -1 || format_size == -1)
-            return Qnil;
-        size = type_size*format_size*height*width;
-        if (RSTRING(arg7)->len < size)
-            rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
-        data = RSTRING(arg7)->ptr;
-    } else 
-        rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg7));
-    return INT2NUM(gluBuild2DMipmaps(target, components, width, height, format, type, data));
+	return INT2NUM(gluBuild2DMipmaps(target, components, width, height, format, type, RSTRING(arg7)->ptr));
 }
 
 static VALUE
@@ -1304,32 +1291,19 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8;
     GLint widthout;
     GLint heightout;
     GLenum typeout;
-    int type_size;
-    int format_size;
-    int size;
     VALUE ret;
 
     format = (GLenum)NUM2INT(arg1);
     widthin = (GLint)NUM2INT(arg2);
     heightin = (GLint)NUM2INT(arg3);
     typein = (GLenum)NUM2INT(arg4);
-    if (TYPE(arg5) == T_STRING) {
-        type_size = gltype_size(typein) / 8;
-        format_size = glformat_size(format);
-        if (type_size == -1 || format_size == -1)
-            return Qnil;
-        size = type_size*format_size*heightin*widthin;
-        if (RSTRING(arg5)->len < size)
-            rb_raise(rb_eArgError, "string length:%d",RSTRING(arg5)->len);
-        datain = RSTRING(arg5)->ptr;
-    } else 
-        rb_raise(rb_eTypeError, "type mismatch:%s",rb_class2name(arg5));
-
+		Check_Type(arg5,T_STRING);
+		CheckDataSize(typein,format,heightin*widthin,arg5);
+		datain = RSTRING(arg5)->ptr;
     widthout = (GLint)NUM2INT(arg6);
     heightout = (GLint)NUM2INT(arg7);
     typeout = (GLenum)NUM2INT(arg8);
-    type_size = gltype_size(typeout) / 8;
-    ret = allocate_buffer_with_string(widthout*heightout*format_size*type_size);
+    ret = allocate_buffer_with_string(GetDataSize(typeout,format,widthout*heightout));
     gluScaleImage(format, widthin, heightin, typein, datain,
         widthout, heightout, typeout, (GLvoid*)RSTRING(ret)->ptr);
     return ret;

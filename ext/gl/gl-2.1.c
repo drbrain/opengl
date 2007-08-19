@@ -15,125 +15,40 @@
 
 #include "../common/common.h"
 
-static void (APIENTRY * fptr_glUniformMatrix2x3fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix2x3fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix2x3fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 2*3*count);
-	ary2cflt(arg4,value,2*3*count);
-	fptr_glUniformMatrix2x3fv(location,count,transpose,value);
-	xfree(value);
-	return Qnil;
+#define UNIFORMMATRIX_FUNC(_x_,_y_) \
+static void (APIENTRY * fptr_glUniformMatrix##_x_##x##_y_##fv)(GLint,GLsizei,GLboolean,GLfloat *); \
+static VALUE \
+gl_UniformMatrix##_x_##x##_y_##fv(obj,arg1,arg2,arg3,arg4) \
+VALUE obj,arg1,arg2,arg3,arg4; \
+{ \
+	GLint location; \
+	GLsizei count; \
+	GLboolean transpose; \
+	GLfloat *value;	\
+	VALUE ary; \
+	LOAD_GL_FUNC(glUniformMatrix##_x_##x##_y_##fv) \
+	location = (GLint)NUM2INT(arg1); \
+	count = (GLint)NUM2INT(arg2); \
+	transpose = (GLboolean)NUM2INT(arg3); \
+	ary = rb_ary_new(); \
+	mary2ary(arg4, ary); \
+	if (RARRAY(ary)->len!=(_x_*_y_*count)) \
+		rb_raise(rb_eArgError, "Incorrect array length %i",RARRAY(ary)->len); \
+	value = ALLOC_N(GLfloat, _x_*_y_*count); \
+	ary2cflt(arg4,value,_x_*_y_*count); \
+	fptr_glUniformMatrix##_x_##x##_y_##fv(location,count,transpose,value); \
+	xfree(value); \
+	return Qnil; \
 }
 
-static void (APIENTRY * fptr_glUniformMatrix3x2fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix3x2fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix3x2fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 3*2*count);
-	ary2cflt(arg4,value,3*2*count);
-	fptr_glUniformMatrix3x2fv(location,count,transpose,value);
-	xfree(value);
-	return Qnil;
-}
+UNIFORMMATRIX_FUNC(2,3)
+UNIFORMMATRIX_FUNC(3,2)
+UNIFORMMATRIX_FUNC(2,4)
+UNIFORMMATRIX_FUNC(4,2)
+UNIFORMMATRIX_FUNC(3,4)
+UNIFORMMATRIX_FUNC(4,3)
 
-static void (APIENTRY * fptr_glUniformMatrix2x4fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix2x4fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix2x4fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 2*4*count);
-	ary2cflt(arg4,value,2*4*count);
-	fptr_glUniformMatrix2x4fv(location,count,transpose,value);
-	xfree(value);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniformMatrix4x2fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix4x2fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix4x2fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 4*2*count);
-	ary2cflt(arg4,value,4*2*count);
-	fptr_glUniformMatrix4x2fv(location,count,transpose,value);
-	xfree(value);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniformMatrix3x4fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix3x4fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix3x4fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 3*4*count);
-	ary2cflt(arg4,value,3*4*count);
-	fptr_glUniformMatrix3x4fv(location,count,transpose,value);
-	xfree(value);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniformMatrix4x3fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix4x3fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix4x3fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 4*3*count);
-	ary2cflt(arg4,value,4*3*count);
-	fptr_glUniformMatrix4x3fv(location,count,transpose,value);
-	xfree(value);
-	return Qnil;
-}
+#undef UNIFORMMATRIX_FUNC
 
 void gl_init_functions_2_1(VALUE module)
 {

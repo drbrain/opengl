@@ -230,7 +230,6 @@ float cary[];
 }
 
 /* -------------------------------------------------------------------- */
-/*Need to find proper size for glReadPixels array*/
 static inline int glformat_size(GLenum format)
 {
     switch(format)
@@ -266,7 +265,6 @@ static inline int glformat_size(GLenum format)
     }
 }
 
-/* -------------------------------------------------------------------- */
 static inline int gltype_size(GLenum type)
 {
     switch(type)
@@ -302,6 +300,40 @@ static inline int gltype_size(GLenum type)
         default:
             return -1;
     }
+}
+
+static inline int GetDataSize(GLenum type,GLenum format,int num)
+{
+	int size;
+	int type_size;
+	int format_size;
+
+	type_size = gltype_size(type);
+	format_size = glformat_size(format);
+	
+	if (type_size == -1)
+			rb_raise(rb_eArgError, "Unknown GL type enum %i",type);
+	if (format_size == -1)
+			rb_raise(rb_eArgError, "Unknown GL format enum %i",type);
+
+	if (type==GL_BITMAP)
+		size = format_size*(num/8); /* FIXME account for alignment */
+	else
+		size = type_size*format_size*num;
+
+	return size;
+}
+
+/* Checks if data size of 'data' string confirms to passed format values */
+/* 'num' is number of elements, each of size 'format' * 'type' */
+static inline void CheckDataSize(GLenum type,GLenum format,int num,VALUE data)
+{
+	int size;
+
+	size = GetDataSize(type,format,num);
+	
+	if (RSTRING(data)->len < size)
+		rb_raise(rb_eArgError, "Length of specified data doesn't correspond to format and type parameters passed. Calculated length: %i",size);
 }
 
 /* -------------------------------------------------------------------- */
@@ -340,13 +372,13 @@ static inline void *load_gl_function(const char *name,int raise)
 #elif defined(WIN32) || defined(_WIN32)
 	func_ptr = wglGetProcAddress((LPCSTR)name);
 #elif defined(GLX_VERSION_1_4)
-    func_ptr = glXGetProcAddress((const GLubyte *)name);
+	func_ptr = glXGetProcAddress((const GLubyte *)name);
 #else
-    func_ptr = glXGetProcAddressARB((const GLubyte *)name);
+	func_ptr = glXGetProcAddressARB((const GLubyte *)name);
 #endif
 
 	if (func_ptr == NULL && raise == 1)
-	    rb_raise(rb_eNotImpError,"Function %s is not available at this machine",name);
+		rb_raise(rb_eNotImpError,"Function %s is not available at this machine",name);
 
 	return func_ptr;
 }

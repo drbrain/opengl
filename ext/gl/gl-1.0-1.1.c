@@ -1619,9 +1619,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	GLenum format;
 	GLenum type;
 	const char *pixels;
-	int size;
-	int type_size;
-	int format_size;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	components = (GLint)NUM2INT(arg3);
@@ -1635,22 +1632,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 		return Qnil;
 	}
 
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
-
-	if (type_size == -1 || format_size == -1)
-		return Qnil;
-	if (type==GL_BITMAP)
-		size = format_size*(width/8);
-	else
-		size = type_size*format_size*width;
-
 	if (target == GL_PROXY_TEXTURE_1D || NIL_P(arg8)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
 		Check_Type(arg8,T_STRING);
-		if (RSTRING(arg8)->len < size)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
+		CheckDataSize(type,format,width,arg8);
 		pixels = RSTRING(arg8)->ptr;
 	}
 	glTexImage1D(target,level,components,width,border,format,type,pixels);
@@ -1670,9 +1656,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLenum format;
 	GLenum type;
 	const char *pixels;
-	int size;
-	int type_size;
-	int format_size;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	components = (GLint)NUM2INT(arg3);
@@ -1687,22 +1670,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		return Qnil;
 	}
 	
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
-
-	if (type_size == -1 || format_size == -1)
-		return Qnil;
-	if (type==GL_BITMAP)
-		size = format_size*((height*width)/8);
-	else
-		size = type_size*format_size*height*width;
-	
 	if (target == GL_PROXY_TEXTURE_2D || target == GL_PROXY_TEXTURE_CUBE_MAP || NIL_P(arg9)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
 		Check_Type(arg9,T_STRING);
-		if (RSTRING(arg9)->len < size)
-			rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
+		CheckDataSize(type,format,width*height,arg9);
 		pixels = RSTRING(arg9)->ptr;
 	}
 	glTexImage2D(target,level,components,width,height,border,format,type,pixels);
@@ -2680,9 +2652,6 @@ VALUE obj;
 	int format;
 	int type;
 	VALUE pixels;
-	GLsizei type_size;
-	GLsizei format_size;
-	GLsizei size;
 	VALUE args[7];
 	int numargs;
 	numargs = rb_scan_args(argc, argv, "61", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6]);
@@ -2692,21 +2661,13 @@ VALUE obj;
 	height = (GLsizei)NUM2UINT(args[3]);
 	format = NUM2INT(args[4]);
 	type = NUM2INT(args[5]);
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
-	if (type_size == -1 || format_size == -1) 
-		return Qnil;
 
 	switch(numargs) {
 		default:
 		case 6:
 			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
-			if (type==GL_BITMAP)
-				size = format_size*((width*height)/8);
-			else
-				size = width*height*format_size*type_size;
-			pixels = allocate_buffer_with_string(size);
+			pixels = allocate_buffer_with_string(GetDataSize(type,format,width*height));
 			FORCE_PIXEL_STORE_MODE
 			glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING(pixels)->ptr);
 			RESTORE_PIXEL_STORE_MODE
@@ -2732,9 +2693,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLenum format;
 	GLenum type;
 	const char *pixels;
-	GLsizei size;
-	GLsizei type_size;
-	GLsizei format_size;
 	width = (GLsizei)NUM2UINT(arg1);
 	height = (GLsizei)NUM2UINT(arg2);
 	format = (GLenum)NUM2INT(arg3);
@@ -2743,16 +2701,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 		glDrawPixels(width,height,format,type,(GLvoid *)NUM2INT(arg5));
 	} else {
 		Check_Type(arg5,T_STRING);
-		type_size = gltype_size(type);
-		format_size = glformat_size(format);
-		if (type_size == -1 || format_size == -1)
-			rb_raise(rb_eArgError, "type/format mismatch");
-		if (type==GL_BITMAP)
-			size = format_size*(width/8);
-		else
-			size = type_size*format_size*width*height;
-		if (RSTRING(arg5)->len < size)
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg5)->len);
+		CheckDataSize(type,format,width*height,arg5);
 		pixels = RSTRING(arg5)->ptr;
 		glDrawPixels(width,height,format,type,pixels);
 	}
@@ -3498,8 +3447,6 @@ VALUE obj;
 	GLint height = 0;
 	GLint depth = 0;
 	GLint size;
-	GLint format_size;
-	GLint type_size;
 	VALUE pixels;
 	VALUE args[5];
 	int numargs;
@@ -3508,11 +3455,6 @@ VALUE obj;
 	lod = (GLint)NUM2INT(args[1]);
 	format = (GLenum)NUM2INT(args[2]);
 	type = (GLenum)NUM2INT(args[3]);
-	format_size = glformat_size(format);
-	type_size = gltype_size(type);
-	if (type_size == -1 && format_size == -1)
-		return Qnil;
-
 	switch(numargs) {
 		default:
 		case 4:
@@ -3536,8 +3478,7 @@ VALUE obj;
 				default:
 					return Qnil;
 			}
-			size *=	format_size*type_size;
-			pixels = allocate_buffer_with_string(size);
+			pixels = allocate_buffer_with_string(GetDataSize(type,format,size));
 		
 			FORCE_PIXEL_STORE_MODE
 			glGetTexImage(tex,lod,format,type,(GLvoid*)RSTRING(pixels)->ptr);
@@ -4216,9 +4157,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLsizei width;
 	GLenum format;
 	GLenum type;
-	int size;
-	int type_size;
-	int format_size;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -4231,19 +4169,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		return Qnil;
 	}
 	
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
-	if (type_size == -1 || format_size == -1)
-		return Qnil;
-	if (type==GL_BITMAP)
-		size = format_size*(width/8);
-	else
-		size = type_size*format_size*width;
-
 	Check_Type(arg7,T_STRING);
-
-	if (RSTRING(arg7)->len < size)
-		rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
+	CheckDataSize(type,format,width,arg7);
 
 	glTexSubImage1D(target,level,xoffset,width,format,type,RSTRING(arg7)->ptr);
 	return Qnil;
@@ -4261,9 +4188,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLsizei height;
 	GLenum format;
 	GLenum type;
-	int size;
-	int type_size;
-	int format_size;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -4278,18 +4202,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		return Qnil;
 	}
 	
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
-	if (type_size == -1 || format_size == -1)
-		return Qnil;
-	if (type==GL_BITMAP)
-		size = format_size*((height*width)/8);
-	else
-		size = type_size*format_size*height*width;
 	Check_Type(arg9,T_STRING);
-
-	if (RSTRING(arg9)->len < size)
-		rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
+	CheckDataSize(type,format,width*height,arg9);
 
 	glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,(RSTRING(arg9)->ptr));
 	return Qnil;
