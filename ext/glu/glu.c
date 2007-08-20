@@ -61,8 +61,8 @@ static VALUE cQuad;
 }
 
 #define GetQUAD(obj, qdata) {\
-    Data_Get_Struct(obj, struct quaddata, qdata);\
-    if (qdata->qobj == NULL) rb_raise(rb_eRuntimeError, "Quadric Object already deleted!");\
+	Data_Get_Struct(obj, struct quaddata, qdata);\
+	if (qdata->qobj == NULL) rb_raise(rb_eRuntimeError, "Quadric Object already deleted!");\
 }
 
 static ID callId;
@@ -932,199 +932,199 @@ static VALUE
 glu_NewQuadric(obj)
 VALUE obj;
 {
-    VALUE ret;
-    struct quaddata *qdata;
-    ret = Data_Make_Struct(cQuad, struct quaddata, 0, free_quad, qdata);
-    qdata->qobj = gluNewQuadric();
-    return ret;
+	VALUE ret;
+	struct quaddata *qdata;
+	ret = Data_Make_Struct(cQuad, struct quaddata, 0, free_quad, qdata);
+	qdata->qobj = gluNewQuadric();
+	return ret;
 }
 static VALUE
 glu_DeleteQuadric(obj, arg1)
 VALUE obj, arg1;
 {
-    struct quaddata *qdata;
-    GetQUAD(arg1, qdata);
-    free_quad(qdata);
-    return Qnil;
+	struct quaddata *qdata;
+	GetQUAD(arg1, qdata);
+	free_quad(qdata);
+	return Qnil;
 }
 static VALUE
 glu_QuadricNormals(obj, arg1, arg2)
 VALUE obj, arg1, arg2;
 {
-    struct quaddata* qdata;
-    GLenum normals;
-    GetQUAD(arg1, qdata);
-    normals = (GLenum)NUM2INT(arg2);
-    gluQuadricNormals(qdata->qobj, normals);
-    return Qnil;
+	struct quaddata* qdata;
+	GLenum normals;
+	GetQUAD(arg1, qdata);
+	normals = (GLenum)NUM2INT(arg2);
+	gluQuadricNormals(qdata->qobj, normals);
+	return Qnil;
 }
 static VALUE
 glu_QuadricTexture(obj, arg1, arg2)
 VALUE obj, arg1, arg2;
 {
-    struct quaddata* qdata;
-    GLboolean textureCoords;
-    GetQUAD(arg1, qdata);
-    textureCoords = (GLboolean)NUM2INT(arg2);
-    gluQuadricTexture(qdata->qobj, textureCoords);
-    return Qnil;
+	struct quaddata* qdata;
+	GLboolean textureCoords;
+	GetQUAD(arg1, qdata);
+	textureCoords = (GLboolean)NUM2INT(arg2);
+	gluQuadricTexture(qdata->qobj, textureCoords);
+	return Qnil;
 }
 static VALUE
 glu_QuadricOrientation(obj, arg1, arg2)
 VALUE obj, arg1, arg2;
 {
-    struct quaddata* qdata;
-    GLenum orientation;
-    GetQUAD(arg1, qdata);
-    orientation = (GLenum)NUM2INT(arg2);
-    gluQuadricOrientation(qdata->qobj, orientation);
-    return Qnil;
+	struct quaddata* qdata;
+	GLenum orientation;
+	GetQUAD(arg1, qdata);
+	orientation = (GLenum)NUM2INT(arg2);
+	gluQuadricOrientation(qdata->qobj, orientation);
+	return Qnil;
 }
 static VALUE
 glu_QuadricDrawStyle(obj, arg1, arg2)
 VALUE obj, arg1, arg2;
 {
-    struct quaddata* qdata;
-    GLenum drawStyle;
-    GetQUAD(arg1, qdata);
-    drawStyle = (GLenum)NUM2INT(arg2);
-    gluQuadricDrawStyle(qdata->qobj, drawStyle);
-    return Qnil;
+	struct quaddata* qdata;
+	GLenum drawStyle;
+	GetQUAD(arg1, qdata);
+	drawStyle = (GLenum)NUM2INT(arg2);
+	gluQuadricDrawStyle(qdata->qobj, drawStyle);
+	return Qnil;
 }
 static VALUE
 glu_Cylinder(obj, arg1, arg2, arg3, arg4, arg5, arg6)
 VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6;
 {
-    struct quaddata* qdata;
-    GLdouble baseRadius;
-    GLdouble topRadius;
-    GLdouble height;
-    GLint slices;
-    GLint stacks;
+	struct quaddata* qdata;
+	GLdouble baseRadius;
+	GLdouble topRadius;
+	GLdouble height;
+	GLint slices;
+	GLint stacks;
 
-    GetQUAD(arg1, qdata);
-    baseRadius = (GLdouble)NUM2DBL(arg2);
-    topRadius = (GLdouble)NUM2DBL(arg3);
-    height = (GLdouble)NUM2DBL(arg4);
-    slices = (GLint)NUM2INT(arg5);
-    stacks = (GLint)NUM2INT(arg6);
+	GetQUAD(arg1, qdata);
+	baseRadius = (GLdouble)NUM2DBL(arg2);
+	topRadius = (GLdouble)NUM2DBL(arg3);
+	height = (GLdouble)NUM2DBL(arg4);
+	slices = (GLint)NUM2INT(arg5);
+	stacks = (GLint)NUM2INT(arg6);
 
-    gluCylinder(qdata->qobj, baseRadius, topRadius, height, slices, stacks);
-    return Qnil;
+	gluCylinder(qdata->qobj, baseRadius, topRadius, height, slices, stacks);
+	return Qnil;
 }
 static VALUE
 glu_Disk(obj, arg1, arg2, arg3, arg4, arg5)
 VALUE obj, arg1, arg2, arg3, arg4, arg5;
 {
-    struct quaddata* qdata;
-    GLdouble innerRadius;
-    GLdouble outerRadius;
-    GLint slices;
-    GLint loops;
-
-    GetQUAD(arg1, qdata);
-    innerRadius = (GLdouble)NUM2DBL(arg2);
-    outerRadius = (GLdouble)NUM2DBL(arg3);
-    slices = (GLint)NUM2INT(arg4);
-    loops = (GLint)NUM2INT(arg5);
-
-    gluDisk(qdata->qobj, innerRadius, outerRadius, slices, loops);
-    return Qnil;
+	struct quaddata* qdata;
+	GLdouble innerRadius;
+	GLdouble outerRadius;
+	GLint slices;
+	GLint loops;
+	
+	GetQUAD(arg1, qdata);
+	innerRadius = (GLdouble)NUM2DBL(arg2);
+	outerRadius = (GLdouble)NUM2DBL(arg3);
+	slices = (GLint)NUM2INT(arg4);
+	loops = (GLint)NUM2INT(arg5);
+	
+	gluDisk(qdata->qobj, innerRadius, outerRadius, slices, loops);
+	return Qnil;
 }
 static VALUE
 glu_PartialDisk(obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
 {
-    struct quaddata* qdata;
-    GLdouble innerRadius;
-    GLdouble outerRadius;
-    GLint slices;
-    GLint loops;
-    GLdouble startAngle;
-    GLdouble sweepAngle;
-
-    GetQUAD(arg1, qdata);
-    innerRadius = (GLdouble)NUM2DBL(arg2);
-    outerRadius = (GLdouble)NUM2DBL(arg3);
-    slices = (GLint)NUM2INT(arg4);
-    loops = (GLint)NUM2INT(arg5);
-    startAngle = (GLdouble)NUM2DBL(arg6);
-    sweepAngle = (GLdouble)NUM2DBL(arg7);
-
-    gluPartialDisk(qdata->qobj, innerRadius, outerRadius, slices, loops, startAngle, sweepAngle);
-    return Qnil;
+	struct quaddata* qdata;
+	GLdouble innerRadius;
+	GLdouble outerRadius;
+	GLint slices;
+	GLint loops;
+	GLdouble startAngle;
+	GLdouble sweepAngle;
+	
+	GetQUAD(arg1, qdata);
+	innerRadius = (GLdouble)NUM2DBL(arg2);
+	outerRadius = (GLdouble)NUM2DBL(arg3);
+	slices = (GLint)NUM2INT(arg4);
+	loops = (GLint)NUM2INT(arg5);
+	startAngle = (GLdouble)NUM2DBL(arg6);
+	sweepAngle = (GLdouble)NUM2DBL(arg7);
+	
+	gluPartialDisk(qdata->qobj, innerRadius, outerRadius, slices, loops, startAngle, sweepAngle);
+	return Qnil;
 }
 static VALUE
 glu_Sphere(obj, arg1, arg2, arg3, arg4)
 VALUE obj, arg1, arg2, arg3, arg4;
 {
-    struct quaddata* qdata;
-    GLdouble radius;
-    GLint slices;
-    GLint stacks;
+	struct quaddata* qdata;
+	GLdouble radius;
+	GLint slices;
+	GLint stacks;
 
-    GetQUAD(arg1, qdata);
-    radius = (GLdouble)NUM2DBL(arg2);
-    slices = (GLint)NUM2INT(arg3);
-    stacks = (GLint)NUM2INT(arg4);
+	GetQUAD(arg1, qdata);
+	radius = (GLdouble)NUM2DBL(arg2);
+	slices = (GLint)NUM2INT(arg3);
+	stacks = (GLint)NUM2INT(arg4);
 
-    gluSphere(qdata->qobj, radius, slices, stacks);
-    return Qnil;
+	gluSphere(qdata->qobj, radius, slices, stacks);
+	return Qnil;
 }
 static VALUE
 glu_LookAt(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 {
-    GLdouble eyex;
-    GLdouble eyey;
-    GLdouble eyez;
-    GLdouble centerx;
-    GLdouble centery;
-    GLdouble centerz;
-    GLdouble upx;
-    GLdouble upy;
-    GLdouble upz;
-    eyex = (GLdouble)NUM2DBL(arg1);
-    eyey = (GLdouble)NUM2DBL(arg2);
-    eyez = (GLdouble)NUM2DBL(arg3);
-    centerx = (GLdouble)NUM2DBL(arg4);
-    centery = (GLdouble)NUM2DBL(arg5);
-    centerz = (GLdouble)NUM2DBL(arg6);
-    upx = (GLdouble)NUM2DBL(arg7);
-    upy = (GLdouble)NUM2DBL(arg8);
-    upz = (GLdouble)NUM2DBL(arg9);
-    gluLookAt( eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz );
-    return Qnil;
+	GLdouble eyex;
+	GLdouble eyey;
+	GLdouble eyez;
+	GLdouble centerx;
+	GLdouble centery;
+	GLdouble centerz;
+	GLdouble upx;
+	GLdouble upy;
+	GLdouble upz;
+	eyex = (GLdouble)NUM2DBL(arg1);
+	eyey = (GLdouble)NUM2DBL(arg2);
+	eyez = (GLdouble)NUM2DBL(arg3);
+	centerx = (GLdouble)NUM2DBL(arg4);
+	centery = (GLdouble)NUM2DBL(arg5);
+	centerz = (GLdouble)NUM2DBL(arg6);
+	upx = (GLdouble)NUM2DBL(arg7);
+	upy = (GLdouble)NUM2DBL(arg8);
+	upz = (GLdouble)NUM2DBL(arg9);
+	gluLookAt( eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz );
+	return Qnil;
 }
 static VALUE
 glu_Ortho2D(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
 {
-    GLdouble left;
-    GLdouble right;
-    GLdouble bottom;
-    GLdouble top;
-    left = (GLdouble)NUM2DBL(arg1);
-    right = (GLdouble)NUM2DBL(arg2);
-    bottom = (GLdouble)NUM2DBL(arg3);
-    top = (GLdouble)NUM2DBL(arg4);
-    gluOrtho2D(left,right,bottom,top);
-    return Qnil;
+	GLdouble left;
+	GLdouble right;
+	GLdouble bottom;
+	GLdouble top;
+	left = (GLdouble)NUM2DBL(arg1);
+	right = (GLdouble)NUM2DBL(arg2);
+	bottom = (GLdouble)NUM2DBL(arg3);
+	top = (GLdouble)NUM2DBL(arg4);
+	gluOrtho2D(left,right,bottom,top);
+	return Qnil;
 }
 static VALUE
 glu_Perspective(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
 {
-    GLdouble fovy;
-    GLdouble aspect;
-    GLdouble zNear;
-    GLdouble zFar;
-    fovy = (GLdouble)NUM2DBL(arg1);
-    aspect = (GLdouble)NUM2DBL(arg2);
-    zNear = (GLdouble)NUM2DBL(arg3);
-    zFar = (GLdouble)NUM2DBL(arg4);
-    gluPerspective(fovy,aspect,zNear,zFar);
-    return Qnil;
+	GLdouble fovy;
+	GLdouble aspect;
+	GLdouble zNear;
+	GLdouble zFar;
+	fovy = (GLdouble)NUM2DBL(arg1);
+	aspect = (GLdouble)NUM2DBL(arg2);
+	zNear = (GLdouble)NUM2DBL(arg3);
+	zFar = (GLdouble)NUM2DBL(arg4);
+	gluPerspective(fovy,aspect,zNear,zFar);
+	return Qnil;
 }
 static VALUE
 glu_PickMatrix(argc,argv,obj)
@@ -1132,37 +1132,37 @@ int argc;
 VALUE* argv;
 VALUE obj;
 {
-    GLdouble x;
-    GLdouble y;
-    GLdouble width;
-    GLdouble height;
-    GLint viewport[4];
-
-    VALUE args[5];
-
-    switch (rb_scan_args(argc, argv, "23", &args[0], &args[1], &args[2], &args[3], &args[4])) {
-        case 2:
-        width = 5.0f;
-        height = 5.0f;
-        glGetIntegerv(GL_VIEWPORT, viewport);
-        break;
-    case 4:
-        width = (GLdouble)NUM2DBL(args[2]);
-        height = (GLdouble)NUM2DBL(args[3]);
-        glGetIntegerv(GL_VIEWPORT, viewport);
-        break;
-        case 5:
-        width = (GLdouble)NUM2DBL(args[2]);
-        height = (GLdouble)NUM2DBL(args[3]);
-        ary2cint(args[4], viewport, 4);
-        break;
-        default:
-        rb_raise(rb_eArgError, "GLU.PickMatrix args len:%d",argc);
-    }
-    x = (GLdouble)NUM2DBL(args[0]);
-    y = (GLdouble)NUM2DBL(args[1]);
-    gluPickMatrix(x, y, width, height, viewport);
-    return Qnil;
+	GLdouble x;
+	GLdouble y;
+	GLdouble width;
+	GLdouble height;
+	GLint viewport[4];
+	
+	VALUE args[5];
+	
+	switch (rb_scan_args(argc, argv, "23", &args[0], &args[1], &args[2], &args[3], &args[4])) {
+		case 2:
+			width = 5.0f;
+			height = 5.0f;
+			glGetIntegerv(GL_VIEWPORT, viewport);
+			break;
+		case 4:
+			width = (GLdouble)NUM2DBL(args[2]);
+			height = (GLdouble)NUM2DBL(args[3]);
+			glGetIntegerv(GL_VIEWPORT, viewport);
+			break;
+		case 5:
+			width = (GLdouble)NUM2DBL(args[2]);
+			height = (GLdouble)NUM2DBL(args[3]);
+			ary2cint(args[4], viewport, 4);
+			break;
+		default:
+			rb_raise(rb_eArgError, "gluPickMatrix needs 2,4 or 5 parameters",argc);
+	}
+	x = (GLdouble)NUM2DBL(args[0]);
+	y = (GLdouble)NUM2DBL(args[1]);
+	gluPickMatrix(x, y, width, height, viewport);
+	return Qnil;
 }
 
 static VALUE
@@ -1171,44 +1171,40 @@ int argc;
 VALUE* argv;
 VALUE obj;
 {
-    GLdouble ox;
-    GLdouble oy;
-    GLdouble oz;
-    GLdouble mdl_mtx[4*4];
-    GLdouble prj_mtx[4*4];
-    GLint vport[4];
-    GLdouble wx;
-    GLdouble wy;
-    GLdouble wz;
+	GLdouble ox;
+	GLdouble oy;
+	GLdouble oz;
+	GLdouble mdl_mtx[4*4];
+	GLdouble prj_mtx[4*4];
+	GLint vport[4];
+	GLdouble wx;
+	GLdouble wy;
+	GLdouble wz;
 
-    VALUE args[6];
-    VALUE ret;
-    
-    switch (rb_scan_args(argc, argv, "33", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5])) {
-    case 3:
-        glGetDoublev(GL_MODELVIEW_MATRIX, mdl_mtx);
-        glGetDoublev(GL_PROJECTION_MATRIX, prj_mtx);
-        glGetIntegerv(GL_VIEWPORT, vport);
-        break;
-    case 6:
-        ary2cmat4x4dbl(args[3], mdl_mtx);
-        ary2cmat4x4dbl(args[4], prj_mtx);
-        ary2cint(args[5], vport, 4);
-        break;
-    default:
-        rb_raise(rb_eArgError, "GLU.Project args len:%d",argc);
-    }
-    ox = (GLdouble)NUM2DBL(args[0]);
-    oy = (GLdouble)NUM2DBL(args[1]);
-    oz = (GLdouble)NUM2DBL(args[2]);
-
-    if (gluProject(ox, oy, oz, mdl_mtx, prj_mtx, vport, &wx, &wy, &wz)
-    == GL_TRUE) {
-    ret = rb_ary_new3(3, rb_float_new(wx), rb_float_new(wy), rb_float_new(wz));
-    return ret;
-    }
-    else
-    return Qnil;
+	VALUE args[6];
+	
+	switch (rb_scan_args(argc, argv, "33", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5])) {
+		case 3:
+			glGetDoublev(GL_MODELVIEW_MATRIX, mdl_mtx);
+			glGetDoublev(GL_PROJECTION_MATRIX, prj_mtx);
+			glGetIntegerv(GL_VIEWPORT, vport);
+			break;
+		case 6:
+			ary2cmat4x4dbl(args[3], mdl_mtx);
+			ary2cmat4x4dbl(args[4], prj_mtx);
+			ary2cint(args[5], vport, 4);
+			break;
+		default:
+			rb_raise(rb_eArgError, "gluProject needs 3 or 6 parameters");
+	}
+	ox = (GLdouble)NUM2DBL(args[0]);
+	oy = (GLdouble)NUM2DBL(args[1]);
+	oz = (GLdouble)NUM2DBL(args[2]);
+	
+	if (gluProject(ox, oy, oz, mdl_mtx, prj_mtx, vport, &wx, &wy, &wz) == GL_TRUE)
+		return rb_ary_new3(3, rb_float_new(wx), rb_float_new(wy), rb_float_new(wz));
+	else
+		return Qnil;
 }
 static VALUE
 glu_UnProject(argc,argv,obj)
@@ -1216,44 +1212,62 @@ int argc;
 VALUE* argv;
 VALUE obj;
 {
-    GLdouble wx;
-    GLdouble wy;
-    GLdouble wz;
-    GLdouble mdl_mtx[4*4];
-    GLdouble prj_mtx[4*4];
-    GLint vport[4];
-    GLdouble ox;
-    GLdouble oy;
-    GLdouble oz;
+	GLdouble wx;
+	GLdouble wy;
+	GLdouble wz;
+	GLdouble mdl_mtx[4*4];
+	GLdouble prj_mtx[4*4];
+	GLint vport[4];
+	GLdouble ox;
+	GLdouble oy;
+	GLdouble oz;
+	
+	VALUE args[6];
+	VALUE ret;
+	
+	switch (rb_scan_args(argc, argv, "33", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5])) {
+		case 3:
+			glGetDoublev(GL_MODELVIEW_MATRIX, mdl_mtx);
+			glGetDoublev(GL_PROJECTION_MATRIX, prj_mtx);
+			glGetIntegerv(GL_VIEWPORT, vport);
+			break;
+		case 6:
+			ary2cmat4x4dbl(args[3], mdl_mtx);
+			ary2cmat4x4dbl(args[4], prj_mtx);
+			ary2cint(args[5], vport, 4);
+			break;
+		default:
+			rb_raise(rb_eArgError, "gluUnProject needs 3 or 6 parameters");
+	}
+	wx = (GLdouble)NUM2DBL(args[0]);
+	wy = (GLdouble)NUM2DBL(args[1]);
+	wz = (GLdouble)NUM2DBL(args[2]);
+	
+	if (gluUnProject(wx, wy, wz, mdl_mtx, prj_mtx, vport, &ox, &oy, &oz) == GL_TRUE)
+		return rb_ary_new3(3, rb_float_new(ox), rb_float_new(oy), rb_float_new(oz));
+	else
+		return Qnil;
+}
 
-    VALUE args[6];
-    VALUE ret;
+static VALUE
+glu_Build1DMipmaps(obj, arg1, arg2, arg3, arg4, arg5, arg6)
+VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6;
+{
+	GLenum target;
+	GLint components;
+	GLint width;
+	GLenum format;
+	GLenum type;
+	
+	target = (GLenum)NUM2INT(arg1);
+	components = (GLint)NUM2INT(arg2);
+	width = (GLint)NUM2INT(arg3);
+	format = (GLenum)NUM2INT(arg4);
+	type = (GLenum)NUM2INT(arg5);
+	Check_Type(arg6,T_STRING);
+	CheckDataSize(type,format,width,arg6);
 
-    switch (rb_scan_args(argc, argv, "33", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5])) {
-    case 3:
-        glGetDoublev(GL_MODELVIEW_MATRIX, mdl_mtx);
-        glGetDoublev(GL_PROJECTION_MATRIX, prj_mtx);
-        glGetIntegerv(GL_VIEWPORT, vport);
-        break;
-    case 6:
-        ary2cmat4x4dbl(args[3], mdl_mtx);
-        ary2cmat4x4dbl(args[4], prj_mtx);
-        ary2cint(args[5], vport, 4);
-        break;
-    default:
-        rb_raise(rb_eArgError, "GLU.UnProject args len:%d",argc);
-    }
-    wx = (GLdouble)NUM2DBL(args[0]);
-    wy = (GLdouble)NUM2DBL(args[1]);
-    wz = (GLdouble)NUM2DBL(args[2]);
-
-    if (gluUnProject(wx, wy, wz, mdl_mtx, prj_mtx, vport, &ox, &oy, &oz)
-    == GL_TRUE) {
-        ret = rb_ary_new3(3, rb_float_new(ox), rb_float_new(oy), rb_float_new(oz));
-    return ret;
-    }
-    else
-    return Qnil;
+	return INT2NUM(gluBuild1DMipmaps(target, components, width, format, type, RSTRING(arg6)->ptr));
 }
 
 static VALUE
@@ -1283,122 +1297,123 @@ static VALUE
 glu_ScaleImage(obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
 VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8;
 {
-    GLenum format;
-    GLint widthin;
-    GLint heightin;
-    GLenum typein;
-    void* datain;
-    GLint widthout;
-    GLint heightout;
-    GLenum typeout;
-    VALUE ret;
-
-    format = (GLenum)NUM2INT(arg1);
-    widthin = (GLint)NUM2INT(arg2);
-    heightin = (GLint)NUM2INT(arg3);
-    typein = (GLenum)NUM2INT(arg4);
-		Check_Type(arg5,T_STRING);
-		CheckDataSize(typein,format,heightin*widthin,arg5);
-		datain = RSTRING(arg5)->ptr;
-    widthout = (GLint)NUM2INT(arg6);
-    heightout = (GLint)NUM2INT(arg7);
-    typeout = (GLenum)NUM2INT(arg8);
-    ret = allocate_buffer_with_string(GetDataSize(typeout,format,widthout*heightout));
-    gluScaleImage(format, widthin, heightin, typein, datain,
-        widthout, heightout, typeout, (GLvoid*)RSTRING(ret)->ptr);
-    return ret;
+	GLenum format;
+	GLint widthin;
+	GLint heightin;
+	GLenum typein;
+	void* datain;
+	GLint widthout;
+	GLint heightout;
+	GLenum typeout;
+	VALUE ret;
+	
+	format = (GLenum)NUM2INT(arg1);
+	widthin = (GLint)NUM2INT(arg2);
+	heightin = (GLint)NUM2INT(arg3);
+	typein = (GLenum)NUM2INT(arg4);
+	Check_Type(arg5,T_STRING);
+	CheckDataSize(typein,format,heightin*widthin,arg5);
+	datain = RSTRING(arg5)->ptr;
+	widthout = (GLint)NUM2INT(arg6);
+	heightout = (GLint)NUM2INT(arg7);
+	typeout = (GLenum)NUM2INT(arg8);
+	ret = allocate_buffer_with_string(GetDataSize(typeout,format,widthout*heightout));
+	gluScaleImage(format, widthin, heightin, typein, datain,
+		widthout, heightout, typeout, (GLvoid*)RSTRING(ret)->ptr);
+	return ret;
 }
 
 static VALUE
 glu_ErrorString(obj, arg1)
 VALUE obj, arg1;
 {
-    GLenum errorCode;
-    GLubyte* error;
-    errorCode = (GLenum)NUM2INT(arg1);
-    error = (GLubyte*)gluErrorString(errorCode);
-    if (error)
-        return rb_str_new2((char *)error);
-    else
-        return Qnil;
+	GLenum errorCode;
+	GLubyte* error;
+	errorCode = (GLenum)NUM2INT(arg1);
+	error = (GLubyte*)gluErrorString(errorCode);
+	if (error)
+		return rb_str_new2((char *)error);
+	else
+		return Qnil;
 }
 static VALUE
 glu_GetString(obj, arg1)
 VALUE obj, arg1;
 {
-    GLenum name;
-    GLubyte* str;
-    name = (GLenum)NUM2INT(arg1);
-    str = (GLubyte*)gluGetString(name);
-    if (str)
-        return rb_str_new2((char *)str);
-    else
-        return Qnil;
+	GLenum name;
+	GLubyte* str;
+	name = (GLenum)NUM2INT(arg1);
+	str = (GLubyte*)gluGetString(name);
+	if (str)
+		return rb_str_new2((char *)str);
+	else
+		return Qnil;
 }
 
 static VALUE module;
 
 DLLEXPORT void Init_glu()
 {
-    callId = rb_intern("call");
-    refId = rb_intern("[]");
-    module = rb_define_module("Glu");
-
-		glu_init_enums(module);
-
-    rb_define_module_function(module, "gluNewNurbsRenderer", glu_NewNurbsRenderer, 0);
-    rb_define_module_function(module, "gluDeleteNurbsRenderer", glu_DeleteNurbsRenderer, 1);
-    rb_define_module_function(module, "gluNurbsProperty", glu_NurbsProperty, 3);
-    rb_define_module_function(module, "gluGetNurbsProperty", glu_GetNurbsProperty, 2);
-    rb_define_module_function(module, "gluBeginCurve", glu_BeginCurve, 1);
-    rb_define_module_function(module, "gluEndCurve", glu_EndCurve, 1);
-    rb_define_module_function(module, "gluNurbsCurve", glu_NurbsCurve, -1);
-    rb_define_module_function(module, "gluBeginSurface", glu_BeginSurface, 1);
-    rb_define_module_function(module, "gluEndSurface", glu_EndSurface, 1);
-    rb_define_module_function(module, "gluNurbsSurface", glu_NurbsSurface, -1);
-    rb_define_module_function(module, "gluBeginTrim", glu_BeginTrim, 1);
-    rb_define_module_function(module, "gluEndTrim", glu_EndTrim, 1);
-    rb_define_module_function(module, "gluPwlCurve", glu_PwlCurve, -1);
-    rb_define_module_function(module, "gluNewTess", glu_NewTess, 0);
-    rb_define_module_function(module, "gluDeleteTess", glu_DeleteTess, 1);
-    rb_define_module_function(module, "gluTessCallback", glu_TessCallback, 3);
-    rb_define_module_function(module, "gluBeginPolygon", glu_BeginPolygon, 1);
-    rb_define_module_function(module, "gluTessVertex", glu_TessVertex, 3);
-    rb_define_module_function(module, "gluNextContour", glu_NextContour, 2);
-    rb_define_module_function(module, "gluEndPolygon", glu_EndPolygon, 1);
-    rb_define_module_function(module, "gluTessBeginPolygon", glu_TessBeginPolygon, 2);
-    rb_define_module_function(module, "gluTessBeginContour",  glu_TessBeginContour, 1);
-    rb_define_module_function(module, "gluTessEndContour", glu_TessEndContour, 1);
-    rb_define_module_function(module, "gluTessEndPolygon", glu_TessEndPolygon, 1);
-    rb_define_module_function(module, "gluTessProperty", glu_TessProperty, 3);
-    rb_define_module_function(module, "gluTessNormal", glu_TessNormal, 4);
-    rb_define_module_function(module, "gluGetTessProperty", glu_GetTessProperty, 2);
-    rb_define_module_function(module, "gluNewQuadric", glu_NewQuadric, 0);
-    rb_define_module_function(module, "gluDeleteQuadric", glu_DeleteQuadric, 1);
-    rb_define_module_function(module, "gluQuadricNormals", glu_QuadricNormals, 2);
-    rb_define_module_function(module, "gluQuadricTexture", glu_QuadricTexture, 2);
-    rb_define_module_function(module, "gluQuadricOrientation", glu_QuadricOrientation, 2);
-    rb_define_module_function(module, "gluQuadricDrawStyle", glu_QuadricDrawStyle, 2);
-    rb_define_module_function(module, "gluCylinder", glu_Cylinder, 6);
-    rb_define_module_function(module, "gluDisk", glu_Disk, 5);
-    rb_define_module_function(module, "gluPartialDisk", glu_PartialDisk, 7);
-    rb_define_module_function(module, "gluSphere", glu_Sphere, 4);
-
-    rb_define_module_function(module, "gluLookAt", glu_LookAt, 9);
-    rb_define_module_function(module, "gluOrtho2D", glu_Ortho2D, 4);
-    rb_define_module_function(module, "gluPerspective", glu_Perspective, 4);
-    rb_define_module_function(module, "gluPickMatrix", glu_PickMatrix, -1);
-    rb_define_module_function(module, "gluProject", glu_Project, -1);
-    rb_define_module_function(module, "gluUnProject", glu_UnProject, -1);
-    rb_define_module_function(module, "gluBuild2DMipmaps", glu_Build2DMipmaps, 7);
-    rb_define_module_function(module, "gluScaleImage", glu_ScaleImage, 8);
-    rb_define_module_function(module, "gluErrorString", glu_ErrorString, 1);
-    rb_define_module_function(module, "gluGetString", glu_GetString, 1);
-
-    cNurbs = rb_define_class("Nurbs", rb_cObject);
-    cTess = rb_define_class("Tess", rb_cObject);
-    cQuad = rb_define_class("Quadric", rb_cObject);
-
-    rb_global_variable(&t_current);
-    t_current = rb_ary_new();
+	callId = rb_intern("call");
+	refId = rb_intern("[]");
+	module = rb_define_module("Glu");
+	
+	glu_init_enums(module);
+	
+	rb_define_module_function(module, "gluNewNurbsRenderer", glu_NewNurbsRenderer, 0);
+	rb_define_module_function(module, "gluDeleteNurbsRenderer", glu_DeleteNurbsRenderer, 1);
+	rb_define_module_function(module, "gluNurbsProperty", glu_NurbsProperty, 3);
+	rb_define_module_function(module, "gluGetNurbsProperty", glu_GetNurbsProperty, 2);
+	rb_define_module_function(module, "gluBeginCurve", glu_BeginCurve, 1);
+	rb_define_module_function(module, "gluEndCurve", glu_EndCurve, 1);
+	rb_define_module_function(module, "gluNurbsCurve", glu_NurbsCurve, -1);
+	rb_define_module_function(module, "gluBeginSurface", glu_BeginSurface, 1);
+	rb_define_module_function(module, "gluEndSurface", glu_EndSurface, 1);
+	rb_define_module_function(module, "gluNurbsSurface", glu_NurbsSurface, -1);
+	rb_define_module_function(module, "gluBeginTrim", glu_BeginTrim, 1);
+	rb_define_module_function(module, "gluEndTrim", glu_EndTrim, 1);
+	rb_define_module_function(module, "gluPwlCurve", glu_PwlCurve, -1);
+	rb_define_module_function(module, "gluNewTess", glu_NewTess, 0);
+	rb_define_module_function(module, "gluDeleteTess", glu_DeleteTess, 1);
+	rb_define_module_function(module, "gluTessCallback", glu_TessCallback, 3);
+	rb_define_module_function(module, "gluBeginPolygon", glu_BeginPolygon, 1);
+	rb_define_module_function(module, "gluTessVertex", glu_TessVertex, 3);
+	rb_define_module_function(module, "gluNextContour", glu_NextContour, 2);
+	rb_define_module_function(module, "gluEndPolygon", glu_EndPolygon, 1);
+	rb_define_module_function(module, "gluTessBeginPolygon", glu_TessBeginPolygon, 2);
+	rb_define_module_function(module, "gluTessBeginContour",  glu_TessBeginContour, 1);
+	rb_define_module_function(module, "gluTessEndContour", glu_TessEndContour, 1);
+	rb_define_module_function(module, "gluTessEndPolygon", glu_TessEndPolygon, 1);
+	rb_define_module_function(module, "gluTessProperty", glu_TessProperty, 3);
+	rb_define_module_function(module, "gluTessNormal", glu_TessNormal, 4);
+	rb_define_module_function(module, "gluGetTessProperty", glu_GetTessProperty, 2);
+	rb_define_module_function(module, "gluNewQuadric", glu_NewQuadric, 0);
+	rb_define_module_function(module, "gluDeleteQuadric", glu_DeleteQuadric, 1);
+	rb_define_module_function(module, "gluQuadricNormals", glu_QuadricNormals, 2);
+	rb_define_module_function(module, "gluQuadricTexture", glu_QuadricTexture, 2);
+	rb_define_module_function(module, "gluQuadricOrientation", glu_QuadricOrientation, 2);
+	rb_define_module_function(module, "gluQuadricDrawStyle", glu_QuadricDrawStyle, 2);
+	rb_define_module_function(module, "gluCylinder", glu_Cylinder, 6);
+	rb_define_module_function(module, "gluDisk", glu_Disk, 5);
+	rb_define_module_function(module, "gluPartialDisk", glu_PartialDisk, 7);
+	rb_define_module_function(module, "gluSphere", glu_Sphere, 4);
+	
+	rb_define_module_function(module, "gluLookAt", glu_LookAt, 9);
+	rb_define_module_function(module, "gluOrtho2D", glu_Ortho2D, 4);
+	rb_define_module_function(module, "gluPerspective", glu_Perspective, 4);
+	rb_define_module_function(module, "gluPickMatrix", glu_PickMatrix, -1);
+	rb_define_module_function(module, "gluProject", glu_Project, -1);
+	rb_define_module_function(module, "gluUnProject", glu_UnProject, -1);
+	rb_define_module_function(module, "gluBuild1DMipmaps", glu_Build1DMipmaps, 6);
+	rb_define_module_function(module, "gluBuild2DMipmaps", glu_Build2DMipmaps, 7);
+	rb_define_module_function(module, "gluScaleImage", glu_ScaleImage, 8);
+	rb_define_module_function(module, "gluErrorString", glu_ErrorString, 1);
+	rb_define_module_function(module, "gluGetString", glu_GetString, 1);
+	
+	cNurbs = rb_define_class("Nurbs", rb_cObject);
+	cTess = rb_define_class("Tess", rb_cObject);
+	cQuad = rb_define_class("Quadric", rb_cObject);
+	
+	rb_global_variable(&t_current);
+	t_current = rb_ary_new();
 }
