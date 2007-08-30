@@ -175,4 +175,50 @@ class Test_GLU < Test::Unit::TestCase
 		gluDeleteQuadric(q)
 	end
 
+	def test_glunurbs
+		gluPerspective(90,1,1,2)
+
+		n = gluNewNurbsRenderer()
+		gluNurbsProperty(n,GLU_SAMPLING_TOLERANCE,40)
+		assert_equal(gluGetNurbsProperty(n,GLU_SAMPLING_TOLERANCE),40)
+
+		knots = [0,0,0,0,1,1,1,1]
+		ctlpoints_curve = [[50,50,0],[400,50,0],[400,400,0],[50,400,0]]
+
+		# generate surface control points
+		ctlpoints =  Array.new(4).collect { Array.new(4).collect { Array.new(3, nil) } } # 4*4*3 array
+		0.upto(3)	do |u|
+			0.upto(3) do |v|
+				ctlpoints[u][v][0]=2.0*(u-1.5)
+				ctlpoints[u][v][1]=2.0*(v-1.5)
+			
+				if ((u==1 || u==2) && (v==1 || v==2))
+						ctlpoints[u][v][2]=6.0
+				else
+						ctlpoints[u][v][2]=0.0
+				end
+			end
+		end
+
+		buf = glFeedbackBuffer(1024*1024*8,GL_3D) # large enough buffer for tesselated surface
+		glRenderMode(GL_FEEDBACK)
+		gluBeginCurve(n)
+		gluNurbsCurve(n,knots,ctlpoints_curve,4,GL_MAP1_VERTEX_3)
+		gluEndCurve(n)
+
+		gluBeginTrim(n)
+		gluPwlCurve(n,[[0,0],[1,0],[1,1],[0,1],[0,0]],GLU_MAP1_TRIM_2)
+		gluEndTrim(n)
+		count = glRenderMode(GL_RENDER)
+		assert(count>1)
+
+		glRenderMode(GL_FEEDBACK)
+		gluBeginSurface(n)
+		gluNurbsSurface(n,knots,knots,ctlpoints,4,4,GL_MAP2_VERTEX_3)
+		gluEndSurface(n)
+		count = glRenderMode(GL_RENDER)
+		assert(count>1)
+
+		gluDeleteNurbsRenderer(n)
+	end
 end

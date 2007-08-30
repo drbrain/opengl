@@ -25,25 +25,28 @@ void glu_init_enums(VALUE);
 
 typedef GLUtesselator tesselatorObj;
 
-#ifdef MESA
+/* pointers passed to gluNurbsCurve/Surface etc.,
+  - some implementations (Mesa) needs these to be valid
+  at EndCurve/Surface etc. call., so we store them here
+  and free them after that call */
+
 struct glu_MesaStack {
-    int len;
-    GLfloat **ptr;
+	int len;
+	GLfloat **ptr;
 };
 
 static struct glu_MesaStack gms = {0, NULL};
-#endif
 
 struct nurbsdata {
-    GLUnurbsObj *nobj;
+	GLUnurbsObj *nobj;
 };
 struct tessdata {
-    tesselatorObj *tobj;
-    VALUE t_ref;
+	tesselatorObj *tobj;
+	VALUE t_ref;
 };
 
 struct quaddata {
-    GLUquadricObj *qobj;
+	GLUquadricObj *qobj;
 };
 
 static VALUE cNurbs;
@@ -51,13 +54,13 @@ static VALUE cTess;
 static VALUE cQuad;
 
 #define GetNURBS(obj, ndata) {\
-    Data_Get_Struct(obj, struct nurbsdata, ndata);\
-    if (ndata->nobj == NULL) rb_raise(rb_eRuntimeError, "Nurbs Object already deleted!");\
+	Data_Get_Struct(obj, struct nurbsdata, ndata);\
+	if (ndata->nobj == NULL) rb_raise(rb_eRuntimeError, "Nurbs Object already deleted!");\
 }
 
 #define GetTESS(obj, tdata) {\
-    Data_Get_Struct(obj, struct tessdata, tdata);\
-    if (tdata->tobj == NULL) rb_raise(rb_eRuntimeError, "Triangulator Object already deleted!");\
+	Data_Get_Struct(obj, struct tessdata, tdata);\
+	if (tdata->tobj == NULL) rb_raise(rb_eRuntimeError, "Triangulator Object already deleted!");\
 }
 
 #define GetQUAD(obj, qdata) {\
@@ -80,39 +83,41 @@ static int
 get_curve_dim(type)
 GLenum type;
 {
-    switch(type)
-    {
-        case GL_MAP1_VERTEX_3:          return 3;
-        case GL_MAP1_VERTEX_4:          return 4;  
-        case GL_MAP1_INDEX:             return 1;
-        case GL_MAP1_COLOR_4:           return 4;
-        case GL_MAP1_NORMAL:            return 3;
-        case GL_MAP1_TEXTURE_COORD_1:   return 1;
-        case GL_MAP1_TEXTURE_COORD_2:   return 2;
-        case GL_MAP1_TEXTURE_COORD_3:   return 3;
-        case GL_MAP1_TEXTURE_COORD_4:   return 4;
-        default:  abort();  /* TODO: is this OK? */
-    }
-    return 0; /*never get here*/
+	switch(type)
+	{
+		case GL_MAP1_VERTEX_3:          return 3;
+		case GL_MAP1_VERTEX_4:          return 4;  
+		case GL_MAP1_INDEX:             return 1;
+		case GL_MAP1_COLOR_4:           return 4;
+		case GL_MAP1_NORMAL:            return 3;
+		case GL_MAP1_TEXTURE_COORD_1:   return 1;
+		case GL_MAP1_TEXTURE_COORD_2:   return 2;
+		case GL_MAP1_TEXTURE_COORD_3:   return 3;
+		case GL_MAP1_TEXTURE_COORD_4:   return 4;
+		default:
+			rb_raise(rb_eArgError,"Unknown curve type '%i'",type);
+	}
+	return 0; /* never gets here */
 }
 /* from nurbssrf.c */
 static int
 get_surface_dim(GLenum type)
 {
-    switch(type)
-    {
-        case GL_MAP2_VERTEX_3:          return 3;
-        case GL_MAP2_VERTEX_4:          return 4;
-        case GL_MAP2_INDEX:             return 1;
-        case GL_MAP2_COLOR_4:           return 4;
-        case GL_MAP2_NORMAL:            return 3;
-        case GL_MAP2_TEXTURE_COORD_1:   return 1; 
-        case GL_MAP2_TEXTURE_COORD_2:   return 2;
-        case GL_MAP2_TEXTURE_COORD_3:   return 3;
-        case GL_MAP2_TEXTURE_COORD_4:   return 4;
-        default:  abort();  /* TODO: is this OK? */
-    }
-    return 0; /*never get here*/
+	switch(type)
+	{
+		case GL_MAP2_VERTEX_3:          return 3;
+		case GL_MAP2_VERTEX_4:          return 4;
+		case GL_MAP2_INDEX:             return 1;
+		case GL_MAP2_COLOR_4:           return 4;
+		case GL_MAP2_NORMAL:            return 3;
+		case GL_MAP2_TEXTURE_COORD_1:   return 1; 
+		case GL_MAP2_TEXTURE_COORD_2:   return 2;
+		case GL_MAP2_TEXTURE_COORD_3:   return 3;
+		case GL_MAP2_TEXTURE_COORD_4:   return 4;
+		default:
+			rb_raise(rb_eArgError,"Unknown surface type '%i'",type);
+	}
+	return 0; /* never gets here */
 }
 
 /*
@@ -122,77 +127,76 @@ static void
 free_nurbs(ndata)
 struct nurbsdata *ndata;
 {
-  if (ndata->nobj) gluDeleteNurbsRenderer(ndata->nobj);
-  ndata->nobj = NULL;
+	if (ndata->nobj) gluDeleteNurbsRenderer(ndata->nobj);
+		ndata->nobj = NULL;
 }
 static VALUE
 glu_NewNurbsRenderer(obj)
 VALUE obj;
 {
-    VALUE ret;
-    struct nurbsdata *ndata;
-    ret = Data_Make_Struct(cNurbs, struct nurbsdata, 0, free_nurbs, ndata);
-    ndata->nobj = gluNewNurbsRenderer();
-    return ret;
+	VALUE ret;
+	struct nurbsdata *ndata;
+	ret = Data_Make_Struct(cNurbs, struct nurbsdata, 0, free_nurbs, ndata);
+	ndata->nobj = gluNewNurbsRenderer();
+	return ret;
 }
 static VALUE
 glu_DeleteNurbsRenderer(obj, arg1)
 VALUE obj, arg1;
 {
-    struct nurbsdata *ndata;
-    GetNURBS(arg1, ndata);
-    free_nurbs(ndata);
-    return Qnil;
+	struct nurbsdata *ndata;
+	GetNURBS(arg1, ndata);
+	free_nurbs(ndata);
+	return Qnil;
 }
 static VALUE
 glu_NurbsProperty(obj, arg1, arg2, arg3)
 VALUE obj, arg1, arg2, arg3;
 {
-    struct nurbsdata *ndata;
-    GLenum property;
-    GLfloat value;
-    GetNURBS(arg1, ndata);
-    property = (GLenum)NUM2INT(arg2);
-    value = (GLfloat)NUM2DBL(arg3);
-    gluNurbsProperty(ndata->nobj, property, value);
-    return Qnil;
+	struct nurbsdata *ndata;
+	GLenum property;
+	GLfloat value;
+	GetNURBS(arg1, ndata);
+	property = (GLenum)NUM2INT(arg2);
+	value = (GLfloat)NUM2DBL(arg3);
+	gluNurbsProperty(ndata->nobj, property, value);
+	return Qnil;
 }
 static VALUE
 glu_GetNurbsProperty(obj, arg1, arg2)
 VALUE obj, arg1, arg2;
 {
-    struct nurbsdata *ndata;
-    GLenum property;
-    GLfloat value;
-    GetNURBS(arg1, ndata);
-    property = (GLenum)NUM2INT(arg2);
-    gluGetNurbsProperty(ndata->nobj, property, &value);
-    return rb_float_new(value);
+	struct nurbsdata *ndata;
+	GLenum property;
+	GLfloat value;
+	GetNURBS(arg1, ndata);
+	property = (GLenum)NUM2INT(arg2);
+	gluGetNurbsProperty(ndata->nobj, property, &value);
+	return rb_float_new(value);
 }
 static VALUE
 glu_BeginCurve(obj, arg1)
 VALUE obj, arg1;
 {
-    struct nurbsdata *ndata;
-    GetNURBS(arg1, ndata);
-    gluBeginCurve(ndata->nobj);
-    return Qnil;
+	struct nurbsdata *ndata;
+	GetNURBS(arg1, ndata);
+	gluBeginCurve(ndata->nobj);
+	return Qnil;
 }
 static VALUE
 glu_EndCurve(obj, arg1)
 VALUE obj, arg1;
 {
-    struct nurbsdata *ndata;
-    GetNURBS(arg1, ndata);
-    gluEndCurve(ndata->nobj);
-    /* hack for Mesa 3.1 */
-#ifdef MESA
-    for (gms.len;gms.len>0;gms.len--)
-    free(gms.ptr[gms.len-1]);
-    free(gms.ptr);
-    gms.ptr = NULL;
-#endif
-    return Qnil;
+	struct nurbsdata *ndata;
+	GetNURBS(arg1, ndata);
+	gluEndCurve(ndata->nobj);
+
+	for (;gms.len>0;gms.len--)
+		free(gms.ptr[gms.len-1]);
+	free(gms.ptr);
+	gms.ptr = NULL;
+
+	return Qnil;
 }
 static VALUE
 glu_NurbsCurve(argc,argv,obj)
@@ -200,96 +204,80 @@ int argc;
 VALUE *argv;
 VALUE obj;
 {
-    struct nurbsdata *ndata;
-    GLint uknot_count;
-    GLfloat *uknot;
-    GLint u_stride;
-    GLint uorder;
-    GLfloat *ctlarray;
-    GLenum type;
+	struct nurbsdata *ndata;
+	GLint uknot_count;
+	GLfloat *uknot;
+	GLint u_stride;
+	GLint uorder;
+	GLfloat *ctlarray;
+	GLenum type;
+	
+	VALUE args[7];
+	VALUE ary_ctl1;
+	
+	switch (rb_scan_args(argc, argv, "52", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6])) {
+		case 5:
+			uknot_count = RARRAY(args[1])->len;
+			uorder = (GLenum)NUM2INT(args[3]);
+			type = (GLenum)NUM2INT(args[4]);
+			u_stride = get_curve_dim(type);
+		
+			uknot = ALLOC_N(GLfloat, uknot_count);
+			ary2cflt(args[1], uknot, uknot_count);
 
-    VALUE args[7];
-    GLfloat tmp[4];
-    int i;
-    struct RArray *ary_ctl1;
+			ary_ctl1 = rb_ary_new();
+			mary2ary(args[2], ary_ctl1); /* flatten */
+			break;
+		case 7:
+			uknot_count = (GLint)NUM2INT(args[1]);
+			u_stride = (GLint)NUM2INT(args[3]);
+			uorder = (GLint)NUM2INT(args[5]);
+			type = (GLenum)NUM2INT(args[6]);
 
-    switch (rb_scan_args(argc, argv, "43", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6])) {
-        case 3:
-        uknot_count = RARRAY(rb_Array(args[1]))->len;
-        uknot = ALLOC_N(GLfloat, uknot_count);
-        ary2cflt(args[1], uknot, uknot_count);
-        ary_ctl1 = RARRAY(rb_Array(args[2]));
-        type = (GLenum)NUM2INT(args[3]);
-        u_stride = get_curve_dim(type);
-        uorder = ary_ctl1->len;
-        ctlarray = ALLOC_N(GLfloat, u_stride*uorder);
-        for (i = 0; i < ary_ctl1->len; i++) {
-        ary2cflt(ary_ctl1->ptr[i], tmp, 4);
-        memcpy(&ctlarray[i*u_stride], tmp, u_stride);
-        }
-        break;
-    case 7:
-        uknot_count = (GLint)NUM2INT(args[1]);
-        uknot = ALLOC_N(GLfloat, uknot_count);
-        ary2cflt(args[2], uknot, uknot_count);
-        u_stride = (GLint)NUM2INT(args[3]);
-        uorder = (GLint)NUM2INT(args[5]);
-            type = (GLenum)NUM2INT(args[6]);  /* ---> line was missing */
-            /* ctlarray = ALLOC_N(GLfloat, u_stride*uorder); //--->Mathematically incorrect */
-            ctlarray = ALLOC_N(GLfloat, u_stride*(uknot_count-uorder));
-        ary_ctl1 = RARRAY(rb_Array(args[4]));
-        if (TYPE(ary_ctl1->ptr[0]) == T_ARRAY)
-        for (i = 0; i < ary_ctl1->len; i++) {
-            ary2cflt(ary_ctl1->ptr[i], tmp, 4);
-            memcpy(&ctlarray[i*u_stride], tmp, u_stride);
-            }
-        else {
-                /* ary2cflt((VALUE)ary_ctl1, ctlarray, u_stride*uorder); //--->Mathematically incorrect */
-                ary2cflt((VALUE)ary_ctl1, ctlarray, (uknot_count-uorder)*u_stride);
-        }
-        break;
-    default:
-        rb_raise(rb_eArgError, "arg num:%d",argc);
-    }
-    GetNURBS(args[0], ndata);
-    gluNurbsCurve(ndata->nobj, uknot_count, uknot, u_stride, ctlarray, uorder, type);
-/*  as of Mesa 3.1, Mesa assumes all data that following pointers
-    points to is valid at gluEndCurve.  so, free them in
-    glu_EndCurve() */
-#ifdef MESA
-    gms.ptr = REALLOC_N(gms.ptr, GLfloat*, gms.len+=2);
-    gms.ptr[gms.len - 2] = uknot;
-    gms.ptr[gms.len - 1] = ctlarray;
-#else
-    free(uknot);
-    free(ctlarray);
-#endif
-    return Qnil;
+			uknot = ALLOC_N(GLfloat, uknot_count);
+			ary2cflt(args[2], uknot, uknot_count);
+
+			ary_ctl1 = rb_ary_new();
+			mary2ary(args[4], ary_ctl1); /* flatten */
+			break;
+		default:
+			rb_raise(rb_eArgError, "gluNurbsCurve needs 4 or 7 arguments",argc);
+	}
+	ctlarray = ALLOC_N(GLfloat, u_stride*(uknot_count-uorder));
+	ary2cflt((VALUE)ary_ctl1, ctlarray, (uknot_count-uorder)*u_stride);
+
+	GetNURBS(args[0], ndata);
+	gluNurbsCurve(ndata->nobj, uknot_count, uknot, u_stride, ctlarray, uorder, type);
+
+	/* store the pointers */
+	gms.ptr = REALLOC_N(gms.ptr, GLfloat*, gms.len+=2);
+	gms.ptr[gms.len - 2] = uknot;
+	gms.ptr[gms.len - 1] = ctlarray;
+	return Qnil;
 }
 static VALUE
 glu_BeginSurface(obj, arg1)
 VALUE obj, arg1;
 {
-    struct nurbsdata *ndata;
-    GetNURBS(arg1, ndata);
-    gluBeginSurface(ndata->nobj);
-    return Qnil;
+	struct nurbsdata *ndata;
+	GetNURBS(arg1, ndata);
+	gluBeginSurface(ndata->nobj);
+	return Qnil;
 }
 static VALUE
 glu_EndSurface(obj, arg1)
 VALUE obj, arg1;
 {
-    struct nurbsdata *ndata;
-    GetNURBS(arg1, ndata);
-    gluEndSurface(ndata->nobj);
-    /* hack for Mesa 3.1 */
-#ifdef MESA
-    for(gms.len; gms.len>0; gms.len--)
-    free(gms.ptr[gms.len-1]);
-    free(gms.ptr);
-    gms.ptr = NULL;
-#endif
-    return Qnil;
+	struct nurbsdata *ndata;
+	GetNURBS(arg1, ndata);
+	gluEndSurface(ndata->nobj);
+	
+	for(; gms.len>0; gms.len--)
+		free(gms.ptr[gms.len-1]);
+	free(gms.ptr);
+	gms.ptr = NULL;
+	
+	return Qnil;
 }
 
 static VALUE
@@ -298,107 +286,100 @@ int argc;
 VALUE *argv;
 VALUE obj;
 {
-    struct nurbsdata *ndata;
-    GLint sknot_count;
-    GLfloat *sknot;
-    GLint tknot_count;
-    GLfloat *tknot;
-    GLint s_stride;
-    GLint t_stride;
-    GLfloat *ctlarray;
-    GLint sorder;
-    GLint torder;
-    GLenum type;
-    VALUE work_ary;
+	struct nurbsdata *ndata;
+	GLint sknot_count;
+	GLfloat *sknot;
+	GLint tknot_count;
+	GLfloat *tknot;
+	GLint s_stride;
+	GLint t_stride;
+	GLfloat *ctlarray;
+	GLint sorder;
+	GLint torder;
+	GLenum type;
+	
+	VALUE args[11];
+	VALUE ary_ctl1;
+	int type_len;
+	
+	switch (rb_scan_args(argc, argv, "74", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6], &args[7], &args[8], &args[9], &args[10])) {
+		case 7:
+			sknot_count = RARRAY(args[1])->len;
+			sknot = ALLOC_N(GLfloat, sknot_count);
+			ary2cflt(args[1], sknot, sknot_count);
 
-    VALUE args[11];
-    struct RArray *ary_ctl1;
-    int type_len;
+			tknot_count = RARRAY(args[2])->len;
+			tknot = ALLOC_N(GLfloat, tknot_count);
+			ary2cflt(args[2], tknot, tknot_count);
 
-    switch (rb_scan_args(argc, argv, "56", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6], &args[7], &args[8], &args[9], &args[10])) {
-    case 5:
-        sknot_count = RARRAY(rb_Array(args[1]))->len;
-        sknot = ALLOC_N(GLfloat, sknot_count);
-        ary2cflt(args[1], sknot, sknot_count);
-        tknot_count = RARRAY(rb_Array(args[2]))->len;
-        tknot = ALLOC_N(GLfloat, tknot_count);
-        ary2cflt(args[2], tknot, tknot_count);
-        ary_ctl1 = RARRAY(rb_Array(args[3]));
-        sorder = ary_ctl1->len;
-        torder = RARRAY(rb_Array(ary_ctl1->ptr[0]))->len;
-        type = (GLenum)NUM2INT(args[4]);
-        t_stride = get_surface_dim(type);
-        s_stride = t_stride * sorder;
-        ctlarray = ALLOC_N(GLfloat, t_stride*s_stride);
-        work_ary = rb_ary_new();
-        mary2ary((VALUE)ary_ctl1, work_ary);
-        ary2cflt(work_ary, ctlarray, t_stride*s_stride);
-    case 11:
-        sknot_count = (GLint)NUM2INT(args[1]);
-        sknot = ALLOC_N(GLfloat, sknot_count);
-        ary2cflt(args[2], sknot, sknot_count);
-        tknot_count = (GLint)NUM2INT(args[3]);
-        tknot = ALLOC_N(GLfloat, tknot_count);
-        ary2cflt(args[4], tknot, tknot_count);
-        s_stride = (GLint)NUM2INT(args[5]);
-        t_stride = (GLint)NUM2INT(args[6]);
-        sorder = (GLint)NUM2INT(args[8]);
-        torder = (GLint)NUM2INT(args[9]);
-        type = (GLint)NUM2INT(args[10]);
-        type_len = get_surface_dim(type);
-            /* ctlarray = ALLOC_N(GLfloat, sorder*torder*type_len); //--->Mathematically incorrect */
-            ctlarray = ALLOC_N(GLfloat, (sknot_count-sorder)*(tknot_count-torder)*type_len);
-        ary_ctl1 = RARRAY(rb_Array(args[7]));
-        if (TYPE(ary_ctl1->ptr[0]) == T_ARRAY) {
-        work_ary = rb_ary_new();
-        mary2ary((VALUE)ary_ctl1, work_ary);
-                /* ary2cflt(work_ary, ctlarray, sorder*torder*type_len); //--->Mathematically incorrect */
-                ary2cflt(work_ary, ctlarray, (sknot_count-sorder)*(tknot_count-torder)*type_len);
-        }
-        else {
-                /* ary2cflt((VALUE)ary_ctl1, ctlarray, sorder*torder*type_len); //--->Mathematically incorrect */
-                ary2cflt((VALUE)ary_ctl1, ctlarray, (sknot_count-sorder)*(tknot_count-torder)*type_len);
-        }
-            break;
-        default:
-        rb_raise(rb_eArgError, "arg num:%d",argc);
-    }
-    GetNURBS(args[0], ndata);
-    gluNurbsSurface(ndata->nobj, sknot_count, sknot, tknot_count, tknot,
-    s_stride, t_stride, ctlarray, sorder, torder, type);
+			sorder = (GLint)NUM2INT(args[4]);
+			torder = (GLint)NUM2INT(args[5]);
+			type = (GLenum)NUM2INT(args[6]);
 
-/*  as of Mesa 3.1, Mesa assumes all data that following pointers
-    points to is valid at gluEndSurface.  so, free them in
-    glu_EndSurface() */
-#ifdef MESA
-    gms.ptr = REALLOC_N(gms.ptr, GLfloat*, gms.len+=3);
-    gms.ptr[gms.len-3] = sknot;
-    gms.ptr[gms.len-2] = tknot;
-    gms.ptr[gms.len-1] = ctlarray;
-#else
-    free(sknot);
-    free(tknot);
-    free(ctlarray);
-#endif
-    return Qnil;
+			t_stride = get_surface_dim(type);
+			s_stride = t_stride * sorder;
+
+			ctlarray = ALLOC_N(GLfloat, (sknot_count-sorder)*(tknot_count-torder)*t_stride);
+			ary_ctl1 = rb_ary_new();
+			mary2ary(args[3], ary_ctl1); /* flatten */
+			ary2cflt(ary_ctl1, ctlarray, (sknot_count-sorder)*(tknot_count-torder)*t_stride);
+			break;
+		case 11:
+			sknot_count = (GLint)NUM2INT(args[1]);
+			sknot = ALLOC_N(GLfloat, sknot_count);
+			ary2cflt(args[2], sknot, sknot_count);
+			
+			tknot_count = (GLint)NUM2INT(args[3]);
+			tknot = ALLOC_N(GLfloat, tknot_count);
+			ary2cflt(args[4], tknot, tknot_count);
+			
+			s_stride = (GLint)NUM2INT(args[5]);
+			t_stride = (GLint)NUM2INT(args[6]);
+			sorder = (GLint)NUM2INT(args[8]);
+			torder = (GLint)NUM2INT(args[9]);
+			type = (GLint)NUM2INT(args[10]);
+			type_len = get_surface_dim(type);
+			
+			ctlarray = ALLOC_N(GLfloat, (sknot_count-sorder)*(tknot_count-torder)*type_len);
+			
+			ary_ctl1 = rb_ary_new();
+			mary2ary(args[7], ary_ctl1); /* flatten */
+			ary2cflt(ary_ctl1, ctlarray, (sknot_count-sorder)*(tknot_count-torder)*type_len);
+			break;
+		default:
+			rb_raise(rb_eArgError, "gluNurbsSurface needs 7 or 11 arguments",argc);
+			return Qnil; /* not reached */
+	}
+	GetNURBS(args[0], ndata);
+	gluNurbsSurface(ndata->nobj, sknot_count, sknot, tknot_count, tknot,
+	s_stride, t_stride, ctlarray, sorder, torder, type);
+	
+	/* store the pointers */
+	
+	gms.ptr = REALLOC_N(gms.ptr, GLfloat*, gms.len+=3);
+	gms.ptr[gms.len-3] = sknot;
+	gms.ptr[gms.len-2] = tknot;
+	gms.ptr[gms.len-1] = ctlarray;
+	
+	return Qnil;
 }
 static VALUE
 glu_BeginTrim(obj, arg1)
 VALUE obj, arg1;
 {
-    struct nurbsdata *ndata;
-    GetNURBS(arg1, ndata);
-    gluBeginTrim(ndata->nobj);
-    return Qnil;
+	struct nurbsdata *ndata;
+	GetNURBS(arg1, ndata);
+	gluBeginTrim(ndata->nobj);
+	return Qnil;
 }
 static VALUE
 glu_EndTrim(obj, arg1)
 VALUE obj, arg1;
 {
-    struct nurbsdata *ndata;
-    GetNURBS(arg1, ndata);
-    gluEndTrim(ndata->nobj);
-    return Qnil;
+	struct nurbsdata *ndata;
+	GetNURBS(arg1, ndata);
+	gluEndTrim(ndata->nobj);
+	return Qnil;
 }
 static VALUE
 glu_PwlCurve(argc, argv, obj)
@@ -406,50 +387,45 @@ int argc;
 VALUE *argv;
 VALUE obj;
 {
-    struct nurbsdata *ndata;
-    GLint count;
-    GLfloat *array;
-    GLint stride;
-    GLenum type;
+	struct nurbsdata *ndata;
+	GLint count;
+	GLfloat *array;
+	GLint stride;
+	GLenum type;
+	
+	VALUE args[5];
+	VALUE ary_ctl1;
+	
+	switch (rb_scan_args(argc, argv, "32", &args[0], &args[1], &args[2], &args[3], &args[4])) {
+		case 3:
+			count = RARRAY(args[1])->len;
+			type = NUM2INT(args[2]);
+			stride = (type == GLU_MAP1_TRIM_2 ? 2 : 3);
 
-    VALUE args[5];
-    GLfloat tmp[3];
-    struct RArray* ary_ctl1;
-    int i;
+			array = ALLOC_N(GLfloat, count*stride);
+			ary_ctl1 = rb_ary_new();
+			mary2ary(args[1], ary_ctl1); /* flatten */
+			ary2cflt(ary_ctl1, array, count*stride);
+			break;
+		case 5:
+			count = NUM2INT(args[1]);
+			stride = NUM2INT(args[3]);
+			type = NUM2INT(args[4]);
 
-    switch (rb_scan_args(argc, argv, "32", &args[0], &args[1], &args[2], &args[3], &args[4])) {
-    case 3:
-        ary_ctl1 = RARRAY(rb_Array(args[2]));
-        count = ary_ctl1->len;
-        type = NUM2INT(args[2]);
-        stride = (type == GLU_MAP1_TRIM_2 ? 2 : 3);
-        array = ALLOC_N(GLfloat, count*stride);
-        for (i = 0; i < ary_ctl1->len; i++) {
-        ary2cflt(ary_ctl1->ptr[i], tmp, 3);
-        memcpy(&array[i*stride], tmp, stride);
-        }
-        break;
-    case 5:
-        count = NUM2INT(args[1]);
-        stride = NUM2INT(args[3]);
-        type = NUM2INT(args[4]);
-        array = ALLOC_N(GLfloat, count*stride);
-        ary_ctl1 = RARRAY(rb_Array(args[2]));
-        if (TYPE(ary_ctl1->ptr[0]) == T_ARRAY)
-        for (i = 0; i < ary_ctl1->len; i++) {
-            ary2cflt(ary_ctl1->ptr[i], tmp, 3);
-            memcpy(&array[i*stride], tmp, stride);
-            }
-        else
-        ary2cflt((VALUE)ary_ctl1, array, count*stride);
-        break;
-    default:
-        rb_raise(rb_eArgError, "arg num:%d",argc);
-    }
-    GetNURBS(args[0], ndata);
-    gluPwlCurve(ndata->nobj, count, array, stride, type);
-    free(array);
-    return Qnil;
+			array = ALLOC_N(GLfloat, count*stride);
+			ary_ctl1 = rb_ary_new();
+			mary2ary(args[2], ary_ctl1); /* flatten */
+			ary2cflt(ary_ctl1, array, count*stride);
+			break;
+		default:
+			rb_raise(rb_eArgError, "gluPwlCurve needs 3 or 5 arguments",argc);
+			return Qnil; /* not reached */
+	}
+
+	GetNURBS(args[0], ndata);
+	gluPwlCurve(ndata->nobj, count, array, stride, type);
+	free(array);
+	return Qnil;
 }
 
 /*
@@ -1223,7 +1199,6 @@ VALUE obj;
 	GLdouble oz;
 	
 	VALUE args[6];
-	VALUE ret;
 	
 	switch (rb_scan_args(argc, argv, "33", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5])) {
 		case 3:
