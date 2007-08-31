@@ -437,14 +437,14 @@ static VALUE t_current;
 #define TESS_VERTEX 2
 #define TESS_END    3
 #define TESS_ERROR  4
-#define TESS_EDGE   5
+#define TESS_EDGE_FLAG   5
 #define TESS_OUTDATA     6
 #define TESS_COMBINE     7
 #define TESS_BEGIN_DATA  8
 #define TESS_VERTEX_DATA 9
 #define TESS_END_DATA    10
 #define TESS_ERROR_DATA  11
-#define TESS_EDGE_DATA   12
+#define TESS_EDGE_FLAG_DATA   12
 #define TESS_COMBINE_DATA    13
 #define TESS_USERDATA   14
 #define REF_LAST    15
@@ -453,163 +453,122 @@ static void
 mark_tess(tdata)
 struct tessdata* tdata;
 {
-    if (tdata->tobj)
-        rb_gc_mark(tdata->t_ref);
+	if (tdata->tobj)
+		rb_gc_mark(tdata->t_ref);
 }
 static void
 free_tess(tdata)
 struct tessdata *tdata;
 {
-    if (tdata->tobj) {
-    gluDeleteTess(tdata->tobj);
-    }
-    tdata->t_ref = Qnil;
-    tdata->tobj = NULL;
+	if (tdata->tobj)
+		gluDeleteTess(tdata->tobj);
+	tdata->t_ref = Qnil;
+	tdata->tobj = NULL;
 }
 static VALUE
 glu_NewTess(obj)
 VALUE obj;
 {
-    VALUE ret;
-    struct tessdata *tdata;
-    ret = Data_Make_Struct(cTess, struct tessdata, mark_tess, free_tess, tdata);
-    tdata->tobj = gluNewTess();
-    tdata->t_ref = rb_ary_new2(REF_LAST);
-    return ret;
+	VALUE ret;
+	struct tessdata *tdata;
+	ret = Data_Make_Struct(cTess, struct tessdata, mark_tess, free_tess, tdata);
+	tdata->tobj = gluNewTess();
+	tdata->t_ref = rb_ary_new2(REF_LAST);
+	return ret;
 }
 static VALUE
 glu_DeleteTess(obj, arg1)
 VALUE obj, arg1;
 {
-    struct tessdata *tdata;
-    GetTESS(arg1, tdata);
-    free_tess(tdata);
-    return Qnil;
+	struct tessdata *tdata;
+	GetTESS(arg1, tdata);
+	free_tess(tdata);
+	return Qnil;
 }
+
+/* tess* callback function wrappers */
+#define TESS_CALLBACK_COMMON \
+VALUE tess; \
+struct tessdata *tdata; \
+tess = rb_ary_entry(t_current, -1); \
+if (tess == Qnil) \
+	return; \
+GetTESS(tess, tdata);
+
 void
 t_begin(type)
 GLenum type;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_BEGIN), callId, 1, INT2NUM(type));
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_BEGIN), callId, 1, INT2NUM(type));
 }
 static void
 t_edgeFlag(flag)
 GLboolean flag;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE), callId, 1, INT2NUM(flag));
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_FLAG), callId, 1, INT2NUM(flag));
 }
 static void
 t_vertex(data)
 void* data;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_VERTEX), callId, 1, data);
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_VERTEX), callId, 1, data);
 }
 static void
 t_end()
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_END), callId, 0);
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_END), callId, 0);
 }
 static void
 t_error(errorno)
 GLenum errorno;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_ERROR), callId, 1, INT2NUM(errorno));
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_ERROR), callId, 1, INT2NUM(errorno));
 }
-
 static void
 t_begin_data(type, user_data)
 GLenum type;
 void* user_data;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_BEGIN_DATA), callId, 2, INT2NUM(type), user_data);
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_BEGIN_DATA), callId, 2, INT2NUM(type), user_data);
 }
 static void
 t_edgeFlag_data(flag, user_data)
 GLboolean flag;
 void* user_data;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_DATA), callId, 2, INT2NUM(flag), user_data);
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_FLAG_DATA), callId, 2, INT2NUM(flag), user_data);
 }
 static void
 t_vertex_data(data, user_data)
 void* data;
 void* user_data;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_VERTEX_DATA), callId, 2, data, user_data);
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_VERTEX_DATA), callId, 2, data, user_data);
 }
 static void
 t_end_data(user_data)
 void* user_data;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_END_DATA), callId, 1, user_data);
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_END_DATA), callId, 1, user_data);
 }
 static void
 t_error_data(errorno, user_data)
 GLenum errorno;
 void* user_data;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_funcall(rb_ary_entry(tdata->t_ref, TESS_ERROR_DATA), callId, 2, INT2NUM(errorno), user_data);
-    }
+	TESS_CALLBACK_COMMON
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_ERROR_DATA), callId, 2, INT2NUM(errorno), user_data);
 }
+
 static void
 t_combine(coords, vertex_data, weight, outData)
 GLdouble coords[3];
@@ -617,26 +576,23 @@ void* vertex_data[4];
 GLfloat weight[4];
 void** outData;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    VALUE rb_coord, rb_vertex_data, rb_weight;
-    int i;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_coord = rb_ary_new2(3);
-        for (i = 0; i < 3; i++)
-            rb_ary_store(rb_coord, i, rb_float_new(coords[i]));
-        rb_vertex_data = rb_ary_new2(4);
-        for (i = 0; i < 4; i++)
-            rb_ary_store(rb_vertex_data, i, (VALUE)vertex_data[i]);
-        rb_weight = rb_ary_new2(4);
-        for (i = 0; i < 4; i++)
-            rb_ary_store(rb_weight, i, rb_float_new(weight[i]));
-        *outData = (void*)rb_funcall(rb_ary_entry(tdata->t_ref, TESS_COMBINE), callId, 3, rb_coord, rb_vertex_data, rb_weight);
-        rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_OUTDATA), (VALUE)*outData);
-    }
+	VALUE rb_coord, rb_vertex_data, rb_weight;
+	int i;
+	TESS_CALLBACK_COMMON
+
+	rb_coord = rb_ary_new2(3);
+	for (i = 0; i < 3; i++)
+			rb_ary_store(rb_coord, i, rb_float_new(coords[i]));
+	rb_vertex_data = rb_ary_new2(4);
+	for (i = 0; i < 4; i++)
+			rb_ary_store(rb_vertex_data, i, (VALUE)vertex_data[i]);
+	rb_weight = rb_ary_new2(4);
+	for (i = 0; i < 4; i++)
+			rb_ary_store(rb_weight, i, rb_float_new(weight[i]));
+	*outData = (void*)rb_funcall(rb_ary_entry(tdata->t_ref, TESS_COMBINE), callId, 3, rb_coord, rb_vertex_data, rb_weight);
+	rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_OUTDATA), (VALUE)*outData);
 }
+
 static void
 t_combine_data(coords, vertex_data, weight, outData, user_data)
 GLdouble coords[3];
@@ -645,253 +601,193 @@ GLfloat weight[4];
 void** outData;
 void* user_data;
 {
-    VALUE tess;
-    struct tessdata *tdata;
-    VALUE rb_coord, rb_vertex_data, rb_weight;
-    int i;
-    tess = rb_ary_entry(t_current, -1);
-    if (tess != Qnil) {
-        GetTESS(tess, tdata);
-        rb_coord = rb_ary_new2(3);
-        for (i = 0; i < 3; i++)
-            rb_ary_store(rb_coord, i, rb_float_new(coords[i]));
-        rb_vertex_data = rb_ary_new2(4);
-        for (i = 0; i < 4; i++)
-            rb_ary_store(rb_vertex_data, i, (VALUE)vertex_data[i]);
-        rb_weight = rb_ary_new2(4);
-        for (i = 0; i < 4; i++)
-            rb_ary_store(rb_weight, i, rb_float_new(weight[i]));
-        *outData = (void*)rb_funcall(rb_ary_entry(tdata->t_ref, TESS_COMBINE_DATA), callId, 4, rb_coord, rb_vertex_data, rb_weight, (VALUE)user_data);
-        rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_OUTDATA), (VALUE)*outData);
-    }
+	VALUE rb_coord, rb_vertex_data, rb_weight;
+	int i;
+	TESS_CALLBACK_COMMON
+	
+	rb_coord = rb_ary_new2(3);
+	for (i = 0; i < 3; i++)
+		rb_ary_store(rb_coord, i, rb_float_new(coords[i]));
+	rb_vertex_data = rb_ary_new2(4);
+	for (i = 0; i < 4; i++)
+		rb_ary_store(rb_vertex_data, i, (VALUE)vertex_data[i]);
+	rb_weight = rb_ary_new2(4);
+	for (i = 0; i < 4; i++)
+		rb_ary_store(rb_weight, i, rb_float_new(weight[i]));
+
+	*outData = (void*)rb_funcall(rb_ary_entry(tdata->t_ref, TESS_COMBINE_DATA), callId, 4, rb_coord, rb_vertex_data, rb_weight, (VALUE)user_data);
+
+	rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_OUTDATA), (VALUE)*outData);
 }
+
+#undef TESS_CALLBACK_COMMON
+
 static VALUE
 glu_TessProperty(obj, arg1, arg2, arg3)
 VALUE obj, arg1, arg2;
 {
-    struct tessdata* tdata;
-    GLenum property;
-    GLdouble value;
-    GetTESS(arg1, tdata);
-    property = (GLenum)NUM2INT(arg2);
-    value = (GLdouble)NUM2DBL(arg3);
-    gluTessProperty(tdata->tobj, property, value);
-    return Qnil;
+	struct tessdata* tdata;
+	GLenum property;
+	GLdouble value;
+	GetTESS(arg1, tdata);
+	property = (GLenum)NUM2INT(arg2);
+	value = (GLdouble)NUM2DBL(arg3);
+	gluTessProperty(tdata->tobj, property, value);
+	return Qnil;
 }
 static VALUE
 glu_GetTessProperty(obj, arg1, arg2)
 VALUE obj, arg1, arg2;
 {
-    struct tessdata* tdata;
-    GLenum property;
-    GLdouble value;
-    GetTESS(arg1, tdata);
-    property = (GLenum)NUM2INT(arg2);
-    gluGetTessProperty(tdata->tobj, property, &value);
-    return rb_float_new(value);
+	struct tessdata* tdata;
+	GLenum property;
+	GLdouble value;
+	GetTESS(arg1, tdata);
+	property = (GLenum)NUM2INT(arg2);
+	gluGetTessProperty(tdata->tobj, property, &value);
+	return rb_float_new(value);
 }
 static VALUE
 glu_TessNormal(obj, arg1, arg2, arg3, arg4)
 VALUE obj, arg1, arg2, arg3, arg4;
 {
-    struct tessdata* tdata;
-    GLdouble x, y, z;
-    GetTESS(arg1, tdata);
-    x = (GLdouble)NUM2DBL(arg2);
-    y = (GLdouble)NUM2DBL(arg3);
-    z = (GLdouble)NUM2DBL(arg4);
-    gluTessNormal(tdata->tobj, x, y, z);
-    return Qnil;
+	struct tessdata* tdata;
+	GLdouble x, y, z;
+	GetTESS(arg1, tdata);
+	x = (GLdouble)NUM2DBL(arg2);
+	y = (GLdouble)NUM2DBL(arg3);
+	z = (GLdouble)NUM2DBL(arg4);
+	gluTessNormal(tdata->tobj, x, y, z);
+	return Qnil;
 }
 static VALUE
 glu_TessBeginPolygon(obj, arg1, arg2)
 VALUE obj, arg1, arg2;
 {
-    struct tessdata* tdata;
-    GetTESS(arg1, tdata);
-    rb_ary_store(tdata->t_ref, TESS_USERDATA, arg2);
-    rb_ary_store(tdata->t_ref, TESS_OUTDATA, rb_ary_new());
-    rb_ary_store(tdata->t_ref, TESS_DATA, rb_ary_new());
-    rb_ary_push(t_current, arg1);
-    gluTessBeginPolygon(tdata->tobj, (void*)arg2);
-    return Qnil;
+	struct tessdata* tdata;
+	GetTESS(arg1, tdata);
+	rb_ary_store(tdata->t_ref, TESS_USERDATA, arg2);
+	rb_ary_store(tdata->t_ref, TESS_OUTDATA, rb_ary_new());
+	rb_ary_store(tdata->t_ref, TESS_DATA, rb_ary_new());
+	rb_ary_push(t_current, arg1);
+	gluTessBeginPolygon(tdata->tobj, (void*)arg2);
+	return Qnil;
 }
 static VALUE
 glu_TessEndPolygon(obj, arg1)
 VALUE obj, arg1;
 {
-    struct tessdata* tdata;
-    GetTESS(arg1, tdata);
-    gluTessEndPolygon(tdata->tobj);
-    rb_ary_store(tdata->t_ref, TESS_USERDATA, Qnil);
-    rb_ary_store(tdata->t_ref, TESS_OUTDATA, Qnil);
-    rb_ary_store(tdata->t_ref, TESS_DATA, Qnil);
-    rb_ary_pop(t_current);
-    return Qnil;
+	struct tessdata* tdata;
+	GetTESS(arg1, tdata);
+	gluTessEndPolygon(tdata->tobj);
+	rb_ary_store(tdata->t_ref, TESS_USERDATA, Qnil);
+	rb_ary_store(tdata->t_ref, TESS_OUTDATA, Qnil);
+	rb_ary_store(tdata->t_ref, TESS_DATA, Qnil);
+	rb_ary_pop(t_current);
+	return Qnil;
 }
 static VALUE
 glu_TessBeginContour(obj, arg1)
 VALUE obj, arg1;
 {
-    struct tessdata* tdata;
-    GetTESS(arg1, tdata);
-    gluTessBeginContour(tdata->tobj);
-    return Qnil;
+	struct tessdata* tdata;
+	GetTESS(arg1, tdata);
+	gluTessBeginContour(tdata->tobj);
+	return Qnil;
 }
 static VALUE
 glu_TessEndContour(obj, arg1)
 {
-    struct tessdata* tdata;
-    GetTESS(arg1, tdata);
-    gluTessEndContour(tdata->tobj);
-    return Qnil;
+	struct tessdata* tdata;
+	GetTESS(arg1, tdata);
+	gluTessEndContour(tdata->tobj);
+	return Qnil;
 }
+
+#define TESS_CALLBACK_CASE(_type_,_function_) \
+    case GLU_##_type_: \
+            rb_ary_store(tdata->t_ref, _type_, arg3); \
+            if (NIL_P(arg3)) \
+                gluTessCallback(tdata->tobj, type, NULL); \
+            else \
+                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(_function_)); \
+        break;
 
 static VALUE
 glu_TessCallback(obj, arg1, arg2, arg3)
 VALUE obj, arg1, arg2, arg3;
 {
-    struct tessdata* tdata;
-    GLenum type;
-    ID id;
-    GetTESS(arg1, tdata);
-    type = (GLenum)NUM2INT(arg2);
-    id = rb_intern("[]=");
-    if (!rb_obj_is_kind_of(arg3,rb_cProc) && NIL_P(arg3))
-     rb_raise(rb_eTypeError, "GLU.TessCallback needs Proc Object:%s",rb_class2name(CLASS_OF(arg3)));
-    
-    switch (type) {
-    case GLU_TESS_BEGIN:
-            rb_ary_store(tdata->t_ref, TESS_BEGIN, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_begin));
-        break;
-    case GLU_TESS_EDGE_FLAG:
-            rb_ary_store(tdata->t_ref, TESS_EDGE, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)t_edgeFlag);
-        break;
-    case GLU_TESS_VERTEX:
-            rb_ary_store(tdata->t_ref, TESS_VERTEX, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)t_vertex);
-        break;
-    case GLU_TESS_END:
-            rb_ary_store(tdata->t_ref, TESS_END, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)t_end);
-        break;
-    case GLU_TESS_ERROR:
-            rb_ary_store(tdata->t_ref, TESS_ERROR, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)t_error);
-        break;
-        case GLU_TESS_COMBINE:
-            rb_ary_store(tdata->t_ref, TESS_COMBINE, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_combine));
-            break;
-        case GLU_TESS_BEGIN_DATA:
-            rb_ary_store(tdata->t_ref, TESS_BEGIN_DATA, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_begin_data));
-            break;
-        case GLU_TESS_VERTEX_DATA:
-            rb_ary_store(tdata->t_ref, TESS_VERTEX_DATA, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_vertex_data));
-            break;
-        case GLU_TESS_END_DATA:
-            rb_ary_store(tdata->t_ref, TESS_END_DATA, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_end_data));
-            break;
-        case GLU_TESS_ERROR_DATA:
-            rb_ary_store(tdata->t_ref, TESS_ERROR_DATA, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_error_data));
-            break;
-        case GLU_TESS_EDGE_FLAG_DATA:
-            rb_ary_store(tdata->t_ref, TESS_EDGE_DATA, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_edgeFlag_data));
-            break;
-        case GLU_TESS_COMBINE_DATA:
-            rb_ary_store(tdata->t_ref, TESS_COMBINE_DATA, arg3);
-            if (NIL_P(arg3))
-                gluTessCallback(tdata->tobj, type, NULL);
-            else
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(t_combine_data));
-            break;
-    }
-    return Qnil;
+	struct tessdata* tdata;
+	GLenum type;
+	ID id;
+	GetTESS(arg1, tdata);
+	type = (GLenum)NUM2INT(arg2);
+	id = rb_intern("[]=");
+	if (!rb_obj_is_kind_of(arg3,rb_cProc) && NIL_P(arg3))
+		rb_raise(rb_eTypeError, "gluTessCallback needs Proc Object:%s",rb_class2name(CLASS_OF(arg3)));
+	
+	switch (type) {
+		TESS_CALLBACK_CASE(TESS_BEGIN,t_begin)
+		TESS_CALLBACK_CASE(TESS_BEGIN_DATA,t_begin_data)
+		TESS_CALLBACK_CASE(TESS_EDGE_FLAG,t_edgeFlag)
+		TESS_CALLBACK_CASE(TESS_EDGE_FLAG_DATA,t_edgeFlag_data)
+		TESS_CALLBACK_CASE(TESS_VERTEX,t_vertex)
+		TESS_CALLBACK_CASE(TESS_VERTEX_DATA,t_vertex_data)
+		TESS_CALLBACK_CASE(TESS_END,t_end)
+		TESS_CALLBACK_CASE(TESS_END_DATA,t_end_data)
+		TESS_CALLBACK_CASE(TESS_ERROR,t_error)
+		TESS_CALLBACK_CASE(TESS_ERROR_DATA,t_error_data)
+		TESS_CALLBACK_CASE(TESS_COMBINE,t_combine)
+		TESS_CALLBACK_CASE(TESS_COMBINE_DATA,t_combine_data)
+	}
+	return Qnil;
 }
+#undef TESS_CALLBACK_CASE
+
 static VALUE
 glu_BeginPolygon(obj, arg1)
 VALUE obj, arg1;
 {
-    struct tessdata* tdata;
-    GetTESS(arg1, tdata);
-    rb_ary_store(tdata->t_ref, TESS_DATA, rb_ary_new());
-    rb_ary_push(t_current, arg1);
-    gluBeginPolygon(tdata->tobj);
-    return Qnil;
+	struct tessdata* tdata;
+	GetTESS(arg1, tdata);
+	rb_ary_store(tdata->t_ref, TESS_DATA, rb_ary_new());
+	rb_ary_push(t_current, arg1);
+	gluBeginPolygon(tdata->tobj);
+	return Qnil;
 }
 static VALUE
 glu_TessVertex(obj, arg1, arg2, arg3)
 VALUE obj, arg1, arg2, arg3;
 {
-    struct tessdata* tdata;
-    GLdouble v[3];
-    GetTESS(arg1, tdata);
-    rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_DATA), arg3);
-    ary2cdbl(arg2, v, 3);
-    gluTessVertex(tdata->tobj, v,(void *)arg3);
-    return Qnil;
+	struct tessdata* tdata;
+	GLdouble v[3];
+	GetTESS(arg1, tdata);
+	rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_DATA), arg3);
+	ary2cdbl(arg2, v, 3);
+	gluTessVertex(tdata->tobj, v,(void *)arg3);
+	return Qnil;
 }
 static VALUE
 glu_NextContour(obj, arg1, arg2)
 VALUE obj, arg1, arg2;
 {
-    struct tessdata* tdata;
-    GLenum type;
-    GetTESS(arg1, tdata);
-    type = (GLenum)NUM2INT(arg2);
-    gluNextContour(tdata->tobj, type);
-    return Qnil;
+	struct tessdata* tdata;
+	GLenum type;
+	GetTESS(arg1, tdata);
+	type = (GLenum)NUM2INT(arg2);
+	gluNextContour(tdata->tobj, type);
+	return Qnil;
 }
 static VALUE
 glu_EndPolygon(obj, arg1)
 VALUE obj, arg1;
 {
-    struct tessdata* tdata;
-    GetTESS(arg1, tdata);
-    gluEndPolygon(tdata->tobj);
-    rb_ary_store(tdata->t_ref, TESS_DATA, Qnil);
-    rb_ary_pop(t_current);
-    return Qnil;
+	struct tessdata* tdata;
+	GetTESS(arg1, tdata);
+	gluEndPolygon(tdata->tobj);
+	rb_ary_store(tdata->t_ref, TESS_DATA, Qnil);
+	rb_ary_pop(t_current);
+	return Qnil;
 }
 
 /*

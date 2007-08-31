@@ -221,4 +221,56 @@ class Test_GLU < Test::Unit::TestCase
 
 		gluDeleteNurbsRenderer(n)
 	end
+
+	def test_glutess
+		vcount,bcount,ecount = 0,0,0
+		cb_begin = lambda do |type|
+			bcount += 1
+		end
+		cb_end = lambda do
+			ecount += 1
+		end
+		cb_vertex = lambda do |data|
+			vcount += 1
+		end
+		cb_error = lambda do |error|
+			p gluErrorString(error)
+		end
+
+		t = gluNewTess()
+		gluTessCallback(t,GLU_TESS_BEGIN,cb_begin)
+		gluTessCallback(t,GLU_TESS_END,cb_end)
+		gluTessCallback(t,GLU_TESS_ERROR,cb_error)
+		gluTessCallback(t,GLU_TESS_VERTEX,cb_vertex)
+		gluTessProperty(t,GLU_TESS_BOUNDARY_ONLY,GL_TRUE)
+		assert_equal(gluGetTessProperty(t,GLU_TESS_BOUNDARY_ONLY),GL_TRUE)
+		gluTessProperty(t,GLU_TESS_BOUNDARY_ONLY,GL_FALSE)
+		assert_equal(gluGetTessProperty(t,GLU_TESS_BOUNDARY_ONLY),GL_FALSE)
+
+		gluTessNormal(t, 0.0, 0.0, 0.0)
+
+		gluTessBeginPolygon(t,nil)
+		gluTessBeginContour(t)
+		gluTessVertex(t,0,0)
+		gluTessVertex(t,0,0)
+		gluTessVertex(t,0,0)
+		gluTessEndContour(t)
+		gluTessEndPolygon(t)
+
+		gluBeginPolygon(t)
+		gluTessVertex(t,0,0)
+		gluTessVertex(t,1,1)
+		gluTessVertex(t,2,2)
+		gluNextContour(t,GLU_EXTERIOR)
+		gluTessVertex(t,3,3)
+		gluTessVertex(t,4,4)
+		gluTessVertex(t,5,5)
+		gluEndPolygon(t)
+
+		gluDeleteTess(t)
+
+		assert_equal(bcount,2*1)
+		assert_equal(ecount,2*1)
+		assert_equal(vcount,3*3)
+	end
 end
