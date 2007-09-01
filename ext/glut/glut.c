@@ -26,7 +26,6 @@ static int callId; /* 'call' method id */
 /* callback define macro */
 #define WINDOW_CALLBACK_SETUP(_funcname) \
 static VALUE _funcname = Qnil; \
-static void glut_ ## _funcname ## Callback(); \
 static VALUE \
 glut_ ## _funcname(obj,arg1) \
 VALUE obj,arg1; \
@@ -57,12 +56,6 @@ static VALUE g_arg_array;
 
 static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 {
-#if 0
-    int argcp = 1;
-    if (TYPE(arg1) != T_STRING)
-    rb_raise(rb_eTypeError, "Glut.Init:%s", rb_class2name(CLASS_OF(arg1)));
-    glutInit(&argcp, (char**)&(RSTRING(arg1)->ptr));
-#endif
     int largc;
     char** largv;
     int i, j;
@@ -116,8 +109,6 @@ VALUE obj,arg1;
     return Qnil;
 }
 
-
-#if (GLUT_API_VERSION >= 4 || GLUT_XLIB_IMPLEMENTATION >= 9)
 static VALUE
 glut_InitDisplayString(obj,arg1)
 VALUE obj,arg1;
@@ -127,8 +118,6 @@ VALUE obj,arg1;
     glutInitDisplayString(RSTRING(arg1)->ptr);
     return Qnil;
 }
-#endif
-
 
 static VALUE
 glut_InitWindowPosition(obj,arg1,arg2)
@@ -171,6 +160,27 @@ VALUE obj;
     return Qnil;
 }
 
+static void glut_DisplayFuncCallback(void);
+static void glut_ReshapeFuncCallback(int,int);
+static void glut_KeyboardFuncCallback(unsigned char, int, int);
+static void glut_MouseFuncCallback(int, int, int, int);
+static void glut_MotionFuncCallback(int, int);
+static void glut_PassiveMotionFuncCallback(int, int);
+static void glut_EntryFuncCallback(int);
+static void glut_VisibilityFuncCallback(int);
+static void glut_IdleFuncCallback(void);
+static void glut_TimerFuncCallback(int);
+static void glut_MenuStateFuncCallback(int);
+static void glut_SpecialFuncCallback(int,int,int);
+static void glut_SpaceballMotionFuncCallback(int,int,int);
+static void glut_SpaceballRotateFuncCallback(int,int,int);
+static void glut_SpaceballButtonFuncCallback(int,int);
+static void glut_ButtonBoxFuncCallback(int,int);
+static void glut_DialsFuncCallback(int,int);
+static void glut_TabletMotionFuncCallback(int,int);
+static void glut_TabletButtonFuncCallback(int,int,int,int);
+static void glut_OverlayDisplayFuncCallback(void);
+static void glut_WindowStatusFuncCallback(int);
 
 WINDOW_CALLBACK_SETUP(DisplayFunc);
 WINDOW_CALLBACK_SETUP(ReshapeFunc);
@@ -215,27 +225,6 @@ VALUE obj;
         rb_raise(rb_eTypeError, "Glut.CreateWindow:%s", rb_class2name(CLASS_OF(title)));
     ret = glutCreateWindow(RSTRING(title)->ptr);
 
-    /* setup callback */
-/*
-    glutDisplayFunc(glut_DisplayFuncCallback);
-    glutReshapeFunc(glut_ReshapeFuncCallback);
-    glutKeyboardFunc(glut_KeyboardFuncCallback);
-    glutMouseFunc(glut_MouseFuncCallback);
-    glutMotionFunc(glut_MotionFuncCallback);
-    glutPassiveMotionFunc(glut_PassiveMotionFuncCallback);
-    glutEntryFunc(glut_EntryFuncCallback);
-    glutVisibilityFunc(glut_VisibilityFuncCallback);
-    glutSpecialFunc(glut_SpecialFuncCallback);
-    glutSpaceballMotionFunc(glut_SpaceballMotionFuncCallback);
-    glutSpaceballRotateFunc(glut_SpaceballRotateFuncCallback);
-    glutSpaceballButtonFunc(glut_SpaceballButtonFuncCallback);
-    glutButtonBoxFunc(glut_ButtonBoxFuncCallback);
-    glutDialsFunc(glut_DialsFuncCallback);
-    glutTabletMotionFunc(glut_TabletMotionFuncCallback);
-    glutTabletButtonFunc(glut_TabletButtonFuncCallback);
-    glutOverlayDisplayFunc(glut_OverlayDisplayFuncCallback);
-    glutWindowStatusFunc(glut_WindowStatusFuncCallback);
-*/
     return INT2NUM(ret);
 }
 
@@ -361,7 +350,7 @@ VALUE obj;
 
 
 static VALUE
-glut_PushWidow(obj)
+glut_PushWindow(obj)
 VALUE obj;
 {
     glutPushWindow();
@@ -396,7 +385,6 @@ VALUE obj;
 }
 
 
-#if (GLUT_API_VERSION >= 3)
 static VALUE
 glut_FullScreen(obj)
 VALUE obj;
@@ -416,8 +404,6 @@ VALUE obj,arg1;
     return Qnil;
 }
 
-
-#if (GLUT_API_VERSION >= 4 || GLUT_XLIB_IMPLEMENTATION >= 9)
 static VALUE
 glut_WarpPointer(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -428,8 +414,6 @@ VALUE obj,arg1,arg2;
     glutWarpPointer(x,y);
     return Qnil;
 }
-#endif
-
 
 /* GLUT overlay sub-API. */
 static VALUE
@@ -485,8 +469,6 @@ VALUE obj;
     glutHideOverlay();
     return Qnil;
 }
-#endif
-
 
 /* GLUT menu sub-API. */
 static VALUE g_menucallback = Qnil;
@@ -557,7 +539,6 @@ static VALUE
 glut_AddMenuEntry(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
-    int value;
     int curmenuid;
     VALUE arg_ary;
     VALUE arg_pair;
@@ -594,7 +575,7 @@ VALUE obj,arg1,arg2,arg3;
 {
     VALUE arg_ary;
     VALUE arg_pair;
-    int item,value;
+    int item;
     int curmenuid;
     item = NUM2INT(arg1);
     if (TYPE(arg2) != T_STRING)
@@ -821,8 +802,6 @@ VALUE obj,arg1;
     return Qnil;
 }
 
-
-#if (GLUT_API_VERSION >= 2)
 static void
 glut_SpecialFuncCallback(key, x, y)
 int key, x, y;
@@ -911,7 +890,6 @@ int button, state, x, y;
 }
 
 
-#if (GLUT_API_VERSION >= 3)
 /*
 extern void APIENTRY glutMenuStatusFunc(void (*)(int status, int x, int y));
 */
@@ -925,7 +903,6 @@ glut_OverlayDisplayFuncCallback()
 }
 
 
-#if (GLUT_API_VERSION >= 4 || GLUT_XLIB_IMPLEMENTATION >= 9)
 static void
 glut_WindowStatusFuncCallback(state)
 int state;
@@ -935,10 +912,6 @@ int state;
     if (!NIL_P(func))
         rb_funcall(func, callId, 1, INT2NUM(state));
 }
-#endif
-#endif
-#endif
-
 
 /* GLUT color index sub-API. */
 static VALUE
@@ -1008,7 +981,6 @@ VALUE obj,arg1;
 }
 
 
-#if (GLUT_API_VERSION >= 2)
 /* GLUT extension support sub-API */
 static VALUE
 glut_ExtensionSupported(obj,arg1)
@@ -1021,10 +993,7 @@ VALUE obj,arg1;
     ret = glutExtensionSupported(RSTRING(arg1)->ptr);
     return INT2NUM(ret);
 }
-#endif
 
-
-#if (GLUT_API_VERSION >= 3)
 static VALUE
 glut_GetModifiers(obj)
 VALUE obj;
@@ -1045,8 +1014,6 @@ VALUE obj,arg1;
     ret = glutLayerGet(type);
     return INT2NUM(ret);
 }
-#endif
-
 
 
 /* GLUT font sub-API */
@@ -1075,7 +1042,6 @@ static VALUE
 glut_BitmapCharacterX(obj,arg2)
 VALUE obj,arg2;
 {
-    int font;
     int character;
     /* font = NUM2INT(arg1); */
     character = NUM2INT(arg2);
@@ -1125,7 +1091,6 @@ VALUE obj,arg1,arg2;
 }
 
 
-#if (GLUT_API_VERSION >= 4 || GLUT_XLIB_IMPLEMENTATION >= 9)
 static VALUE
 glut_BitmapLength(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -1152,8 +1117,6 @@ VALUE obj,arg1,arg2;
     ret = glutStrokeLength((void *)font, (const unsigned char*)RSTRING(arg2)->ptr);
     return INT2NUM(ret);
 }
-#endif
-
 
 /* GLUT pre-built models sub-API */
 static VALUE
@@ -1370,7 +1333,6 @@ VALUE obj;
 }
 
 
-#if (GLUT_API_VERSION >= 4 || GLUT_XLIB_IMPLEMENTATION >= 9)
 /* GLUT video resize sub-API. */
 static VALUE
 glut_VideoResizeGet(obj,arg1)
@@ -1444,7 +1406,6 @@ VALUE obj;
     glutReportErrors();
     return Qnil;
 }
-#endif
 
 
 /* GameMode support added by James Adam. */
@@ -1504,7 +1465,7 @@ DLLEXPORT void Init_glut()
     rb_define_module_function(module, "glutPositionWindow", glut_PositionWindow, 2);
     rb_define_module_function(module, "glutReshapeWindow", glut_ReshapeWindow, 2);
     rb_define_module_function(module, "glutPopWindow", glut_PopWindow, 0);
-    rb_define_module_function(module, "glutPushWidow", glut_PushWidow, 0);
+    rb_define_module_function(module, "glutPushWindow", glut_PushWindow, 0);
     rb_define_module_function(module, "glutIconifyWindow", glut_IconifyWindow, 0);
     rb_define_module_function(module, "glutShowWindow", glut_ShowWindow, 0);
     rb_define_module_function(module, "glutHideWindow", glut_HideWindow, 0);
@@ -1573,6 +1534,7 @@ DLLEXPORT void Init_glut()
     rb_define_module_function(module, "glutReportErrors", glut_ReportErrors, 0);
     rb_define_module_function(module, "glutIdleFunc", glut_IdleFunc, 1);
     rb_define_module_function(module, "glutTimerFunc", glut_TimerFunc, 3);
+    rb_define_module_function(module, "glutMenuStateFunc", glut_MenuStateFunc, 3);
 
     rb_define_const(module, "GLUT_API_VERSION", INT2NUM(GLUT_API_VERSION));
     rb_define_const(module, "GLUT_XLIB_IMPLEMENTATION", INT2NUM(GLUT_XLIB_IMPLEMENTATION));
