@@ -142,15 +142,17 @@ class Test_GLU < Test::Unit::TestCase
 	end
 
 	def test_gluquadrics
-#		error_func = lambda do
-#		end
+		ecount = 0
+		error_func = lambda do |error|
+			ecount+=1
+		end
 	
 		q = gluNewQuadric()
 		gluQuadricDrawStyle(q,GL_LINE)
 		gluQuadricNormals(q,GL_SMOOTH)
 		gluQuadricOrientation(q,GLU_OUTSIDE)
 		gluQuadricTexture(q,GL_FALSE)
-#		gluQuadricCallback(q,GLU_ERROR,error_func) TODO:
+		gluQuadricCallback(q,GLU_ERROR,error_func)
 
 		buf = glFeedbackBuffer(1024,GL_3D)
 		glRenderMode(GL_FEEDBACK)
@@ -172,19 +174,33 @@ class Test_GLU < Test::Unit::TestCase
 		gluPartialDisk(q,1.0,2.0,4,3,0,360)
 		count = glRenderMode(GL_RENDER)
 		assert_equal(count,4*(3+1+2)*11)
+	
+		gluSphere(q,0.0,0,0)
+		assert_equal(ecount,1)
 		gluDeleteQuadric(q)
 	end
 
 	def test_glunurbs
 		gluPerspective(90,1,1,2)
 
+		ecount = 0
+
+		n_error = lambda do |error|
+			ecount += 1
+		end
+
+		m = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]
+		
 		n = gluNewNurbsRenderer()
+		gluNurbsCallback(n,GLU_ERROR,n_error)
 		gluNurbsProperty(n,GLU_SAMPLING_TOLERANCE,40)
 		assert_equal(gluGetNurbsProperty(n,GLU_SAMPLING_TOLERANCE),40)
-
+		
+		gluLoadSamplingMatrices(n,m,m,glGetIntegerv(GL_VIEWPORT))
+		
 		knots = [0,0,0,0,1,1,1,1]
 		ctlpoints_curve = [[50,50,0],[400,50,0],[400,400,0],[50,400,0]]
-
+		
 		# generate surface control points
 		ctlpoints =  Array.new(4).collect { Array.new(4).collect { Array.new(3, nil) } } # 4*4*3 array
 		0.upto(3)	do |u|
@@ -199,19 +215,19 @@ class Test_GLU < Test::Unit::TestCase
 				end
 			end
 		end
-
+		
 		buf = glFeedbackBuffer(1024*1024*8,GL_3D) # large enough buffer for tesselated surface
 		glRenderMode(GL_FEEDBACK)
 		gluBeginCurve(n)
 		gluNurbsCurve(n,knots,ctlpoints_curve,4,GL_MAP1_VERTEX_3)
 		gluEndCurve(n)
-
+		
 		gluBeginTrim(n)
 		gluPwlCurve(n,[[0,0],[1,0],[1,1],[0,1],[0,0]],GLU_MAP1_TRIM_2)
 		gluEndTrim(n)
 		count = glRenderMode(GL_RENDER)
 		assert(count>1)
-
+		
 		glRenderMode(GL_FEEDBACK)
 		gluBeginSurface(n)
 		gluNurbsSurface(n,knots,knots,ctlpoints,4,4,GL_MAP2_VERTEX_3)
@@ -220,6 +236,7 @@ class Test_GLU < Test::Unit::TestCase
 		assert(count>1)
 
 		gluDeleteNurbsRenderer(n)
+		assert(ecount>1)
 	end
 
 	def test_glutess
@@ -266,6 +283,11 @@ class Test_GLU < Test::Unit::TestCase
 		gluTessVertex(t,4,4)
 		gluTessVertex(t,5,5)
 		gluEndPolygon(t)
+
+		gluTessCallback(t,GLU_TESS_BEGIN,nil)
+		gluTessCallback(t,GLU_TESS_END,nil)
+		gluTessCallback(t,GLU_TESS_ERROR,nil)
+		gluTessCallback(t,GLU_TESS_VERTEX,nil)
 
 		gluDeleteTess(t)
 

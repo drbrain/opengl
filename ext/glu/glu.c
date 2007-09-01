@@ -39,6 +39,7 @@ static struct glu_MesaStack gms = {0, NULL};
 
 struct nurbsdata {
 	GLUnurbsObj *nobj;
+	VALUE n_ref;
 };
 struct tessdata {
 	tesselatorObj *tobj;
@@ -47,11 +48,14 @@ struct tessdata {
 
 struct quaddata {
 	GLUquadricObj *qobj;
+	VALUE q_ref;
 };
 
 static VALUE cNurbs;
 static VALUE cTess;
 static VALUE cQuad;
+
+#define REF_LAST    15
 
 #define GetNURBS(obj, ndata) {\
 	Data_Get_Struct(obj, struct nurbsdata, ndata);\
@@ -123,21 +127,70 @@ get_surface_dim(GLenum type)
 /*
  * NURBS API
  */
+static VALUE n_current;
+
 static void
 free_nurbs(ndata)
 struct nurbsdata *ndata;
 {
 	if (ndata->nobj) gluDeleteNurbsRenderer(ndata->nobj);
 		ndata->nobj = NULL;
+	ndata->n_ref = Qnil;
 }
+static void
+mark_nurbs(ndata)
+struct nurbsdata* ndata;
+{
+	if (ndata->nobj)
+		rb_gc_mark(ndata->n_ref);
+}
+
+static void
+n_error(errorno)
+GLenum errorno;
+{
+	VALUE nurbs;
+	struct nurbsdata *ndata;
+	nurbs = rb_ary_entry(n_current, -1);
+	if (nurbs == Qnil)
+		return;
+	GetNURBS(nurbs, ndata);
+	rb_funcall(rb_ary_entry(ndata->n_ref, GLU_ERROR), callId, 1, INT2NUM(errorno));
+}
+
+static VALUE
+glu_NurbsCallback(obj, arg1, arg2, arg3)
+VALUE obj, arg1, arg2, arg3;
+{
+	struct nurbsdata* ndata;
+	GLenum type;
+	GetNURBS(arg1, ndata);
+	type = (GLenum)NUM2INT(arg2);
+	if (!rb_obj_is_kind_of(arg3,rb_cProc) && !NIL_P(arg3))
+		rb_raise(rb_eTypeError, "gluNurbsCallback needs Proc Object:%s",rb_class2name(CLASS_OF(arg3)));
+
+	if (type!=GLU_ERROR)
+		return Qnil;
+
+	rb_ary_store(ndata->n_ref, type, arg3);
+	if (NIL_P(arg3))
+		gluNurbsCallback(ndata->nobj, type, NULL);
+	else
+		gluNurbsCallback(ndata->nobj, type, (VOIDFUNC)(n_error));
+	
+	return Qnil;
+}
+
+
 static VALUE
 glu_NewNurbsRenderer(obj)
 VALUE obj;
 {
 	VALUE ret;
 	struct nurbsdata *ndata;
-	ret = Data_Make_Struct(cNurbs, struct nurbsdata, 0, free_nurbs, ndata);
+	ret = Data_Make_Struct(cNurbs, struct nurbsdata, mark_nurbs, free_nurbs, ndata);
 	ndata->nobj = gluNewNurbsRenderer();
+	ndata->n_ref = rb_ary_new2(REF_LAST);
 	return ret;
 }
 static VALUE
@@ -180,6 +233,7 @@ VALUE obj, arg1;
 {
 	struct nurbsdata *ndata;
 	GetNURBS(arg1, ndata);
+	rb_ary_push(n_current, arg1);
 	gluBeginCurve(ndata->nobj);
 	return Qnil;
 }
@@ -195,6 +249,8 @@ VALUE obj, arg1;
 		free(gms.ptr[gms.len-1]);
 	free(gms.ptr);
 	gms.ptr = NULL;
+
+	rb_ary_pop(n_current);
 
 	return Qnil;
 }
@@ -261,6 +317,7 @@ VALUE obj, arg1;
 {
 	struct nurbsdata *ndata;
 	GetNURBS(arg1, ndata);
+	rb_ary_push(n_current, arg1);
 	gluBeginSurface(ndata->nobj);
 	return Qnil;
 }
@@ -276,6 +333,8 @@ VALUE obj, arg1;
 		free(gms.ptr[gms.len-1]);
 	free(gms.ptr);
 	gms.ptr = NULL;
+
+	rb_ary_pop(n_current);
 	
 	return Qnil;
 }
@@ -369,6 +428,7 @@ VALUE obj, arg1;
 {
 	struct nurbsdata *ndata;
 	GetNURBS(arg1, ndata);
+	rb_ary_push(n_current, arg1);
 	gluBeginTrim(ndata->nobj);
 	return Qnil;
 }
@@ -379,6 +439,7 @@ VALUE obj, arg1;
 	struct nurbsdata *ndata;
 	GetNURBS(arg1, ndata);
 	gluEndTrim(ndata->nobj);
+	rb_ary_pop(n_current);
 	return Qnil;
 }
 static VALUE
@@ -428,6 +489,24 @@ VALUE obj;
 	return Qnil;
 }
 
+static VALUE glu_LoadSamplingMatrices(obj,arg1,arg2,arg3,arg4)
+VALUE obj, arg1,arg2,arg3,arg4;
+{
+	struct nurbsdata *ndata;
+	GLfloat mdl_mtx[4*4];
+	GLfloat persp_mtx[4*4];
+	GLint viewport[4];
+
+	GetNURBS(arg1, ndata);
+	ary2cmat4x4flt(arg2,mdl_mtx);
+	ary2cmat4x4flt(arg3,persp_mtx);
+	ary2cint(arg4,viewport,4);
+
+	gluLoadSamplingMatrices(ndata->nobj,mdl_mtx,persp_mtx,viewport);
+
+	return Qnil;
+}
+
 /*
  * Tesselation API
  */
@@ -447,7 +526,6 @@ static VALUE t_current;
 #define TESS_EDGE_FLAG_DATA   12
 #define TESS_COMBINE_DATA    13
 #define TESS_USERDATA   14
-#define REF_LAST    15
 
 static void
 mark_tess(tdata)
@@ -719,11 +797,9 @@ VALUE obj, arg1, arg2, arg3;
 {
 	struct tessdata* tdata;
 	GLenum type;
-	ID id;
 	GetTESS(arg1, tdata);
 	type = (GLenum)NUM2INT(arg2);
-	id = rb_intern("[]=");
-	if (!rb_obj_is_kind_of(arg3,rb_cProc) && NIL_P(arg3))
+	if (!rb_obj_is_kind_of(arg3,rb_cProc) && !NIL_P(arg3))
 		rb_raise(rb_eTypeError, "gluTessCallback needs Proc Object:%s",rb_class2name(CLASS_OF(arg3)));
 	
 	switch (type) {
@@ -793,12 +869,58 @@ VALUE obj, arg1;
 /*
  * Quadric API
  */
+static VALUE q_current;
+
+static void
+q_error(errorno)
+GLenum errorno;
+{
+	VALUE quad;
+	struct quaddata *qdata;
+	quad = rb_ary_entry(q_current, -1);
+	if (quad == Qnil)
+		return;
+	GetQUAD(quad, qdata);
+	rb_funcall(rb_ary_entry(qdata->q_ref, GLU_ERROR), callId, 1, INT2NUM(errorno));
+}
+
+static VALUE
+glu_QuadricCallback(obj, arg1, arg2, arg3)
+VALUE obj, arg1, arg2, arg3;
+{
+	struct quaddata* qdata;
+	GLenum type;
+	GetQUAD(arg1, qdata);
+	type = (GLenum)NUM2INT(arg2);
+	if (!rb_obj_is_kind_of(arg3,rb_cProc) && !NIL_P(arg3))
+		rb_raise(rb_eTypeError, "gluQuadricCallback needs Proc Object:%s",rb_class2name(CLASS_OF(arg3)));
+
+	if (type!=GLU_ERROR)
+		return Qnil;
+
+	rb_ary_store(qdata->q_ref, type, arg3);
+	if (NIL_P(arg3))
+		gluQuadricCallback(qdata->qobj, type, NULL);
+	else
+		gluQuadricCallback(qdata->qobj, type, (VOIDFUNC)(q_error));
+	
+	return Qnil;
+}
+
 static void
 free_quad(qdata)
 struct quaddata *qdata;
 {
   if (qdata->qobj) gluDeleteQuadric(qdata->qobj);
   qdata->qobj = NULL;
+	qdata->q_ref = Qnil;
+}
+static void
+mark_quad(qdata)
+struct quaddata* qdata;
+{
+	if (qdata->qobj)
+		rb_gc_mark(qdata->q_ref);
 }
 static VALUE
 glu_NewQuadric(obj)
@@ -806,8 +928,9 @@ VALUE obj;
 {
 	VALUE ret;
 	struct quaddata *qdata;
-	ret = Data_Make_Struct(cQuad, struct quaddata, 0, free_quad, qdata);
+	ret = Data_Make_Struct(cQuad, struct quaddata, mark_quad, free_quad, qdata);
 	qdata->qobj = gluNewQuadric();
+	qdata->q_ref = rb_ary_new2(REF_LAST);
 	return ret;
 }
 static VALUE
@@ -881,7 +1004,9 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6;
 	slices = (GLint)NUM2INT(arg5);
 	stacks = (GLint)NUM2INT(arg6);
 
+	rb_ary_push(q_current, arg1);
 	gluCylinder(qdata->qobj, baseRadius, topRadius, height, slices, stacks);
+	rb_ary_pop(q_current);
 	return Qnil;
 }
 static VALUE
@@ -899,8 +1024,11 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5;
 	outerRadius = (GLdouble)NUM2DBL(arg3);
 	slices = (GLint)NUM2INT(arg4);
 	loops = (GLint)NUM2INT(arg5);
-	
+
+	rb_ary_push(q_current, arg1);
+
 	gluDisk(qdata->qobj, innerRadius, outerRadius, slices, loops);
+	rb_ary_pop(q_current);
 	return Qnil;
 }
 static VALUE
@@ -922,8 +1050,10 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
 	loops = (GLint)NUM2INT(arg5);
 	startAngle = (GLdouble)NUM2DBL(arg6);
 	sweepAngle = (GLdouble)NUM2DBL(arg7);
-	
+
+	rb_ary_push(q_current, arg1);
 	gluPartialDisk(qdata->qobj, innerRadius, outerRadius, slices, loops, startAngle, sweepAngle);
+	rb_ary_pop(q_current);
 	return Qnil;
 }
 static VALUE
@@ -940,9 +1070,14 @@ VALUE obj, arg1, arg2, arg3, arg4;
 	slices = (GLint)NUM2INT(arg3);
 	stacks = (GLint)NUM2INT(arg4);
 
+	rb_ary_push(q_current, arg1);
 	gluSphere(qdata->qobj, radius, slices, stacks);
+	rb_ary_pop(q_current);
 	return Qnil;
 }
+
+/* */
+
 static VALUE
 glu_LookAt(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
@@ -1281,10 +1416,19 @@ DLLEXPORT void Init_glu()
 	rb_define_module_function(module, "gluErrorString", glu_ErrorString, 1);
 	rb_define_module_function(module, "gluGetString", glu_GetString, 1);
 	
+	rb_define_module_function(module, "gluLoadSamplingMatrices",glu_LoadSamplingMatrices,4);
+	rb_define_module_function(module, "gluQuadricCallback", glu_QuadricCallback, 3);
+	rb_define_module_function(module, "gluNurbsCallback", glu_NurbsCallback, 3);
+
+	
 	cNurbs = rb_define_class("Nurbs", rb_cObject);
 	cTess = rb_define_class("Tess", rb_cObject);
 	cQuad = rb_define_class("Quadric", rb_cObject);
 	
-	rb_global_variable(&t_current);
+	rb_global_variable(&t_current); /* current active tesselator, nurbs and quadric, used for callbacks */
 	t_current = rb_ary_new();
+	rb_global_variable(&n_current); 
+	n_current = rb_ary_new();
+	rb_global_variable(&q_current); 
+	q_current = rb_ary_new();
 }
