@@ -17,29 +17,8 @@
 
 /* OpenGL 1.3 functions */
 
-static void (APIENTRY * fptr_glActiveTexture)(GLenum);
-static VALUE
-gl_ActiveTexture(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum texture;
-	LOAD_GL_FUNC(glActiveTexture)
-	texture = (GLenum)NUM2INT(arg1);
-	fptr_glActiveTexture(texture);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glClientActiveTexture)(GLenum);
-static VALUE
-gl_ClientActiveTexture(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum texture;
-	LOAD_GL_FUNC(glClientActiveTexture)
-	texture = (GLenum)NUM2INT(arg1);
-	fptr_glClientActiveTexture(texture);
-	return Qnil;
-}
+GL_SIMPLE_FUNC_LOAD(ActiveTexture,1,GLenum,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(ClientActiveTexture,1,GLenum,NUM2INT)
 
 static void (APIENTRY * fptr_glMultiTexCoord1d)(GLenum,GLdouble);
 static VALUE

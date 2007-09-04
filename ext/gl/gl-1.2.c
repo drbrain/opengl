@@ -19,35 +19,8 @@
 
 /* OpenGL 1.2 functions */
 
-static void (APIENTRY * fptr_glBlendColor)(GLclampf,GLclampf,GLclampf,GLclampf);
-static VALUE
-gl_BlendColor(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLclampf red;
-	GLclampf green;
-	GLclampf blue;
-	GLclampf alpha;
-	LOAD_GL_FUNC(glBlendColor)
-	red = (GLclampf)NUM2DBL(arg1);
-	green = (GLclampf)NUM2DBL(arg2);
-	blue = (GLclampf)NUM2DBL(arg3);
-	alpha = (GLclampf)NUM2DBL(arg4);
-	fptr_glBlendColor(red,green,blue,alpha);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glBlendEquation)(GLenum);
-static VALUE
-gl_BlendEquation(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum mode;
-	LOAD_GL_FUNC(glBlendEquation)
-	mode = (GLenum)NUM2INT(arg1);
-	fptr_glBlendEquation(mode);
-	return Qnil;
-}
+GL_SIMPLE_FUNC_LOAD(BlendColor,4,GLclampf,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(BlendEquation,1,GLenum,NUM2INT)
 
 static void (APIENTRY * fptr_glDrawRangeElements)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
 static VALUE
@@ -147,9 +120,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	LOAD_GL_FUNC(glCopyColorTable)
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
-	x = (GLenum)NUM2INT(arg3);
-	y = (GLenum)NUM2INT(arg4);
-	width = (GLenum)NUM2INT(arg5);
+	x = (GLint)NUM2INT(arg3);
+	y = (GLint)NUM2INT(arg4);
+	width = (GLsizei)NUM2INT(arg5);
 	fptr_glCopyColorTable(target,internalformat,x,y,width);
 	return Qnil;
 }

@@ -16,36 +16,25 @@
 #include "../common/common.h"
 
 /* OpenGL 1.4 functions */
-
-static void (APIENTRY * fptr_glBlendFuncSeparate)(GLenum,GLenum,GLenum,GLenum);
-static VALUE
-gl_BlendFuncSeparate(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLenum srcRGB;
-	GLenum dstRGB;
-	GLenum srcAlpha;
-	GLenum dstAlpha;
-	LOAD_GL_FUNC(glBlendFuncSeparate)
-	srcRGB = (GLenum)NUM2INT(arg1);
-	dstRGB = (GLenum)NUM2INT(arg2);
-	srcAlpha = (GLenum)NUM2INT(arg3);
-	dstAlpha = (GLenum)NUM2INT(arg4);
-	fptr_glBlendFuncSeparate(srcRGB,dstRGB,srcAlpha,dstAlpha);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glFogCoordf)(GLfloat);
-static VALUE
-gl_FogCoordf(obj,arg1)
-VALUE obj,arg1;
-{
-	GLfloat coord;
-	LOAD_GL_FUNC(glFogCoordf)
-	coord=(GLfloat)NUM2DBL(arg1);
-	fptr_glFogCoordf(coord);
-	return Qnil;
-}
+GL_SIMPLE_FUNC_LOAD(BlendFuncSeparate,4,GLenum,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(FogCoordf,1,GLfloat,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(FogCoordd,1,GLdouble,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3b,3,GLbyte,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3d,3,GLdouble,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3f,3,GLfloat,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3i,3,GLint,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3s,3,GLshort,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3ub,3,GLubyte,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3ui,3,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3us,3,GLushort,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(WindowPos2d,2,GLdouble,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(WindowPos2f,2,GLfloat,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(WindowPos2i,2,GLint,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(WindowPos2s,2,GLshort,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(WindowPos3d,3,GLdouble,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(WindowPos3f,3,GLfloat,NUM2DBL)
+GL_SIMPLE_FUNC_LOAD(WindowPos3i,3,GLint,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(WindowPos3s,3,GLshort,NUM2INT)
 
 static void (APIENTRY * fptr_glFogCoordfv)(GLfloat *);
 static VALUE
@@ -57,18 +46,6 @@ VALUE obj,arg1;
 	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,&coord,1);
 	fptr_glFogCoordfv(&coord);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glFogCoordd)(GLdouble);
-static VALUE
-gl_FogCoordd(obj,arg1)
-VALUE obj,arg1;
-{
-	GLdouble coord;
-	LOAD_GL_FUNC(glFogCoordd)
-	coord=(GLdouble)NUM2DBL(arg1);
-	fptr_glFogCoordd(coord);
 	return Qnil;
 }
 
@@ -263,134 +240,6 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glSecondaryColor3b)(GLbyte,GLbyte,GLbyte);
-static VALUE
-gl_SecondaryColor3b(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLbyte red;
-	GLbyte green;
-	GLbyte blue;
-	LOAD_GL_FUNC(glSecondaryColor3b)
-	red = (GLbyte)NUM2INT(arg1);
-	green = (GLbyte)NUM2INT(arg2);
-	blue = (GLbyte)NUM2INT(arg3);
-	fptr_glSecondaryColor3b(red,green,blue);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glSecondaryColor3d)(GLdouble,GLdouble,GLdouble);
-static VALUE
-gl_SecondaryColor3d(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLdouble red;
-	GLdouble green;
-	GLdouble blue;
-	LOAD_GL_FUNC(glSecondaryColor3d)
-	red = (GLdouble)NUM2DBL(arg1);
-	green = (GLdouble)NUM2DBL(arg2);
-	blue = (GLdouble)NUM2DBL(arg3);
-	fptr_glSecondaryColor3d(red,green,blue);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glSecondaryColor3f)(GLfloat,GLfloat,GLfloat);
-static VALUE
-gl_SecondaryColor3f(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLfloat red;
-	GLfloat green;
-	GLfloat blue;
-	LOAD_GL_FUNC(glSecondaryColor3f)
-	red = (GLfloat)NUM2DBL(arg1);
-	green = (GLfloat)NUM2DBL(arg2);
-	blue = (GLfloat)NUM2DBL(arg3);
-	fptr_glSecondaryColor3f(red,green,blue);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glSecondaryColor3i)(GLint,GLint,GLint);
-static VALUE
-gl_SecondaryColor3i(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint red;
-	GLint green;
-	GLint blue;
-	LOAD_GL_FUNC(glSecondaryColor3i)
-	red = (GLint)NUM2INT(arg1);
-	green = (GLint)NUM2INT(arg2);
-	blue = (GLint)NUM2INT(arg3);
-	fptr_glSecondaryColor3i(red,green,blue);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glSecondaryColor3s)(GLshort,GLshort,GLshort);
-static VALUE
-gl_SecondaryColor3s(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLshort red;
-	GLshort green;
-	GLshort blue;
-	LOAD_GL_FUNC(glSecondaryColor3s)
-	red = (GLshort)NUM2INT(arg1);
-	green = (GLshort)NUM2INT(arg2);
-	blue = (GLshort)NUM2INT(arg3);
-	fptr_glSecondaryColor3s(red,green,blue);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glSecondaryColor3ub)(GLubyte,GLubyte,GLubyte);
-static VALUE
-gl_SecondaryColor3ub(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLubyte red;
-	GLubyte green;
-	GLubyte blue;
-	LOAD_GL_FUNC(glSecondaryColor3ub)
-	red = (GLubyte)NUM2INT(arg1);
-	green = (GLubyte)NUM2INT(arg2);
-	blue = (GLubyte)NUM2INT(arg3);
-	fptr_glSecondaryColor3ub(red,green,blue);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glSecondaryColor3ui)(GLuint,GLuint,GLuint);
-static VALUE
-gl_SecondaryColor3ui(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLuint red;
-	GLuint green;
-	GLuint blue;
-	LOAD_GL_FUNC(glSecondaryColor3ui)
-	red = (GLuint)NUM2UINT(arg1);
-	green = (GLuint)NUM2UINT(arg2);
-	blue = (GLuint)NUM2UINT(arg3);
-	fptr_glSecondaryColor3ui(red,green,blue);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glSecondaryColor3us)(GLushort,GLushort,GLushort);
-static VALUE
-gl_SecondaryColor3us(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLushort red;
-	GLushort green;
-	GLushort blue;
-	LOAD_GL_FUNC(glSecondaryColor3us)
-	red = (GLushort)NUM2INT(arg1);
-	green = (GLushort)NUM2INT(arg2);
-	blue = (GLushort)NUM2INT(arg3);
-	fptr_glSecondaryColor3us(red,green,blue);
-	return Qnil;
-}
-
 #define GLSECONDARYCOLOR_VFUNC(_type_) \
 static VALUE \
 gl_SecondaryColor##_type_##v(argc,argv,obj) \
@@ -458,126 +307,6 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		g_SecondaryColor_ptr = arg4;
 		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)RSTRING(arg4)->ptr);
 	}
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glWindowPos2d)(GLdouble,GLdouble);
-static VALUE
-gl_WindowPos2d(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLdouble x;
-	GLdouble y;
-	LOAD_GL_FUNC(glWindowPos2d)
-	x = (GLdouble)NUM2DBL(arg1);
-	y = (GLdouble)NUM2DBL(arg2);
-	fptr_glWindowPos2d(x,y);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glWindowPos2f)(GLfloat,GLfloat);
-static VALUE
-gl_WindowPos2f(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLfloat x;
-	GLfloat y;
-	LOAD_GL_FUNC(glWindowPos2f)
-	x = (GLfloat)NUM2DBL(arg1);
-	y = (GLfloat)NUM2DBL(arg2);
-	fptr_glWindowPos2f(x,y);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glWindowPos2i)(GLint,GLint);
-static VALUE
-gl_WindowPos2i(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLint x;
-	GLint y;
-	LOAD_GL_FUNC(glWindowPos2i)
-	x = (GLint)NUM2INT(arg1);
-	y = (GLint)NUM2INT(arg2);
-	fptr_glWindowPos2i(x,y);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glWindowPos2s)(GLshort,GLshort);
-static VALUE
-gl_WindowPos2s(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLshort x;
-	GLshort y;
-	LOAD_GL_FUNC(glWindowPos2s)
-	x = (GLshort)NUM2INT(arg1);
-	y = (GLshort)NUM2INT(arg2);
-	fptr_glWindowPos2s(x,y);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glWindowPos3d)(GLdouble,GLdouble,GLdouble);
-static VALUE
-gl_WindowPos3d(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLdouble x;
-	GLdouble y;
-	GLdouble z;
-	LOAD_GL_FUNC(glWindowPos3d)
-	x = (GLdouble)NUM2DBL(arg1);
-	y = (GLdouble)NUM2DBL(arg2);
-	z = (GLdouble)NUM2DBL(arg3);
-	fptr_glWindowPos3d(x,y,z);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glWindowPos3f)(GLfloat,GLfloat,GLfloat);
-static VALUE
-gl_WindowPos3f(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLfloat x;
-	GLfloat y;
-	GLfloat z;
-	LOAD_GL_FUNC(glWindowPos3f)
-	x = (GLfloat)NUM2DBL(arg1);
-	y = (GLfloat)NUM2DBL(arg2);
-	z = (GLfloat)NUM2DBL(arg3);
-	fptr_glWindowPos3f(x,y,z);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glWindowPos3i)(GLint,GLint,GLint);
-static VALUE
-gl_WindowPos3i(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint x;
-	GLint y;
-	GLint z;
-	LOAD_GL_FUNC(glWindowPos3i)
-	x = (GLint)NUM2INT(arg1);
-	y = (GLint)NUM2INT(arg2);
-	z = (GLint)NUM2INT(arg3);
-	fptr_glWindowPos3i(x,y,z);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glWindowPos3s)(GLshort,GLshort,GLshort);
-static VALUE
-gl_WindowPos3s(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLshort x;
-	GLshort y;
-	GLshort z;
-	LOAD_GL_FUNC(glWindowPos3s)
-	x = (GLshort)NUM2INT(arg1);
-	y = (GLshort)NUM2INT(arg2);
-	z = (GLshort)NUM2INT(arg3);
-	fptr_glWindowPos3s(x,y,z);
 	return Qnil;
 }
 

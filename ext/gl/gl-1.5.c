@@ -17,6 +17,8 @@
 
 /* OpenGL 1.5 functions */
 
+GL_SIMPLE_FUNC_LOAD(EndQuery,1,GLenum,NUM2INT)
+
 static void (APIENTRY * fptr_glGenQueries)(GLsizei,GLuint *);
 static VALUE
 gl_GenQueries(obj,arg1)
@@ -83,18 +85,6 @@ VALUE obj,arg1,arg2;
 	target = (GLenum)NUM2INT(arg1);
 	id = (GLuint)NUM2UINT(arg2);
 	fptr_glBeginQuery(target,id);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glEndQuery)(GLenum);
-static VALUE
-gl_EndQuery(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum target;
-	LOAD_GL_FUNC(glEndQuery)
-	target = (GLenum)NUM2INT(arg1);
-	fptr_glEndQuery(target);
 	return Qnil;
 }
 
@@ -336,7 +326,7 @@ gl_GetBufferPointerv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
 	LOAD_GL_FUNC(glGetBufferPointerv)
-	/* not implemented */
+	rb_raise(rb_eArgError, "glGetBufferPointerv not implemented");
 	return Qnil;
 }
 

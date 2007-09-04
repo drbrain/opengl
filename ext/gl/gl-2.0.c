@@ -15,19 +15,22 @@
 
 #include "../common/common.h"
 
-static void (APIENTRY * fptr_glBlendEquationSeparate)(GLenum,GLenum);
-static VALUE
-gl_BlendEquationSeparate(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum modeRGB;
-	GLenum modeAlpha;
-	LOAD_GL_FUNC(glBlendEquationSeparate)
-	modeRGB = (GLenum)NUM2INT(arg1);
-	modeAlpha = (GLenum)NUM2INT(arg2);
-	fptr_glBlendEquationSeparate(modeRGB,modeAlpha);
-	return Qnil;
-}
+GL_SIMPLE_FUNC_LOAD(BlendEquationSeparate,2,GLenum,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(StencilOpSeparate,4,GLenum,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(AttachShader,2,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(CompileShader,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(DeleteProgram,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(DeleteShader,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(DetachShader,2,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(DisableVertexAttribArray,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(EnableVertexAttribArray,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(LinkProgram,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(UseProgram,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(ValidateProgram,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(Uniform1i,2,GLint,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(Uniform2i,3,GLint,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(Uniform3i,4,GLint,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(Uniform4i,5,GLint,NUM2INT)
 
 static void (APIENTRY * fptr_glDrawBuffers)(GLsizei,GLenum *);
 static VALUE
@@ -43,24 +46,6 @@ VALUE obj,arg1;
 	ary2cuint(arg1,buffers,size);
 	fptr_glDrawBuffers(size,buffers);
 	xfree(buffers);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glStencilOpSeparate)(GLenum,GLenum,GLenum,GLenum);
-static VALUE
-gl_StencilOpSeparate(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLenum face;
-	GLenum sfail;
-	GLenum dpfail;
-	GLenum dppass;
-	LOAD_GL_FUNC(glStencilOpSeparate)
-	face = (GLenum)NUM2INT(arg1);
-	sfail = (GLenum)NUM2INT(arg2);
-	dpfail = (GLenum)NUM2INT(arg3);
-	dppass = (GLenum)NUM2INT(arg4);
-	fptr_glStencilOpSeparate(face,sfail,dpfail,dppass);
 	return Qnil;
 }
 
@@ -96,20 +81,6 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glAttachShader)(GLuint,GLuint);
-static VALUE
-gl_AttachShader(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint program;
-	GLuint shader;
-	LOAD_GL_FUNC(glAttachShader)
-	program = (GLuint)NUM2UINT(arg1);
-	shader = (GLuint)NUM2UINT(arg2);
-	fptr_glAttachShader(program,shader);
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glBindAttribLocation)(GLuint,GLuint,GLchar *);
 static VALUE
 gl_BindAttribLocation(obj,arg1,arg2,arg3)
@@ -122,18 +93,6 @@ VALUE obj,arg1,arg2,arg3;
 	index = (GLuint)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	fptr_glBindAttribLocation(program,index,RSTRING(arg3)->ptr);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glCompileShader)(GLuint);
-static VALUE
-gl_CompileShader(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint shader;
-	LOAD_GL_FUNC(glCompileShader)
-	shader = (GLuint)NUM2UINT(arg1);
-	fptr_glCompileShader(shader);
 	return Qnil;
 }
 
@@ -159,68 +118,6 @@ VALUE obj,arg1;
 	shaderType = (GLenum)NUM2INT(arg1);
 	ret = fptr_glCreateShader(shaderType);
 	return INT2NUM(ret);
-}
-
-static void (APIENTRY * fptr_glDeleteProgram)(GLuint);
-static VALUE
-gl_DeleteProgram(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint program;
-	LOAD_GL_FUNC(glDeleteProgram)
-	program = (GLuint)NUM2UINT(arg1);
-	fptr_glDeleteProgram(program);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glDeleteShader)(GLuint);
-static VALUE
-gl_DeleteShader(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint shader;
-	LOAD_GL_FUNC(glDeleteShader)
-	shader = (GLuint)NUM2UINT(arg1);
-	fptr_glDeleteShader(shader);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glDetachShader)(GLuint,GLuint);
-static VALUE
-gl_DetachShader(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint program;
-	GLuint shader;
-	LOAD_GL_FUNC(glDetachShader)
-	program=(GLuint)NUM2UINT(arg1);
-	shader=(GLuint)NUM2UINT(arg2);
-	fptr_glDetachShader(program,shader);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glDisableVertexAttribArray)(GLuint);
-static VALUE
-gl_DisableVertexAttribArray(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint index;
-	LOAD_GL_FUNC(glDisableVertexAttribArray)
-	index=(GLuint)NUM2UINT(arg1);
-	fptr_glDisableVertexAttribArray(index);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glEnableVertexAttribArray)(GLuint);
-static VALUE
-gl_EnableVertexAttribArray(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint index;
-	LOAD_GL_FUNC(glEnableVertexAttribArray)
-	index=(GLuint)NUM2UINT(arg1);
-	fptr_glEnableVertexAttribArray(index);
-	return Qnil;
 }
 
 static void (APIENTRY * fptr_glGetProgramiv)(GLuint,GLenum,GLint *);
@@ -665,18 +562,6 @@ VALUE obj,arg1;
 	return INT2NUM(ret);
 }
 
-static void (APIENTRY * fptr_glLinkProgram)(GLuint);
-static VALUE
-gl_LinkProgram(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint program;
-	LOAD_GL_FUNC(glLinkProgram)
-	program = (GLuint)NUM2UINT(arg1);
-	fptr_glLinkProgram(program);
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glShaderSource)(GLuint,GLsizei,GLchar**,GLint *);
 static VALUE
 gl_ShaderSource(obj,arg1,arg2)
@@ -691,18 +576,6 @@ VALUE obj,arg1,arg2;
 	str = RSTRING(arg2)->ptr;
 	length = RSTRING(arg2)->len;
 	fptr_glShaderSource(shader,1,&str,&length);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUseProgram)(GLuint);
-static VALUE
-gl_UseProgram(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint program;
-	LOAD_GL_FUNC(glUseProgram)
-	program = (GLuint)NUM2UINT(arg1);
-	fptr_glUseProgram(program);
 	return Qnil;
 }
 
@@ -771,74 +644,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	v2 = (GLfloat)NUM2DBL(arg4);
 	v3 = (GLfloat)NUM2DBL(arg5);
 	fptr_glUniform4f(location,v0,v1,v2,v3);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform1i)(GLint,GLint);
-static VALUE
-gl_Uniform1i(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLint location;
-	GLint v0;
-	LOAD_GL_FUNC(glUniform1i)
-	location = (GLint)NUM2INT(arg1);
-	v0 = (GLint)NUM2INT(arg2);
-	fptr_glUniform1i(location,v0);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform2i)(GLint,GLint,GLint);
-static VALUE
-gl_Uniform2i(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLint v0;
-	GLint v1;
-	LOAD_GL_FUNC(glUniform2i)
-	location = (GLint)NUM2INT(arg1);
-	v0 = (GLint)NUM2INT(arg2);
-	v1 = (GLint)NUM2INT(arg3);
-	fptr_glUniform2i(location,v0,v1);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform3i)(GLint,GLint,GLint,GLint);
-static VALUE
-gl_Uniform3i(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLint v0;
-	GLint v1;
-	GLint v2;
-	LOAD_GL_FUNC(glUniform3i)
-	location = (GLint)NUM2INT(arg1);
-	v0 = (GLint)NUM2INT(arg2);
-	v1 = (GLint)NUM2INT(arg3);
-	v2 = (GLint)NUM2INT(arg4);
-	fptr_glUniform3i(location,v0,v1,v2);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform4i)(GLint,GLint,GLint,GLint,GLint);
-static VALUE
-gl_Uniform4i(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLint location;
-	GLint v0;
-	GLint v1;
-	GLint v2;
-	GLint v3;
-	LOAD_GL_FUNC(glUniform4i)
-	location = (GLint)NUM2INT(arg1);
-	v0 = (GLint)NUM2INT(arg2);
-	v1 = (GLint)NUM2INT(arg3);
-	v2 = (GLint)NUM2INT(arg4);
-	v3 = (GLint)NUM2INT(arg5);
-	fptr_glUniform4i(location,v0,v1,v2,v3);
 	return Qnil;
 }
 
@@ -1043,18 +848,6 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	ary2cflt(arg4,value,4*4*count);
 	fptr_glUniformMatrix4fv(location,count,transpose,value);
 	xfree(value);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glValidateProgram)(GLuint);
-static VALUE
-gl_ValidateProgram(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint program;
-	LOAD_GL_FUNC(glValidateProgram)
-	program = (GLuint)NUM2UINT(arg1);
-	fptr_glValidateProgram(program);
 	return Qnil;
 }
 
