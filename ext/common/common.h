@@ -69,6 +69,13 @@ extern VALUE cProc;
 if (fptr_##_NAME_==NULL) \
 fptr_##_NAME_ = load_gl_function(#_NAME_, 1);
 
+#define LOAD_GL_EXT_FUNC(_NAME_,_EXTNAME_) \
+if (fptr_##_NAME_==NULL) {\
+	if (CheckExtension(_EXTNAME_)==GL_FALSE) \
+		rb_raise(rb_eNotImpError,"Extension %s is not available on this system",_EXTNAME_); \
+	fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
+}
+
 #define FORCE_PIXEL_STORE_MODE \
 	glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT); \
 	glPixelStorei(GL_PACK_ALIGNMENT, 1); \
@@ -378,7 +385,7 @@ static inline void *load_gl_function(const char *name,int raise)
 #endif
 
 	if (func_ptr == NULL && raise == 1)
-		rb_raise(rb_eNotImpError,"Function %s is not available at this machine",name);
+		rb_raise(rb_eNotImpError,"Function %s is not available on this system",name);
 
 	return func_ptr;
 }
