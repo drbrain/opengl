@@ -5,6 +5,7 @@
  * Copyright (C) 1999 - 2005 Yoshi <yoshi@giganet.net>
  * Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
  * Copyright (C) 2007 James Adam <james@lazyatom.com>
+ * Copyright (C) 2007 Jan Dvorak <jan.dvorak@kraxnet.cz>
  *
  * This program is distributed under the terms of the MIT license.
  * See the included MIT-LICENSE file for the terms of this license.
