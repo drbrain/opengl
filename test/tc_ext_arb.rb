@@ -24,6 +24,34 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		common_teardown()
 	end
 
+	def test_gl_arb_transpose_matrix
+		return if not supported?("GL_ARB_transpose_matrix")
+		m_a = [[1.0,2.0,3.0,4.0],
+					 [0.0,2.0,0.0,0.0],
+					 [0.0,0.0,2.0,0.0],
+					 [0.0,0.0,0.0,2.0]]
+
+		m_b = [[1.0,2.0,3.0,4.0],
+					 [0.0,3.0,0.0,0.0],
+					 [0.0,0.0,3.0,0.0],
+					 [0.0,0.0,0.0,3.0]]
+
+		glMatrixMode(GL_MODELVIEW)
+		glLoadTransposeMatrixfARB(m_a)
+		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_a)
+
+		glLoadTransposeMatrixdARB(m_b)
+		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_b)
+
+		glLoadIdentity()
+		glMultTransposeMatrixfARB(m_a)
+		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_a)
+
+		glLoadIdentity()
+		glMultTransposeMatrixdARB(m_b)
+		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_b)
+	end
+
 	def test_gl_arb_multisample
 		return if not supported?("GL_ARB_multisample")
 		glSampleCoverageARB(0.5,GL_FALSE)

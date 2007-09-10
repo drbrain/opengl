@@ -44,30 +44,30 @@ class Test_13 < Test::Unit::TestCase
 
 	def test_transposematrix
 		return if not supported?(1.3)
-		m_a = [[2.0,0.0,0.0,0.0],
+		m_a = [[1.0,2.0,3.0,4.0],
 					 [0.0,2.0,0.0,0.0],
 					 [0.0,0.0,2.0,0.0],
 					 [0.0,0.0,0.0,2.0]]
 
-		m_b = [[3.0,0.0,0.0,0.0],
+		m_b = [[1.0,2.0,3.0,4.0],
 					 [0.0,3.0,0.0,0.0],
 					 [0.0,0.0,3.0,0.0],
 					 [0.0,0.0,0.0,3.0]]
 
 		glMatrixMode(GL_MODELVIEW)
 		glLoadTransposeMatrixf(m_a)
-		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_a)
+		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_a)
 
 		glLoadTransposeMatrixd(m_b)
-		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_b)
+		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_b)
 
 		glLoadIdentity()
 		glMultTransposeMatrixf(m_a)
-		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_a)
+		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_a)
 
 		glLoadIdentity()
 		glMultTransposeMatrixd(m_b)
-		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_b)
+		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_b)
 	end
 	
 	def test_texturecompression

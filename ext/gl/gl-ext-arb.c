@@ -17,7 +17,28 @@
 
 /* OpenGL ARB extensions */
 
-/* #5 GL_ARB_MULTISAMPLE */
+/* #3 GL_ARB_transpose_matrix */
+#define TRANSPOSEMATRIX_FUNC(_name_,_type_,_shorttype_) \
+static void (APIENTRY * fptr_gl##_name_)(const _type_[]); \
+static VALUE \
+gl_##_name_(obj,arg1) \
+VALUE obj,arg1; \
+{ \
+	_type_ m[4*4]; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_transpose_matrix") \
+	ary2cmat4x4##_shorttype_(arg1, m); \
+	fptr_gl##_name_(m); \
+	return Qnil; \
+}
+
+TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixfARB,GLfloat,flt)
+TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixdARB,GLdouble,dbl)
+TRANSPOSEMATRIX_FUNC(MultTransposeMatrixfARB,GLfloat,flt)
+TRANSPOSEMATRIX_FUNC(MultTransposeMatrixdARB,GLdouble,dbl)
+
+#undef TRANSPOSEMATRIX_FUNC
+
+/* #5 GL_ARB_multisample */
 static void (APIENTRY * fptr_glSampleCoverageARB)(GLclampf,GLboolean);
 static VALUE gl_SampleCoverageARB(VALUE obj,VALUE arg1,VALUE arg2)
 {
@@ -28,5 +49,12 @@ static VALUE gl_SampleCoverageARB(VALUE obj,VALUE arg1,VALUE arg2)
 
 void gl_init_functions_ext_arb(VALUE module)
 {
+/* #3 GL_ARB_transpose_matrix */
+	rb_define_module_function(module, "glLoadTransposeMatrixfARB", gl_LoadTransposeMatrixfARB, 1);
+	rb_define_module_function(module, "glLoadTransposeMatrixdARB", gl_LoadTransposeMatrixdARB, 1);
+	rb_define_module_function(module, "glMultTransposeMatrixfARB", gl_MultTransposeMatrixfARB, 1);
+	rb_define_module_function(module, "glMultTransposeMatrixdARB", gl_MultTransposeMatrixdARB, 1);
+
+/* #5 GL_ARB_multisample */
 	rb_define_module_function(module, "glSampleCoverageARB", gl_SampleCoverageARB, 2);
 }

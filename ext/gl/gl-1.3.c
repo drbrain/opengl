@@ -350,54 +350,25 @@ GLMULTITEXCOORD_VFUNC(i)
 GLMULTITEXCOORD_VFUNC(s)
 #undef GLTEXCOORD_VFUNC
 
-
-static void (APIENTRY * fptr_glLoadTransposeMatrixf)(const GLfloat[]);
-static VALUE
-gl_LoadTransposeMatrixf(obj,arg1)
-VALUE obj,arg1;
-{
-	GLfloat m[4*4];
-	LOAD_GL_FUNC(glLoadTransposeMatrixf)
-	ary2cmat4x4flt(arg1, m);
-	fptr_glLoadTransposeMatrixf(m);
-	return Qnil;
+#define TRANSPOSEMATRIX_FUNC(_name_,_type_,_shorttype_) \
+static void (APIENTRY * fptr_gl##_name_)(const _type_[]); \
+static VALUE \
+gl_##_name_(obj,arg1) \
+VALUE obj,arg1; \
+{ \
+	_type_ m[4*4]; \
+	LOAD_GL_FUNC(gl##_name_) \
+	ary2cmat4x4##_shorttype_(arg1, m); \
+	fptr_gl##_name_(m); \
+	return Qnil; \
 }
 
-static void (APIENTRY * fptr_glLoadTransposeMatrixd)(const GLdouble[]);
-static VALUE
-gl_LoadTransposeMatrixd(obj,arg1)
-VALUE obj,arg1;
-{
-	GLdouble m[4*4];
-	LOAD_GL_FUNC(glLoadTransposeMatrixd)
-	ary2cmat4x4dbl(arg1, m);
-	fptr_glLoadTransposeMatrixd(m);
-	return Qnil;
-}
+TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixf,GLfloat,flt)
+TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixd,GLdouble,dbl)
+TRANSPOSEMATRIX_FUNC(MultTransposeMatrixf,GLfloat,flt)
+TRANSPOSEMATRIX_FUNC(MultTransposeMatrixd,GLdouble,dbl)
 
-static void (APIENTRY * fptr_glMultTransposeMatrixf)(const GLfloat[]);
-static VALUE
-gl_MultTransposeMatrixf(obj,arg1)
-VALUE obj,arg1;
-{
-	GLfloat m[4*4];
-	LOAD_GL_FUNC(glMultTransposeMatrixf)
-	ary2cmat4x4flt(arg1, m);
-	fptr_glMultTransposeMatrixf(m);
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glMultTransposeMatrixd)(const GLdouble[]);
-static VALUE
-gl_MultTransposeMatrixd(obj,arg1)
-VALUE obj,arg1;
-{
-	GLdouble m[4*4];
-	LOAD_GL_FUNC(glMultTransposeMatrixd)
-	ary2cmat4x4dbl(arg1, m);
-	fptr_glMultTransposeMatrixd(m);
-	return Qnil;
-}
+#undef TRANSPOSEMATRIX_FUNC
 
 static void (APIENTRY * fptr_glSampleCoverage)(GLclampf,GLboolean);
 static VALUE

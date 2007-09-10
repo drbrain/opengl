@@ -1425,6 +1425,11 @@ VALUE obj,arg1; \
 	case GL_MODELVIEW_MATRIX: \
 	case GL_PROJECTION_MATRIX: \
 	case GL_TEXTURE_MATRIX: \
+	case GL_COLOR_MATRIX: \
+	case GL_TRANSPOSE_MODELVIEW_MATRIX: \
+	case GL_TRANSPOSE_PROJECTION_MATRIX: \
+	case GL_TRANSPOSE_TEXTURE_MATRIX: \
+	case GL_TRANSPOSE_COLOR_MATRIX: \
 		glGet##_name_##v(pname, items); \
 		ary = rb_ary_new2(4); \
 		for (i = 0; i < 4; i++) { \
