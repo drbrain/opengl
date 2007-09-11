@@ -123,6 +123,11 @@ class Test_13 < Test::Unit::TestCase
 		end
 		
 		glDeleteTextures(textures)
+
+		n = glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS)
+		if (n>0)
+			assert_equal(glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS).size,n)
+		end
 	end
 	
 	def test_glmultitexcoord

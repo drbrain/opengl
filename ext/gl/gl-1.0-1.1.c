@@ -1445,7 +1445,7 @@ VALUE obj,arg1; \
 	case GL_COMPRESSED_TEXTURE_FORMATS: \
 		glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &nitems); \
 		if (nitems<=0||nitems>64) \
-			return Qnil; \
+			return INT2NUM(0); \
 		break; \
 	default: /* size=1 */ \
 		glGet##_name_##v(pname, items); \
