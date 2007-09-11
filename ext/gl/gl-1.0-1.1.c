@@ -1385,7 +1385,7 @@ VALUE obj,arg1; \
 	int nitems; \
 	VALUE ary, ary2; \
 	int i,j; \
-	_type_ items[32];  \
+	_type_ items[64];  \
 	pname = NUM2INT(arg1); \
 	switch(pname) { \
 	case GL_ACCUM_CLEAR_VALUE: \
@@ -1442,6 +1442,11 @@ VALUE obj,arg1; \
 	case GL_POLYGON_STIPPLE: \
 		glGet##_name_##v(pname, items); \
 		return rb_str_new((const char*)items, 32); \
+	case GL_COMPRESSED_TEXTURE_FORMATS: \
+		glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &nitems); \
+		if (nitems<=0||nitems>64) \
+			return Qnil; \
+		break; \
 	default: /* size=1 */ \
 		glGet##_name_##v(pname, items); \
 		return _conv_(items[0]); \
@@ -2124,6 +2129,12 @@ VALUE obj;
 					size *= depth;
 					/* fall through */
 				case GL_TEXTURE_2D:
+				case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
+				case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
+				case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
+				case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
+				case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
+				case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
 					glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_HEIGHT,&height);
 					size *= height;
 					/* fall through */
@@ -2132,7 +2143,7 @@ VALUE obj;
 					size *= width;
 					break;
 				default:
-					return Qnil;
+					rb_raise(rb_eArgError, "Target type not supported");
 			}
 			pixels = allocate_buffer_with_string(GetDataSize(type,format,size));
 		
