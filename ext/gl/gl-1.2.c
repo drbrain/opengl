@@ -868,7 +868,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 		return Qnil;
 	}
 
-	if (target == GL_PROXY_TEXTURE_3D || NIL_P(arg10)) { /* proxy texture, no data read */
+	if (target == GL_PROXY_TEXTURE_3D  ||
+			target == GL_PROXY_TEXTURE_1D_STACK_MESAX ||
+			target == GL_PROXY_TEXTURE_2D_STACK_MESAX ||
+			target == GL_PROXY_TEXTURE_2D_ARRAY_EXT ||
+			NIL_P(arg10)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
 		Check_Type(arg10,T_STRING);

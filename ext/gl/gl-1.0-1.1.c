@@ -684,7 +684,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		return Qnil;
 	}
 	
-	if (target == GL_PROXY_TEXTURE_2D || target == GL_PROXY_TEXTURE_CUBE_MAP || NIL_P(arg9)) { /* proxy texture, no data read */
+	if (target == GL_PROXY_TEXTURE_2D || target == GL_PROXY_TEXTURE_1D_ARRAY_EXT || target == GL_PROXY_TEXTURE_CUBE_MAP || NIL_P(arg9)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
 		Check_Type(arg9,T_STRING);
@@ -1405,10 +1405,25 @@ VALUE obj,arg1; \
 	case GL_SCISSOR_BOX: \
 	case GL_TEXTURE_ENV_COLOR: \
 	case GL_VIEWPORT: \
+	case GL_REFERENCE_PLANE_EQUATION_SGIX: \
+	case GL_FOG_OFFSET_VALUE_SGIX: \
+	case GL_TEXTURE_ENV_BIAS_SGIX: \
+	case GL_CULL_VERTEX_OBJECT_POSITION_EXT: \
+	case GL_CULL_VERTEX_EYE_POSITION_EXT: \
+	case GL_FRAGMENT_LIGHT_MODEL_AMBIENT_SGIX: \
+	case GL_CONSTANT_COLOR0_NV: \
+	case GL_CONSTANT_COLOR1_NV: \
+	case GL_TEXTURE_COLOR_WRITEMASK_SGIS: \
+	case GL_FLOAT_CLEAR_COLOR_VALUE_NV: \
 		nitems = 4; \
 		break; \
 	case GL_CURRENT_NORMAL: \
 	case GL_POINT_DISTANCE_ATTENUATION: \
+	case GL_SPRITE_AXIS_SGIX: \
+	case GL_SPRITE_TRANSLATION_SGIX: \
+	case GL_CURRENT_RASTER_NORMAL_SGIX: \
+	case GL_CURRENT_TANGENT_EXT: \
+	case GL_CURRENT_BINORMAL_EXT: \
 		nitems = 3; \
 		break; \
 	case GL_DEPTH_RANGE:	 \
@@ -1420,6 +1435,10 @@ VALUE obj,arg1; \
 	case GL_POLYGON_MODE: \
 	case GL_ALIASED_LINE_WIDTH_RANGE: \
 	case GL_ALIASED_POINT_SIZE_RANGE: \
+	case GL_POST_TEXTURE_FILTER_BIAS_RANGE_SGIX: \
+	case GL_POST_TEXTURE_FILTER_SCALE_RANGE_SGIX: \
+	case GL_FOG_FUNC_SGIS: \
+	case GL_DEPTH_BOUNDS_EXT: \
 		nitems = 2; \
 		break; \
 	case GL_MODELVIEW_MATRIX: \
@@ -1430,6 +1449,42 @@ VALUE obj,arg1; \
 	case GL_TRANSPOSE_PROJECTION_MATRIX: \
 	case GL_TRANSPOSE_TEXTURE_MATRIX: \
 	case GL_TRANSPOSE_COLOR_MATRIX: \
+	case GL_MODELVIEW0_ARB: \
+	case GL_MODELVIEW1_ARB: \
+	case GL_MODELVIEW2_ARB: \
+	case GL_MODELVIEW3_ARB: \
+	case GL_MODELVIEW4_ARB: \
+	case GL_MODELVIEW5_ARB: \
+	case GL_MODELVIEW6_ARB: \
+	case GL_MODELVIEW7_ARB: \
+	case GL_MODELVIEW8_ARB: \
+	case GL_MODELVIEW9_ARB: \
+	case GL_MODELVIEW10_ARB: \
+	case GL_MODELVIEW11_ARB: \
+	case GL_MODELVIEW12_ARB: \
+	case GL_MODELVIEW13_ARB: \
+	case GL_MODELVIEW14_ARB: \
+	case GL_MODELVIEW15_ARB: \
+	case GL_MODELVIEW16_ARB: \
+	case GL_MODELVIEW17_ARB: \
+	case GL_MODELVIEW18_ARB: \
+	case GL_MODELVIEW19_ARB: \
+	case GL_MODELVIEW20_ARB: \
+	case GL_MODELVIEW21_ARB: \
+	case GL_MODELVIEW22_ARB: \
+	case GL_MODELVIEW23_ARB: \
+	case GL_MODELVIEW24_ARB: \
+	case GL_MODELVIEW25_ARB: \
+	case GL_MODELVIEW26_ARB: \
+	case GL_MODELVIEW27_ARB: \
+	case GL_MODELVIEW28_ARB: \
+	case GL_MODELVIEW29_ARB: \
+	case GL_MODELVIEW30_ARB: \
+	case GL_MODELVIEW31_ARB: \
+	case GL_MATRIX_PALETTE_ARB: \
+	case GL_PIXEL_TRANSFORM_2D_MATRIX_EXT: \
+	case GL_MODELVIEW1_MATRIX_EXT: \
+	case GL_CURRENT_MATRIX_NV: \
 		glGet##_name_##v(pname, items); \
 		ary = rb_ary_new2(4); \
 		for (i = 0; i < 4; i++) { \
@@ -1919,32 +1974,17 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
 		case GL_TEXTURE_ENV_COLOR:
+		case GL_TEXTURE_ENV_BIAS_SGIX:
+		case GL_CULL_MODES_NV:
+		case GL_OFFSET_TEXTURE_MATRIX_NV:
 			size = 4;
 			break;
-		case GL_TEXTURE_ENV_MODE:
-		case GL_COORD_REPLACE:
-		case GL_TEXTURE_LOD_BIAS:
-		case GL_COMBINE_RGB:
-		case GL_COMBINE_ALPHA:
-		case GL_SRC0_RGB:
-		case GL_SRC1_RGB:
-		case GL_SRC2_RGB:
-		case GL_SRC0_ALPHA:
-		case GL_SRC1_ALPHA:
-		case GL_SRC2_ALPHA:
-		case GL_OPERAND0_RGB:
-		case GL_OPERAND1_RGB:
-		case GL_OPERAND2_RGB:
-		case GL_OPERAND0_ALPHA:
-		case GL_OPERAND1_ALPHA:
-		case GL_OPERAND2_ALPHA:
-		case GL_RGB_SCALE:
-		case GL_ALPHA_SCALE:
-			size = 1;
+		case GL_CONST_EYE_NV:
+			size = 3;
 			break;
 		default:
-			rb_raise(rb_eArgError, "unknown pname:%d",pname);
-			break; /* not reached */
+			size = 1;
+			break;
 	}
 	glGetTexEnvfv(target,pname,params);
 	retary = rb_ary_new2(size);
@@ -1967,32 +2007,17 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
 		case GL_TEXTURE_ENV_COLOR:
+		case GL_TEXTURE_ENV_BIAS_SGIX:
+		case GL_CULL_MODES_NV:
+		case GL_OFFSET_TEXTURE_MATRIX_NV:
 			size = 4;
 			break;
-		case GL_TEXTURE_ENV_MODE:
-		case GL_COORD_REPLACE:
-		case GL_TEXTURE_LOD_BIAS:
-		case GL_COMBINE_RGB:
-		case GL_COMBINE_ALPHA:
-		case GL_SRC0_RGB:
-		case GL_SRC1_RGB:
-		case GL_SRC2_RGB:
-		case GL_SRC0_ALPHA:
-		case GL_SRC1_ALPHA:
-		case GL_SRC2_ALPHA:
-		case GL_OPERAND0_RGB:
-		case GL_OPERAND1_RGB:
-		case GL_OPERAND2_RGB:
-		case GL_OPERAND0_ALPHA:
-		case GL_OPERAND1_ALPHA:
-		case GL_OPERAND2_ALPHA:
-		case GL_RGB_SCALE:
-		case GL_ALPHA_SCALE:
-			size = 1;
+		case GL_CONST_EYE_NV:
+			size = 3;
 			break;
 		default:
-			rb_raise(rb_eArgError, "unknown pname:%d",pname);
-			break; /* not reached */
+			size = 1;
+			break;
 	}
 	glGetTexEnviv(target,pname,params);
 	retary = rb_ary_new2(size);
@@ -2018,12 +2043,9 @@ VALUE obj,arg1,arg2;
 		case GL_EYE_PLANE:
 			size = 4;
 			break;
-		case GL_TEXTURE_GEN_MODE:
+		default:
 			size = 1;
 			break;
-		default:
-			rb_raise(rb_eArgError, "unknown pname:%d",pname);
-			break; /* not reached */
 	}
 	glGetTexGendv(coord,pname,params);
 	retary = rb_ary_new2(size);
@@ -2049,12 +2071,9 @@ VALUE obj,arg1,arg2;
 		case GL_EYE_PLANE:
 			size = 4;
 			break;
-		case GL_TEXTURE_GEN_MODE:
+		default:
 			size = 1;
 			break;
-		default:
-			rb_raise(rb_eArgError, "unknown pname:%d",pname);
-			break; /* not reached */
 	}
 	glGetTexGenfv(coord,pname,params);
 	retary = rb_ary_new2(size);
@@ -2080,12 +2099,9 @@ VALUE obj,arg1,arg2;
 		case GL_EYE_PLANE:
 			size = 4;
 			break;
-		case GL_TEXTURE_GEN_MODE:
+		default:
 			size = 1;
 			break;
-		default:
-			rb_raise(rb_eArgError, "unknown pname:%d",pname);
-			break; /* not reached */
 	}
 	glGetTexGeniv(coord,pname,params);
 	retary = rb_ary_new2(size);
@@ -2107,6 +2123,7 @@ VALUE obj;
 	GLint width = 0;
 	GLint height = 0;
 	GLint depth = 0;
+	GLint size4d = 0;
 	GLint size;
 	VALUE pixels;
 	VALUE args[5];
@@ -2124,7 +2141,13 @@ VALUE obj;
 
 			size = 1;
 			switch(tex) {
+				case GL_TEXTURE_4D_SGIS:
+					glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_4DSIZE_SGIS,&size4d);
+					size *= size4d;
+					/* fall through */
 				case GL_TEXTURE_3D:
+				case GL_TEXTURE_1D_STACK_MESAX:
+				case GL_TEXTURE_2D_STACK_MESAX:
 					glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_DEPTH,&depth);
 					size *= depth;
 					/* fall through */
@@ -2135,6 +2158,8 @@ VALUE obj;
 				case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
 				case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
 				case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
+				case GL_TEXTURE_RECTANGLE_ARB:
+				case GL_DETAIL_TEXTURE_2D_SGIS:
 					glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_HEIGHT,&height);
 					size *= height;
 					/* fall through */
@@ -2177,6 +2202,9 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
 		case GL_TEXTURE_BORDER_COLOR:
+		case GL_TEXTURE_BORDER_VALUES_NV:
+		case GL_POST_TEXTURE_FILTER_BIAS_SGIX:
+		case GL_POST_TEXTURE_FILTER_SCALE_SGIX:
 			size = 4;
 			break;
 		default:
@@ -2204,6 +2232,9 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
 		case GL_TEXTURE_BORDER_COLOR:
+		case GL_TEXTURE_BORDER_VALUES_NV:
+		case GL_POST_TEXTURE_FILTER_BIAS_SGIX:
+		case GL_POST_TEXTURE_FILTER_SCALE_SGIX:
 			size = 4;
 			break;
 		default:

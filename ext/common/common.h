@@ -240,74 +240,115 @@ float cary[];
 /* -------------------------------------------------------------------- */
 static inline int glformat_size(GLenum format)
 {
-    switch(format)
-    {
-        case GL_COLOR_INDEX:
-        case GL_RED:
-        case GL_GREEN:
-        case GL_BLUE:
-        case GL_ALPHA:
-        case GL_STENCIL_INDEX:
-        case GL_DEPTH_COMPONENT:
-        case GL_LUMINANCE:
-            return 1;
+	switch(format)
+	{
+		case GL_COLOR_INDEX:
+		case GL_RED:
+		case GL_GREEN:
+		case GL_BLUE:
+		case GL_ALPHA:
+		case GL_RED_INTEGER_EXT:
+		case GL_GREEN_INTEGER_EXT:
+		case GL_BLUE_INTEGER_EXT:
+		case GL_ALPHA_INTEGER_EXT:
+		case GL_STENCIL_INDEX:
+		case GL_DEPTH_COMPONENT:
+		case GL_LUMINANCE:
+		case GL_LUMINANCE_INTEGER_EXT:
+			return 1;
+		
+		case GL_LUMINANCE_ALPHA:
+		case GL_LUMINANCE_ALPHA_INTEGER_EXT:
+		case GL_422_EXT:
+		case GL_422_REV_EXT:
+		case GL_422_AVERAGE_EXT:
+		case GL_422_REV_AVERAGE_EXT:
+		case GL_YCRCB_422_SGIX:
+		case GL_YCBCR_422_APPLE:
+		case GL_YCRCB_444_SGIX:
+		case GL_YCBCR_MESA:
+		case GL_DEPTH_STENCIL_NV:
+		case GL_HILO_NV:
+		case GL_DSDT_NV:
+			return 2;
+		
+		case GL_RGB:
+		case GL_RGB_INTEGER_EXT:
+		case GL_BGR_EXT:
+		case GL_BGR_INTEGER_EXT:
+		case GL_DSDT_MAG_NV:
+		case GL_FORMAT_SUBSAMPLE_24_24_OML:
+			return 3;
+		
+		case GL_RGBA:
+		case GL_RGBA_INTEGER_EXT:
+		case GL_BGRA_EXT:
+		case GL_BGRA_INTEGER_EXT:
+		case GL_ABGR_EXT:
+		case GL_CMYK_EXT:
+		case GL_DSDT_MAG_VIB_NV:
+		case GL_FORMAT_SUBSAMPLE_244_244_OML:
+		case GL_DUDV_ATI:
+		case GL_DU8DV8_ATI:
+			return 4;
 
-        case GL_LUMINANCE_ALPHA:
-            return 2;
+		case GL_CMYKA_EXT:
+			return 5;
 
-        case GL_RGB:
-        case GL_BGR_EXT:
-            return 3;
-
-        case GL_RGBA:
-        case GL_BGRA_EXT:
-        case GL_ABGR_EXT:
-            return 4;
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-            return format;
-        default:
-            return -1;
-    }
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			return format;
+		default:
+			return -1;
+	}
 }
 
 static inline int gltype_size(GLenum type)
 {
-    switch(type)
-    {
-        case GL_BYTE:
-        case GL_UNSIGNED_BYTE:
+	switch(type)
+	{
+		case GL_BYTE:
+		case GL_UNSIGNED_BYTE:
 		case GL_UNSIGNED_BYTE_3_3_2:
 		case GL_UNSIGNED_BYTE_2_3_3_REV:
-            return 1;
-
-        case GL_SHORT:
-        case GL_UNSIGNED_SHORT:
-        case GL_UNSIGNED_SHORT_5_6_5:
-        case GL_UNSIGNED_SHORT_5_6_5_REV:
-        case GL_UNSIGNED_SHORT_4_4_4_4:
-        case GL_UNSIGNED_SHORT_4_4_4_4_REV:
-        case GL_UNSIGNED_SHORT_5_5_5_1:
-        case GL_UNSIGNED_SHORT_1_5_5_5_REV:
-            return 2;
-
-        case GL_INT:
-        case GL_UNSIGNED_INT:
-        case GL_FLOAT:
+			return 1;
+	
+		case GL_SHORT:
+		case GL_UNSIGNED_SHORT:
+		case GL_UNSIGNED_SHORT_5_6_5:
+		case GL_UNSIGNED_SHORT_5_6_5_REV:
+		case GL_UNSIGNED_SHORT_4_4_4_4:
+		case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+		case GL_UNSIGNED_SHORT_5_5_5_1:
+		case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+		case GL_HALF_FLOAT_ARB:
+		case GL_UNSIGNED_SHORT_8_8_APPLE:
+		case GL_UNSIGNED_SHORT_8_8_REV_APPLE:
+			return 2;
+	
+		case GL_INT:
+		case GL_UNSIGNED_INT:
+		case GL_FLOAT:
 		case GL_UNSIGNED_INT_8_8_8_8:
 		case GL_UNSIGNED_INT_8_8_8_8_REV:
 		case GL_UNSIGNED_INT_10_10_10_2:
 		case GL_UNSIGNED_INT_2_10_10_10_REV:
-            return 4;
-
-        case GL_BITMAP:
-            return 0;
-
-        default:
-            return -1;
-    }
+		case GL_UNSIGNED_INT_24_8_NV:
+		case GL_UNSIGNED_INT_S8_S8_8_8_NV:
+		case GL_UNSIGNED_INT_8_8_S8_S8_REV_NV:
+		case GL_UNSIGNED_INT_10F_11F_11F_REV_EXT:
+		case GL_UNSIGNED_INT_5_9_9_9_REV_EXT:
+		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV_NV:
+			return 4;
+	
+		case GL_BITMAP:
+			return 0;
+	
+		default:
+			return -1;
+	}
 }
 
 static inline int GetDataSize(GLenum type,GLenum format,int num)
