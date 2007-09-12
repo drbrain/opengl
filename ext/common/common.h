@@ -178,6 +178,7 @@ int maxlen;
 }
 
 /* -------------------------------------------------------------------- */
+/* Array.flatten */
 static inline void mary2ary(src, ary)
 VALUE src;
 VALUE ary;
@@ -238,6 +239,8 @@ float cary[];
 }
 
 /* -------------------------------------------------------------------- */
+
+/* gets number of components for given format */
 static inline int glformat_size(GLenum format)
 {
 	switch(format)
@@ -295,42 +298,59 @@ static inline int glformat_size(GLenum format)
 		case GL_CMYKA_EXT:
 			return 5;
 
+		/* GL spec permits passing direct format size instead of enum (now obsolete) */
 		case 1:
 		case 2:
 		case 3:
 		case 4:
 			return format;
+
 		default:
-			return -1;
+			rb_raise(rb_eArgError, "Unknown GL format enum %i",format);
+			return -1; /* not reached */
 	}
 }
 
-static inline int gltype_size(GLenum type)
+/* computes unit (pixel) size for given type and format */
+static inline int gltype_glformat_unit_size(GLenum type,GLenum format)
 {
+	unsigned int format_size;
+	
+	format_size = glformat_size(format);
+	
 	switch(type)
 	{
 		case GL_BYTE:
 		case GL_UNSIGNED_BYTE:
+		case GL_BITMAP:
+			return 1*format_size;
+
+		case GL_SHORT:
+		case GL_UNSIGNED_SHORT:
+		case GL_HALF_FLOAT_ARB:
+			return 2*format_size;
+
+		case GL_INT:
+		case GL_UNSIGNED_INT:
+		case GL_FLOAT:
+			return 4*format_size;
+
+		/* in packed formats all components are packed into/unpacked from single datatype,
+		   so number of components(format_size) doesn't matter for total size calculation */
 		case GL_UNSIGNED_BYTE_3_3_2:
 		case GL_UNSIGNED_BYTE_2_3_3_REV:
 			return 1;
-	
-		case GL_SHORT:
-		case GL_UNSIGNED_SHORT:
+
 		case GL_UNSIGNED_SHORT_5_6_5:
 		case GL_UNSIGNED_SHORT_5_6_5_REV:
 		case GL_UNSIGNED_SHORT_4_4_4_4:
 		case GL_UNSIGNED_SHORT_4_4_4_4_REV:
 		case GL_UNSIGNED_SHORT_5_5_5_1:
 		case GL_UNSIGNED_SHORT_1_5_5_5_REV:
-		case GL_HALF_FLOAT_ARB:
 		case GL_UNSIGNED_SHORT_8_8_APPLE:
 		case GL_UNSIGNED_SHORT_8_8_REV_APPLE:
 			return 2;
-	
-		case GL_INT:
-		case GL_UNSIGNED_INT:
-		case GL_FLOAT:
+
 		case GL_UNSIGNED_INT_8_8_8_8:
 		case GL_UNSIGNED_INT_8_8_8_8_REV:
 		case GL_UNSIGNED_INT_10_10_10_2:
@@ -343,32 +363,28 @@ static inline int gltype_size(GLenum type)
 		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV_NV:
 			return 4;
 	
-		case GL_BITMAP:
-			return 0;
-	
 		default:
-			return -1;
+			rb_raise(rb_eArgError, "Unknown GL type enum %i",type);
+			return -1; /* not reached */
 	}
 }
 
 static inline int GetDataSize(GLenum type,GLenum format,int num)
 {
 	int size;
-	int type_size;
-	int format_size;
+	int unit_size;
 
-	type_size = gltype_size(type);
-	format_size = glformat_size(format);
+	unit_size = gltype_glformat_unit_size(type,format);
 	
-	if (type_size == -1)
-			rb_raise(rb_eArgError, "Unknown GL type enum %i",type);
-	if (format_size == -1)
-			rb_raise(rb_eArgError, "Unknown GL format enum %i",type);
+	//if (format_size == -1)
+	//		rb_raise(rb_eArgError, "Unknown GL type enum %i",type);
+	//if (total_size == -1)
+	//		rb_raise(rb_eArgError, "Unknown GL format enum %i",type);
 
 	if (type==GL_BITMAP)
-		size = format_size*(num/8); /* FIXME account for alignment */
+		size = unit_size*(num/8); /* FIXME account for alignment */
 	else
-		size = type_size*format_size*num;
+		size = unit_size*num;
 
 	return size;
 }
