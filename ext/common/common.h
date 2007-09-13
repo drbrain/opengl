@@ -268,19 +268,22 @@ static inline int glformat_size(GLenum format)
 		case GL_422_REV_AVERAGE_EXT:
 		case GL_YCRCB_422_SGIX:
 		case GL_YCBCR_422_APPLE:
-		case GL_YCRCB_444_SGIX:
 		case GL_YCBCR_MESA:
 		case GL_DEPTH_STENCIL_NV:
 		case GL_HILO_NV:
 		case GL_DSDT_NV:
+		case GL_DUDV_ATI:
+		case GL_DU8DV8_ATI:
+		case GL_FORMAT_SUBSAMPLE_24_24_OML:
 			return 2;
 		
 		case GL_RGB:
 		case GL_RGB_INTEGER_EXT:
 		case GL_BGR_EXT:
 		case GL_BGR_INTEGER_EXT:
+		case GL_YCRCB_444_SGIX:
 		case GL_DSDT_MAG_NV:
-		case GL_FORMAT_SUBSAMPLE_24_24_OML:
+		case GL_FORMAT_SUBSAMPLE_244_244_OML:
 			return 3;
 		
 		case GL_RGBA:
@@ -290,9 +293,6 @@ static inline int glformat_size(GLenum format)
 		case GL_ABGR_EXT:
 		case GL_CMYK_EXT:
 		case GL_DSDT_MAG_VIB_NV:
-		case GL_FORMAT_SUBSAMPLE_244_244_OML:
-		case GL_DUDV_ATI:
-		case GL_DU8DV8_ATI:
 			return 4;
 
 		case GL_CMYKA_EXT:
@@ -376,11 +376,6 @@ static inline int GetDataSize(GLenum type,GLenum format,int num)
 
 	unit_size = gltype_glformat_unit_size(type,format);
 	
-	//if (format_size == -1)
-	//		rb_raise(rb_eArgError, "Unknown GL type enum %i",type);
-	//if (total_size == -1)
-	//		rb_raise(rb_eArgError, "Unknown GL format enum %i",type);
-
 	if (type==GL_BITMAP)
 		size = unit_size*(num/8); /* FIXME account for alignment */
 	else
