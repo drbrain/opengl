@@ -49,7 +49,7 @@ VALUE obj,arg1; \
 		if(NIL_P(arg1)) \
 			glut ## _funcname(NULL); \
 		else \
-			glut ## _funcname(glut_ ## _funcname ## Callback); \
+			glut##_funcname(&glut_##_funcname##Callback); \
     return Qnil; \
 }
 
@@ -161,29 +161,47 @@ VALUE obj,arg1,arg2;
 
 GLUT_SIMPLE_FUNCTION(MainLoop)
 
-static void glut_DisplayFuncCallback(void);
-static void glut_ReshapeFuncCallback(int,int);
-static void glut_KeyboardFuncCallback(unsigned char, int, int);
-static void glut_MouseFuncCallback(int, int, int, int);
-static void glut_MotionFuncCallback(int, int);
-static void glut_PassiveMotionFuncCallback(int, int);
-static void glut_EntryFuncCallback(int);
-static void glut_VisibilityFuncCallback(int);
-static void glut_SpecialFuncCallback(int,int,int);
-static void glut_SpaceballMotionFuncCallback(int,int,int);
-static void glut_SpaceballRotateFuncCallback(int,int,int);
-static void glut_SpaceballButtonFuncCallback(int,int);
-static void glut_ButtonBoxFuncCallback(int,int);
-static void glut_DialsFuncCallback(int,int);
-static void glut_TabletMotionFuncCallback(int,int);
-static void glut_TabletButtonFuncCallback(int,int,int,int);
-static void glut_OverlayDisplayFuncCallback(void);
-static void glut_WindowStatusFuncCallback(int);
-static void glut_JoystickFuncCallback(unsigned int,int,int,int);
-static void glut_KeyboardUpFuncCallback(unsigned char,int,int);
-static void glut_SpecialUpFuncCallback(int,int,int);
+static void GLUTCALLBACK glut_DisplayFuncCallback(void);
+static void GLUTCALLBACK glut_ReshapeFuncCallback(int,int);
+static void GLUTCALLBACK glut_KeyboardFuncCallback(unsigned char, int, int);
+static void GLUTCALLBACK glut_MouseFuncCallback(int, int, int, int);
+static void GLUTCALLBACK glut_MotionFuncCallback(int, int);
+static void GLUTCALLBACK glut_PassiveMotionFuncCallback(int, int);
+static void GLUTCALLBACK glut_EntryFuncCallback(int);
+static void GLUTCALLBACK glut_VisibilityFuncCallback(int);
+static void GLUTCALLBACK glut_SpecialFuncCallback(int,int,int);
+static void GLUTCALLBACK glut_SpaceballMotionFuncCallback(int,int,int);
+static void GLUTCALLBACK glut_SpaceballRotateFuncCallback(int,int,int);
+static void GLUTCALLBACK glut_SpaceballButtonFuncCallback(int,int);
+static void GLUTCALLBACK glut_ButtonBoxFuncCallback(int,int);
+static void GLUTCALLBACK glut_DialsFuncCallback(int,int);
+static void GLUTCALLBACK glut_TabletMotionFuncCallback(int,int);
+static void GLUTCALLBACK glut_TabletButtonFuncCallback(int,int,int,int);
+static void GLUTCALLBACK glut_OverlayDisplayFuncCallback(void);
+static void GLUTCALLBACK glut_WindowStatusFuncCallback(int);
+static void GLUTCALLBACK glut_JoystickFuncCallback(unsigned int,int,int,int);
+static void GLUTCALLBACK glut_KeyboardUpFuncCallback(unsigned char,int,int);
+static void GLUTCALLBACK glut_SpecialUpFuncCallback(int,int,int);
 
-WINDOW_CALLBACK_SETUP(DisplayFunc);
+static VALUE DisplayFunc = Qnil;
+static VALUE
+glut_DisplayFunc(obj,arg1)
+VALUE obj,arg1;
+{
+    int win;
+    if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
+        rb_raise(rb_eTypeError, "glut");
+    win = glutGetWindow();
+    if (win == 0)
+        rb_raise(rb_eRuntimeError, "glut needs current window");
+    rb_ary_store(DisplayFunc, win, arg1);
+		if(NIL_P(arg1))
+			glutDisplayFunc(NULL);
+		else
+			glutDisplayFunc(glut_DisplayFuncCallback);
+    return Qnil;
+}
+
 WINDOW_CALLBACK_SETUP(ReshapeFunc);
 WINDOW_CALLBACK_SETUP(KeyboardFunc);
 WINDOW_CALLBACK_SETUP(MouseFunc);
@@ -385,9 +403,8 @@ glut_UseLayer(obj,arg1)
 /* GLUT menu sub-API. */
 static VALUE g_menucallback = Qnil;
 static VALUE g_menuargs = Qnil;
-static void
-glut_CreateMenuCallback(value)
-int value;
+static void GLUTCALLBACK
+glut_CreateMenuCallback(int value)
 {
 	VALUE arg_pair;
 	VALUE func;
@@ -553,7 +570,7 @@ VALUE obj, arg1;
 
 
 /* GLUT  sub-API. */
-static void glut_DisplayFuncCallback(void)
+static void GLUTCALLBACK glut_DisplayFuncCallback(void)
 {
 	VALUE func;
 	func = rb_ary_entry(DisplayFunc, glutGetWindow());
@@ -562,7 +579,7 @@ static void glut_DisplayFuncCallback(void)
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_ReshapeFuncCallback(width, height)
 int width, height;
 {
@@ -573,7 +590,7 @@ int width, height;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_KeyboardFuncCallback(key, x, y)
 unsigned char key;
 int x,y;
@@ -585,7 +602,7 @@ int x,y;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_MouseFuncCallback(button, state, x, y)
 int button, state, x, y;
 {
@@ -596,7 +613,7 @@ int button, state, x, y;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_MotionFuncCallback(x, y)
 int x, y;
 {
@@ -607,7 +624,7 @@ int x, y;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_PassiveMotionFuncCallback(x, y)
 int x, y;
 {
@@ -618,7 +635,7 @@ int x, y;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_EntryFuncCallback(state)
 int state;
 {
@@ -629,7 +646,7 @@ int state;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_VisibilityFuncCallback(state)
 int state;
 {
@@ -641,8 +658,8 @@ int state;
 
 
 static VALUE idle_func = Qnil;
-static void
-glut_IdleFuncCallback()
+static void GLUTCALLBACK
+glut_IdleFuncCallback(void)
 {
 	if (!NIL_P(idle_func))
 		rb_funcall(idle_func, callId, 0);
@@ -665,9 +682,8 @@ VALUE obj,arg1;
 
 
 static VALUE timer_func = Qnil;
-static void
-glut_TimerFuncCallback(value)
-int value;
+static void GLUTCALLBACK
+glut_TimerFuncCallback(int value)
 {
 	if (!NIL_P(timer_func))
 		rb_funcall(timer_func, callId, 1, INT2NUM(value));
@@ -691,9 +707,8 @@ VALUE obj,arg1,arg2,arg3;
 
 
 static VALUE menustate_func = Qnil;
-static void
-glut_MenuStateFuncCallback(state)
-int state;
+static void GLUTCALLBACK
+glut_MenuStateFuncCallback(int state)
 {
 	if (!NIL_P(menustate_func))
 		rb_funcall(menustate_func, callId, 1, INT2NUM(state));
@@ -715,9 +730,8 @@ VALUE obj,arg1;
 }
 
 static VALUE menustatus_func = Qnil;
-static void
-glut_MenuStatusFuncCallback(state,x,y)
-int state,x,y;
+static void GLUTCALLBACK
+glut_MenuStatusFuncCallback(int state,int x,int y)
 {
 	if (!NIL_P(menustatus_func))
 		rb_funcall(menustatus_func, callId, 3, INT2NUM(state),INT2NUM(x),INT2NUM(y));
@@ -731,13 +745,13 @@ VALUE obj,arg1;
 		rb_raise(rb_eTypeError, "glutMenuStatusFunc:%s", rb_class2name(CLASS_OF(arg1)));
 	menustatus_func = arg1;
 	if (NIL_P(arg1))
-		glutMenuStateFunc(NULL);
+		glutMenuStatusFunc(NULL);
 	else
-		glutMenuStateFunc(glut_MenuStatusFuncCallback);
+		glutMenuStatusFunc(glut_MenuStatusFuncCallback);
 	return Qnil;
 }
 
-static void
+static void GLUTCALLBACK
 glut_SpecialFuncCallback(key, x, y)
 int key, x, y;
 {
@@ -748,7 +762,7 @@ int key, x, y;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_SpaceballMotionFuncCallback(x, y, z)
 int x,y,z;
 {
@@ -759,7 +773,7 @@ int x,y,z;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_SpaceballRotateFuncCallback(x, y, z)
 int x,y,z;
 {
@@ -770,7 +784,7 @@ int x,y,z;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_SpaceballButtonFuncCallback(button, state)
 int button, state;
 {
@@ -781,7 +795,7 @@ int button, state;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_ButtonBoxFuncCallback(button, state)
 int button, state;
 {
@@ -792,7 +806,7 @@ int button, state;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_DialsFuncCallback(dial, value)
 int dial, value;
 {
@@ -803,7 +817,7 @@ int dial, value;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_TabletMotionFuncCallback(x, y)
 int x, y;
 {
@@ -814,7 +828,7 @@ int x, y;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_TabletButtonFuncCallback(button, state, x, y)
 int button, state, x, y;
 {
@@ -825,7 +839,7 @@ int button, state, x, y;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_OverlayDisplayFuncCallback()
 {
 	VALUE func;
@@ -835,7 +849,7 @@ glut_OverlayDisplayFuncCallback()
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_WindowStatusFuncCallback(state)
 int state;
 {
@@ -846,7 +860,7 @@ int state;
 }
 
 
-static void
+static void GLUTCALLBACK
 glut_JoystickFuncCallback(buttonMask,x,y,z)
 unsigned int buttonMask;
 int x,y,z;
@@ -857,7 +871,7 @@ int x,y,z;
 		rb_funcall(func, callId, 4, INT2NUM(buttonMask),INT2NUM(x),INT2NUM(y),INT2NUM(z));
 }
 
-static void
+static void GLUTCALLBACK
 glut_KeyboardUpFuncCallback(key,x,y)
 unsigned char key;
 int x,y;
@@ -868,7 +882,7 @@ int x,y;
 		rb_funcall(func, callId, 3, INT2NUM(key),INT2NUM(x),INT2NUM(y));
 }
 
-static void
+static void GLUTCALLBACK
 glut_SpecialUpFuncCallback(key,x,y)
 int key;
 int x,y;

@@ -145,7 +145,7 @@ struct nurbsdata* ndata;
 		rb_gc_mark(ndata->n_ref);
 }
 
-static void
+static void CALLBACK
 n_error(errorno)
 GLenum errorno;
 {
@@ -176,7 +176,7 @@ VALUE obj, arg1, arg2, arg3;
 	if (NIL_P(arg3))
 		gluNurbsCallback(ndata->nobj, type, NULL);
 	else
-		gluNurbsCallback(ndata->nobj, type, (VOIDFUNC)(n_error));
+		gluNurbsCallback(ndata->nobj, type, n_error);
 	
 	return Qnil;
 }
@@ -573,41 +573,41 @@ if (tess == Qnil) \
 	return; \
 GetTESS(tess, tdata);
 
-void
+static void CALLBACK
 t_begin(type)
 GLenum type;
 {
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_BEGIN), callId, 1, INT2NUM(type));
 }
-static void
+static void CALLBACK
 t_edgeFlag(flag)
 GLboolean flag;
 {
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_FLAG), callId, 1, INT2NUM(flag));
 }
-static void
+static void CALLBACK
 t_vertex(data)
 void* data;
 {
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_VERTEX), callId, 1, data);
 }
-static void
+static void CALLBACK
 t_end()
 {
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_END), callId, 0);
 }
-static void
+static void CALLBACK
 t_error(errorno)
 GLenum errorno;
 {
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_ERROR), callId, 1, INT2NUM(errorno));
 }
-static void
+static void CALLBACK
 t_begin_data(type, user_data)
 GLenum type;
 void* user_data;
@@ -615,7 +615,7 @@ void* user_data;
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_BEGIN_DATA), callId, 2, INT2NUM(type), user_data);
 }
-static void
+static void CALLBACK
 t_edgeFlag_data(flag, user_data)
 GLboolean flag;
 void* user_data;
@@ -623,7 +623,7 @@ void* user_data;
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_FLAG_DATA), callId, 2, INT2NUM(flag), user_data);
 }
-static void
+static void CALLBACK
 t_vertex_data(data, user_data)
 void* data;
 void* user_data;
@@ -631,14 +631,14 @@ void* user_data;
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_VERTEX_DATA), callId, 2, data, user_data);
 }
-static void
+static void CALLBACK
 t_end_data(user_data)
 void* user_data;
 {
 	TESS_CALLBACK_COMMON
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_END_DATA), callId, 1, user_data);
 }
-static void
+static void CALLBACK
 t_error_data(errorno, user_data)
 GLenum errorno;
 void* user_data;
@@ -647,7 +647,7 @@ void* user_data;
 	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_ERROR_DATA), callId, 2, INT2NUM(errorno), user_data);
 }
 
-static void
+static void CALLBACK
 t_combine(coords, vertex_data, weight, outData)
 GLdouble coords[3];
 void* vertex_data[4];
@@ -671,7 +671,7 @@ void** outData;
 	rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_OUTDATA), (VALUE)*outData);
 }
 
-static void
+static void CALLBACK
 t_combine_data(coords, vertex_data, weight, outData, user_data)
 GLdouble coords[3];
 void* vertex_data[4];
@@ -788,7 +788,7 @@ glu_TessEndContour(obj, arg1)
             if (NIL_P(arg3)) \
                 gluTessCallback(tdata->tobj, type, NULL); \
             else \
-                gluTessCallback(tdata->tobj, type, (VOIDFUNC)(_function_)); \
+                gluTessCallback(tdata->tobj, type, _function_); \
         break;
 
 static VALUE
@@ -871,7 +871,7 @@ VALUE obj, arg1;
  */
 static VALUE q_current;
 
-static void
+static void CALLBACK
 q_error(errorno)
 GLenum errorno;
 {
@@ -902,7 +902,7 @@ VALUE obj, arg1, arg2, arg3;
 	if (NIL_P(arg3))
 		gluQuadricCallback(qdata->qobj, type, NULL);
 	else
-		gluQuadricCallback(qdata->qobj, type, (VOIDFUNC)(q_error));
+		gluQuadricCallback(qdata->qobj, type, q_error);
 	
 	return Qnil;
 }

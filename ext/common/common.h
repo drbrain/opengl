@@ -48,17 +48,22 @@
 #include "glu-enums.h"
 
 #ifndef APIENTRY
-#define APIENTRY /* to nothing */
+#define APIENTRY
+#endif
+
+#ifndef CALLBACK
+#define CALLBACK
+#endif
+
+#ifndef GLUTCALLBACK
+#define GLUTCALLBACK
 #endif
 
 #ifdef WIN32
 #define DLLEXPORT __declspec(dllexport)
-typedef void (CALLBACK*(VOIDFUNC))();
 #else
 #define DLLEXPORT
-typedef void (*VOIDFUNC)();
 #endif
-
 
 /* */
 
@@ -451,8 +456,6 @@ static inline void *load_gl_function(const char *name,int raise)
   Some checking is implicit in _conversion_ argument - e.g. NUM2INT makes sure that
   user is really passing type that can be converted to INT, otherwire raises. */
 
-#define EMPTY 
-
 #define ARGLIST0 obj
 #define ARGLIST1 obj,arg1
 #define ARGLIST2 obj,arg1,arg2
@@ -461,7 +464,7 @@ static inline void *load_gl_function(const char *name,int raise)
 #define ARGLIST5 obj,arg1,arg2,arg3,arg4,arg5
 #define ARGLIST6 obj,arg1,arg2,arg3,arg4,arg5,arg6
 
-#define TYPELIST0(_ctype_)
+#define TYPELIST0(_ctype_) void
 #define TYPELIST1(_ctype_) _ctype_
 #define TYPELIST2(_ctype_) _ctype_,_ctype_
 #define TYPELIST3(_ctype_) _ctype_,_ctype_,_ctype_
