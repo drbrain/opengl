@@ -297,7 +297,7 @@ VALUE obj;
 			mary2ary(args[4], ary_ctl1); /* flatten */
 			break;
 		default:
-			rb_raise(rb_eArgError, "gluNurbsCurve needs 4 or 7 arguments",argc);
+			rb_raise(rb_eArgError, "gluNurbsCurve needs 5 or 7 arguments",argc);
 	}
 	ctlarray = ALLOC_N(GLfloat, u_stride*(uknot_count-uorder));
 	ary2cflt((VALUE)ary_ctl1, ctlarray, (uknot_count-uorder)*u_stride);
@@ -836,9 +836,10 @@ glu_TessVertex(obj, arg1, arg2, arg3)
 VALUE obj, arg1, arg2, arg3;
 {
 	struct tessdata* tdata;
-	GLdouble v[3];
+	GLdouble v[3] = {0.0,0.0,0.0};
 	GetTESS(arg1, tdata);
 	rb_ary_push(rb_ary_entry(tdata->t_ref, TESS_DATA), arg3);
+	Check_Type(arg2,T_ARRAY);
 	ary2cdbl(arg2, v, 3);
 	gluTessVertex(tdata->tobj, v,(void *)arg3);
 	return Qnil;

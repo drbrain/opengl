@@ -79,43 +79,31 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 {
 	int largc;
 	char** largv;
-	int i, j;
-	int find;
 	VALUE new_argv;
-	VALUE arg1;
-	VALUE ptr;
-	if (rb_scan_args(argc, argv, "01", &arg1) == 0)
-		arg1 = rb_eval_string("[$0] + ARGV");
+	VALUE orig_arg;
+	int i;
+
+	if (rb_scan_args(argc, argv, "01", &orig_arg) == 0)
+		orig_arg = rb_eval_string("[$0] + ARGV");
 	else 
-		Check_Type(arg1, T_ARRAY);
+		Check_Type(orig_arg, T_ARRAY);
 	
 	/* converts commandline parameters from ruby to C, passes them
 	to glutInit and returns the parameters stripped of glut-specific
 	commands ("-display","-geometry" etc.) */
-	largc = RARRAY(arg1)->len;
+	largc = RARRAY(orig_arg)->len;
 	largv = ALLOCA_N(char*, largc);
 	for (i = 0; i < largc; i++)
-		largv[0] = STR2CSTR(RARRAY(arg1)->ptr[i]);
+		largv[0] = STR2CSTR(RARRAY(orig_arg)->ptr[i]);
 	
 	glutInit(&largc, largv);
 	
-	new_argv = rb_ary_new2(largc-1);
-	g_arg_array = rb_ary_new();
-	for (i = 0; i < RARRAY(arg1)->len; i++) {
-		ptr = RARRAY(arg1)->ptr[i];
-		find = 0;
-		for (j = 1; largv[j]; j++) {
-			if (STR2CSTR(ptr) == largv[j]) {
-				rb_ary_push(new_argv, ptr);
-				find = 1;
-				break;
-			}
-		}
-		if (!find)
-			rb_ary_push(g_arg_array, ptr);
-	}
+	new_argv = rb_ary_new2(largc);
+	for (i = 0; i < largc; i++)
+		rb_ary_push(new_argv,rb_str_new2(largv[i]));
+
 	return new_argv;
-}   
+}
 
 
 static VALUE glut_InitDisplayMode(obj,arg1)
@@ -183,25 +171,7 @@ static void GLUTCALLBACK glut_JoystickFuncCallback(unsigned int,int,int,int);
 static void GLUTCALLBACK glut_KeyboardUpFuncCallback(unsigned char,int,int);
 static void GLUTCALLBACK glut_SpecialUpFuncCallback(int,int,int);
 
-static VALUE DisplayFunc = Qnil;
-static VALUE
-glut_DisplayFunc(obj,arg1)
-VALUE obj,arg1;
-{
-    int win;
-    if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
-        rb_raise(rb_eTypeError, "glut");
-    win = glutGetWindow();
-    if (win == 0)
-        rb_raise(rb_eRuntimeError, "glut needs current window");
-    rb_ary_store(DisplayFunc, win, arg1);
-		if(NIL_P(arg1))
-			glutDisplayFunc(NULL);
-		else
-			glutDisplayFunc(glut_DisplayFuncCallback);
-    return Qnil;
-}
-
+WINDOW_CALLBACK_SETUP(DisplayFunc);
 WINDOW_CALLBACK_SETUP(ReshapeFunc);
 WINDOW_CALLBACK_SETUP(KeyboardFunc);
 WINDOW_CALLBACK_SETUP(MouseFunc);

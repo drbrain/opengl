@@ -64,7 +64,9 @@ end
 def common_teardown
 	glPopAttrib()
 	glPopClientAttrib()
-	assert_equal(glGetError(),0) # all expected GL errors must be handled by the method itself
+	error = glGetError()
+	p gluErrorString(error)	if (error!=0)
+	assert_equal(error,0) # all expected GL errors must be handled by the method itself
 end
 
 def supported?(funcs)

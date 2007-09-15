@@ -63,8 +63,9 @@ class Test_20 < Test::Unit::TestCase
 
 	def test_gldrawbuf
 		return if not supported?(2.0)
-		glDrawBuffers([GL_NONE])
-		assert_equal(glGetIntegerv(GL_DRAW_BUFFER0),GL_NONE)
+		glDrawBuffers([GL_FRONT_LEFT,GL_BACK_LEFT])
+		assert_equal(glGetIntegerv(GL_DRAW_BUFFER0),GL_FRONT_LEFT)
+		assert_equal(glGetIntegerv(GL_DRAW_BUFFER1),GL_BACK_LEFT)
 	end
 
 	def test_glvertexattrib
