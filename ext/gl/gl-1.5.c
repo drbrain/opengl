@@ -295,13 +295,15 @@ VALUE obj,arg1,arg2;
 	GLenum access;
 	GLint size = 0;
 	VALUE data;
-	GLvoid *buffer_ptr;
+	GLvoid *buffer_ptr = NULL;
 	LOAD_GL_FUNC(glMapBuffer)
 	LOAD_GL_FUNC(glGetBufferParameteriv)
 	target = (GLenum)NUM2INT(arg1);
 	access = (GLenum)NUM2INT(arg2);
 	fptr_glGetBufferParameteriv(target,GL_BUFFER_SIZE,&size);
 	buffer_ptr = fptr_glMapBuffer(target,access);
+	if (buffer_ptr==NULL || size<=0)
+		return Qnil;
 	data = allocate_buffer_with_string(size);
 	memcpy(RSTRING(data)->ptr, buffer_ptr, size);
 	return data;
