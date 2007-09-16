@@ -47,6 +47,9 @@ static VALUE gl_SampleCoverageARB(VALUE obj,VALUE arg1,VALUE arg2)
 	return Qnil;
 }
 
+/* #39 GL_ARB_color_buffer_float */
+GL_EXT_SIMPLE_FUNC_LOAD(ClampColorARB,2,GLenum,NUM2INT,"GL_ARB_color_buffer_float")
+
 void gl_init_functions_ext_arb(VALUE module)
 {
 /* #3 GL_ARB_transpose_matrix */
@@ -57,4 +60,7 @@ void gl_init_functions_ext_arb(VALUE module)
 
 /* #5 GL_ARB_multisample */
 	rb_define_module_function(module, "glSampleCoverageARB", gl_SampleCoverageARB, 2);
+
+/* #39 GL_ARB_color_buffer_float */
+	rb_define_module_function(module, "glClampColorARB", gl_ClampColorARB, 2);
 }

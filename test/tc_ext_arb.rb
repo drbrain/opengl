@@ -61,4 +61,13 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB),1.0)
 		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB),GL_TRUE)
 	end
+
+	def test_gl_arb_color_buffer_float
+		return if not supported?("GL_ARB_color_buffer_float")
+		glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB,GL_FIXED_ONLY_ARB)
+		assert_equal(glGetIntegerv(GL_CLAMP_VERTEX_COLOR_ARB),GL_FIXED_ONLY_ARB)
+
+		glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB,GL_TRUE)
+		assert_equal(glGetIntegerv(GL_CLAMP_VERTEX_COLOR_ARB),GL_TRUE)
+	end
 end

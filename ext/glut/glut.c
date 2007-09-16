@@ -171,26 +171,26 @@ static void GLUTCALLBACK glut_JoystickFuncCallback(unsigned int,int,int,int);
 static void GLUTCALLBACK glut_KeyboardUpFuncCallback(unsigned char,int,int);
 static void GLUTCALLBACK glut_SpecialUpFuncCallback(int,int,int);
 
-WINDOW_CALLBACK_SETUP(DisplayFunc);
-WINDOW_CALLBACK_SETUP(ReshapeFunc);
-WINDOW_CALLBACK_SETUP(KeyboardFunc);
-WINDOW_CALLBACK_SETUP(MouseFunc);
-WINDOW_CALLBACK_SETUP(MotionFunc);
-WINDOW_CALLBACK_SETUP(PassiveMotionFunc);
-WINDOW_CALLBACK_SETUP(EntryFunc);
-WINDOW_CALLBACK_SETUP(VisibilityFunc);
-WINDOW_CALLBACK_SETUP(SpecialFunc);
-WINDOW_CALLBACK_SETUP(SpaceballMotionFunc);
-WINDOW_CALLBACK_SETUP(SpaceballRotateFunc);
-WINDOW_CALLBACK_SETUP(SpaceballButtonFunc);
-WINDOW_CALLBACK_SETUP(ButtonBoxFunc);
-WINDOW_CALLBACK_SETUP(DialsFunc);
-WINDOW_CALLBACK_SETUP(TabletMotionFunc);
-WINDOW_CALLBACK_SETUP(TabletButtonFunc);
-WINDOW_CALLBACK_SETUP(OverlayDisplayFunc);
-WINDOW_CALLBACK_SETUP(WindowStatusFunc);
-WINDOW_CALLBACK_SETUP(KeyboardUpFunc);
-WINDOW_CALLBACK_SETUP(SpecialUpFunc);
+WINDOW_CALLBACK_SETUP(DisplayFunc)
+WINDOW_CALLBACK_SETUP(ReshapeFunc)
+WINDOW_CALLBACK_SETUP(KeyboardFunc)
+WINDOW_CALLBACK_SETUP(MouseFunc)
+WINDOW_CALLBACK_SETUP(MotionFunc)
+WINDOW_CALLBACK_SETUP(PassiveMotionFunc)
+WINDOW_CALLBACK_SETUP(EntryFunc)
+WINDOW_CALLBACK_SETUP(VisibilityFunc)
+WINDOW_CALLBACK_SETUP(SpecialFunc)
+WINDOW_CALLBACK_SETUP(SpaceballMotionFunc)
+WINDOW_CALLBACK_SETUP(SpaceballRotateFunc)
+WINDOW_CALLBACK_SETUP(SpaceballButtonFunc)
+WINDOW_CALLBACK_SETUP(ButtonBoxFunc)
+WINDOW_CALLBACK_SETUP(DialsFunc)
+WINDOW_CALLBACK_SETUP(TabletMotionFunc)
+WINDOW_CALLBACK_SETUP(TabletButtonFunc)
+WINDOW_CALLBACK_SETUP(OverlayDisplayFunc)
+WINDOW_CALLBACK_SETUP(WindowStatusFunc)
+WINDOW_CALLBACK_SETUP(KeyboardUpFunc)
+WINDOW_CALLBACK_SETUP(SpecialUpFunc)
 
 /* special case, 2 params */
 static VALUE JoystickFunc = Qnil;

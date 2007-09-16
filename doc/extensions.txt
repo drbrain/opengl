@@ -14,6 +14,8 @@ ARB:
 [X][X]   3. GL_ARB_transpose_matrix
 [N][N]   4. WGL_ARB_buffer_region
 [X][X]   5. GL_ARB_multisample
+[N][N]      GLX_ARB_multisample
+[N][N]      WGL_ARB_multisample
 [X][I]   6. GL_ARB_texture_env_add
 [X][I]   7. GL_ARB_texture_cube_map
 [N][N]   8. WGL_ARB_extensions_string
@@ -47,7 +49,9 @@ ARB:
 [X][I]  36. GL_ARB_fragment_program_shadow
 [X][I]  37. GL_ARB_draw_buffers
 [X][I]  38. GL_ARB_texture_rectangle
-[ ][ ]  39. GL_ARB_color_buffer_float
+[X][X]  39. GL_ARB_color_buffer_float
+[N][N]      WGL_ARB_pixel_format_float
+[N][N]      GLX_ARB_fbconfig_float
 [X][I]  40. GL_ARB_half_float_pixel
 [X][I]  41. GL_ARB_texture_float
 [X][I]  42. GL_ARB_pixel_buffer_object

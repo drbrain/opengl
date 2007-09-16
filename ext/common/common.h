@@ -500,4 +500,16 @@ VALUE ARGLIST##_numparams_; \
 	return Qnil; \
 } 
 
+
+#define GL_EXT_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_,_extensionname_) \
+static void (APIENTRY * fptr_gl##_name_)( TYPELIST##_numparams_(_ctype_) ); \
+static VALUE \
+gl_##_name_(ARGLIST##_numparams_) \
+VALUE ARGLIST##_numparams_; \
+{ \
+	LOAD_GL_EXT_FUNC(gl##_name_,_extensionname_) \
+	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
+	return Qnil; \
+} 
+
 #endif /* _COMMON_H_ */
