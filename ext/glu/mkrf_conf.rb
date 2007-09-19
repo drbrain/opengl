@@ -25,6 +25,7 @@ Mkrf::Generator.new( 'glu' ) do |g|
         g.include_library( 'opengl32.lib', 'glVertex3d')
         g.include_library( 'glu32.lib', 'gluLookAt')
     else
+        g.cflags << ' -Wall'
         g.include_library( 'GLU', 'gluLookAt' )
         g.include_library( 'GL', 'glVertex3d')
     end

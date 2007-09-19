@@ -28,6 +28,7 @@ void gl_init_functions_1_5(VALUE);
 void gl_init_functions_2_0(VALUE);
 void gl_init_functions_2_1(VALUE);
 void gl_init_functions_ext_arb(VALUE);
+void gl_init_functions_ext_ext(VALUE);
 
 static int opengl_version[2]; /* major, minor */
 static char *opengl_extensions = NULL;
@@ -187,6 +188,7 @@ DLLEXPORT void Init_gl()
 	gl_init_functions_2_0(module);
 	gl_init_functions_2_1(module);
 	gl_init_functions_ext_arb(module);
+	gl_init_functions_ext_ext(module);
 
 	rb_define_module_function(module, "is_available?", IsAvailable, 1);
 }

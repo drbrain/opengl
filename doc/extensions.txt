@@ -3,7 +3,7 @@ ruby-opengl extensions support status:
 
 [X] - supported
 [ ] - not supported yet
-[N] - not plans for now, platform specific or other extensions (GLX,WGL,GLU,GLUT..)
+[N] - no plans for now, platform specific or other extensions (GLX,WGL,GLU,GLUT..)
 [I] - implicitly supported with no additional test code required
 [O] - obsolete; extension drafted but not implemented by vendor, etc.
 
@@ -318,7 +318,7 @@ Other:
 [N][N] 307. GLX_SGIX_hyperpipe
 [N][N] 308. GLX_MESA_agp_offset
 [X][I] 309. GL_EXT_texture_compression_dxt1
-[ ][ ] 310. GL_EXT_framebuffer_object
+[X][X] 310. GL_EXT_framebuffer_object
 [ ][ ] 311. GL_GREMEDY_string_marker
 [X][I] 312. GL_EXT_packed_depth_stencil
 [N][N] 313. WGL_3DL_stereo_control
