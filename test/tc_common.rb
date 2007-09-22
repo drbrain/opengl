@@ -28,11 +28,22 @@ include Glut
 $window_size = 512
 
 def glut_init()
+	display_func = lambda do
+		raise
+	end
+
 	glutInit
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_ACCUM | GLUT_ALPHA)
 	glutInitWindowPosition(1, 1)
 	glutInitWindowSize($window_size, $window_size)
 	glutCreateWindow("test")
+	glutDisplayFunc(display_func)
+	# hack the need to call glutMainLoop on some implementations
+	begin
+		glutMainLoop()
+	rescue
+		# continue
+	end
 end
 
 def approx_equal(a,b,epsilon=0.01)

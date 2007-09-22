@@ -223,6 +223,10 @@ class Test_GLU < Test::Unit::TestCase
 		gluBeginCurve(n)
 		gluNurbsCurve(n,knots,ctlpoints_curve,4,GL_MAP1_VERTEX_3)
 		gluEndCurve(n)
+
+		gluBeginSurface(n)
+		gluNurbsSurface(n,knots,knots,ctlpoints,4,4,GL_MAP2_VERTEX_3)
+		gluEndSurface(n)
 		
 		gluBeginTrim(n)
 		gluPwlCurve(n,[[0,0],[1,0],[1,1],[0,1],[0,0]],GLU_MAP1_TRIM_2)
@@ -230,15 +234,8 @@ class Test_GLU < Test::Unit::TestCase
 		count = glRenderMode(GL_RENDER)
 		assert(count>1)
 		
-		glRenderMode(GL_FEEDBACK)
-		gluBeginSurface(n)
-		gluNurbsSurface(n,knots,knots,ctlpoints,4,4,GL_MAP2_VERTEX_3)
-		gluEndSurface(n)
-		count = glRenderMode(GL_RENDER)
-		assert(count>1)
-	
 		gluDeleteNurbsRenderer(n)
-		assert(ecount>1)
+		assert(ecount>=1)
 	end
 	
 	def test_glutess
