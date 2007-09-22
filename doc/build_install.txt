@@ -1,9 +1,18 @@
 Building ruby-opengl
 ====================
 
-
 Pre-requisites
 --------------
+
+General
+--------------
+* C compiler
+* ruby 1.8.5+
+* rake
+* mkrf 0.2.0+
+* rubygems 0.9.1+
+* OpenGL headers for OpenGL version 1.1 or later
+* GLUT 3.7+ or API-compatible implementation (freeglut,OpenGLUT)
 
 Linux
 --------------
@@ -17,11 +26,9 @@ For OpenGL related headers you'll need the following packages:
 * `libgl1-mesa-dri libglu1-mesa freeglut3`
 * `libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev`
 
-You MUST have rubygems 0.9.1 or higher installed.  
-
-On Gentoo, Debian and ubuntu, rubygems 0.9.0 will be installed by default
+On older Gentoo, Debian and Ubuntu, rubygems 0.9.0 will be installed by default
 in the packages.  This version of rubygems is INCOMPATIBLE with ruby-opengl.
-You'll need to install rubygems from source.
+You'll need to install rubygems 0.9.1+ from source.
 
 On some distributions you may need 'xorg-dev' developer package.
 
@@ -32,16 +39,39 @@ version that ships with OS X has known problems with properly building
 ruby-opengl bindings.  You'll also need XCode for gcc and tools.  Macports
 or fink should handle this cleanly.
 
+* To compile under Mac OS X you MUST install your own version of Ruby
+  as the version included with Tiger (1.8.2) has a broken rbconfig
+  and will fail to build the project properly.  Try either [MacPorts][],
+  [Fink][], or [building your own from source][].
+
+[Macports]: http://www.macports.org/
+[Fink]: http://finkproject.org/
+[building your own from source]: http://www.ruby-lang.org/en/downloads/
+
 Windows
 --------------
-On Windows you need to have platform SDK and compiler that *must* match the one which
-was used for compiling ruby binary (for One-click ruby installer it is MSVC 6.0).
+For manual build on Windows you need to have platform SDK and compiler that *must* match the one which was used for compiling ruby binary (for One-click ruby installer it is MSVC 6.0).
 You may also need 'glut.h' in SDK include directory, as the One-click ruby
-installer is missing it. You can copy the file from glut package at
-http://www.xmission.com/~nate/glut.html .
+installer is missing it. You can copy the file from glut package at [glut homepage][].
+Alternatively, you can install the precompiled binary gem (see bellow).
 
-Manual Build instructions for all platforms
-(see above for platform-specific notes)
+[glut homepage]: http://www.xmission.com/~nate/glut.html
+
+Build and installation
+--------------
+
+Installing from rubygems
+-------------------
+
+ruby-opengl should support being installed via gems now.  Just
+try 'gem install -y ruby-opengl' and it should pull down the gem
+and try to build the bindings for you automatically.
+
+For windows there is also pre-built binary windows gem available
+(i386-mswin32) which is compatible with the ruby one-click installer and does not need
+compiler or other mentioned tools installed.
+
+Manual Build instructions for all platforms (see above for platform-specific notes)
 ------------------
 1. Make sure you have working ruby with rubygems installed
 	 and (if needed) appropriate developer packages (ruby-dev,ruby1.8-dev,...).
@@ -53,32 +83,22 @@ Manual Build instructions for all platforms
 6. Run 'rake' at the top level of the project
 7. (OPTIONAL) Run 'rake test' to run unit tests to verify it works properly
 
-Installing
+Installing manually built extensions
 ------------------
 1. Run 'rake clean' to clean out the project
-2. Run 'rake gem' to build source gem
+2. Run 'rake gem' to create source gem from project
 3. Run 'gem install pkg/ruby-opengl-<version>.gem' to compile and install the gem
+4. Done.
 
-Building binary gem
+Building binary gem (useful only for binary distribution of the project)
 ------------------
 1. Run 'gem install gembuilder' to install the gembuilder package
 2. Run 'rake clean' to clean out the project
 3. Run 'rake gem' to build source gem
 4. Run 'gembuilder pkg/ruby-opengl-<version>.gem' to compile the binary gem
 
-Installing from rubygems
--------------------
 
-ruby-opengl should also support being installed via gems now.  Just
-try 'gem install -y ruby-opengl' and it should pull down the gem
-and try to build the bindings for you automatically.
-
-You MUST have rubygems 0.9.1 or higher installed for ruby-opengl
-to work properly.  0.8.x and 0.9.0 will not build ruby-opengl
-properly.
-
-
-Testing / Running
+Testing
 -----------------
 
 To run unit tests:
@@ -90,9 +110,9 @@ implementation, so depending on your GL provider,drivers or OS, the tests may
 fail, crash, or not run at all, without affecting your ability to use the
 bindings.
 
+Running programs and examples
+-----------------
 To run a sample file, make sure the ruby-opengl gem is installed then:
 
     $ cd examples
     $ ruby -rubygems plane.rb
-
-Hit ESC to exit.

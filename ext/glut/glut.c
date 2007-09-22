@@ -84,7 +84,7 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 	int i;
 
 	if (rb_scan_args(argc, argv, "01", &orig_arg) == 0)
-		orig_arg = rb_eval_string("[$0] + ARGV");
+		orig_arg = rb_eval_string("ARGV");
 	else 
 		Check_Type(orig_arg, T_ARRAY);
 	
@@ -964,8 +964,41 @@ VALUE obj,arg1;
 	return INT2NUM(ret);
 }
 
-
 /* GLUT font sub-API */
+
+/* Some glut implementations define font enums as addresses of local functions
+  which are then called by glut internally. This may lead to crashes or bus errors
+  on some platforms, so to be safe we hardcode the values passed to/from ruby */
+
+static inline void * bitmap_font_map(int f)
+{
+	switch (f) {
+		case 0: return (void *)GLUT_BITMAP_9_BY_15;
+		case 1: return (void *)GLUT_BITMAP_8_BY_13;
+		case 2: return (void *)GLUT_BITMAP_TIMES_ROMAN_10; 
+		case 3: return (void *)GLUT_BITMAP_TIMES_ROMAN_24;
+		case 4: return (void *)GLUT_BITMAP_HELVETICA_10;
+		case 5: return (void *)GLUT_BITMAP_HELVETICA_12;
+		case 6: return (void *)GLUT_BITMAP_HELVETICA_18;
+		default:
+			rb_raise(rb_eArgError, "Unsupported font");
+	}
+
+	return (void *) 0; /* not reached */
+}
+
+static inline void * stroke_font_map(int f)
+{
+	switch (f) {
+		case 7: return (void *)GLUT_STROKE_ROMAN;
+		case 8: return (void *)GLUT_STROKE_MONO_ROMAN;
+		default:
+			rb_raise(rb_eArgError, "Unsupported font");
+	}
+
+	return (void *) 0; /* not reached */
+}
+
 static VALUE
 glut_BitmapCharacter(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -974,23 +1007,7 @@ VALUE obj,arg1,arg2;
 	int font;
 	font = NUM2INT(arg1);
 	character = NUM2INT(arg2);
-
-	/* Some glut implementations define font enums as addresses of local functions
-	  which are then called by glut internally. This may lead to crashes or bus errors
-	  on some platforms, so to be safe we hardcode the values passed to/from ruby */
-	switch (font) {
-		case 0: glutBitmapCharacter(GLUT_BITMAP_9_BY_15, character); break;
-		case 1: glutBitmapCharacter(GLUT_BITMAP_8_BY_13, character); break;
-		case 2: glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, character); break;
-		case 3: glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, character); break;
-		case 4: glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, character); break;
-		case 5: glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, character); break;
-		case 6: glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, character); break;
-		case 7: glutBitmapCharacter(GLUT_STROKE_ROMAN, character); break;
-		case 8: glutBitmapCharacter(GLUT_STROKE_MONO_ROMAN, character); break;
-		default:
-			rb_raise(rb_eArgError, "Unsupported font");
-	}
+	glutBitmapCharacter(bitmap_font_map(font),character);
 	return Qnil;
 }
 
@@ -1003,7 +1020,7 @@ VALUE obj,arg1,arg2;
 	int ret;
 	font = NUM2INT(arg1);
 	character = NUM2INT(arg2);
-	ret = glutBitmapWidth((void*)font, character);
+	ret = glutBitmapWidth(bitmap_font_map(font), character);
 	return INT2NUM(ret);
 }
 
@@ -1016,7 +1033,7 @@ VALUE obj,arg1,arg2;
 	int character;
 	font = NUM2INT(arg1);
 	character = NUM2INT(arg2);
-	glutStrokeCharacter((void*)font, character);
+	glutStrokeCharacter(stroke_font_map(font), character);
 	return Qnil;
 }
 
@@ -1030,7 +1047,7 @@ VALUE obj,arg1,arg2;
 	int ret;
 	font = NUM2INT(arg1);
 	character = NUM2INT(arg2);
-	ret = glutStrokeWidth((void*)font, character);
+	ret = glutStrokeWidth(stroke_font_map(font), character);
 	return INT2NUM(ret);
 }
 
@@ -1043,7 +1060,7 @@ VALUE obj,arg1,arg2;
 	int ret;
 	Check_Type(arg2,T_STRING);
 	font = NUM2INT(arg1);
-	ret = glutBitmapLength((void *)font, (const unsigned char*)RSTRING(arg2)->ptr);
+	ret = glutBitmapLength(bitmap_font_map(font), (const unsigned char*)RSTRING(arg2)->ptr);
 	return INT2NUM(ret);
 }
 
@@ -1056,7 +1073,7 @@ VALUE obj,arg1,arg2;
 	int ret;
 	Check_Type(arg2,T_STRING);
 	font = NUM2INT(arg1);
-	ret = glutStrokeLength((void *)font, (const unsigned char*)RSTRING(arg2)->ptr);
+	ret = glutStrokeLength(stroke_font_map(font), (const unsigned char*)RSTRING(arg2)->ptr);
 	return INT2NUM(ret);
 }
 
@@ -1577,6 +1594,7 @@ DLLEXPORT void Init_glut()
 	rb_define_const(module, "GLUT_CURSOR_NONE", INT2NUM(GLUT_CURSOR_NONE));
 	rb_define_const(module, "GLUT_CURSOR_FULL_CROSSHAIR", INT2NUM(GLUT_CURSOR_FULL_CROSSHAIR));
 
+	/* hardcoded, see bitmap_font_map for explanation */
 	rb_define_const(module, "GLUT_BITMAP_9_BY_15", INT2NUM(0));
 	rb_define_const(module, "GLUT_BITMAP_8_BY_13", INT2NUM(1));
 	rb_define_const(module, "GLUT_BITMAP_TIMES_ROMAN_10", INT2NUM(2));

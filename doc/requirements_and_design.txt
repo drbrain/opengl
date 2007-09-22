@@ -73,11 +73,6 @@ Requirements
   on the following platforms: Mac OS X, GNU/Linux. MS Windows operating
   systems may also be supported in the future.
 
-* Provide backwards compatiblity for the older ruby-opengl function and
-  constant naming style (possibly in a layer built on top of the Base layers).
-  The support should be as minimally invasive as possible, perhaps via:
-  `require 'gl_prev'`, `require 'glu_prev'`, and `require 'glut_prev'`.
-
 * The project will make a number of pre-compiled extensions available as gems.
 
 * The project will supply source code and build scripts (via svn checkout)
@@ -85,14 +80,6 @@ Requirements
 
 * There shall be a test suite that exercises each call in each of the Base
   modules.
-
-* There shall be tools supplied which can:
-
-    * generate source code from existing OpenGL/GLUT header files which,
-      probably with some fine-tuning, can be used to update the module.
-
-    * show differences in coverage between ruby-opengl and a given set
-      of OpenGL/GLUT header files.
 
 * All project documentation will be in Markdown format in files that end in
   `.txt`.

@@ -52,5 +52,11 @@ Thu's original `utils/mkwrap.rb` script.
 Development stalled in October 2006.
 
 Development picked up again towards the end of 2006. After a long hiatus 
-and getting a new release of mkrf out the door.  ruby-opengl is proud
-to put out version 0.33.0 as a gem for everyone to try out.
+and getting a new release of mkrf out the door, version 0.33 (following the
+numbering of original Yoshi's bindings which stalled at 0.32) was released.
+
+During first half of 2007, we added large portion of code, as well as number
+of unit tests, creating near-complete support for OpenGL 2.1.
+Support for MS Windows was also added during this time.
+
+Version 0.40 was released in July 2007.

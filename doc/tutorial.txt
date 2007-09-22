@@ -106,10 +106,7 @@ extra directories added.
 
 * `doc/` -- Contains documentation for the project (from which this
   website is generated).
-* `examples` -- Some small sample programs. Mostly, these are being
-  copied from Yoshi's examples while being updated and neatened up.
-* `experimental` -- Pure Ruby modules that are intended to make ruby-opengl
-  usage more "Rubyish". These may eventually become part of ruby-opengl proper.
+* `examples/` -- Example programs.
 * `ext/` -- Contains subdirectories, one for each of the three extension
   modules (gl, glu, glut). Herein are the files needed to compile the extension
   modules.

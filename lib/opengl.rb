@@ -24,6 +24,8 @@ require 'gl'
 require 'glu'
 require 'glut'
 
+include Gl,Glu,Glut
+
 # (Gl.)glVertex -> GL.Vertex
 # (Gl::)GL_TRUE -> GL::TRUE
 module GL

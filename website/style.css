@@ -140,3 +140,10 @@ body {
 #footer a:hover {
 	color: #000000;
 	}
+
+pre{
+	width: 100%;
+	overflow: auto;
+	border: 1px solid #CCC;
+	background: #EEE;
+}

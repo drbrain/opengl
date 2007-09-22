@@ -1,8 +1,7 @@
 Thank you
 ---------
 
-Aside from big thank-you's to the core devs, special thanks (alphabetical
-by first name) also goes to:
+Aside from big thank-you's to the core devs, special thanks also goes to:
 
 * Bill Kelly -- provided some pilot code changing how users can call method and constant names.
 * Ilmari Heikkinen -- provided code for changing how users can call method and constant names.
@@ -10,9 +9,8 @@ by first name) also goes to:
 * Tony Hursh -- Mac OS X glut build tweak
 * Sean Long -- More Mac OS X fixes
 * John Gabriele -- Numerous fixes, documentation, and project support
-* Jan Dvorak -- Patches to start OpenGL 2.1 support 
+* Ronald Pijnacker -- Windows support and bugfixes
 * **Yoshi** -- providing ruby-opengl-0.32g from which to work off of.
-
 
 <br/>
 <br/>

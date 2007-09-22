@@ -17,25 +17,28 @@ file for the terms of the license.
 [Yoshi's ruby-opengl]: http://www2.giganet.net/~yoshi/
 
 
-Status: 0.40.1 Released!
+Latest release: 0.40.1 (July 19, 2007)
+-----------------
+Changes in this release:
+
+* Fixed build problems on Mac OS X
+
+Previous release: 0.40 (July 18, 2007)
+-----------------
+Changes in this release:
+
+* Support for OpenGL 2.0
+* Support for Windows platform
+* New automatic testsuite
+* Large number of bugfixes
+
+Current project status (SVN):
 -----------------
 
-Current status:
-
-* Support for OpenGL 2.0 and 2.1
-* Should compile on Windows
-* Compiles and runs on GNU/Linux (with Mesa) and Mac OS X.
-* You must require 'gl' before using 'glu'
-* REQUIRES mkrf 0.2.0 or higher to build and install properly
-* To compile under Mac OS X you MUST install your own version of Ruby
-  as the version included with Tiger (1.8.2) has a broken rbconfig
-  and will fail to build the project properly.  Try either [MacPorts][],
-  [Fink][], or [building your own from source][].
-* New project maintainer
-
-[Macports]: http://www.macports.org/
-[Fink]: http://finkproject.org/
-[building your own from source]: http://www.ruby-lang.org/en/downloads/
+* Supports OpenGL 2.0 and 2.1
+* Compiles and runs on GNU/Linux, Mac OS X and Windows
+* Some extensions are supported
+* No useful documentation yet
 
 <br/>
 <br/>

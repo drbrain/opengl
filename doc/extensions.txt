@@ -1,9 +1,9 @@
-
-ruby-opengl extensions support status:
+<pre>
+ruby-opengl extensions support status in trunk (SVN):
 
 [X] - supported
 [ ] - not supported yet
-[N] - no plans for now, platform specific or other extensions (GLX,WGL,GLU,GLUT..)
+[N] - no plans for now, platform specific or other (GLX,WGL,GLU,GLUT..)
 [I] - implicitly supported with no additional test code required
 [O] - obsolete; extension drafted but not implemented by vendor, etc.
 
@@ -357,3 +357,5 @@ Other:
 [ ][ ] 342. GL_EXT_bindable_uniform
 [ ][ ] 343. GL_EXT_texture_integer
 [N][N] 344. GLX_EXT_texture_from_pixmap
+
+</pre>
