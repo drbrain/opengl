@@ -135,7 +135,7 @@ gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*
 
 spec = Gem::Specification.new do |s|
     s.name              = "ruby-opengl"
-    s.version           = "0.40.1"
+    s.version           = "0.50.0"
     s.authors           = [ "Alain Hoang", "Jan Dvorak", "Minh Thu Vo", "James Adam" ]
     s.homepage          = "http://ruby-opengl.rubyforge.org"
     s.platform          = Gem::Platform::RUBY
