@@ -4,99 +4,110 @@ Usage tutorial
 Naming conventions
 ------------------
 
-There are two ways to use ruby-opengl. Firstly, you can use customary
-C-style method names and constant names like so:
+The bindings contains three modules:
+* 'Gl' - OpenGL functions itself
+* 'Glu' - OpenGL Utility Library API - higher-level drawing routines, NURBS etc.
+* 'Glut' - OpenGL Utility Toolkit - low level functions such as creating OpenGL
+  context, opening window or handling user input
+
+You can import all three modules by calling
 
     {{ruby}}
-    require 'gl'
-    require 'glu'
-    require 'glut'
-    
-    include Gl
-    include Glu
-    include Glut
+    require 'opengl'
 
-    glFooBar( GL_FOO_BAR )
-    gluFooBar( GLU_FOO_BAR )
-    glutFooBar( GLUT_FOO_BAR )
-
-You don't have to `include` Gl, Glu, and Glut, but if you don't, then
-you'll have to prefix each of those method and constant names like so:
+You can also load the modules separately by using:
 
     {{ruby}}
     require 'gl'
     require 'glu'
     require 'glut'
 
+The functions and constants are named the same as their C counterparts:
+
+    {{ruby}}
+    require 'opengl'
+    ...
     Gl.glFooBar( Gl::GL_FOO_BAR )
     Glu.gluFooBar( Glu::GLU_FOO_BAR )
     Glut.glutFooBar( Glut::GLUT_FOO_BAR )
 
-The other way you might use ruby-opengl is to employ the notation that
-users of previous versions of ruby-opengl have used:
+This is the 'full' syntax, usefull when you are expecting name clashes
+with other modules, or just want to be formal ;) More often, you will
+want to use the 'C-style' syntax, which you can accomplish by using 'include'
+to exporting the module functions and constants to global namespace:
 
     {{ruby}}
     require 'opengl'
-    
+    include Gl,Glu,Glut
+    ...
+    glFooBar( GL_FOO_BAR )
+    gluFooBar( GLU_FOO_BAR )
+    glutFooBar( GLUT_FOO_BAR )
+
+Finally, you can use the 'old' syntax:
+
+    {{ruby}}
+    require 'opengl'
+    ...
+    # Note the missing prefixes in functions and constants
+    # and also capitalization of module names
     GL.FooBar( GL::FOO_BAR )
     GLU.FooBar( GLU::FOO_BAR )
     GLUT.FooBar( GLUT::FOO_BAR )
 
-There are many fine OpenGL and GLUT tutorials all over the 'Net, so we
-don't plan on trying to duplicate them here at the moment. Most of
-these tutorials presume you are writing your code in C or C++, but
-they should still be almost directly usable with ruby-opengl as long
-as you use the C-style names (and, of course, as long as you change
-the rest of the C code you find from C (or C++) to Ruby). If you opt
-for using the legacy ruby-opengl style names, you'll have to take the
-additional step of converting the calls from `glFooBar( GL_FOO_BAR )`
-to `GL.FooBar( GL::FOO_BAR )`.
+This was syntax used by previous ruby-opengl versions; some people also
+consider it as being more in the spirit of OO programming. It has one
+downside though - due to Ruby's naming scheme, you cannot use constants
+which begins with number, e.g. GL_2D would under this syntax be (GL::)2D
+which is illegal.
 
-Personally, I prefer the current C-style names because:
+All three variants of syntax will continue to be supported in future,
+so it's up to you which one you choose to use.
 
-1. It's somewhat easier to follow along with the many online tutorials
-   and written OpenGL/GLUT books (i.e. the RedBook, BlueBook, SuperBible,
-   etc.).
+The Examples
+-----------
 
-2. Copying/pasting code between Ruby and C is easier (otherwise you'll
-   be doing a lot of search/replace).
+Various examples are in 'examples' directory. To run them, manually pass them to `ruby` like:
 
-3. My fingers are already used to typing the traditional C-style names
-   of all these identifiers.
+    ruby some_sample.rb
 
-Also, I don't like the fact that, if you use the previous ruby-opengl
-style, you've got method names starting with a capital letter (which is
-not customary Ruby style).
+On windows, you may want to use 'rubyw' instead, which displays the standard output window
+as some examples use the console for usage info etc.
 
-For the rest of this document, I'll use the current C-style names.
+If you get 'opengl not found' error, and you installed ruby-opengl from gems, your
+shell or ruby installation is probably not configured to use the gems; in that case type:
 
+    ruby -rubygems some_sample.rb
+
+The `README` file in the `examples` directory contains some notes on the examples.
 
 GLUT callbacks
 --------------
 
-The major difference from your GL code in C is in how glut callbacks are
-handled. Rather than define your callbacks as top-level functions,
-with ruby-opengl, it's done (for example) like so:
+The GLUT callback functions are specified as Proc objects, which you can
+either create with lambda as:
 
     {{ruby}}
     reshape = lambda do |w, h|
-        glViewport( ... )
-        glMatrixMode( GL_PROJECTION )
-        # etc.
-        glMatrixMode( GL_MODELVIEW )
-        glLoadIdentity
+      ...
     end
-
-    # ...
-    
+    ...
     glutReshapeFunc( reshape )
 
-An older notation you'll see instead of `lambda` is `proc`. The PickAxe
-v2 notes that `proc` is "mildly deprecated" in favor of `lambda`. You'll
-also sometimes see `Proc.new` used in place of either. Pages 359-360 of
+or by conversion from normal functions:
+
+    {{ruby}}
+    def reshape(w,h)
+      ...
+    end
+    ...
+    glutReshapeFunc( method("reshape").to_proc )
+    
+Note: An older notation you'll see instead of `lambda` is `proc`. The
+PickAxe v2 notes that `proc` is "mildly deprecated" in favor of `lambda`.
+You'll also sometimes see `Proc.new` used in place of either. Pages 359-360 of
 PickAxe v2 describe the differences between using `lambda` and `Proc.new`,
 but for our purposes either will be fine.
-
 
 Source code layout
 ------------------
@@ -111,49 +122,9 @@ extra directories added.
   modules (gl, glu, glut). Herein are the files needed to compile the extension
   modules.
 * `lib/` -- Files that the user is meant to `require` in their own code.
-* `test/` -- Contains sample ruby files that make OpenGL and GLUT calls.
-* `utils` -- Some under-construction utility scripts used to help generate
-  extension module source from GL header files. Also contains some scripts
-  used to generate the ruby-opengl website.
+* `test/` -- Contains automatic testsuite for the bindings
+* `utils` -- Some utility scripts used to help generate code, documentation
+  and website.
 * `website` -- After running `rake gen_website` this directory will contain
   the ruby-opengl website.
 
-
-The Samples
------------
-
-To run the samples, manually pass them to `ruby` like so:
-
-    ruby some_sample.rb
-    ruby some_sample_prev.rb
-
-The names ending in `_prev.rb` have been "ported" to use the legacy method
-and constant names (and possibly have been neatened up a bit as well). The
-`README` file in the `samples` directory contains some notes on the samples.
-
-
-Mac OS X notes
---------------
-
-James Adam passed along some fixes to ruby-opengl in 2005 on ruby-talk.
-Some methods have been incorporated into ruby-opengl-0.33. Paraphrasing
-James a bit, he writes:
-
-> 1. `CheckLoop` was added to bring the GLUT module in line with the
->    same function in Apple's GLUT. GLUT's MainLoop is blocking and forces
->    you to perform additoinal processing using GLUT's IdleFunc system,
->    which can sometimes be very undesirable (particularly if you are using
->    Ruby as the glue between two libraries which both feature this type of
->    loop). CheckLoop allows you to cycle through a *single* GLUT processing
->    loop, and then returns control to the calling thread/process. Thus, by
->    periodically calling CheckLoop, you can get the scene to update without
->    having GLUT seize control of the whole application.
-> 
-> 2. `GameModeString(mode_string)` and `Glut.EnterGameMode()`. May allow you
->    to switch your application to fullscreen.
-> 
-> 3. `BitmapCharacterX(char)` for displaying characters, since there seems to
->    be a problem with the default `GLUT.BitmapCharacter` method.
-
-Any feedback on testing of these methods is welcome, and will likely
-be incorporated into the ruby-opengl docs.

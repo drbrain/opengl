@@ -55,6 +55,10 @@ You may also need 'glut.h' in SDK include directory, as the One-click ruby
 installer is missing it. You can copy the file from glut package at [glut homepage][].
 Alternatively, you can install the precompiled binary gem (see bellow).
 
+<b>Important note:</b> If you are using the One-click installer version 1.8.6-25 or earlier,
+you must delete or rename files 'opengl.so' and 'glut.so' in
+C:/ruby/lib/ruby/site_ruby/1.8/i386-msvcrt
+
 [glut homepage]: http://www.xmission.com/~nate/glut.html
 
 Build and installation
