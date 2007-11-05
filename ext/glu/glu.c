@@ -775,6 +775,7 @@ VALUE obj, arg1;
 }
 static VALUE
 glu_TessEndContour(obj, arg1)
+VALUE obj, arg1;
 {
 	struct tessdata* tdata;
 	GetTESS(arg1, tdata);
