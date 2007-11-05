@@ -73,7 +73,6 @@ VALUE obj; \
  */
 
 /* GLUT initialization sub-API. */
-static VALUE g_arg_array;
 
 static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 {
@@ -372,15 +371,15 @@ glut_UseLayer(obj,arg1)
 
 /* GLUT menu sub-API. */
 static VALUE g_menucallback = Qnil;
-static VALUE g_menuargs = Qnil;
 static void GLUTCALLBACK
 glut_CreateMenuCallback(int value)
 {
 	VALUE arg_pair;
 	VALUE func;
-	arg_pair = (VALUE)value;
-	func = rb_hash_aref(g_menucallback, rb_ary_entry(arg_pair, 0));
-	rb_funcall(func, callId, 1, rb_ary_entry(arg_pair, 1));
+	int menu;
+	menu = glutGetMenu();
+	func = rb_ary_entry(g_menucallback,menu);
+	rb_funcall(func, callId, 1, INT2NUM(value));
 }
 
     
@@ -390,13 +389,16 @@ VALUE obj,arg1;
 {
 	int menu;
 	VALUE ret;
-	if (!rb_obj_is_kind_of(arg1,rb_cProc))
+	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
 		rb_raise(rb_eTypeError, "glutCreateMenu:%s", rb_class2name(CLASS_OF(arg1)));
-	menu = glutCreateMenu(glut_CreateMenuCallback);
-	ret = INT2FIX(menu);
-	rb_hash_aset(g_menucallback, ret, arg1);
-	rb_hash_aset(g_menuargs, ret, rb_ary_new());
-	return ret;
+
+	if (NIL_P(arg1))
+		menu = glutCreateMenu(NULL);
+	else
+		menu = glutCreateMenu(glut_CreateMenuCallback);
+
+	rb_ary_store(g_menucallback,menu,arg1);
+	return INT2FIX(menu);
 }
 
     
@@ -407,8 +409,8 @@ VALUE obj,arg1;
 	int menu;
 	menu = INT2FIX(arg1);
 	glutDestroyMenu(menu);
-	rb_hash_aset(g_menucallback, menu, Qnil);
-	rb_hash_aset(g_menuargs, menu, Qnil);
+	//rb_hash_aset(g_menucallback, menu, Qnil);
+	//rb_hash_aset(g_menuargs, menu, Qnil);
 	return Qnil;
 }
 
@@ -427,9 +429,7 @@ static VALUE
 glut_SetMenu(obj,arg1)
 VALUE obj,arg1;
 {
-	int menu;
-	menu = NUM2INT(arg1);
-	glutSetMenu(menu);
+	glutSetMenu(NUM2INT(arg1));
 	return Qnil;
 }
 
@@ -438,19 +438,8 @@ static VALUE
 glut_AddMenuEntry(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
-	int curmenuid;
-	VALUE arg_ary;
-	VALUE arg_pair;
 	Check_Type(arg1,T_STRING);
-	curmenuid = glutGetMenu();
-	if (curmenuid == 0)
-		rb_raise(rb_eRuntimeError, "glutAddMenuEntry needs current menu");
-	arg_ary = rb_hash_aref(g_menuargs, INT2FIX(curmenuid));
-	arg_pair = rb_ary_new2(2);
-	rb_ary_store(arg_pair, 0, INT2FIX(curmenuid));
-	rb_ary_store(arg_pair, 1, arg2);
-	rb_ary_push(arg_ary, arg_pair);
-	glutAddMenuEntry(RSTRING(arg1)->ptr, arg_pair);
+	glutAddMenuEntry(RSTRING(arg1)->ptr, NUM2INT(arg2));
 	return Qnil;
 }
 
@@ -459,10 +448,8 @@ static VALUE
 glut_AddSubMenu(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
-	int value;
 	Check_Type(arg1,T_STRING);
-	value = NUM2INT(arg2);
-	glutAddSubMenu(RSTRING(arg1)->ptr, value);
+	glutAddSubMenu(RSTRING(arg1)->ptr, NUM2INT(arg2));
 	return Qnil;
 }
 
@@ -470,21 +457,8 @@ VALUE obj,arg1,arg2;
 static VALUE glut_ChangeToMenuEntry(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
-	VALUE arg_ary;
-	VALUE arg_pair;
-	int item;
-	int curmenuid;
-	item = NUM2INT(arg1);
 	Check_Type(arg2,T_STRING);
-	curmenuid = glutGetMenu();
-	if (curmenuid == 0)
-		rb_raise(rb_eRuntimeError, "glutChangeToMenuEntry needs current menu");
-	arg_ary = rb_hash_aref(g_menuargs, INT2FIX(curmenuid));
-	arg_pair = rb_ary_new2(2);
-	rb_ary_store(arg_pair, 0, INT2FIX(curmenuid));
-	rb_ary_store(arg_pair, 1, arg2);
-	rb_ary_store(arg_ary, item, arg_pair);
-	glutChangeToMenuEntry(item, RSTRING(arg2)->ptr, arg_pair);
+	glutChangeToMenuEntry(NUM2INT(arg1), RSTRING(arg2)->ptr, NUM2INT(arg3));
 	return Qnil;
 }
 
@@ -492,27 +466,15 @@ VALUE obj,arg1,arg2,arg3;
 static VALUE glut_ChangeToSubMenu(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
-	int item,submenu;
-	item = NUM2INT(arg1);
-	submenu = NUM2INT(arg3);
 	Check_Type(arg2,T_STRING);
-	glutChangeToSubMenu(item, RSTRING(arg2)->ptr, submenu);
+	glutChangeToSubMenu(NUM2INT(arg1), RSTRING(arg2)->ptr, NUM2INT(arg3));
 	return Qnil;
 }
 
 
 static VALUE glut_RemoveMenuItem( VALUE obj, VALUE arg1 )
 {
-	int item;
-	int curmenuid;
-	VALUE arg_ary;
-	item = NUM2INT(arg1);
-	glutRemoveMenuItem(item);
-	curmenuid = glutGetMenu();
-	if (curmenuid == 0)
-		rb_raise(rb_eRuntimeError, "glutRemoveMenuItem needs current menu");
-	arg_ary = rb_hash_aref(g_menuargs, INT2FIX(curmenuid));
-	rb_ary_delete(arg_ary, item);
+	glutRemoveMenuItem(NUM2INT(arg1));
 	return Qnil;
 }
 
@@ -521,9 +483,7 @@ static VALUE
 glut_AttachMenu(obj,arg1)
 VALUE obj, arg1;
 {
-	int button;
-	button = NUM2INT(arg1);
-	glutAttachMenu(button);
+	glutAttachMenu(NUM2INT(arg1));
 	return Qnil;
 }
 
@@ -532,9 +492,7 @@ static VALUE
 glut_DetachMenu(obj,arg1)
 VALUE obj, arg1;
 {
-	int button;
-	button = NUM2INT(arg1);
-	glutDetachMenu(button);
+	glutDetachMenu(NUM2INT(arg1));
 	return Qnil;
 }
 
@@ -1350,11 +1308,8 @@ DLLEXPORT void Init_glut()
 {
 	module = rb_define_module("Glut");
 	
-	rb_global_variable( &g_arg_array );
 	rb_global_variable( &g_menucallback );
-	rb_global_variable( &g_menuargs );
-	g_menucallback = rb_hash_new();
-	g_menuargs = rb_hash_new();
+	g_menucallback = rb_ary_new();
 	
 	rb_define_module_function(module, "glutInit", glut_Init, -1);
 	rb_define_module_function(module, "glutInitDisplayMode", glut_InitDisplayMode, 1);
