@@ -9,7 +9,6 @@ Usage tutorial
 [OpenGL version and Extensions](#extensions)<br/>
 [Selection and Feedback queries](#selection_feedback)<br/>
 [GLUT, SDL, GLFW..](#glut_sdl)<br/>
-
 [Examples](#examples)<br/>
 [GLUT callbacks](#glut_callbacks)<br/>
 [Internals](#internals)<br/>
@@ -99,16 +98,16 @@ Arrays are passed/received as Ruby arrays:
 	vertex = [ 1, 1, 1 ]
 	glVertex3fv( vertex )
 
-For functions with variable multiple parameter-number variations (glVertex,glColor,...)
+For functions with multiple parameter-number variations (glVertex,glColor,...)
 we define 'overloaded' functions, as in:
 
 	{{ruby}}
-	glVertexf( 1.0, 1.0 )           # will call glVertex2f()
-	glVertexf( 1.0, 1.0, 1.0 )      # will call glVertex3f()
-	glVertexf( 1.0, 1.0, 1.0, 1.0 ) # will call glVertex4f()
-	glVertexi( 1, 1 )               # will call glVertex2i()
+	glVertexf( 1, 1 )       # will call glVertex2f()
+	glVertexf( 1, 1, 1 )    # will call glVertex3f()
+	glVertexf( 1, 1, 1, 1 ) # will call glVertex4f()
+	glVertexi( 1, 1 )       # will call glVertex2i()
 	...
-	#and so on
+	# and so on
 
 <a name="return_values"></a>
 Return values
@@ -144,7 +143,8 @@ Textures and other raw data
 -------------
 There are some data (textures, buffers, ..) that are too large to efficiently contain in ruby arrays -
 these are worked with via ruby strings that contains their direct memory representation (just like C arrays). If
-you need to convert between ruby arrays and these strings, use .pack() and .unpack() function. Example:
+you need to convert between ruby arrays and these strings, use ruby Array#pack() and String#unpack() functions.
+Example:
 
 	{{ruby}}
 	# create texture, 2x2 pixels,
@@ -181,7 +181,7 @@ Reverse works just the same:
 	  GL_RGB,        # components per pixel
 	  GL_FLOAT       # component type
 	)
-	# now convert them to ruby array
+	# now convert it to ruby array
 	texture = data.unpack("f*")
 	...
 
@@ -197,7 +197,7 @@ To query for available OpenGL version or OpenGL extension, use Gl.is_available? 
 	# returns true if GL_ARB_shadow is available on this system
 	Gl.is_available?("GL_ARB_shadow")
 	
-For list of what extensions are supported in ruby-opengl see this [list](extensions.html)
+For list of what extensions are supported in ruby-opengl see this [page](extensions.html)
 
 The extensions' function names once again follows the C API. Some extensions were over time
 promoted to ARB or even to OpenGL core, retaining their function names just with suffix changed
@@ -274,7 +274,7 @@ and another example for [GLFW](http://ruby-glfw.rubyforge.org/):
 	...
 	Gl.glVertex3f(1.0,0.0,0.0)
 	...
-  Glfw.glfwSwapBuffers()
+	Glfw.glfwSwapBuffers()
 	...
 
 <a name="examples"></a>
