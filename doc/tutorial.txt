@@ -1,17 +1,35 @@
-Usage tutorial
+Usage Tutorial
 ==============
+This page should serve as tutorial and also as reference to Ruby bindings for OpenGL
+language. It is assumed that you have basic understanding of both OpenGL and Ruby.
 
-[Naming Conventions](#naming_conventions)<br/>
-[Function parameters](#function_parameters)<br/>
-[Return values](#return_values)<br/>
-[Matrices](#matrices)<br/>
-[Textures and other raw data](#textures)<br/>
-[OpenGL version and Extensions](#extensions)<br/>
-[Selection and Feedback queries](#selection_feedback)<br/>
-[GLUT, SDL, GLFW..](#glut_sdl)<br/>
-[Examples](#examples)<br/>
-[GLUT callbacks](#glut_callbacks)<br/>
-[Internals](#internals)<br/>
+If you are new to OpenGL, you can start by visiting [OpenGL homepage](http://www.opengl.org)
+, reading the [OpenGL Programming Guide](http://opengl.org/documentation/books/#the_opengl_programming_guide_the_official_guide_to_learning_opengl_version) (also known as Red Book) or going to [NeHe's tutorials page](http://nehe.gamedev.net/).
+
+If you are new to Ruby, [the ruby-lang website](http://www.ruby-lang.org/en/documentation/) contains lots of
+documentation and manuals on Ruby.
+
+Table of Contents
+==============
+Basics:
+* [Naming Conventions](#naming_conventions)<br/>
+* [Function parameters](#function_parameters)<br/>
+* [Return values](#return_values)<br/>
+* [Matrices](#matrices)<br/>
+* [Textures and other raw data](#textures)<br/>
+* [Examples](#examples)<br/>
+
+Advanced stuff:
+* [OpenGL version and Extensions](#extensions)<br/>
+* [Selection and Feedback queries](#selection_feedback)<br/>
+* [Vertex Arrays](#vertex_arrays)<br/>
+* [Buffer Objects](#buffer_objects)<br/>
+* [GLUT, SDL, GLFW..](#glut_sdl)<br/>
+* [GLUT callbacks](#glut_callbacks)<br/>
+* [Internals](#internals)<br/>
+
+API reference:
+* TODO
 
 <a name="naming_conventions"></a>
 Naming conventions
@@ -185,6 +203,24 @@ Reverse works just the same:
 	texture = data.unpack("f*")
 	...
 
+<a name="examples"></a>
+The Examples
+-----------
+
+Various examples are in 'examples' directory of the bindings. To run them, manually pass them to `ruby` like:
+
+    ruby some_sample.rb
+
+On windows, you may want to use 'rubyw' instead, which displays the standard output window
+as some examples use the console for usage info etc.
+
+If you get 'opengl not found' error, and you installed ruby-opengl from gems, your
+shell or ruby installation is probably not configured to use the gems; in that case type:
+
+    ruby -rubygems some_sample.rb
+
+The `README` file in the `examples` directory contains some notes on the examples.
+
 <a name="extensions"></a>
 OpenGL Version and Extensions 
 -----------
@@ -241,6 +277,63 @@ Querying selection and feedback is different from C. Example:
 The feedback query follows the same pattern, only the data are stored
 as floats.
 
+<a name="vertex_arrays"></a>
+Vertex Arrays
+-----------
+In current state, vertex arrays are not very efficient in ruby-opengl, as it is not possible to change
+the array content once it is specified, and there is overhead for converting between ruby and C representation
+on numbers. Using display lists for static and immediate mode for dynamic objects is recommended instead.
+
+You can specify the data the same way as [texture data](#textures)
+, using Array#pack function. Once the array is specified, the string is frozen and the array cannot
+be manipulated. Example:
+
+	{{ruby}}
+	normals = [0,1,0, 1,0,0, 1,1,1]
+	glNormalPointer(GL_FLOAT,0,normals.pack("f*"))
+	...
+	glEnable(GL_NORMAL_ARRAY)
+	glDrawArrays(...)
+	...
+
+This applies to all *pointer functions. glGetPointerv will return reference to the frozen string
+previously specified.
+
+<a name="buffer_objects"></a>
+Buffer Objects
+-----------
+Once again, in current state buffer objects (VBOs in particular) are not very efficient in ruby-opengl.
+Similiary to vertex arrays, you can specify/read the data as strings using .pack and .unpack functions
+with ruby arrays, but the mapping the buffer afterwards is read-only. 
+
+Like in C, buffer binding affects some functions in way that if particular buffer is bound, the related
+funcions (for example glTexImage) take integer offset in place of data string argument. This is also true
+for getter functions (e.g. glGetTexImage) - instead of returning the data string, they take offset as they're
+last argument (so in ruby they take one extra argument), and will write the data in the bound buffer as expected.
+
+VBO example:
+
+	{{ruby}}
+	# specify 3 vertices, 2*float each
+	data = [0,0, 0,1, 1,1].pack("f*")
+	...
+	# generate buffer name
+	buffers = glGenBuffers(1)
+	# bind to the name to ARRAY buffer for vertex array
+	glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
+	# here the data is specified, size is n*sizeof(float)
+	# note that you don't get to specify type, as buffers
+	# operate on byte level
+	glBufferData(GL_ARRAY_BUFFER,6*4,data,GL_DYNAMIC_DRAW)
+	...
+	# here instead of specyfing the data, you pass '0' as
+	# offset to the bound buffer
+	glVertexPointer(2,GL_FLOAT,0,0)
+	...
+	glEnableClientState(GL_VERTEX_ARRAY)
+	...
+
+
 <a name="glut_sdl"></a>
 GLUT, SDL, GLFW..
 ---------
@@ -269,31 +362,13 @@ and another example for [GLFW](http://ruby-glfw.rubyforge.org/):
 	{{ruby}}
 	require 'opengl'
 	require 'glfw'
-	#init
+	# init
 	Glfw.glfwOpenWindow( 500,500, 0,0,0,0, 32,0, Glfw::GLFW_WINDOW )
 	...
 	Gl.glVertex3f(1.0,0.0,0.0)
 	...
 	Glfw.glfwSwapBuffers()
 	...
-
-<a name="examples"></a>
-The Examples
------------
-
-Various examples are in 'examples' directory. To run them, manually pass them to `ruby` like:
-
-    ruby some_sample.rb
-
-On windows, you may want to use 'rubyw' instead, which displays the standard output window
-as some examples use the console for usage info etc.
-
-If you get 'opengl not found' error, and you installed ruby-opengl from gems, your
-shell or ruby installation is probably not configured to use the gems; in that case type:
-
-    ruby -rubygems some_sample.rb
-
-The `README` file in the `examples` directory contains some notes on the examples.
 
 <a name="glut_callbacks"></a>
 GLUT callbacks
