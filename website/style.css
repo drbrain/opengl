@@ -147,3 +147,52 @@ pre{
 	border: 1px solid #CCC;
 	background: #EEE;
 }
+
+.extlist{
+	text-align: left;
+	font-weight: normal;
+	color: #404040;
+	background-color: #fafafa;
+	border: 1px #666666 solid;
+	border-collapse: collapse;
+	border-spacing: 1px;
+}
+	
+.extlist th{
+	text-align: center;
+	border-bottom: 1px solid #666666;
+	border-left: 1px solid #666666;
+	background-color: #dddddd;
+	font-weight: bold;
+	color: #404040;
+}
+
+.extlist td,.extlist td.supported,.extlist td.unsupported,.extlist td.other{
+	border: 1px solid #666666;
+	text-align: center;
+	text-indent: 1px;
+	color: #404040; 
+}
+
+.extlist td {
+	text-align: left;
+}
+
+.extlist td.supported {
+	background-color: #33ff33;
+}
+
+.extlist td.unsupported {
+/*	background-color: #ff3333; */
+	background-color: #cccccc; 
+}
+
+.extlist td.other {
+	background-color: #cccccc;
+}
+
+/*					f << "<td class='supported'>YES</td>"
+				elsif (ext[1]=="Other")
+					f << "<td class='other'>NO</td>"
+				else # unsupported
+					f << "<td class='unsupported'>NO</td>" */

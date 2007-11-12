@@ -38,6 +38,9 @@ require 'mkrf/rakehelper'
 WEBSITE_MKDN = FileList['./doc/*.txt'] << 'README.txt'
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 
+# defines columns in the HTML extension list
+GLEXT_VERSIONS = ["svn","0.50"]
+
 CLEAN.include("ext/gl*/Rakefile", "ext/*/mkrf.log", "ext/*/*.so", 
               "ext/**/*.bundle", "lib/*.so", "lib/*.bundle", "ext/*/*.o{,bj}", 
               "ext/*/*.lib", "ext/*/*.exp", "ext/*/*.pdb",
@@ -84,8 +87,13 @@ task :explain_website do
     end
 end
 
+desc 'Generate supported extension list.'
+task :gen_glext_list do
+	sh "./utils/extlistgen.rb doc/extensions.txt.in doc/extensions.txt " + GLEXT_VERSIONS.join(" ")
+end
+
 desc 'Generate website html.'
-task :gen_website => NICE_HTML_DOCS do
+task :gen_website => [:gen_glext_list] + NICE_HTML_DOCS do
     # Now that the website docs have been generated, copy them to ./website.
     puts
     sh "cp README.html website/index.html"
@@ -135,7 +143,7 @@ gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*
 
 spec = Gem::Specification.new do |s|
     s.name              = "ruby-opengl"
-    s.version           = "0.50.0"
+    s.version           = "0.60.0"
     s.authors           = [ "Alain Hoang", "Jan Dvorak", "Minh Thu Vo", "James Adam" ]
     s.homepage          = "http://ruby-opengl.rubyforge.org"
     s.platform          = Gem::Platform::RUBY
