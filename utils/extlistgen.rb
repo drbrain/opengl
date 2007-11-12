@@ -25,7 +25,7 @@ link_exceptions = {
 	"GL_SGIX_texture_add_env" => "SGIX/texture_env_add.txt",
 	"GL_SUN_multi_draw_arrays" => "EXT/multi_draw_arrays.txt",
 	"GL_SGIX_pixel_texture" => "SGIX/sgix_pixel_texture.txt",
-	"SGIS_fog_function" => "SGIS/fog_func.txt",
+	"GL_SGIS_fog_function" => "SGIS/fog_func.txt",
 	"GL_SGIX_vertex_preclip_hint" => "SGIX/vertex_preclip.txt"
 }
 
