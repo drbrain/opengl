@@ -18,11 +18,16 @@
 # main
 require 'csv'
 
-#infile = "../doc/extensions.txt.in"
-#outfile = "../doc/extensions.txt"
-#versions = ["svn","0.50","0.40","0.30"]
-
 opengl_extdoc_url = "http://opengl.org/registry/specs/"
+
+# the extension / doc url naming is sometimes inconsistent
+link_exceptions = {
+	"GL_SGIX_texture_add_env" => "SGIX/texture_env_add.txt",
+	"GL_SUN_multi_draw_arrays" => "EXT/multi_draw_arrays.txt",
+	"GL_SGIX_pixel_texture" => "SGIX/sgix_pixel_texture.txt",
+	"SGIS_fog_function" => "SGIS/fog_func.txt",
+	"GL_SGIX_vertex_preclip_hint" => "SGIX/vertex_preclip.txt"
+}
 
 begin
 	if ARGV.size < 3
@@ -56,9 +61,13 @@ begin
 		extensions.each do |ext|
 			next if ext[1]=="NonGL" # skip non-GL (WGL,GLX) extensions
 
-			tmp, subdir, *fname = ext[0].split("_")
-			link = opengl_extdoc_url + subdir + "/" + fname.join("_") + ".txt"
-
+			if (link_exceptions[ext[0]])
+				link = opengl_extdoc_url + link_exceptions[ext[0]]
+			else
+				tmp, subdir, *fname = ext[0].split("_")
+				link = opengl_extdoc_url + subdir + "/" + fname.join("_") + ".txt"
+			end
+	
 			f << "<tr>\n"
 			f << "<td><a href='#{link}'>#{ext[0]}</a></td>"
 
