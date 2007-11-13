@@ -46,6 +46,7 @@
 #include "gl-types.h"
 #include "gl-enums.h"
 #include "glu-enums.h"
+#include "gl-error.h"
 
 #ifndef APIENTRY
 #define APIENTRY
@@ -486,6 +487,7 @@ gl_##_name_(ARGLIST##_numparams_) \
 VALUE ARGLIST##_numparams_; \
 { \
 	gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
+	CHECK_GLERROR \
 	return Qnil; \
 } 
 
@@ -497,6 +499,7 @@ VALUE ARGLIST##_numparams_; \
 { \
 	LOAD_GL_FUNC(gl##_name_) \
 	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
+	CHECK_GLERROR \
 	return Qnil; \
 } 
 
@@ -509,6 +512,7 @@ VALUE ARGLIST##_numparams_; \
 { \
 	LOAD_GL_EXT_FUNC(gl##_name_,_extensionname_) \
 	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
+	CHECK_GLERROR \
 	return Qnil; \
 } 
 

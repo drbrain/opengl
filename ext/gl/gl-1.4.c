@@ -46,6 +46,7 @@ VALUE obj,arg1;
 	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,&coord,1);
 	fptr_glFogCoordfv(&coord);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -59,6 +60,7 @@ VALUE obj,arg1;
 	Check_Type(arg1,T_ARRAY);
 	ary2cdbl(arg1,&coord,1);
 	fptr_glFogCoorddv(&coord);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -82,6 +84,7 @@ VALUE obj,arg1,arg2,arg3;
 		g_FogCoord_ptr = arg3;
 		fptr_glFogCoordPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -107,6 +110,7 @@ VALUE obj,arg1,arg2,arg3;
 	fptr_glMultiDrawArrays(mode,ary1,ary2,len1);
 	xfree(ary1);
 	xfree(ary2);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -169,6 +173,7 @@ VALUE obj;
 			xfree(indices);
 			break;
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -183,6 +188,7 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg1);
 	param = (GLfloat)NUM2INT(arg2);
 	fptr_glPointParameterf(pname,param);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -203,6 +209,7 @@ VALUE obj,arg1,arg2;
 		size = 1;
 	ary2cflt(arg2,params,size);
 	fptr_glPointParameterfv(pname,params);	
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -217,6 +224,7 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg1);
 	param = (GLint)NUM2INT(arg2);
 	fptr_glPointParameteri(pname,param);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -237,6 +245,7 @@ VALUE obj,arg1,arg2;
 		size = 1;
 	ary2cint(arg2,params,size);
 	fptr_glPointParameteriv(pname,params);	
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -307,6 +316,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		g_SecondaryColor_ptr = arg4;
 		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)RSTRING(arg4)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 

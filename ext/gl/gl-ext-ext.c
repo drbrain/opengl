@@ -26,6 +26,7 @@ static VALUE gl_IsRenderbufferEXT(VALUE obj,VALUE arg1)
 	GLboolean ret;
 	LOAD_GL_EXT_FUNC(glIsRenderbufferEXT,"GL_EXT_framebuffer_object")
 	ret = fptr_glIsRenderbufferEXT((GLuint)NUM2UINT(arg1));
+	CHECK_GLERROR
 	return INT2NUM(ret);
 }
 
@@ -34,6 +35,7 @@ static VALUE gl_BindRenderbufferEXT(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	LOAD_GL_EXT_FUNC(glBindRenderbufferEXT,"GL_EXT_framebuffer_object")
 	fptr_glBindRenderbufferEXT((GLenum)NUM2INT(arg1),(GLuint)NUM2UINT(arg2));
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -54,6 +56,7 @@ static VALUE gl_DeleteRenderbuffersEXT(VALUE obj,VALUE arg1)
 		renderbuffer = NUM2UINT(arg1);
 		fptr_glDeleteRenderbuffersEXT(1,&renderbuffer);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -72,6 +75,7 @@ static VALUE gl_GenRenderbuffersEXT(VALUE obj,VALUE arg1)
 	for (i = 0; i < n; i++)
 		rb_ary_push(ret, INT2NUM(renderbuffers[i]));
 	xfree(renderbuffers);
+	CHECK_GLERROR
 	return ret;
 }
 
@@ -80,6 +84,7 @@ static VALUE gl_RenderbufferStorageEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
 {
 	LOAD_GL_EXT_FUNC(glRenderbufferStorageEXT,"GL_EXT_framebuffer_object")
 	fptr_glRenderbufferStorageEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2INT(arg3),NUM2INT(arg4));
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -89,6 +94,7 @@ static VALUE gl_GetRenderbufferParameterivEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	GLint param = 0;
 	LOAD_GL_EXT_FUNC(glGetRenderbufferParameterivEXT,"GL_EXT_framebuffer_object")
 	fptr_glGetRenderbufferParameterivEXT(NUM2UINT(arg1),NUM2UINT(arg2),&param);
+	CHECK_GLERROR
 	return INT2NUM(param);
 }
 
@@ -98,6 +104,7 @@ static VALUE gl_IsFramebufferEXT(VALUE obj,VALUE arg1)
 	GLboolean ret;
 	LOAD_GL_EXT_FUNC(glIsFramebufferEXT,"GL_EXT_framebuffer_object")
 	ret = fptr_glIsFramebufferEXT(NUM2UINT(arg1));
+	CHECK_GLERROR
 	return INT2NUM(ret);
 }
 
@@ -106,6 +113,7 @@ static VALUE gl_BindFramebufferEXT(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	LOAD_GL_EXT_FUNC(glBindFramebufferEXT,"GL_EXT_framebuffer_object")
 	fptr_glBindFramebufferEXT((GLenum)NUM2INT(arg1),(GLuint)NUM2UINT(arg2));
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -126,6 +134,7 @@ static VALUE gl_DeleteFramebuffersEXT(VALUE obj,VALUE arg1)
 		framebuffer = NUM2UINT(arg1);
 		fptr_glDeleteFramebuffersEXT(1,&framebuffer);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -144,6 +153,7 @@ static VALUE gl_GenFramebuffersEXT(VALUE obj,VALUE arg1)
 	for (i = 0; i < n; i++)
 		rb_ary_push(ret, INT2NUM(framebuffers[i]));
 	xfree(framebuffers);
+	CHECK_GLERROR
 	return ret;
 }
 
@@ -153,6 +163,7 @@ static VALUE gl_CheckFramebufferStatusEXT(VALUE obj,VALUE arg1)
 	GLenum ret;
 	LOAD_GL_EXT_FUNC(glCheckFramebufferStatusEXT,"GL_EXT_framebuffer_object")
 	ret = fptr_glCheckFramebufferStatusEXT(NUM2UINT(arg1));
+	CHECK_GLERROR
 	return INT2NUM(ret);
 }
 
@@ -161,6 +172,7 @@ static VALUE gl_FramebufferTexture1DEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 {
 	LOAD_GL_EXT_FUNC(glFramebufferTexture1DEXT,"GL_EXT_framebuffer_object")
 	fptr_glFramebufferTexture1DEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),NUM2UINT(arg4),NUM2INT(arg5));
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -169,6 +181,7 @@ static VALUE gl_FramebufferTexture2DEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 {
 	LOAD_GL_EXT_FUNC(glFramebufferTexture2DEXT,"GL_EXT_framebuffer_object")
 	fptr_glFramebufferTexture2DEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),NUM2UINT(arg4),NUM2INT(arg5));
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -177,6 +190,7 @@ static VALUE gl_FramebufferTexture3DEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 {
 	LOAD_GL_EXT_FUNC(glFramebufferTexture3DEXT,"GL_EXT_framebuffer_object")
 	fptr_glFramebufferTexture3DEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),NUM2UINT(arg4),NUM2INT(arg5),NUM2INT(arg6));
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -189,6 +203,7 @@ static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VAL
 	GLint ret = 0;
 	LOAD_GL_EXT_FUNC(glGetFramebufferAttachmentParameterivEXT,"GL_EXT_framebuffer_object")
 	fptr_glGetFramebufferAttachmentParameterivEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),&ret);
+	CHECK_GLERROR
 	return INT2NUM(ret);
 }
 

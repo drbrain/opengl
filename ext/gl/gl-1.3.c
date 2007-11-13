@@ -31,6 +31,7 @@ VALUE obj,arg1,arg2;
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLdouble)NUM2DBL(arg2);
 	fptr_glMultiTexCoord1d(target,s);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -45,6 +46,7 @@ VALUE obj,arg1,arg2;
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLfloat)NUM2DBL(arg2);
 	fptr_glMultiTexCoord1f(target,s);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -59,6 +61,7 @@ VALUE obj,arg1,arg2;
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLint)NUM2INT(arg2);
 	fptr_glMultiTexCoord1i(target,s);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -73,6 +76,7 @@ VALUE obj,arg1,arg2;
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLshort)NUM2INT(arg2);
 	fptr_glMultiTexCoord1s(target,s);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -89,6 +93,7 @@ VALUE obj,arg1,arg2,arg3;
 	s = (GLdouble)NUM2DBL(arg2);
 	t = (GLdouble)NUM2DBL(arg3);
 	fptr_glMultiTexCoord2d(target,s,t);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -105,6 +110,7 @@ VALUE obj,arg1,arg2,arg3;
 	s = (GLfloat)NUM2DBL(arg2);
 	t = (GLfloat)NUM2DBL(arg3);
 	fptr_glMultiTexCoord2f(target,s,t);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -121,6 +127,7 @@ VALUE obj,arg1,arg2,arg3;
 	s = (GLint)NUM2INT(arg2);
 	t = (GLint)NUM2INT(arg3);
 	fptr_glMultiTexCoord2i(target,s,t);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -137,6 +144,7 @@ VALUE obj,arg1,arg2,arg3;
 	s = (GLshort)NUM2INT(arg2);
 	t = (GLshort)NUM2INT(arg3);
 	fptr_glMultiTexCoord2s(target,s,t);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -155,6 +163,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	t = (GLdouble)NUM2DBL(arg3);
 	r = (GLdouble)NUM2DBL(arg4);
 	fptr_glMultiTexCoord3d(target,s,t,r);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -173,6 +182,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	t = (GLfloat)NUM2DBL(arg3);
 	r = (GLfloat)NUM2DBL(arg4);
 	fptr_glMultiTexCoord3f(target,s,t,r);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -191,6 +201,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	t = (GLint)NUM2INT(arg3);
 	r = (GLint)NUM2INT(arg4);
 	fptr_glMultiTexCoord3i(target,s,t,r);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -209,6 +220,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	t = (GLshort)NUM2INT(arg3);
 	r = (GLshort)NUM2INT(arg4);
 	fptr_glMultiTexCoord3s(target,s,t,r);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -229,6 +241,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	r = (GLdouble)NUM2DBL(arg4);
 	q = (GLdouble)NUM2DBL(arg5);
 	fptr_glMultiTexCoord4d(target,s,t,r,q);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -249,6 +262,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	r = (GLfloat)NUM2DBL(arg4);
 	q = (GLfloat)NUM2DBL(arg5);
 	fptr_glMultiTexCoord4f(target,s,t,r,q);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -269,6 +283,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	r = (GLint)NUM2INT(arg4);
 	q = (GLint)NUM2INT(arg5);
 	fptr_glMultiTexCoord4i(target,s,t,r,q);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -289,6 +304,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	r = (GLshort)NUM2INT(arg4);
 	q = (GLshort)NUM2INT(arg5);
 	fptr_glMultiTexCoord4s(target,s,t,r,q);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -360,6 +376,7 @@ VALUE obj,arg1; \
 	LOAD_GL_FUNC(gl##_name_) \
 	ary2cmat4x4##_shorttype_(arg1, m); \
 	fptr_gl##_name_(m); \
+	CHECK_GLERROR \
 	return Qnil; \
 }
 
@@ -381,6 +398,7 @@ VALUE obj,arg1,arg2;
 	value = (GLclampf)NUM2DBL(arg1);
 	invert = (GLboolean)NUM2INT(arg2);
 	fptr_glSampleCoverage(value,invert);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -422,6 +440,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		}
 		fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,pixels);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -461,6 +480,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 		}
 		fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,pixels);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -498,6 +518,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		}
 		fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,pixels);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -541,6 +562,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 		}
 		fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,pixels);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -580,6 +602,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		}
 		fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,pixels);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -615,6 +638,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		}
 		fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,pixels);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -641,11 +665,14 @@ VALUE obj;
 			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
 			glGetTexLevelParameteriv(target,lod,GL_TEXTURE_COMPRESSED_IMAGE_SIZE,&size); /* 1.0 function */
+			CHECK_GLERROR
 			data = allocate_buffer_with_string(size);
 			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)RSTRING(data)->ptr);
+			CHECK_GLERROR
 			return data;
 		case 3:
 			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)NUM2INT(args[2]));
+			CHECK_GLERROR
 			return Qnil;	
 	}
 }

@@ -36,6 +36,7 @@ VALUE obj,arg1;
 	for (i = 0; i < n; i++)
 		rb_ary_push((VALUE)ret, INT2NUM(queries[i]));
 	xfree(queries);
+	CHECK_GLERROR
 	return (VALUE)ret;
 }
 
@@ -58,6 +59,7 @@ VALUE obj,arg1;
 		query = NUM2INT(arg1);
 		fptr_glDeleteQueries( 1, &query);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -71,6 +73,7 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glIsQuery)
 	query = (GLuint)NUM2UINT(arg1);
 	ret = fptr_glIsQuery(query);
+	CHECK_GLERROR
 	return INT2NUM(ret);
 }
 
@@ -85,6 +88,7 @@ VALUE obj,arg1,arg2;
 	target = (GLenum)NUM2INT(arg1);
 	id = (GLuint)NUM2UINT(arg2);
 	fptr_glBeginQuery(target,id);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -103,6 +107,7 @@ VALUE obj,arg1,arg2;
 	fptr_glGetQueryiv(target,pname,&params);
 	retary = rb_ary_new2(1);
 	rb_ary_push(retary, INT2NUM(params));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -121,6 +126,7 @@ VALUE obj,arg1,arg2;
 	fptr_glGetQueryObjectiv(id,pname,&params);
 	retary = rb_ary_new2(1);
 	rb_ary_push(retary,INT2NUM(params));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -139,6 +145,7 @@ VALUE obj,arg1,arg2,arg3;
 	fptr_glGetQueryObjectuiv(id,pname,&params);
 	retary = rb_ary_new2(1);
 	rb_ary_push(retary,INT2NUM(params));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -153,6 +160,7 @@ VALUE obj,arg1,arg2;
 	target = (GLenum)NUM2INT(arg1);
 	buffer = (GLenum)NUM2INT(arg2);
 	fptr_glBindBuffer(target,buffer);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -175,6 +183,7 @@ VALUE obj,arg1;
 		buffer = NUM2INT(arg1);
 		fptr_glDeleteBuffers(1, &buffer);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -195,6 +204,7 @@ VALUE obj,arg1;
 	for (i = 0; i < n; i++)
 		rb_ary_push((VALUE)ret, INT2NUM(buffers[i]));
 	xfree(buffers);
+	CHECK_GLERROR
 	return (VALUE)ret;
 }
 
@@ -208,6 +218,7 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glIsBuffer)
 	buffer = (GLuint)NUM2UINT(arg1);
 	ret = fptr_glIsBuffer(buffer);
+	CHECK_GLERROR
 	return INT2NUM(ret);
 }
 
@@ -230,6 +241,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	} else {
 		Check_Type(arg3,T_STRING); /* force exception */
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -247,6 +259,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	size = (GLsizeiptr)NUM2INT(arg3);
 	Check_Type(arg4,T_STRING);
 	fptr_glBufferSubData(target,offset,size,(GLvoid *)RSTRING(arg4)->ptr);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -265,6 +278,7 @@ VALUE obj,arg1,arg2,arg3;
 	size = (GLsizeiptr)NUM2INT(arg3);
 	data = allocate_buffer_with_string(size);
 	fptr_glGetBufferSubData(target,offset,size,(GLvoid *)RSTRING(data)->ptr);
+	CHECK_GLERROR
 	return data;
 }
 
@@ -283,6 +297,7 @@ VALUE obj,arg1,arg2;
 	fptr_glGetBufferParameteriv(target,value,&data);
 	retary = rb_ary_new2(1);
 	rb_ary_push(retary,INT2NUM(data));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -301,7 +316,9 @@ VALUE obj,arg1,arg2;
 	target = (GLenum)NUM2INT(arg1);
 	access = (GLenum)NUM2INT(arg2);
 	fptr_glGetBufferParameteriv(target,GL_BUFFER_SIZE,&size);
+	CHECK_GLERROR
 	buffer_ptr = fptr_glMapBuffer(target,access);
+	CHECK_GLERROR
 	if (buffer_ptr==NULL || size<=0)
 		return Qnil;
 	data = allocate_buffer_with_string(size);
@@ -319,6 +336,7 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glUnmapBuffer)
 	target = (GLenum)NUM2INT(arg1);
 	ret = fptr_glUnmapBuffer(target);
+	CHECK_GLERROR
 	return INT2NUM(ret);
 }
 
@@ -329,6 +347,7 @@ VALUE obj,arg1,arg2,arg3;
 {
 	LOAD_GL_FUNC(glGetBufferPointerv)
 	rb_raise(rb_eArgError, "glGetBufferPointerv not implemented");
+	CHECK_GLERROR
 	return Qnil;
 }
 

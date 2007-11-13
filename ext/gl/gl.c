@@ -41,6 +41,7 @@ const int *GetOpenglVersion(void)
 {
 	if (opengl_version[0]==0) { /* not cached, query */
 		const char *vstr = (const char *) glGetString(GL_VERSION);
+		CHECK_GLERROR
     if (vstr)
 			sscanf( vstr, "%d.%d", &opengl_version[0], &opengl_version[1] );
 	}
@@ -70,6 +71,7 @@ const char *GetOpenglExtensions(void)
 {
 	if (opengl_extensions == NULL) {
 		const char *estr = (const char *) glGetString(GL_EXTENSIONS);
+		CHECK_GLERROR
     if (estr) {
 			int len = strlen(estr);
 			opengl_extensions = ALLOC_N(GLchar,len+1+1); /* terminating null and added space */
@@ -173,12 +175,14 @@ GLint CheckBufferBinding(GLint buffer)
 			break;
 	}
 	glGetIntegerv(buffer,&result);
+	CHECK_GLERROR
 	return result;
 }
 
 DLLEXPORT void Init_gl()
 {
 	module = rb_define_module("Gl");
+	gl_init_error(module);
 	gl_init_enums(module);
 	gl_init_functions_1_0__1_1(module);
 	gl_init_functions_1_2(module);

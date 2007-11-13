@@ -38,6 +38,7 @@ VALUE obj,arg1,arg2,arg3,arg4; \
 	ary2cflt(arg4,value,_x_*_y_*count); \
 	fptr_glUniformMatrix##_x_##x##_y_##fv(location,count,transpose,value); \
 	xfree(value); \
+	CHECK_GLERROR \
 	return Qnil; \
 }
 

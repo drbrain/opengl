@@ -44,6 +44,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		Check_Type(arg6, T_STRING);
 		fptr_glDrawRangeElements(mode, start, end, count, type, RSTRING(arg6)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -70,6 +71,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		CheckDataSize(type,format,width,arg6);
 		fptr_glColorTable(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -87,6 +89,7 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	fptr_glColorTableParameterfv(target,pname,params);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -104,6 +107,7 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	fptr_glColorTableParameteriv(target,pname,params);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -124,6 +128,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	y = (GLint)NUM2INT(arg4);
 	width = (GLsizei)NUM2INT(arg5);
 	fptr_glCopyColorTable(target,internalformat,x,y,width);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -154,6 +159,7 @@ VALUE obj,arg1,arg2;
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
 		rb_ary_push(retary, rb_float_new(params[i]));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -184,6 +190,7 @@ VALUE obj,arg1,arg2;
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
 		rb_ary_push(retary, INT2NUM(params[i]));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -203,10 +210,12 @@ VALUE obj,arg1,arg2,arg3;
 	format = (GLenum)NUM2INT(arg2);
 	type = (GLenum)NUM2INT(arg3);
 	fptr_glGetColorTableParameteriv(target,GL_COLOR_TABLE_WIDTH,&width);
+	CHECK_GLERROR
 	data = allocate_buffer_with_string(GetDataSize(type,format,width));
 	FORCE_PIXEL_STORE_MODE
 	fptr_glGetColorTable(target,format,type,(GLvoid*)RSTRING(data)->ptr);	
 	RESTORE_PIXEL_STORE_MODE
+	CHECK_GLERROR
 	return data;
 }
 
@@ -233,6 +242,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		CheckDataSize(type,format,count,arg6);
 		fptr_glColorSubTable(target,start,count,format,type,RSTRING(arg6)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -253,6 +263,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	y = (GLint)NUM2INT(arg4);
 	width = (GLsizei)NUM2UINT(arg5);
 	fptr_glCopyColorSubTable(target,start,x,y,width);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -279,6 +290,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		CheckDataSize(type,format,width,arg6);
 		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -307,6 +319,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		CheckDataSize(type,format,width*height,arg7);
 		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -323,6 +336,7 @@ VALUE obj,arg1,arg2,arg3;
 	pname = (GLenum)NUM2INT(arg2);
 	params = (GLfloat)NUM2INT(arg3);
 	fptr_glConvolutionParameterf(target,pname,params);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -340,6 +354,7 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	fptr_glConvolutionParameterfv(target,pname,params);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -356,6 +371,7 @@ VALUE obj,arg1,arg2,arg3;
 	pname = (GLenum)NUM2INT(arg2);
 	params = (GLint)NUM2INT(arg3);
 	fptr_glConvolutionParameteri(target,pname,params);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -373,6 +389,7 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	fptr_glConvolutionParameteriv(target,pname,params);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -393,6 +410,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	y = (GLint)NUM2INT(arg4);
 	width = (GLsizei)NUM2UINT(arg5);
 	fptr_glCopyConvolutionFilter1D(target,internalformat,x,y,width);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -415,6 +433,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	width = (GLsizei)NUM2UINT(arg5);
 	height = (GLsizei)NUM2UINT(arg6);
 	fptr_glCopyConvolutionFilter2D(target,internalformat,x,y,width,height);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -446,6 +465,7 @@ VALUE obj,arg1,arg2;
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
 		rb_ary_push(retary, rb_float_new(params[i]));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -477,6 +497,7 @@ VALUE obj,arg1,arg2;
 	retary = rb_ary_new2(size);
 	for(i=0;i<size;i++)
 		rb_ary_push(retary, INT2NUM(params[i]));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -490,8 +511,6 @@ VALUE obj;
 	GLenum target;
 	GLenum format;
 	GLenum type;
-	//GLsizei format_size;
-	//GLsizei type_size;
 	GLint size = 0;
 	VALUE data;
 	VALUE args[4];
@@ -517,10 +536,12 @@ VALUE obj;
 				fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT,&size);
 				size *=tmp;
 			}
+			CHECK_GLERROR
 			data = allocate_buffer_with_string(GetDataSize(type,format,size));
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)RSTRING(data)->ptr);
 			RESTORE_PIXEL_STORE_MODE
+			CHECK_GLERROR
 			return data;
 		case 4:
 			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
@@ -529,6 +550,7 @@ VALUE obj;
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)NUM2INT(args[3]));
 			RESTORE_PIXEL_STORE_MODE
+			CHECK_GLERROR
 			return Qnil;
 	}
 }
@@ -565,6 +587,7 @@ VALUE obj;
 
 			fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_WIDTH,&size_row);
 			fptr_glGetConvolutionParameteriv(target,GL_CONVOLUTION_HEIGHT,&size_column);
+			CHECK_GLERROR
 			data_row = allocate_buffer_with_string(GetDataSize(type,format,size_row));
 			data_column = allocate_buffer_with_string(GetDataSize(type,format,size_column));
 			FORCE_PIXEL_STORE_MODE
@@ -573,6 +596,7 @@ VALUE obj;
 			retary = rb_ary_new2(2);
 			rb_ary_push(retary, data_row);
 			rb_ary_push(retary, data_column);
+			CHECK_GLERROR
 			return retary;
 			break;
 		case 6:
@@ -581,6 +605,7 @@ VALUE obj;
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetSeparableFilter(target,format,type,(GLvoid*)NUM2INT(args[3]),(GLvoid*)NUM2INT(args[4]),(GLvoid*)NUM2INT(args[5]));
 			RESTORE_PIXEL_STORE_MODE
+			CHECK_GLERROR
 			return Qnil;		
 		}
 }
@@ -612,6 +637,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 		CheckDataSize(type,format,height,arg8);
 		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr,RSTRING(arg8)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -630,6 +656,7 @@ VALUE obj,arg1,arg2,arg3;
 	fptr_glGetHistogramParameterfv(target,pname,&params);
 	retary = rb_ary_new2(1);
 	rb_ary_push(retary, rb_float_new(params));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -648,6 +675,7 @@ VALUE obj,arg1,arg2,arg3;
 	fptr_glGetHistogramParameteriv(target,pname,&params);
 	retary = rb_ary_new2(1);
 	rb_ary_push(retary, INT2NUM(params));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -681,10 +709,12 @@ VALUE obj;
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
 
 			fptr_glGetHistogramParameteriv(target,GL_HISTOGRAM_WIDTH,&size);
+			CHECK_GLERROR
 			data = allocate_buffer_with_string(GetDataSize(type,format,size));
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
 			RESTORE_PIXEL_STORE_MODE
+			CHECK_GLERROR
 			return data;
 			break;
 		case 5:
@@ -694,6 +724,7 @@ VALUE obj;
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)NUM2INT(args[4]));
 			RESTORE_PIXEL_STORE_MODE
+			CHECK_GLERROR
 			return Qnil;
 	}
 }
@@ -729,6 +760,7 @@ VALUE obj;
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
 			RESTORE_PIXEL_STORE_MODE
+			CHECK_GLERROR
 			return data;
 			break;
 		case 5:
@@ -738,6 +770,7 @@ VALUE obj;
 			FORCE_PIXEL_STORE_MODE
 			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)NUM2INT(args[4]));
 			RESTORE_PIXEL_STORE_MODE
+			CHECK_GLERROR
 			return Qnil;
 	}
 }
@@ -757,6 +790,7 @@ VALUE obj,arg1,arg2;
 	fptr_glGetMinmaxParameterfv(target,pname,&params);
 	retary = rb_ary_new2(1);
 	rb_ary_push(retary, rb_float_new(params));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -775,6 +809,7 @@ VALUE obj,arg1,arg2;
 	fptr_glGetMinmaxParameteriv(target,pname,&params);
 	retary = rb_ary_new2(1);
 	rb_ary_push(retary, INT2NUM(params));
+	CHECK_GLERROR
 	return retary;
 }
 
@@ -793,6 +828,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	internalformat = (GLenum)NUM2INT(arg3);
 	sink = (GLboolean)NUM2INT(arg4);
 	fptr_glHistogram(target,width,internalformat,sink);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -809,6 +845,7 @@ VALUE obj,arg1,arg2,arg3;
 	internalformat = (GLenum)NUM2INT(arg2);
 	sink = (GLboolean)NUM2INT(arg3);
 	fptr_glMinmax(target,internalformat,sink);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -821,6 +858,7 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glResetHistogram)
 	target = (GLenum)NUM2INT(arg1);
 	fptr_glResetHistogram(target);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -833,6 +871,7 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glResetMinmax)
 	target = (GLenum)NUM2INT(arg1);
 	fptr_glResetMinmax(target);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -865,6 +904,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glTexImage3D( target, level, internalFormat, width, height,
 					  depth, border, format, type,(GLvoid *)NUM2INT(arg10));
+		CHECK_GLERROR
 		return Qnil;
 	}
 
@@ -881,6 +921,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	}
 	fptr_glTexImage3D( target, level, internalFormat, width, height,
 				  depth, border, format, type,pixels);
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -921,6 +962,7 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 			width, height, depth,
 			format, type, RSTRING(arg11)->ptr);
 	}
+	CHECK_GLERROR
 	return Qnil;
 }
 
@@ -951,6 +993,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	fptr_glCopyTexSubImage3D( target, level,
 			xoffset, yoffset, zoffset,
 			x, y, width, height );
+	CHECK_GLERROR
 	return Qnil;
 }
 

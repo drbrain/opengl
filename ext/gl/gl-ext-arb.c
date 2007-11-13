@@ -28,6 +28,7 @@ VALUE obj,arg1; \
 	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_transpose_matrix") \
 	ary2cmat4x4##_shorttype_(arg1, m); \
 	fptr_gl##_name_(m); \
+	CHECK_GLERROR \
 	return Qnil; \
 }
 
@@ -44,6 +45,7 @@ static VALUE gl_SampleCoverageARB(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	LOAD_GL_EXT_FUNC(glSampleCoverageARB,"GL_ARB_multisample")
 	fptr_glSampleCoverageARB((GLclampf)NUM2DBL(arg1),(GLboolean)NUM2INT(arg2));
+	CHECK_GLERROR
 	return Qnil;
 }
 
