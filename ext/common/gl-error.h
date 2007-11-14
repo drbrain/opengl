@@ -15,9 +15,9 @@
 
 void gl_init_error(VALUE);
 
-extern VALUE error_reporting;
+extern VALUE error_checking;
+extern VALUE inside_begin_end;
 
 void check_for_glerror(void);
 
-#define CHECK_GLERROR if (error_reporting==Qtrue) check_for_glerror();
-
+#define CHECK_GLERROR if (error_checking==Qtrue && inside_begin_end==Qfalse) check_for_glerror();

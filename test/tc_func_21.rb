@@ -186,19 +186,19 @@ class Test_21 < Test::Unit::TestCase
 
 		# 1D
 		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
-		glCompressedTexImage1D(GL_TEXTURE_1D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,4,0,16,0)
-		err = glGetError()
-		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
-		if (err == 0)
+		begin
+			glCompressedTexImage1D(GL_TEXTURE_1D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,4,0,16,0)
 			assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D,0), image_1)
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
 		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
-		glCompressedTexSubImage1D(GL_TEXTURE_1D,0,0,4,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,0)
-		err = glGetError()
-		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
-		if (err == 0)
+		begin
+			glCompressedTexSubImage1D(GL_TEXTURE_1D,0,0,4,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,0)
 			assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D,0), image_2)
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 		
 		# 2D
@@ -212,19 +212,19 @@ class Test_21 < Test::Unit::TestCase
 		
 		# 3D
 		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[0])
-		glCompressedTexImage3D(GL_TEXTURE_3D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,1,0,16,0)
-		err = glGetError()
-		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
-		if (err == 0)
+		begin
+			glCompressedTexImage3D(GL_TEXTURE_3D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,1,0,16,0)
 			assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D,0), image_1)
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 		
 		glBindBuffer(GL_PIXEL_UNPACK_BUFFER,buffers[1])
-		glCompressedTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, 0)
-		err = glGetError()
-		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
-		if (err == 0)
+		begin
+			glCompressedTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, 0)
 			assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D,0), image_2)
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
 		glDeleteBuffers(buffers)

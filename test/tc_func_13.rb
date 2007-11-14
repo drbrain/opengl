@@ -86,18 +86,18 @@ class Test_13 < Test::Unit::TestCase
 		# Note: 1D and 3D compressed textures are not supported by S3TC/DXTn, and usually not supported at all
 
 		# 1D
-		glCompressedTexImage1D(GL_TEXTURE_1D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,4,0,16,image_1)
-		err = glGetError()
-		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
-		if (err == 0)
+		begin 
+			glCompressedTexImage1D(GL_TEXTURE_1D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,4,0,16,image_1)
 			assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D,0), image_1)
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
-		glCompressedTexSubImage1D(GL_TEXTURE_1D,0,0,4,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,image_2)
-		err = glGetError()
-		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
-		if (err == 0)
+		begin 
+			glCompressedTexSubImage1D(GL_TEXTURE_1D,0,0,4,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,image_2)
 			assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D,0), image_2)
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
 		# 2D
@@ -108,18 +108,18 @@ class Test_13 < Test::Unit::TestCase
 		assert_equal(glGetCompressedTexImage(GL_TEXTURE_2D,0), image_2)
 
 		# 3D
-		glCompressedTexImage3D(GL_TEXTURE_3D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,1,0,16,image_1)
-		err = glGetError()
-		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
-		if (err == 0)
+		begin 
+			glCompressedTexImage3D(GL_TEXTURE_3D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,1,0,16,image_1)
 			assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D,0), image_1)
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
-		glCompressedTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, image_2)
-		err = glGetError()
-		assert(err == 0 || err == GL_INVALID_ENUM || err == GL_INVALID_OPERATION)
-		if (err == 0)
+		begin 
+			glCompressedTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, image_2)
 			assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D,0), image_2)
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 		
 		glDeleteTextures(textures)

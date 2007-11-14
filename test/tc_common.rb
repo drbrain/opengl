@@ -25,6 +25,8 @@ require 'glut'
 include Gl
 include Glut
 
+Gl.enable_error_checking
+
 $window_size = 512
 
 def glut_init()
@@ -75,9 +77,11 @@ end
 def common_teardown
 	glPopAttrib()
 	glPopClientAttrib()
+	
+	# in case there is an GL error that escaped error checking routines ...
 	error = glGetError()
 	p gluErrorString(error)	if (error!=0)
-	assert_equal(error,0) # all expected GL errors must be handled by the method itself
+	assert_equal(error,0)
 end
 
 def supported?(funcs)

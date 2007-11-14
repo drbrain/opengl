@@ -68,6 +68,8 @@
 
 /* */
 
+extern VALUE inside_begin_end;
+
 typedef struct RArray RArray;
 
 extern VALUE cProc;

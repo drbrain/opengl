@@ -25,7 +25,6 @@
 
 /* simple functions - see common.h */
 GL_SIMPLE_FUNC(ArrayElement,1,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Begin,1,GLenum,NUM2INT)
 GL_SIMPLE_FUNC(BlendFunc,2,GLenum,NUM2INT)
 GL_SIMPLE_FUNC(CallList,1,GLuint,NUM2UINT)
 GL_SIMPLE_FUNC(Clear,1,GLbitfield,NUM2UINT)
@@ -63,7 +62,6 @@ GL_SIMPLE_FUNC(DrawBuffer,1,GLenum,NUM2INT)
 GL_SIMPLE_FUNC(EdgeFlag,1,GLboolean,NUM2INT)
 GL_SIMPLE_FUNC(Enable,1,GLenum,NUM2INT)
 GL_SIMPLE_FUNC(EnableClientState,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(End,0,0,0)
 GL_SIMPLE_FUNC(EndList,0,0,0)
 GL_SIMPLE_FUNC(EvalCoord1d,1,GLdouble,NUM2DBL)
 GL_SIMPLE_FUNC(EvalCoord1f,1,GLfloat,NUM2DBL)
@@ -163,6 +161,27 @@ GL_SIMPLE_FUNC(Vertex4f,4,GLfloat,NUM2DBL)
 GL_SIMPLE_FUNC(Vertex4i,4,GLint,NUM2INT)
 GL_SIMPLE_FUNC(Vertex4s,4,GLshort,NUM2INT)
 GL_SIMPLE_FUNC(Viewport,4,GLuint,NUM2UINT)
+
+VALUE inside_begin_end = Qfalse;
+
+static VALUE
+gl_Begin(obj,arg1)
+VALUE obj,arg1;
+{
+	glBegin(NUM2INT(arg1));
+	inside_begin_end = Qtrue;
+	return Qnil;	
+}
+
+static VALUE
+gl_End(obj)
+VALUE obj;
+{
+	inside_begin_end = Qfalse;	
+	glEnd();
+	CHECK_GLERROR
+	return Qnil;	
+}
 
 static VALUE
 gl_NewList(obj,arg1,arg2)

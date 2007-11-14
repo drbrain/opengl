@@ -199,17 +199,23 @@ class Test_10_11 < Test::Unit::TestCase
 	end
 
 	def test_glflush
-		glBegin(GL_POINTS)
-		glFlush()
-		glEnd
-		assert_equal(glGetError(),GL_INVALID_OPERATION)
+		begin
+			glBegin(GL_POINTS)
+			glFlush()
+			glEnd
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_OPERATION)
+		end	
 	end
 
 	def test_glfinish
-		glBegin(GL_POINTS)
-		glFinish()
-		glEnd
-		assert_equal(glGetError(),GL_INVALID_OPERATION)
+		begin
+			glBegin(GL_POINTS)
+			glFinish()
+			glEnd
+		rescue Gl::Error => err
+			assert(err.id == GL_INVALID_OPERATION)
+		end	
 	end
 
 	def test_glgetstring

@@ -15,7 +15,7 @@
 
 #include "../common/common.h"
 
-VALUE error_reporting = Qfalse;
+VALUE error_checking = Qfalse;
 
 VALUE Class_GLError;
 
@@ -70,12 +70,33 @@ VALUE GLError_initialize(VALUE obj,VALUE message, VALUE error_id)
 	return obj;
 }
 
+static VALUE enable_error_checking(VALUE obj)
+{
+	error_checking = Qtrue;
+	return Qnil;
+}
+
+static VALUE disable_error_checking(VALUE obj)
+{
+	error_checking = Qfalse;
+	return Qnil;
+}
+
+static VALUE is_error_checking_enabled(VALUE obj)
+{
+	return error_checking;
+}
+
 void gl_init_error(VALUE module)
 {
-	Class_GLError = rb_define_class_under(module, "GLError", rb_eStandardError);
+	Class_GLError = rb_define_class_under(module, "Error", rb_eStandardError);
 
 	rb_define_method(Class_GLError, "initialize", GLError_initialize, 2); 
 	rb_define_attr(Class_GLError, "id", 1, 0);
 
-	rb_define_variable("gl_error_reporting", &error_reporting);
+	rb_define_module_function(module, "enable_error_checking", enable_error_checking, 0);
+	rb_define_module_function(module, "disable_error_checking", disable_error_checking, 0);
+	rb_define_module_function(module, "is_error_checking_enabled?", is_error_checking_enabled, 0);
+
+	rb_global_variable(&error_checking);
 }
