@@ -74,14 +74,6 @@ $colors = []
 $velocities = []
 $startTimes = []
 
-def printOpenGLError
-	glErr = glGetError()
-	if (glErr != GL_NO_ERROR)
-		puts "glError - #{gluErrorString(glErr)}"
-		raise
-	end
-end
-
 def nextClearColor
 	glClearColor($clearColor[0][0],
 							 $clearColor[0][1],
@@ -96,7 +88,6 @@ def getUniLoc(program, name)
 	if (loc == -1)
 		puts "No such uniform named #{name}"
 	end
-	printOpenGLError()
 	return loc
 end
 
@@ -109,8 +100,6 @@ def updateAnim
 	end
 
 	glUniform1f(location,$particleTime)
-
-	printOpenGLError()
 end
 
 def drawPoints
@@ -175,9 +164,7 @@ end
 play = lambda do
 	thisTime = glutGet(GLUT_ELAPSED_TIME)
 	updateAnim()
-	printOpenGLError()
 	glutPostRedisplay()
-	printOpenGLError()
 end
 
 display = lambda do
@@ -344,14 +331,12 @@ def installParticleShaders(vs_name,fs_name)
 	# Compile the particle vertex shader, and print out
 	# the compiler log file.
 	glCompileShader($vertexShaderObject)
-	printOpenGLError()
   vertCompiled = glGetShaderiv($vertexShaderObject, GL_COMPILE_STATUS)
 	puts "Shader InfoLog:\n#{glGetShaderInfoLog($vertexShaderObject)}\n"
 
 	# Compile the particle fragment shader, and print out
 	# the compiler log file.
 	glCompileShader($fragmentShaderObject)
-	printOpenGLError()
   fragCompiled = glGetShaderiv($fragmentShaderObject, GL_COMPILE_STATUS)
 	puts "Shader InfoLog:\n#{glGetShaderInfoLog($fragmentShaderObject)}\n"
 
@@ -368,7 +353,6 @@ def installParticleShaders(vs_name,fs_name)
 
 	# Link the program object and print out the info log
 	glLinkProgram($programObject)
-	printOpenGLError()
 	linked = glGetProgramiv($programObject, GL_LINK_STATUS)
 	puts "Program InfoLog:\n#{glGetProgramInfoLog($programObject)}\n"
 
@@ -379,9 +363,7 @@ def installParticleShaders(vs_name,fs_name)
 
 	# Set up initial uniform values
 	glUniform4f(getUniLoc($programObject, "Background"), 0.0, 0.0, 0.0, 1.0)
-	printOpenGLError();
 	glUniform1f(getUniLoc($programObject, "Time"), -5.0)
-	printOpenGLError();
 
 	return true
 end

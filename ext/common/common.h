@@ -204,47 +204,28 @@ VALUE ary;
 }
 
 /* -------------------------------------------------------------------- */
-static inline void ary2cmat4x4dbl(ary, cary)
-VALUE ary;
-double cary[];
-{
-    int i,j;
-    RArray *ary_r,*ary_c;
-    memset(cary, 0x0, sizeof(double[4*4]));
-    ary_c = RARRAY(rb_Array(ary));
-    if (TYPE(ary_c->ptr[0]) != T_ARRAY)
-        ary2cdbl((VALUE)ary_c, cary, 16);
-    else
-    {
-        for (i = 0; i < ary_c->len && i < 4; i++)
-        {
-            ary_r = RARRAY(rb_Array(ary_c->ptr[i]));
-            for(j = 0; j < ary_r->len && j < 4; j++)
-                cary[i*4+j] = (GLdouble)NUM2DBL(ary_r->ptr[j]);
-        }
-    }
+/* converts either array or object responding to #to_a to C-style array */
+#define ARY2CMAT(_type_) \
+static inline void ary2cmat##_type_(rary, cary, cols, rows) \
+VALUE rary; \
+_type_ cary[]; \
+int cols,rows; \
+{ \
+	int i; \
+\
+	rary = rb_Array(rary); \
+	rary = rb_funcall(rary,rb_intern("flatten"),0); \
+\
+	if (RARRAY(rary)->len != cols*rows) \
+		rb_raise(rb_eArgError, "passed array/matrix must have %i*%i elements",cols,rows); \
+\
+	for (i=0; i < cols*rows; i++) \
+		cary[i] = (_type_) NUM2DBL(rb_ary_entry(rary,i)); \
 }
 
-static inline void ary2cmat4x4flt(ary, cary)
-VALUE ary;
-float cary[];
-{
-    int i,j;
-    RArray *ary_r,*ary_c;
-    memset(cary, 0x0, sizeof(float[4*4]));
-    ary_c = RARRAY(rb_Array(ary));
-    if (TYPE(ary_c->ptr[0]) != T_ARRAY)
-        ary2cflt((VALUE)ary_c, cary, 16);
-    else
-    {
-        for (i = 0; i < ary_c->len && i < 4; i++)
-        {
-            ary_r = RARRAY(rb_Array(ary_c->ptr[i]));
-            for(j = 0; j < ary_r->len && j < 4; j++)
-                cary[i*4+j] = (GLfloat)NUM2DBL(ary_r->ptr[j]);
-        }
-    }
-}
+ARY2CMAT(double)
+ARY2CMAT(float)
+#undef ARY2CMAT
 
 /* -------------------------------------------------------------------- */
 

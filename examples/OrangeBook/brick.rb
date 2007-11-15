@@ -286,21 +286,12 @@ timer = lambda do |value|
 	glutTimerFunc(TIMER_FREQUENCY_MILLIS , timer, 0)
 end
 
-def printOpenGLError
-	glErr = glGetError()
-	if (glErr != GL_NO_ERROR)
-		puts "glError - #{gluErrorString(glErr)}"
-		raise
-	end
-end
-
 def getUniLoc(program, name)
 	loc = glGetUniformLocation(program, name)
 	
 	if (loc == -1)
 		puts "No such uniform named #{name}"
 	end
-	printOpenGLError()
 	return loc
 end
 
@@ -316,14 +307,12 @@ def installBrickShaders(vs_fname,fs_fname)
 	# Compile the brick vertex shader, and print out
 	#	the compiler log file.
 	glCompileShader(brickVS)
-	printOpenGLError()
   vertCompiled = glGetShaderiv(brickVS, GL_COMPILE_STATUS)
 	puts "Shader InfoLog:\n#{glGetShaderInfoLog(brickVS)}\n"
 	
 	# Compile the brick fragment shader, and print out
 	# the compiler log file.
 	glCompileShader(brickFS)
-	printOpenGLError()
   fragCompiled = glGetShaderiv(brickFS, GL_COMPILE_STATUS)
 	puts "Shader InfoLog:\n#{glGetShaderInfoLog(brickFS)}\n"
 	
@@ -333,8 +322,7 @@ def installBrickShaders(vs_fname,fs_fname)
 	glAttachShader(brickProg,brickVS)
 	glAttachShader(brickProg,brickFS)
 	# Link the program object and print out the info log
-	glLinkProgram(brickProg)	
-	printOpenGLError()
+	glLinkProgram(brickProg)
 	linked = glGetProgramiv(brickProg,GL_LINK_STATUS)
 	puts "Program InfoLog:\n#{glGetProgramInfoLog(brickProg)}\n"
 	return false if linked==0

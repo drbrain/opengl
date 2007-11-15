@@ -2441,7 +2441,7 @@ gl_LoadMatrixf(obj,arg1)
 VALUE obj,arg1;
 {
 	GLfloat m[4*4];
-	ary2cmat4x4flt(arg1, m);
+	ary2cmatfloat(arg1, m, 4, 4);
 	glLoadMatrixf(m);
 	CHECK_GLERROR
 	return Qnil;
@@ -2452,7 +2452,7 @@ gl_LoadMatrixd(obj,arg1)
 VALUE obj,arg1;
 {
 	GLdouble m[4*4];
-	ary2cmat4x4dbl(arg1, m);
+	ary2cmatdouble(arg1, m, 4, 4);
 	glLoadMatrixd(m);
 	CHECK_GLERROR
 	return Qnil;
@@ -2463,7 +2463,7 @@ gl_MultMatrixf(obj,arg1)
 VALUE obj,arg1;
 {
 	GLfloat m[4*4];
-	ary2cmat4x4flt(arg1, m);
+	ary2cmatfloat(arg1, m, 4, 4);
 	glMultMatrixf(m);
 	CHECK_GLERROR
 	return Qnil;
@@ -2474,7 +2474,7 @@ gl_MultMatrixd(obj,arg1)
 VALUE obj,arg1;
 {
 	GLdouble m[4*4];
-	ary2cmat4x4dbl(arg1, m);
+	ary2cmatdouble(arg1, m, 4, 4);
 	glMultMatrixd(m);
 	CHECK_GLERROR
 	return Qnil;

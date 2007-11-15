@@ -498,8 +498,8 @@ VALUE obj, arg1,arg2,arg3,arg4;
 	GLint viewport[4];
 
 	GetNURBS(arg1, ndata);
-	ary2cmat4x4flt(arg2,mdl_mtx);
-	ary2cmat4x4flt(arg3,persp_mtx);
+	ary2cmatfloat(arg2,mdl_mtx,4,4);
+	ary2cmatfloat(arg3,persp_mtx,4,4);
 	ary2cint(arg4,viewport,4);
 
 	gluLoadSamplingMatrices(ndata->nobj,mdl_mtx,persp_mtx,viewport);
@@ -1199,8 +1199,8 @@ VALUE obj;
 			glGetIntegerv(GL_VIEWPORT, vport);
 			break;
 		case 6:
-			ary2cmat4x4dbl(args[3], mdl_mtx);
-			ary2cmat4x4dbl(args[4], prj_mtx);
+			ary2cmatdouble(args[3], mdl_mtx, 4, 4);
+			ary2cmatdouble(args[4], prj_mtx, 4, 4);
 			ary2cint(args[5], vport, 4);
 			break;
 		default:
@@ -1240,8 +1240,8 @@ VALUE obj;
 			glGetIntegerv(GL_VIEWPORT, vport);
 			break;
 		case 6:
-			ary2cmat4x4dbl(args[3], mdl_mtx);
-			ary2cmat4x4dbl(args[4], prj_mtx);
+			ary2cmatdouble(args[3], mdl_mtx, 4, 4);
+			ary2cmatdouble(args[4], prj_mtx, 4, 4);
 			ary2cint(args[5], vport, 4);
 			break;
 		default:

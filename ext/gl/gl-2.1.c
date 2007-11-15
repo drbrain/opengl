@@ -25,17 +25,12 @@ VALUE obj,arg1,arg2,arg3,arg4; \
 	GLsizei count; \
 	GLboolean transpose; \
 	GLfloat *value;	\
-	VALUE ary; \
 	LOAD_GL_FUNC(glUniformMatrix##_x_##x##_y_##fv) \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLint)NUM2INT(arg2); \
 	transpose = (GLboolean)NUM2INT(arg3); \
-	ary = rb_ary_new(); \
-	mary2ary(arg4, ary); \
-	if (RARRAY(ary)->len!=(_x_*_y_*count)) \
-		rb_raise(rb_eArgError, "Incorrect array length %i",RARRAY(ary)->len); \
 	value = ALLOC_N(GLfloat, _x_*_y_*count); \
-	ary2cflt(arg4,value,_x_*_y_*count); \
+	ary2cmatfloat(arg4,value, _x_, _y_*count); \
 	fptr_glUniformMatrix##_x_##x##_y_##fv(location,count,transpose,value); \
 	xfree(value); \
 	CHECK_GLERROR \

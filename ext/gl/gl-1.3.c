@@ -366,7 +366,7 @@ GLMULTITEXCOORD_VFUNC(i)
 GLMULTITEXCOORD_VFUNC(s)
 #undef GLTEXCOORD_VFUNC
 
-#define TRANSPOSEMATRIX_FUNC(_name_,_type_,_shorttype_) \
+#define TRANSPOSEMATRIX_FUNC(_name_,_type_) \
 static void (APIENTRY * fptr_gl##_name_)(const _type_[]); \
 static VALUE \
 gl_##_name_(obj,arg1) \
@@ -374,16 +374,16 @@ VALUE obj,arg1; \
 { \
 	_type_ m[4*4]; \
 	LOAD_GL_FUNC(gl##_name_) \
-	ary2cmat4x4##_shorttype_(arg1, m); \
+	ary2cmat##_type_(arg1, m, 4, 4); \
 	fptr_gl##_name_(m); \
 	CHECK_GLERROR \
 	return Qnil; \
 }
 
-TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixf,GLfloat,flt)
-TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixd,GLdouble,dbl)
-TRANSPOSEMATRIX_FUNC(MultTransposeMatrixf,GLfloat,flt)
-TRANSPOSEMATRIX_FUNC(MultTransposeMatrixd,GLdouble,dbl)
+TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixf,float)
+TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixd,double)
+TRANSPOSEMATRIX_FUNC(MultTransposeMatrixf,float)
+TRANSPOSEMATRIX_FUNC(MultTransposeMatrixd,double)
 
 #undef TRANSPOSEMATRIX_FUNC
 
