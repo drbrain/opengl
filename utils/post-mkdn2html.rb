@@ -29,6 +29,8 @@
 # Prerequisites:
 # * This script expects that you have GNU source-highlight installed.
 
+require 'cgi'
+
 if ARGV.size != 2
     puts "Please don't trifle with me."
     exit 1
@@ -55,6 +57,11 @@ while true
         code_to_convert = $2
         post_stuff = $'
 
+				# BlueCloth already escapes html tags, so this is to avoid
+				# double escaping by source-highlight
+				# - Jan
+				code_to_convert = CGI::unescapeHTML(code_to_convert)
+        
         # Quick usage note on source-highlight:
         # 
         #     source-highlight -s ruby -i $filename -o $filename

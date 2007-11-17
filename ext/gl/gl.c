@@ -113,6 +113,8 @@ GLboolean CheckExtension(const char *name)
 	return res;	
 }
 
+/* Checks if given OpenGL version, extension or function is available
+ */
 static VALUE
 IsAvailable(obj,arg1)
 VALUE obj,arg1;

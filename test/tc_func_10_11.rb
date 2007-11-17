@@ -137,6 +137,26 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_b)
 		glPopMatrix()
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m_a)
+	
+		# 3
+		m = Matrix.rows([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
+		glMatrixMode(GL_MODELVIEW)
+		glLoadMatrixf(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a)
+		glLoadIdentity()
+		glLoadMatrixd(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a)
+		glLoadIdentity()
+		glMultMatrixf(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a)
+		glLoadIdentity()
+		glMultMatrixd(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a)
+
+		assert_raise ArgumentError do glLoadMatrixf([1,2,3,4]) end
+		assert_raise ArgumentError do glLoadMatrixd([1,2,3,4]) end
+		assert_raise ArgumentError do glMultMatrixf([1,2,3,4]) end
+		assert_raise ArgumentError do glMultMatrixd([1,2,3,4]) end
 	end
 
 	def test_gledge

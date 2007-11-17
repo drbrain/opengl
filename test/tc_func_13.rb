@@ -68,6 +68,26 @@ class Test_13 < Test::Unit::TestCase
 		glLoadIdentity()
 		glMultTransposeMatrixd(m_b)
 		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_b)
+
+		# 2
+		m = Matrix.rows([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
+		glMatrixMode(GL_MODELVIEW)
+		glLoadTransposeMatrixf(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		glLoadIdentity()
+		glLoadTransposeMatrixd(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		glLoadIdentity()
+		glMultTransposeMatrixf(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		glLoadIdentity()
+		glMultTransposeMatrixd(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+
+		assert_raise ArgumentError do glLoadTransposeMatrixf([1,2,3,4]) end
+		assert_raise ArgumentError do glLoadTransposeMatrixd([1,2,3,4]) end
+		assert_raise ArgumentError do glMultTransposeMatrixf([1,2,3,4]) end
+		assert_raise ArgumentError do glMultTransposeMatrixd([1,2,3,4]) end
 	end
 	
 	def test_texturecompression

@@ -7,7 +7,7 @@ If you are new to OpenGL, you can start by visiting [OpenGL homepage](http://www
 , reading the [OpenGL Programming Guide](http://opengl.org/documentation/books/#the_opengl_programming_guide_the_official_guide_to_learning_opengl_version) (also known as Red Book) or going to [NeHe's tutorials page](http://nehe.gamedev.net/).
 
 If you are new to Ruby, [the ruby-lang website](http://www.ruby-lang.org/en/documentation/) contains lots of
-documentation and manuals on Ruby.
+documentation and manuals for Ruby.
 
 Table of Contents
 ==============
@@ -17,6 +17,7 @@ Basics:
 * [Return values](#return_values)<br/>
 * [Matrices](#matrices)<br/>
 * [Textures and other raw data](#textures)<br/>
+* [Error Checking](#error_checking)<br/>
 * [Examples](#examples)<br/>
 
 Advanced stuff:
@@ -144,17 +145,29 @@ value or array:
 <a name="matrices"></a>
 Matrices
 -------------
-Matrices are passed and received as ruby array :
+Matrices are passed and received as ruby array, or as ruby Matrix objects:
 
 	{{ruby}}
-	matrix_a = [ [  0, 1, 2, 3 ],
+	matrix_a = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+	matrix_b = [ [  0, 1, 2, 3 ],
 	             [  4, 5, 6, 7 ],
 	             [  8, 9,10,11 ],
 	             [ 12,13,14,15 ] ]
-	matrix_b = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+	matrix_c = Matrix.rows( [ [  0, 1, 2, 3 ],
+	                          [  4, 5, 6, 7 ],
+	                          [  8, 9,10,11 ],
+	                          [ 12,13,14,15 ] ] )
 	...
 	glLoadMatrixf(matrix_a)
-	glLoadMatrixf(matrix_b) # same result
+	glLoadMatrixf(matrix_b) 
+	glLoadMatrixf(matrix_c) # same result
+
+You may also create your own matrix class and pass it this way, provided that it
+is convertible to array (has 'to_a' method).
+
+Note that as OpenGL uses column-major
+notation for matrices, you may need to call transpose() when working with
+row-major matrices or arrays in ruby.
 
 <a name="textures"></a>
 Textures and other raw data
@@ -202,6 +215,39 @@ Reverse works just the same:
 	# now convert it to ruby array
 	texture = data.unpack("f*")
 	...
+
+<a name="error_checking"></a>
+Error Checking
+--------------
+Starting with version 0.60.0, ruby-opengl provides automatic checking of OpenGL errors.
+Functions:
+
+	{{ruby}}
+	Gl.enable_error_checking
+	Gl.disable_error_checking
+	Gl.is_error_checking_enabled? # true/false
+
+When the checking is enabled, glGetError() is executed after each OpenGL call, and should error
+occur, Gl::Error exception is raised:
+
+	{{ruby}}
+	Gl.enable_error_checking
+	...
+	begin 
+	  ...
+	  glEnable(GL_TRUE) # will raise exception
+	  ...
+	rescue Gl::Error => err
+		# err.id contains the OpenGL error ID
+		if (err.id == GL_INVALID_ENUM)
+			puts "Oh noes! You passed invalid enum!"
+			...
+		end
+		...
+	end
+
+It is usually good idea to enable error checking for all your code, as OpenGL errors have habit to pop-up in
+unexpected places, and the performance hit per each OpenGL call isn't that big in Ruby.
 
 <a name="examples"></a>
 The Examples
@@ -304,10 +350,10 @@ Buffer Objects
 -----------
 Once again, in current state buffer objects (VBOs in particular) are not very efficient in ruby-opengl.
 Similiary to vertex arrays, you can specify/read the data as strings using .pack and .unpack functions
-with ruby arrays, but the mapping the buffer afterwards is read-only. 
+with ruby arrays, but mapping of the buffer afterwards is read-only. 
 
 Like in C, buffer binding affects some functions in way that if particular buffer is bound, the related
-funcions (for example glTexImage) take integer offset in place of data string argument. This is also true
+functions (for example glTexImage) take integer offset in place of data string argument. This is also true
 for getter functions (e.g. glGetTexImage) - instead of returning the data string, they take offset as they're
 last argument (so in ruby they take one extra argument), and will write the data in the bound buffer as expected.
 
@@ -326,8 +372,8 @@ VBO example:
 	# operate on byte level
 	glBufferData(GL_ARRAY_BUFFER,6*4,data,GL_DYNAMIC_DRAW)
 	...
-	# here instead of specyfing the data, you pass '0' as
-	# offset to the bound buffer
+	# here instead of specyfing the data, you pass '0' (or
+	# positive integer) as offset to the bound buffer
 	glVertexPointer(2,GL_FLOAT,0,0)
 	...
 	glEnableClientState(GL_VERTEX_ARRAY)

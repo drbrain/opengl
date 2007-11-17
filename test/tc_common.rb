@@ -22,6 +22,7 @@ end
 require 'test/unit'
 require 'gl'
 require 'glut'
+require 'matrix'
 include Gl
 include Glut
 

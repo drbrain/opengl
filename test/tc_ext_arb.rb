@@ -50,6 +50,26 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		glLoadIdentity()
 		glMultTransposeMatrixdARB(m_b)
 		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_b)
+
+		# 2
+		m = Matrix.rows([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
+		glMatrixMode(GL_MODELVIEW)
+		glLoadTransposeMatrixfARB(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		glLoadIdentity()
+		glLoadTransposeMatrixdARB(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		glLoadIdentity()
+		glMultTransposeMatrixfARB(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		glLoadIdentity()
+		glMultTransposeMatrixdARB(m)
+		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+
+		assert_raise ArgumentError do glLoadTransposeMatrixfARB([1,2,3,4]) end
+		assert_raise ArgumentError do glLoadTransposeMatrixdARB([1,2,3,4]) end
+		assert_raise ArgumentError do glMultTransposeMatrixfARB([1,2,3,4]) end
+		assert_raise ArgumentError do glMultTransposeMatrixdARB([1,2,3,4]) end
 	end
 
 	def test_gl_arb_multisample

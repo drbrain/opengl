@@ -97,10 +97,12 @@ class Test_GLU < Test::Unit::TestCase
 		assert_equal(pos,[$window_size,$window_size,1])
 
 		mp = glGetDoublev(GL_PROJECTION_MATRIX)
-		mm = glGetDoublev(GL_MODELVIEW_MATRIX)
+		mm = Matrix.rows(glGetDoublev(GL_MODELVIEW_MATRIX))
 		view = glGetDoublev(GL_VIEWPORT)
 		pos = gluProject(1,1,1,mp,mm,view)
 		assert_equal(pos,[$window_size,$window_size,1])
+
+		assert_raise ArgumentError do pos = gluProject(1,1,1,mp,[1,2,3,4],view) end
 	end
 
 	def test_gluunproject
@@ -108,10 +110,11 @@ class Test_GLU < Test::Unit::TestCase
 		assert_equal(pos,[1,1,1])
 		
 		mp = glGetDoublev(GL_PROJECTION_MATRIX)
-		mm = glGetDoublev(GL_MODELVIEW_MATRIX)
+		mm = Matrix.rows(glGetDoublev(GL_MODELVIEW_MATRIX))
 		view = glGetDoublev(GL_VIEWPORT)
 		pos = gluUnProject($window_size,$window_size,1,mp,mm,view)
 		assert_equal(pos,[1,1,1])
+		assert_raise ArgumentError do	pos = gluUnProject($window_size,$window_size,1,mp,[1,2,3,4],view) end
 	end
 
 	def test_glupickmatrix
@@ -192,14 +195,16 @@ class Test_GLU < Test::Unit::TestCase
 		end
 	
 		m = [[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]]
+		m2 = Matrix.rows(m)
 		
 		n = gluNewNurbsRenderer()
 		gluNurbsCallback(n,GLU_ERROR,n_error)
 		gluNurbsProperty(n,GLU_SAMPLING_TOLERANCE,40)
 		assert_equal(gluGetNurbsProperty(n,GLU_SAMPLING_TOLERANCE),40)
 		
-		gluLoadSamplingMatrices(n,m,m,glGetIntegerv(GL_VIEWPORT))
-		
+		gluLoadSamplingMatrices(n,m,m2,glGetIntegerv(GL_VIEWPORT))
+		assert_raise ArgumentError do gluLoadSamplingMatrices(n,m,[1,2,3,4],glGetIntegerv(GL_VIEWPORT)) end
+
 		knots = [0,0,0,0,1,1,1,1]
 		ctlpoints_curve = [[50,50,0],[400,50,0],[400,400,0],[50,400,0]]
 		

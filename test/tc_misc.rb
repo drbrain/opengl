@@ -38,4 +38,18 @@ class Test_misc < Test::Unit::TestCase
 		assert_equal(is_available?("GL_ARB_multitexture"),true)
 		assert_equal(is_available?("GL_NON_EXISTENT"),false)
 	end
+
+	def test_errorchecking
+		Gl.disable_error_checking
+		assert_equal(Gl.is_error_checking_enabled?,false)
+		Gl.enable_error_checking
+		assert_equal(Gl.is_error_checking_enabled?,true)
+		begin
+			glEnable(0)	
+		rescue Gl::Error => err
+		  assert_equal(err.id,GL_INVALID_ENUM)
+		else
+			assert(false) # error not detected
+		end
+	end
 end
