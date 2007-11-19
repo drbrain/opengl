@@ -26,7 +26,7 @@ GL_ARB_depth_texture,Supported,0.50
 GL_ARB_shadow,Supported,0.50
 GL_ARB_shadow_ambient,Supported,0.50
 GL_ARB_window_pos,Unsupported,N/A
-GL_ARB_vertex_program,Unsupported,N/A
+GL_ARB_vertex_program,Supported,0.60
 GL_ARB_fragment_program,Unsupported,N/A
 GL_ARB_vertex_buffer_object,Unsupported,N/A
 GL_ARB_occlusion_query,Unsupported,N/A

@@ -68,6 +68,9 @@
 
 /* */
 
+/* at least GL_MAX_VERTEX_ATTRIBS - usually 16 or 32 on today's high-end cards */
+#define _MAX_VERTEX_ATTRIBS 64
+
 extern VALUE inside_begin_end;
 
 typedef struct RArray RArray;
@@ -440,13 +443,13 @@ static inline void *load_gl_function(const char *name,int raise)
   Some checking is implicit in _conversion_ argument - e.g. NUM2INT makes sure that
   user is really passing type that can be converted to INT, otherwire raises. */
 
-#define ARGLIST0 obj
-#define ARGLIST1 obj,arg1
-#define ARGLIST2 obj,arg1,arg2
-#define ARGLIST3 obj,arg1,arg2,arg3
-#define ARGLIST4 obj,arg1,arg2,arg3,arg4
-#define ARGLIST5 obj,arg1,arg2,arg3,arg4,arg5
-#define ARGLIST6 obj,arg1,arg2,arg3,arg4,arg5,arg6
+#define ARGLIST0 
+#define ARGLIST1 ,arg1
+#define ARGLIST2 ,arg1,arg2
+#define ARGLIST3 ,arg1,arg2,arg3
+#define ARGLIST4 ,arg1,arg2,arg3,arg4
+#define ARGLIST5 ,arg1,arg2,arg3,arg4,arg5
+#define ARGLIST6 ,arg1,arg2,arg3,arg4,arg5,arg6
 
 #define TYPELIST0(_ctype_) void
 #define TYPELIST1(_ctype_) _ctype_
@@ -466,8 +469,8 @@ static inline void *load_gl_function(const char *name,int raise)
 
 #define GL_SIMPLE_FUNC(_name_,_numparams_,_ctype_,_conversion_) \
 static VALUE \
-gl_##_name_(ARGLIST##_numparams_) \
-VALUE ARGLIST##_numparams_; \
+gl_##_name_(obj ARGLIST##_numparams_) \
+VALUE obj ARGLIST##_numparams_; \
 { \
 	gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
 	CHECK_GLERROR \
@@ -477,8 +480,8 @@ VALUE ARGLIST##_numparams_; \
 #define GL_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_) \
 static void (APIENTRY * fptr_gl##_name_)( TYPELIST##_numparams_(_ctype_) ); \
 static VALUE \
-gl_##_name_(ARGLIST##_numparams_) \
-VALUE ARGLIST##_numparams_; \
+gl_##_name_(obj ARGLIST##_numparams_) \
+VALUE obj ARGLIST##_numparams_; \
 { \
 	LOAD_GL_FUNC(gl##_name_) \
 	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
@@ -490,8 +493,8 @@ VALUE ARGLIST##_numparams_; \
 #define GL_EXT_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_,_extensionname_) \
 static void (APIENTRY * fptr_gl##_name_)( TYPELIST##_numparams_(_ctype_) ); \
 static VALUE \
-gl_##_name_(ARGLIST##_numparams_) \
-VALUE ARGLIST##_numparams_; \
+gl_##_name_(obj ARGLIST##_numparams_) \
+VALUE obj ARGLIST##_numparams_; \
 { \
 	LOAD_GL_EXT_FUNC(gl##_name_,_extensionname_) \
 	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \

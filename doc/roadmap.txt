@@ -2,7 +2,6 @@ Roadmap
 =======
 
 * Add ARB and other core OpenGL extensions
-* Write better getting started tutorial
 * Write comprehensive API documentation
 * Create more example code
 * Support all pixelstore modes (currently forced to default values by
@@ -10,12 +9,12 @@ Roadmap
 * Add direct mapping on ruby types for vertex arrays, buffers and image data to allow
   high performance data operations from within ruby (currently data has to be converted to/from string when being passed to OpenGL and so does not allow fast in-place modifications)
 	- this should be modeled after Perl's OpenGL::Array
+* Add image handling wrapper for easy image handling (textures,screenshots) using RMagick (ImageMagick) - this may not be needed as API as using RMagick to do this stuff is trivial, maybe writing usage guide as part of tutorial is better alternative
 
 Possible Features
 ========
 * Add **all** OpenGL extensions (some are obsolete or not really used or useful at all)
 * Support for r/w VBO buffer mapping - gl(Un)MapBuffer (is it needed?)
-* Add image handling wrapper for easy image handling (textures,screenshots) using RMagick (ImageMagick) - this may not be needed as API as using RMagick to do this stuff is trivial, maybe writing usage guide as part of tutorial is better alternative
 
 <br/>
 <br/>

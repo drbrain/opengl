@@ -240,7 +240,7 @@ occur, Gl::Error exception is raised:
 	rescue Gl::Error => err
 		# err.id contains the OpenGL error ID
 		if (err.id == GL_INVALID_ENUM)
-			puts "Oh noes! You passed invalid enum!"
+			puts "Oh noes! You used invalid enum!"
 			...
 		end
 		...
@@ -328,7 +328,7 @@ Vertex Arrays
 -----------
 In current state, vertex arrays are not very efficient in ruby-opengl, as it is not possible to change
 the array content once it is specified, and there is overhead for converting between ruby and C representation
-on numbers. Using display lists for static and immediate mode for dynamic objects is recommended instead.
+of numbers. Using display lists for static and immediate mode for dynamic objects is recommended instead.
 
 You can specify the data the same way as [texture data](#textures)
 , using Array#pack function. Once the array is specified, the string is frozen and the array cannot

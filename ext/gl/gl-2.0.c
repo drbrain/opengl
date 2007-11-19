@@ -470,86 +470,39 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (APIENTRY * fptr_glGetVertexAttribdv)(GLuint,GLenum,GLdouble *);
-static VALUE
-gl_GetVertexAttribdv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLenum pname;
-	GLdouble params[4] = {0.0,0.0,0.0,0.0};
-	GLint size;
-	GLint i;
-	VALUE retary;
-	LOAD_GL_FUNC(glGetVertexAttribdv)
-	index = (GLuint)NUM2UINT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	if (pname==GL_CURRENT_VERTEX_ATTRIB)
-		size = 4;
-	else
-		size = 1;
-	fptr_glGetVertexAttribdv(index,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
+#define GETVERTEXATTRIB_FUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLuint index; \
+	GLenum pname; \
+	_type_ params[4] = {0,0,0,0}; \
+	GLint size; \
+	GLint i; \
+	VALUE retary; \
+	LOAD_GL_FUNC(gl##_name_) \
+	index = (GLuint)NUM2UINT(arg1); \
+	pname = (GLenum)NUM2INT(arg2); \
+	if (pname==GL_CURRENT_VERTEX_ATTRIB) \
+		size = 4; \
+	else \
+		size = 1; \
+	fptr_gl##_name_(index,pname,params); \
+	retary = rb_ary_new2(size); \
+	for(i=0;i<size;i++) \
+		rb_ary_push(retary, _conv_(params[i])); \
+	CHECK_GLERROR \
+	return retary; \
 }
 
-static void (APIENTRY * fptr_glGetVertexAttribfv)(GLuint,GLenum,GLfloat *);
-static VALUE
-gl_GetVertexAttribfv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLenum pname;
-	GLfloat params[4] = {0.0,0.0,0.0,0.0};
-	GLint size;
-	GLint i;
-	VALUE retary;
-	LOAD_GL_FUNC(glGetVertexAttribfv)
-	index = (GLuint)NUM2UINT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	if (pname==GL_CURRENT_VERTEX_ATTRIB)
-		size = 4;
-	else
-		size = 1;
-	fptr_glGetVertexAttribfv(index,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
-}
+GETVERTEXATTRIB_FUNC(GetVertexAttribdv,GLdouble,rb_float_new)
+GETVERTEXATTRIB_FUNC(GetVertexAttribfv,GLfloat,rb_float_new)
+GETVERTEXATTRIB_FUNC(GetVertexAttribiv,GLint,INT2NUM)
+#undef GETVERTEXATTRIB_FUNC
 
-static void (APIENTRY * fptr_glGetVertexAttribiv)(GLuint,GLenum,GLint *);
-static VALUE
-gl_GetVertexAttribiv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLenum pname;
-	GLint params[4] = {0,0,0,0};
-	GLint size;
-	GLint i;
-	VALUE retary;
-	LOAD_GL_FUNC(glGetVertexAttribiv)
-	index = (GLuint)NUM2UINT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	if (pname==GL_CURRENT_VERTEX_ATTRIB)
-		size = 4;
-	else
-		size = 1;
-	fptr_glGetVertexAttribiv(index,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2NUM(params[i]));
-	CHECK_GLERROR
-	return retary;
-}
-
-#define _MAX_VERTEX_ATTRIBS 64 /* at least GL_MAX_VERTEX_ATTRIBS - usually 16 or 32 on today's high-end cards */
-static VALUE g_VertexAttrib_ptr[_MAX_VERTEX_ATTRIBS];
+VALUE g_VertexAttrib_ptr[_MAX_VERTEX_ATTRIBS];
 
 static void (APIENTRY * fptr_glGetVertexAttribPointerv)(GLuint,GLenum,GLvoid **);
 static VALUE
@@ -898,464 +851,74 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glVertexAttrib1d)(GLuint,GLdouble);
-static VALUE
-gl_VertexAttrib1d(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLdouble v0;
-	LOAD_GL_FUNC(glVertexAttrib1d)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLdouble)NUM2DBL(arg2);
-	fptr_glVertexAttrib1d(index,v0);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib1f)(GLuint,GLfloat);
-static VALUE
-gl_VertexAttrib1f(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLfloat v0;
-	LOAD_GL_FUNC(glVertexAttrib1f)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLfloat)NUM2DBL(arg2);
-	fptr_glVertexAttrib1f(index,v0);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib1s)(GLuint,GLshort);
-static VALUE
-gl_VertexAttrib1s(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLshort v0;
-	LOAD_GL_FUNC(glVertexAttrib1s)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLshort)NUM2INT(arg2);
-	fptr_glVertexAttrib1s(index,v0);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib2d)(GLuint,GLdouble,GLdouble);
-static VALUE
-gl_VertexAttrib2d(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLuint index;
-	GLdouble v0;
-	GLdouble v1;
-	LOAD_GL_FUNC(glVertexAttrib2d)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLdouble)NUM2DBL(arg2);
-	v1 = (GLdouble)NUM2DBL(arg3);
-	fptr_glVertexAttrib2d(index,v0,v1);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib2f)(GLuint,GLfloat,GLfloat);
-static VALUE
-gl_VertexAttrib2f(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLuint index;
-	GLfloat v0;
-	GLfloat v1;
-	LOAD_GL_FUNC(glVertexAttrib2f)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLfloat)NUM2DBL(arg2);
-	v1 = (GLfloat)NUM2DBL(arg3);
-	fptr_glVertexAttrib2f(index,v0,v1);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib2s)(GLuint,GLshort,GLshort);
-static VALUE
-gl_VertexAttrib2s(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLuint index;
-	GLshort v0;
-	GLshort v1;
-	LOAD_GL_FUNC(glVertexAttrib2s)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLshort)NUM2INT(arg2);
-	v1 = (GLshort)NUM2INT(arg3);
-	fptr_glVertexAttrib2s(index,v0,v1);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib3d)(GLuint,GLdouble,GLdouble,GLdouble);
-static VALUE
-gl_VertexAttrib3d(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLuint index;
-	GLdouble v0;
-	GLdouble v1;
-	GLdouble v2;
-	LOAD_GL_FUNC(glVertexAttrib3d)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLdouble)NUM2DBL(arg2);
-	v1 = (GLdouble)NUM2DBL(arg3);
-	v2 = (GLdouble)NUM2DBL(arg4);
-	fptr_glVertexAttrib3d(index,v0,v1,v2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib3f)(GLuint,GLfloat,GLfloat,GLfloat);
-static VALUE
-gl_VertexAttrib3f(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLuint index;
-	GLfloat v0;
-	GLfloat v1;
-	GLfloat v2;
-	LOAD_GL_FUNC(glVertexAttrib3f)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLfloat)NUM2DBL(arg2);
-	v1 = (GLfloat)NUM2DBL(arg3);
-	v2 = (GLfloat)NUM2DBL(arg4);
-	fptr_glVertexAttrib3f(index,v0,v1,v2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib3s)(GLuint,GLshort,GLshort,GLshort);
-static VALUE
-gl_VertexAttrib3s(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLuint index;
-	GLshort v0;
-	GLshort v1;
-	GLshort v2;
-	LOAD_GL_FUNC(glVertexAttrib3s)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLshort)NUM2INT(arg2);
-	v1 = (GLshort)NUM2INT(arg3);
-	v2 = (GLshort)NUM2INT(arg4);
-	fptr_glVertexAttrib3s(index,v0,v1,v2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4Nbv)(GLuint,GLbyte *);
-static VALUE
-gl_VertexAttrib4Nbv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLbyte v[4];
-	LOAD_GL_FUNC(glVertexAttrib4Nbv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cbyte(arg2,v,4);
-	fptr_glVertexAttrib4Nbv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4Niv)(GLuint,GLint *);
-static VALUE
-gl_VertexAttrib4Niv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLint v[4];
-	LOAD_GL_FUNC(glVertexAttrib4Niv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cint(arg2,v,4);
-	fptr_glVertexAttrib4Niv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4Nsv)(GLuint,GLshort *);
-static VALUE
-gl_VertexAttrib4Nsv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLshort v[4];
-	LOAD_GL_FUNC(glVertexAttrib4Nsv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cshort(arg2,v,4);
-	fptr_glVertexAttrib4Nsv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4Nub)(GLuint,GLubyte,GLubyte,GLubyte,GLubyte);
-static VALUE
-gl_VertexAttrib4Nub(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLuint index;
-	GLubyte v0;
-	GLubyte v1;
-	GLubyte v2;
-	GLubyte v3;
-	LOAD_GL_FUNC(glVertexAttrib4Nub)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLubyte)NUM2INT(arg2);
-	v1 = (GLubyte)NUM2INT(arg3);
-	v2 = (GLubyte)NUM2INT(arg4);
-	v3 = (GLubyte)NUM2INT(arg5);
-	fptr_glVertexAttrib4Nub(index,v0,v1,v2,v3);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4Nubv)(GLuint,GLubyte *);
-static VALUE
-gl_VertexAttrib4Nubv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLubyte v[4];
-	LOAD_GL_FUNC(glVertexAttrib4Nubv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cubyte(arg2,v,4);
-	fptr_glVertexAttrib4Nubv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4Nuiv)(GLuint,GLuint *);
-static VALUE
-gl_VertexAttrib4Nuiv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLuint v[4];
-	LOAD_GL_FUNC(glVertexAttrib4Nuiv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cuint(arg2,v,4);
-	fptr_glVertexAttrib4Nuiv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4Nusv)(GLuint,GLushort *);
-static VALUE
-gl_VertexAttrib4Nusv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLushort v[4];
-	LOAD_GL_FUNC(glVertexAttrib4Nusv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cushort(arg2,v,4);
-	fptr_glVertexAttrib4Nusv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4bv)(GLuint,GLbyte *);
-static VALUE
-gl_VertexAttrib4bv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLbyte v[4];
-	LOAD_GL_FUNC(glVertexAttrib4bv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cbyte(arg2,v,4);
-	fptr_glVertexAttrib4bv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4d)(GLuint,GLdouble,GLdouble,GLdouble,GLdouble);
-static VALUE
-gl_VertexAttrib4d(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLuint index;
-	GLdouble v0;
-	GLdouble v1;
-	GLdouble v2;
-	GLdouble v3;
-	LOAD_GL_FUNC(glVertexAttrib4d)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLdouble)NUM2DBL(arg2);
-	v1 = (GLdouble)NUM2DBL(arg3);
-	v2 = (GLdouble)NUM2DBL(arg4);
-	v3 = (GLdouble)NUM2DBL(arg5);
-	fptr_glVertexAttrib4d(index,v0,v1,v2,v3);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4f)(GLuint,GLfloat,GLfloat,GLfloat,GLfloat);
-static VALUE
-gl_VertexAttrib4f(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLuint index;
-	GLfloat v0;
-	GLfloat v1;
-	GLfloat v2;
-	GLfloat v3;
-	LOAD_GL_FUNC(glVertexAttrib4f)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLfloat)NUM2DBL(arg2);
-	v1 = (GLfloat)NUM2DBL(arg3);
-	v2 = (GLfloat)NUM2DBL(arg4);
-	v3 = (GLfloat)NUM2DBL(arg5);
-	fptr_glVertexAttrib4f(index,v0,v1,v2,v3);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4iv)(GLuint,GLint *);
-static VALUE
-gl_VertexAttrib4iv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLint v[4];
-	LOAD_GL_FUNC(glVertexAttrib4iv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cint(arg2,v,4);
-	fptr_glVertexAttrib4iv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4s)(GLuint,GLshort,GLshort,GLshort,GLshort);
-static VALUE
-gl_VertexAttrib4s(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLuint index;
-	GLshort v0;
-	GLshort v1;
-	GLshort v2;
-	GLshort v3;
-	LOAD_GL_FUNC(glVertexAttrib4s)
-	index = (GLuint)NUM2UINT(arg1);
-	v0 = (GLshort)NUM2INT(arg2);
-	v1 = (GLshort)NUM2INT(arg3);
-	v2 = (GLshort)NUM2INT(arg4);
-	v3 = (GLshort)NUM2INT(arg5);
-	fptr_glVertexAttrib4s(index,v0,v1,v2,v3);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4ubv)(GLuint,GLubyte *);
-static VALUE
-gl_VertexAttrib4ubv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLubyte v[4];
-	LOAD_GL_FUNC(glVertexAttrib4ubv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cubyte(arg2,v,4);
-	fptr_glVertexAttrib4ubv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4uiv)(GLuint,GLuint *);
-static VALUE
-gl_VertexAttrib4uiv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLuint v[4];
-	LOAD_GL_FUNC(glVertexAttrib4uiv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cuint(arg2,v,4);
-	fptr_glVertexAttrib4uiv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glVertexAttrib4usv)(GLuint,GLushort *);
-static VALUE
-gl_VertexAttrib4usv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint index;
-	GLushort v[4];
-	LOAD_GL_FUNC(glVertexAttrib4usv)
-	index = (GLuint)NUM2UINT(arg1);
-	ary2cushort(arg2,v,4);
-	fptr_glVertexAttrib4usv(index,v);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-#define GLVERTEXATTRIB_VFUNC(_type_) \
+#define VERTEXATTRIB_FUNC(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,TYPELIST##_size_(_type_)); \
 static VALUE \
-gl_VertexAttrib##_type_##v(argc,argv,obj) \
-int argc; \
-VALUE *argv; \
-VALUE obj; \
+gl_##_name_(obj, index ARGLIST##_size_) \
+VALUE obj, index ARGLIST##_size_ ; \
 { \
-	VALUE args[5]; \
-	RArray *ary; \
-	switch (rb_scan_args(argc, argv, "23", &args[0], &args[1], &args[2], &args[3], &args[4])) { \
-	case 2: \
-		if (TYPE(args[1]) == T_ARRAY) { \
-		ary = RARRAY(args[1]); \
-		switch (ary->len) { \
-			case 1: \
-			gl_VertexAttrib1##_type_(obj,args[0],ary->ptr[0]); \
-			break; \
-			case 2: \
-			gl_VertexAttrib2##_type_(obj,args[0],ary->ptr[0],ary->ptr[1]); \
-			break; \
-			case 3: \
-			gl_VertexAttrib3##_type_(obj,args[0],ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
-			break; \
-			case 4: \
-			gl_VertexAttrib4##_type_(obj,args[0],ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
-			break; \
-			default: \
-			rb_raise(rb_eRuntimeError, "glVertex vertex num error!:%d", ary->len); \
-		} \
-		} \
-		else { \
-			gl_VertexAttrib1##_type_(obj,args[0], args[1]); \
-			break; \
-		} \
-		break; \
-	case 3: \
-		gl_VertexAttrib2##_type_(obj,args[0], args[1], args[2]); \
-		break; \
-	case 4: \
-		gl_VertexAttrib3##_type_(obj,args[0], args[1], args[2], args[3]); \
-		break; \
-	case 5: \
-		gl_VertexAttrib4##_type_(obj,args[0], args[1], args[2], args[3], args[4]); \
-		break; \
-	default: \
-		rb_raise(rb_eArgError, "Argument number error!"); \
-		break; \
-	} \
+	LOAD_GL_FUNC(gl##_name_) \
+	fptr_gl##_name_(NUM2UINT(index),FUNCPARAMS##_size_(_type_,_conv_)); \
+	CHECK_GLERROR \
 	return Qnil; \
 }
 
-GLVERTEXATTRIB_VFUNC(d)
-GLVERTEXATTRIB_VFUNC(f)
-GLVERTEXATTRIB_VFUNC(s)
+VERTEXATTRIB_FUNC(VertexAttrib1d,GLdouble,NUM2DBL,1)
+VERTEXATTRIB_FUNC(VertexAttrib1f,GLfloat,NUM2DBL,1)
+VERTEXATTRIB_FUNC(VertexAttrib1s,GLshort,NUM2INT,1)
+VERTEXATTRIB_FUNC(VertexAttrib2d,GLdouble,NUM2DBL,2)
+VERTEXATTRIB_FUNC(VertexAttrib2f,GLfloat,NUM2DBL,2)
+VERTEXATTRIB_FUNC(VertexAttrib2s,GLshort,NUM2INT,2)
+VERTEXATTRIB_FUNC(VertexAttrib3d,GLdouble,NUM2DBL,3)
+VERTEXATTRIB_FUNC(VertexAttrib3f,GLfloat,NUM2DBL,3)
+VERTEXATTRIB_FUNC(VertexAttrib3s,GLshort,NUM2INT,3)
+VERTEXATTRIB_FUNC(VertexAttrib4d,GLdouble,NUM2DBL,4)
+VERTEXATTRIB_FUNC(VertexAttrib4f,GLfloat,NUM2DBL,4)
+VERTEXATTRIB_FUNC(VertexAttrib4s,GLshort,NUM2INT,4)
+VERTEXATTRIB_FUNC(VertexAttrib4Nub,GLubyte,NUM2UINT,4)
+#undef VERTEXATTRIB_FUNC
 
-#undef GLVERTEXATTRIB_VFUNC
+
+#define VERTEXATTRIB_FUNC_V(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLuint index; \
+	_type_ v[_size_]; \
+	LOAD_GL_FUNC(gl##_name_)  \
+	index = (GLuint)NUM2UINT(arg1); \
+	_conv_(arg2,v,_size_); \
+	fptr_gl##_name_(index,v); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+VERTEXATTRIB_FUNC_V(VertexAttrib4Nbv,GLbyte,ary2cbyte,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4Niv,GLint,ary2cint,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4Nsv,GLshort,ary2cshort,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4Nubv,GLubyte,ary2cubyte,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4Nuiv,GLuint,ary2cuint,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4Nusv,GLushort,ary2cushort,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4uiv,GLuint,ary2cuint,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4ubv,GLubyte,ary2cubyte,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4usv,GLushort,ary2cushort,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4bv,GLbyte,ary2cbyte,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4iv,GLint,ary2cint,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4dv,GLdouble,ary2cdbl,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4fv,GLfloat,ary2cflt,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib4sv,GLshort,ary2cshort,4)
+VERTEXATTRIB_FUNC_V(VertexAttrib3dv,GLdouble,ary2cdbl,3)
+VERTEXATTRIB_FUNC_V(VertexAttrib3fv,GLfloat,ary2cflt,3)
+VERTEXATTRIB_FUNC_V(VertexAttrib3sv,GLshort,ary2cshort,3)
+VERTEXATTRIB_FUNC_V(VertexAttrib2dv,GLdouble,ary2cdbl,2)
+VERTEXATTRIB_FUNC_V(VertexAttrib2fv,GLfloat,ary2cflt,2)
+VERTEXATTRIB_FUNC_V(VertexAttrib2sv,GLshort,ary2cshort,2)
+VERTEXATTRIB_FUNC_V(VertexAttrib1dv,GLdouble,ary2cdbl,1)
+VERTEXATTRIB_FUNC_V(VertexAttrib1fv,GLfloat,ary2cflt,1)
+VERTEXATTRIB_FUNC_V(VertexAttrib1sv,GLshort,ary2cshort,1)
+#undef VERTEXATTRIB_FUNC_V
 
 static void (APIENTRY * fptr_glVertexAttribPointer)(GLuint,GLint,GLenum,GLboolean,GLsizei,GLvoid *);
 static VALUE
@@ -1471,21 +1034,19 @@ void gl_init_functions_2_0(VALUE module)
 	rb_define_module_function(module, "glVertexAttrib4ubv", gl_VertexAttrib4ubv, 2);
 	rb_define_module_function(module, "glVertexAttrib4uiv", gl_VertexAttrib4uiv, 2);
 	rb_define_module_function(module, "glVertexAttrib4usv", gl_VertexAttrib4usv, 2);
+	rb_define_module_function(module, "glVertexAttrib1dv", gl_VertexAttrib1dv, 2);
+	rb_define_module_function(module, "glVertexAttrib1fv", gl_VertexAttrib1fv, 2);
+	rb_define_module_function(module, "glVertexAttrib1sv", gl_VertexAttrib1sv, 2);
+	rb_define_module_function(module, "glVertexAttrib2dv", gl_VertexAttrib2dv, 2);
+	rb_define_module_function(module, "glVertexAttrib2fv", gl_VertexAttrib2fv, 2);
+	rb_define_module_function(module, "glVertexAttrib2sv", gl_VertexAttrib2sv, 2);
+	rb_define_module_function(module, "glVertexAttrib3dv", gl_VertexAttrib3dv, 2);
+	rb_define_module_function(module, "glVertexAttrib3fv", gl_VertexAttrib3fv, 2);
+	rb_define_module_function(module, "glVertexAttrib3sv", gl_VertexAttrib3sv, 2);
+	rb_define_module_function(module, "glVertexAttrib4dv", gl_VertexAttrib4dv, 2);
+	rb_define_module_function(module, "glVertexAttrib4fv", gl_VertexAttrib4fv, 2);
+	rb_define_module_function(module, "glVertexAttrib4sv", gl_VertexAttrib4sv, 2);
 	rb_define_module_function(module, "glVertexAttribPointer", gl_VertexAttribPointer, 6);
-
-	/* Additional functions */
-	rb_define_module_function(module, "glVertexAttrib1dv", gl_VertexAttribdv, -1);
-	rb_define_module_function(module, "glVertexAttrib1fv", gl_VertexAttribfv, -1);
-	rb_define_module_function(module, "glVertexAttrib1sv", gl_VertexAttribsv, -1);
-	rb_define_module_function(module, "glVertexAttrib2dv", gl_VertexAttribdv, -1);
-	rb_define_module_function(module, "glVertexAttrib2fv", gl_VertexAttribfv, -1);
-	rb_define_module_function(module, "glVertexAttrib2sv", gl_VertexAttribsv, -1);
-	rb_define_module_function(module, "glVertexAttrib3dv", gl_VertexAttribdv, -1);
-	rb_define_module_function(module, "glVertexAttrib3fv", gl_VertexAttribfv, -1);
-	rb_define_module_function(module, "glVertexAttrib3sv", gl_VertexAttribsv, -1);
-	rb_define_module_function(module, "glVertexAttrib4dv", gl_VertexAttribdv, -1);
-	rb_define_module_function(module, "glVertexAttrib4fv", gl_VertexAttribfv, -1);
-	rb_define_module_function(module, "glVertexAttrib4sv", gl_VertexAttribsv, -1);
 
 	{
 		int i;
