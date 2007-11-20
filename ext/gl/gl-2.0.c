@@ -27,10 +27,6 @@ GL_SIMPLE_FUNC_LOAD(EnableVertexAttribArray,1,GLuint,NUM2UINT)
 GL_SIMPLE_FUNC_LOAD(LinkProgram,1,GLuint,NUM2UINT)
 GL_SIMPLE_FUNC_LOAD(UseProgram,1,GLuint,NUM2UINT)
 GL_SIMPLE_FUNC_LOAD(ValidateProgram,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(Uniform1i,2,GLint,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(Uniform2i,3,GLint,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(Uniform3i,4,GLint,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(Uniform4i,5,GLint,NUM2INT)
 
 static void (APIENTRY * fptr_glDrawBuffers)(GLsizei,GLenum *);
 static VALUE
@@ -401,74 +397,45 @@ VALUE obj,arg1,arg2;
 			rb_raise(rb_eTypeError, "Unsupported type '%i'",uniform_type); \
 	}
 
-static void (APIENTRY * fptr_glGetUniformfv)(GLuint,GLint,GLfloat *);
-static VALUE
-gl_GetUniformfv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint program;
-	GLint location;
-	GLfloat params[16];
-	VALUE retary;
-	GLint i;
-	GLint unused = 0;
-	GLenum uniform_type = 0;
-	GLint uniform_size = 0;
-
-	LOAD_GL_FUNC(glGetUniformfv)
-	LOAD_GL_FUNC(glGetActiveUniform)
-	program = (GLuint)NUM2UINT(arg1);
-	location = (GLint)NUM2INT(arg2);
-
-	fptr_glGetActiveUniform(program,location,0,NULL,&unused,&uniform_type,NULL);
-	CHECK_GLERROR
-	if (uniform_type==0)
-		rb_raise(rb_eTypeError, "Can't determine the uniform's type");
-
-	GET_UNIFORM_SIZE
-
-	memset(params,0,16*sizeof(GLfloat));
-	fptr_glGetUniformfv(program,location,params);
-	retary = rb_ary_new2(uniform_size);
-	for(i=0;i<uniform_size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
+#define GETUNIFORM_FUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLuint program; \
+	GLint location; \
+	_type_ params[16]; \
+	VALUE retary; \
+	GLint i; \
+	GLint unused = 0; \
+	GLenum uniform_type = 0; \
+	GLint uniform_size = 0; \
+\
+	LOAD_GL_FUNC(gl##_name_) \
+	LOAD_GL_FUNC(glGetActiveUniform) \
+	program = (GLuint)NUM2UINT(arg1); \
+	location = (GLint)NUM2INT(arg2); \
+\
+	fptr_glGetActiveUniform(program,location,0,NULL,&unused,&uniform_type,NULL); \
+	CHECK_GLERROR \
+	if (uniform_type==0) \
+		rb_raise(rb_eTypeError, "Can't determine the uniform's type"); \
+\
+	GET_UNIFORM_SIZE \
+\
+	memset(params,0,16*sizeof(_type_)); \
+	fptr_gl##_name_(program,location,params); \
+	retary = rb_ary_new2(uniform_size); \
+	for(i=0;i<uniform_size;i++) \
+		rb_ary_push(retary, _conv_(params[i])); \
+	CHECK_GLERROR \
+	return retary; \
 }
 
-static void (APIENTRY * fptr_glGetUniformiv)(GLuint,GLint,GLint *);
-static VALUE
-gl_GetUniformiv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint program;
-	GLint location;
-	GLint params[16];
-	VALUE retary;
-	GLint i;
-	GLint unused = 0;
-	GLenum uniform_type = 0;
-	GLint uniform_size = 0;
-	LOAD_GL_FUNC(glGetUniformiv)
-	LOAD_GL_FUNC(glGetActiveUniform)
-	program = (GLuint)NUM2UINT(arg1);
-	location = (GLint)NUM2INT(arg2);
-
-	fptr_glGetActiveUniform(program,location,0,NULL,&unused,&uniform_type,NULL);
-	CHECK_GLERROR
-	if (uniform_type==0)
-		rb_raise(rb_eTypeError, "Can't determine the uniform's type");
-
-	GET_UNIFORM_SIZE
-
-	memset(params,0,16*sizeof(GLint));
-	fptr_glGetUniformiv(program,location,params);
-	retary = rb_ary_new2(uniform_size);
-	for(i=0;i<uniform_size;i++)
-		rb_ary_push(retary, INT2NUM(params[i]));
-	CHECK_GLERROR
-	return retary;
-}
+GETUNIFORM_FUNC(GetUniformfv,GLfloat,rb_float_new)
+GETUNIFORM_FUNC(GetUniformiv,GLint,INT2NUM)
+#undef GETUNIFORM_FUNC
 
 #define GETVERTEXATTRIB_FUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
@@ -564,292 +531,85 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glUniform1f)(GLint,GLfloat);
-static VALUE
-gl_Uniform1f(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLint location;
-	GLfloat v0;
-	LOAD_GL_FUNC(glUniform1f)
-	location = (GLint)NUM2INT(arg1);
-	v0 = (GLfloat)NUM2DBL(arg2);
-	fptr_glUniform1f(location,v0);
-	CHECK_GLERROR
-	return Qnil;
+#define UNIFORM_FUNC(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLint,TYPELIST##_size_(_type_)); \
+static VALUE \
+gl_##_name_(obj, location ARGLIST##_size_) \
+VALUE obj, location ARGLIST##_size_ ; \
+{ \
+	LOAD_GL_FUNC(gl##_name_) \
+	fptr_gl##_name_(NUM2INT(location),FUNCPARAMS##_size_(_type_,_conv_)); \
+	CHECK_GLERROR \
+	return Qnil; \
 }
 
-static void (APIENTRY * fptr_glUniform2f)(GLint,GLfloat,GLfloat);
-static VALUE
-gl_Uniform2f(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLfloat v0;
-	GLfloat v1;
-	LOAD_GL_FUNC(glUniform2f)
-	location = (GLint)NUM2INT(arg1);
-	v0 = (GLfloat)NUM2DBL(arg2);
-	v1 = (GLfloat)NUM2DBL(arg3);
-	fptr_glUniform2f(location,v0,v1);
-	CHECK_GLERROR
-	return Qnil;
+UNIFORM_FUNC(Uniform1f,GLfloat,NUM2DBL,1)
+UNIFORM_FUNC(Uniform1i,GLint,NUM2INT,1)
+UNIFORM_FUNC(Uniform2f,GLfloat,NUM2DBL,2)
+UNIFORM_FUNC(Uniform2i,GLint,NUM2INT,2)
+UNIFORM_FUNC(Uniform3f,GLfloat,NUM2DBL,3)
+UNIFORM_FUNC(Uniform3i,GLint,NUM2INT,3)
+UNIFORM_FUNC(Uniform4f,GLfloat,NUM2DBL,4)
+UNIFORM_FUNC(Uniform4i,GLint,NUM2INT,4)
+#undef UNIFORM_FUNC
+
+
+#define UNIFORM_FUNC_V(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2,arg3) \
+VALUE obj,arg1,arg2,arg3; \
+{ \
+	GLint location; \
+	GLsizei count; \
+	_type_ *value; \
+	LOAD_GL_FUNC(gl##_name_) \
+	location = (GLint)NUM2INT(arg1); \
+	count = (GLsizei)NUM2UINT(arg2); \
+	value = ALLOC_N(_type_,_size_*count); \
+	_conv_(arg3,value,_size_*count); \
+	fptr_gl##_name_(location,count,value); \
+	xfree(value); \
+	CHECK_GLERROR \
+	return Qnil; \
 }
 
-static void (APIENTRY * fptr_glUniform3f)(GLint,GLfloat,GLfloat,GLfloat);
-static VALUE
-gl_Uniform3f(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLfloat v0;
-	GLfloat v1;
-	GLfloat v2;
-	LOAD_GL_FUNC(glUniform3f)
-	location = (GLint)NUM2INT(arg1);
-	v0 = (GLfloat)NUM2DBL(arg2);
-	v1 = (GLfloat)NUM2DBL(arg3);
-	v2 = (GLfloat)NUM2DBL(arg4);
-	fptr_glUniform3f(location,v0,v1,v2);
-	CHECK_GLERROR
-	return Qnil;
+UNIFORM_FUNC_V(Uniform1fv,GLfloat,ary2cflt,1)
+UNIFORM_FUNC_V(Uniform1iv,GLint,ary2cint,1)
+UNIFORM_FUNC_V(Uniform2fv,GLfloat,ary2cflt,2)
+UNIFORM_FUNC_V(Uniform2iv,GLint,ary2cint,2)
+UNIFORM_FUNC_V(Uniform3fv,GLfloat,ary2cflt,3)
+UNIFORM_FUNC_V(Uniform3iv,GLint,ary2cint,3)
+UNIFORM_FUNC_V(Uniform4fv,GLfloat,ary2cflt,4)
+UNIFORM_FUNC_V(Uniform4iv,GLint,ary2cint,4)
+#undef UNIFORM_FUNC_V
+
+#define UNIFORMMATRIX_FUNC(_name_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,GLboolean,GLfloat *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2,arg3,arg4) \
+VALUE obj,arg1,arg2,arg3,arg4; \
+{ \
+	GLint location; \
+	GLsizei count; \
+	GLboolean transpose; \
+	GLfloat *value;	\
+	LOAD_GL_FUNC(gl##_name_) \
+	location = (GLint)NUM2INT(arg1); \
+	count = (GLint)NUM2INT(arg2); \
+	transpose = (GLboolean)NUM2INT(arg3); \
+	value = ALLOC_N(GLfloat, _size_*_size_*count); \
+	ary2cmatfloat(arg4,value,_size_,_size_*count); \
+	fptr_gl##_name_(location,count,transpose,value); \
+	xfree(value); \
+	CHECK_GLERROR \
+	return Qnil; \
 }
 
-static void (APIENTRY * fptr_glUniform4f)(GLint,GLfloat,GLfloat,GLfloat,GLfloat);
-static VALUE
-gl_Uniform4f(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLint location;
-	GLfloat v0;
-	GLfloat v1;
-	GLfloat v2;
-	GLfloat v3;
-	LOAD_GL_FUNC(glUniform4f)
-	location = (GLint)NUM2INT(arg1);
-	v0 = (GLfloat)NUM2DBL(arg2);
-	v1 = (GLfloat)NUM2DBL(arg3);
-	v2 = (GLfloat)NUM2DBL(arg4);
-	v3 = (GLfloat)NUM2DBL(arg5);
-	fptr_glUniform4f(location,v0,v1,v2,v3);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform1fv)(GLint,GLsizei,GLfloat *);
-static VALUE
-gl_Uniform1fv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLsizei count;
-	GLfloat *value;
-	LOAD_GL_FUNC(glUniform1fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLsizei)NUM2UINT(arg2);
-	value = ALLOC_N(GLfloat,1*count);
-	ary2cflt(arg3,value,1*count);
-	fptr_glUniform1fv(location,count,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform2fv)(GLint,GLsizei,GLfloat *);
-static VALUE
-gl_Uniform2fv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLsizei count;
-	GLfloat *value;
-	LOAD_GL_FUNC(glUniform2fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLsizei)NUM2UINT(arg2);
-	value = ALLOC_N(GLfloat,2*count);
-	ary2cflt(arg3,value,2*count);
-	fptr_glUniform2fv(location,count,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform3fv)(GLint,GLsizei,GLfloat *);
-static VALUE
-gl_Uniform3fv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLsizei count;
-	GLfloat *value;
-	LOAD_GL_FUNC(glUniform3fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLsizei)NUM2UINT(arg2);
-	value = ALLOC_N(GLfloat,3*count);
-	ary2cflt(arg3,value,3*count);
-	fptr_glUniform3fv(location,count,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform4fv)(GLint,GLsizei,GLfloat *);
-static VALUE
-gl_Uniform4fv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLsizei count;
-	GLfloat *value;
-	LOAD_GL_FUNC(glUniform4fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLsizei)NUM2UINT(arg2);
-	value = ALLOC_N(GLfloat,4*count);
-	ary2cflt(arg3,value,4*count);
-	fptr_glUniform4fv(location,count,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform1iv)(GLint,GLsizei,GLint *);
-static VALUE
-gl_Uniform1iv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLsizei count;
-	GLint *value;
-	LOAD_GL_FUNC(glUniform1iv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLsizei)NUM2UINT(arg2);
-	value = ALLOC_N(GLint,1*count);
-	ary2cint(arg3,value,1*count);
-	fptr_glUniform1iv(location,count,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform2iv)(GLint,GLsizei,GLint *);
-static VALUE
-gl_Uniform2iv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLsizei count;
-	GLint *value;
-	LOAD_GL_FUNC(glUniform2iv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLsizei)NUM2UINT(arg2);
-	value = ALLOC_N(GLint,2*count);
-	ary2cint(arg3,value,2*count);
-	fptr_glUniform2iv(location,count,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform3iv)(GLint,GLsizei,GLint *);
-static VALUE
-gl_Uniform3iv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLsizei count;
-	GLint *value;
-	LOAD_GL_FUNC(glUniform3iv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLsizei)NUM2UINT(arg2);
-	value = ALLOC_N(GLint,3*count);
-	ary2cint(arg3,value,3*count);
-	fptr_glUniform3iv(location,count,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniform4iv)(GLint,GLsizei,GLint *);
-static VALUE
-gl_Uniform4iv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint location;
-	GLsizei count;
-	GLint *value;
-	LOAD_GL_FUNC(glUniform4iv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLsizei)NUM2UINT(arg2);
-	value = ALLOC_N(GLint,4*count);
-	ary2cint(arg3,value,4*count);
-	fptr_glUniform4iv(location,count,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniformMatrix2fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix2fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix2fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 2*2*count);
-	ary2cflt(arg4,value,2*2*count);
-	fptr_glUniformMatrix2fv(location,count,transpose,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniformMatrix3fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix3fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix3fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 3*3*count);
-	ary2cflt(arg4,value,3*3*count);
-	fptr_glUniformMatrix3fv(location,count,transpose,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glUniformMatrix4fv)(GLint,GLsizei,GLboolean,GLfloat *);
-static VALUE
-gl_UniformMatrix4fv(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLint location;
-	GLsizei count;
-	GLboolean transpose;
-	GLfloat *value;	
-	LOAD_GL_FUNC(glUniformMatrix4fv)
-	location = (GLint)NUM2INT(arg1);
-	count = (GLint)NUM2INT(arg2);
-	transpose = (GLboolean)NUM2INT(arg3);
-	value = ALLOC_N(GLfloat, 4*4*count);
-	ary2cflt(arg4,value,4*4*count);
-	fptr_glUniformMatrix4fv(location,count,transpose,value);
-	xfree(value);
-	CHECK_GLERROR
-	return Qnil;
-}
+UNIFORMMATRIX_FUNC(UniformMatrix2fv,2)
+UNIFORMMATRIX_FUNC(UniformMatrix3fv,3)
+UNIFORMMATRIX_FUNC(UniformMatrix4fv,4)
+#undef UNIFORMMATRIX_FUNC
 
 #define VERTEXATTRIB_FUNC(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,TYPELIST##_size_(_type_)); \

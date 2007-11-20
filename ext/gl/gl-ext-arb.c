@@ -18,7 +18,7 @@
 /* OpenGL ARB extensions */
 
 /* #3 GL_ARB_transpose_matrix */
-#define TRANSPOSEMATRIX_FUNC(_name_,_type_) \
+#define TRANSPOSEMATRIX_FUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(const _type_[]); \
 static VALUE \
 gl_##_name_(obj,arg1) \
@@ -26,16 +26,16 @@ VALUE obj,arg1; \
 { \
 	_type_ m[4*4]; \
 	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_transpose_matrix") \
-	ary2cmat##_type_(arg1, m, 4, 4); \
+	_conv_(arg1, m, 4, 4); \
 	fptr_gl##_name_(m); \
 	CHECK_GLERROR \
 	return Qnil; \
 }
 
-TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixfARB,GLfloat)
-TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixdARB,GLdouble)
-TRANSPOSEMATRIX_FUNC(MultTransposeMatrixfARB,GLfloat)
-TRANSPOSEMATRIX_FUNC(MultTransposeMatrixdARB,GLdouble)
+TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixfARB,GLfloat,ary2cmatfloat)
+TRANSPOSEMATRIX_FUNC(LoadTransposeMatrixdARB,GLdouble,ary2cmatdouble)
+TRANSPOSEMATRIX_FUNC(MultTransposeMatrixfARB,GLfloat,ary2cmatfloat)
+TRANSPOSEMATRIX_FUNC(MultTransposeMatrixdARB,GLdouble,ary2cmatdouble)
 
 #undef TRANSPOSEMATRIX_FUNC
 

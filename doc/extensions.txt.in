@@ -27,7 +27,7 @@ GL_ARB_shadow,Supported,0.50
 GL_ARB_shadow_ambient,Supported,0.50
 GL_ARB_window_pos,Unsupported,N/A
 GL_ARB_vertex_program,Supported,0.60
-GL_ARB_fragment_program,Unsupported,N/A
+GL_ARB_fragment_program,Supported,0.60
 GL_ARB_vertex_buffer_object,Unsupported,N/A
 GL_ARB_occlusion_query,Unsupported,N/A
 GL_ARB_shader_objects,Unsupported,N/A
@@ -307,7 +307,7 @@ GLX_SGIX_hyperpipe,NonGL,N/A
 GLX_MESA_agp_offset,NonGL,N/A
 GL_EXT_texture_compression_dxt1,Supported,0.50
 GL_EXT_framebuffer_object,Supported,0.50
-GL_GREMEDY_string_marker,Unsupported,N/A
+GL_GREMEDY_string_marker,Supported,0.60
 GL_EXT_packed_depth_stencil,Supported,0.50
 WGL_3DL_stereo_control,NonGL,N/A
 GL_EXT_stencil_clear_tag,Unsupported,N/A
@@ -345,4 +345,4 @@ GL_NV_transform_feedback,Unsupported,N/A
 GL_EXT_bindable_uniform,Unsupported,N/A
 GL_EXT_texture_integer,Unsupported,N/A
 GLX_EXT_texture_from_pixmap,NonGL,N/A
-GL_GREMEDY_frame_terminator,Unsupported,N/A
+GL_GREMEDY_frame_terminator,Supported,0.60
