@@ -25,7 +25,7 @@ VALUE obj,arg1,arg2,arg3,arg4; \
 	GLsizei count; \
 	GLboolean transpose; \
 	GLfloat *value;	\
-	LOAD_GL_FUNC(glUniformMatrix##_x_##x##_y_##fv) \
+	LOAD_GL_FUNC(glUniformMatrix##_x_##x##_y_##fv,2,1) \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLint)NUM2INT(arg2); \
 	transpose = (GLboolean)NUM2INT(arg3); \

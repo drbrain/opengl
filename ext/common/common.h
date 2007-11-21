@@ -77,10 +77,17 @@ typedef struct RArray RArray;
 
 extern VALUE cProc;
 
-#define LOAD_GL_FUNC(_NAME_) \
-if (fptr_##_NAME_==NULL) \
-fptr_##_NAME_ = load_gl_function(#_NAME_, 1);
+/* will load function pointer for function _NAME_ on first call to the
+  function, or raise if the OpenGL version is less then required */
+#define LOAD_GL_FUNC(_NAME_,_VER_MAJ_,_VER_MIN_) \
+if (fptr_##_NAME_==NULL) { \
+	if (CheckOpenglVersion(_VER_MAJ_,_VER_MIN_)==GL_FALSE) \
+		rb_raise(rb_eNotImpError,"OpenGL version %i.%i is not available on this system",_VER_MAJ_,_VER_MIN_); \
+	fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
+}
 
+/* will load extension function pointer for function _NAME_ on first call
+  to the function, or raise if the extension _EXTNAME_ is not available */
 #define LOAD_GL_EXT_FUNC(_NAME_,_EXTNAME_) \
 if (fptr_##_NAME_==NULL) {\
 	if (CheckExtension(_EXTNAME_)==GL_FALSE) \
@@ -88,6 +95,9 @@ if (fptr_##_NAME_==NULL) {\
 	fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
 }
 
+/* For now we do not honor pixel store modes, so we need to
+  force them to defaults on each affected function call for
+  correct size requirement calculations */
 #define FORCE_PIXEL_STORE_MODE \
 	glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT); \
 	glPixelStorei(GL_PACK_ALIGNMENT, 1); \
@@ -105,6 +115,7 @@ if (fptr_##_NAME_==NULL) {\
 	glPopClientAttrib();
 
 GLboolean CheckExtension(const char *name);
+GLboolean CheckOpenglVersion(int major, int minor);
 GLint CheckBufferBinding(GLint buffer);
 
 /* -------------------------------------------------------------------- */
@@ -477,13 +488,13 @@ VALUE obj ARGLIST##_numparams_; \
 	return Qnil; \
 } 
 
-#define GL_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_) \
+#define GL_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_,_ver_major_,_ver_minor_) \
 static void (APIENTRY * fptr_gl##_name_)( TYPELIST##_numparams_(_ctype_) ); \
 static VALUE \
 gl_##_name_(obj ARGLIST##_numparams_) \
 VALUE obj ARGLIST##_numparams_; \
 { \
-	LOAD_GL_FUNC(gl##_name_) \
+	LOAD_GL_FUNC(gl##_name_,_ver_major_,_ver_minor_) \
 	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
 	CHECK_GLERROR \
 	return Qnil; \

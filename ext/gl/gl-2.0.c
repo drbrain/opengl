@@ -15,18 +15,18 @@
 
 #include "../common/common.h"
 
-GL_SIMPLE_FUNC_LOAD(BlendEquationSeparate,2,GLenum,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(StencilOpSeparate,4,GLenum,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(AttachShader,2,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(CompileShader,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(DeleteProgram,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(DeleteShader,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(DetachShader,2,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(DisableVertexAttribArray,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(EnableVertexAttribArray,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(LinkProgram,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(UseProgram,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(ValidateProgram,1,GLuint,NUM2UINT)
+GL_SIMPLE_FUNC_LOAD(BlendEquationSeparate,2,GLenum,NUM2INT,2,0)
+GL_SIMPLE_FUNC_LOAD(StencilOpSeparate,4,GLenum,NUM2INT,2,0)
+GL_SIMPLE_FUNC_LOAD(AttachShader,2,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(CompileShader,1,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(DeleteProgram,1,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(DeleteShader,1,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(DetachShader,2,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(DisableVertexAttribArray,1,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(EnableVertexAttribArray,1,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(LinkProgram,1,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(UseProgram,1,GLuint,NUM2UINT,2,0)
+GL_SIMPLE_FUNC_LOAD(ValidateProgram,1,GLuint,NUM2UINT,2,0)
 
 static void (APIENTRY * fptr_glDrawBuffers)(GLsizei,GLenum *);
 static VALUE
@@ -35,7 +35,7 @@ VALUE obj,arg1;
 {
 	GLsizei size;
 	GLenum *buffers;
-	LOAD_GL_FUNC(glDrawBuffers)
+	LOAD_GL_FUNC(glDrawBuffers,2,0)
 	Check_Type(arg1,T_ARRAY); 
 	size = RARRAY(arg1)->len;
 	buffers = ALLOC_N(GLenum,size);
@@ -55,7 +55,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLenum func;
 	GLint ref;
 	GLuint mask;
-	LOAD_GL_FUNC(glStencilFuncSeparate)
+	LOAD_GL_FUNC(glStencilFuncSeparate,2,0)
 	face = (GLenum)NUM2INT(arg1);
 	func = (GLenum)NUM2INT(arg2);
 	ref = (GLint)NUM2INT(arg3);
@@ -72,7 +72,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum face;
 	GLuint mask;
-	LOAD_GL_FUNC(glStencilMaskSeparate)
+	LOAD_GL_FUNC(glStencilMaskSeparate,2,0)
 	face = (GLenum)NUM2INT(arg1);
 	mask = (GLenum)NUM2INT(arg2);
 	fptr_glStencilMaskSeparate(face,mask);
@@ -87,7 +87,7 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLuint program;
 	GLuint index;
-	LOAD_GL_FUNC(glBindAttribLocation)
+	LOAD_GL_FUNC(glBindAttribLocation,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
@@ -102,7 +102,7 @@ gl_CreateProgram(obj)
 VALUE obj;
 {
 	GLuint ret;
-	LOAD_GL_FUNC(glCreateProgram)
+	LOAD_GL_FUNC(glCreateProgram,2,0)
 	ret = fptr_glCreateProgram();
 	CHECK_GLERROR
 	return INT2NUM(ret);
@@ -115,7 +115,7 @@ VALUE obj,arg1;
 {
 	GLenum shaderType;
 	GLuint ret;
-	LOAD_GL_FUNC(glCreateShader)
+	LOAD_GL_FUNC(glCreateShader,2,0)
 	shaderType = (GLenum)NUM2INT(arg1);
 	ret = fptr_glCreateShader(shaderType);
 	CHECK_GLERROR
@@ -130,7 +130,7 @@ VALUE obj,arg1,arg2;
 	GLuint program;
 	GLenum pname;
 	GLint params = 0;
-	LOAD_GL_FUNC(glGetProgramiv)
+	LOAD_GL_FUNC(glGetProgramiv,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetProgramiv(program,pname,&params);
@@ -151,8 +151,8 @@ VALUE obj,arg1,arg2;
 	GLenum attrib_type = 0;
 	VALUE buffer;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetActiveAttrib)
-	LOAD_GL_FUNC(glGetProgramiv)
+	LOAD_GL_FUNC(glGetActiveAttrib,2,0)
+	LOAD_GL_FUNC(glGetProgramiv,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	fptr_glGetProgramiv(program,GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,&max_size);
@@ -182,8 +182,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLenum uniform_type = 0;
 	VALUE buffer;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetActiveUniform)
-	LOAD_GL_FUNC(glGetProgramiv)
+	LOAD_GL_FUNC(glGetActiveUniform,2,0)
+	LOAD_GL_FUNC(glGetProgramiv,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	fptr_glGetProgramiv(program,GL_ACTIVE_UNIFORM_MAX_LENGTH,&max_size);
@@ -211,8 +211,8 @@ VALUE obj,arg1;
 	VALUE retary;
 	GLsizei count = 0;
 	GLint i;
-	LOAD_GL_FUNC(glGetAttachedShaders)
-	LOAD_GL_FUNC(glGetProgramiv)
+	LOAD_GL_FUNC(glGetAttachedShaders,2,0)
+	LOAD_GL_FUNC(glGetProgramiv,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetProgramiv(program,GL_ATTACHED_SHADERS,&shaders_num);
 	CHECK_GLERROR
@@ -235,7 +235,7 @@ VALUE obj,arg1,arg2;
 {
 	GLuint program;
 	GLint ret;
-	LOAD_GL_FUNC(glGetAttribLocation)
+	LOAD_GL_FUNC(glGetAttribLocation,2,0)
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetAttribLocation(program,RSTRING(arg2)->ptr);
@@ -252,8 +252,8 @@ VALUE obj,arg1;
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
 	VALUE buffer;
-	LOAD_GL_FUNC(glGetProgramInfoLog)
-	LOAD_GL_FUNC(glGetProgramiv)
+	LOAD_GL_FUNC(glGetProgramInfoLog,2,0)
+	LOAD_GL_FUNC(glGetProgramiv,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetProgramiv(program,GL_INFO_LOG_LENGTH,&max_size);
 	CHECK_GLERROR
@@ -274,7 +274,7 @@ VALUE obj,arg1,arg2;
 	GLuint program;
 	GLenum pname;
 	GLint params = 0;
-	LOAD_GL_FUNC(glGetShaderiv)
+	LOAD_GL_FUNC(glGetShaderiv,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetShaderiv(program,pname,&params);
@@ -292,8 +292,8 @@ VALUE obj,arg1;
 	GLsizei ret_length = 0;
 	VALUE ret_buffer;
 	GLchar *buffer;
-	LOAD_GL_FUNC(glGetShaderInfoLog)
-	LOAD_GL_FUNC(glGetShaderiv)
+	LOAD_GL_FUNC(glGetShaderInfoLog,2,0)
+	LOAD_GL_FUNC(glGetShaderiv,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetShaderiv(program,GL_INFO_LOG_LENGTH,&max_size);
 	CHECK_GLERROR
@@ -317,8 +317,8 @@ VALUE obj,arg1;
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
 	VALUE buffer;
-	LOAD_GL_FUNC(glGetShaderSource)
-	LOAD_GL_FUNC(glGetShaderiv)
+	LOAD_GL_FUNC(glGetShaderSource,2,0)
+	LOAD_GL_FUNC(glGetShaderiv,2,0)
 	shader = (GLuint)NUM2UINT(arg1);
 	fptr_glGetShaderiv(shader,GL_SHADER_SOURCE_LENGTH,&max_size);
 	CHECK_GLERROR
@@ -337,7 +337,7 @@ VALUE obj,arg1,arg2;
 {
 	GLuint program;
 	GLint ret;
-	LOAD_GL_FUNC(glGetUniformLocation)
+	LOAD_GL_FUNC(glGetUniformLocation,2,0)
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetUniformLocation(program,RSTRING(arg2)->ptr);
@@ -412,8 +412,8 @@ VALUE obj,arg1,arg2; \
 	GLenum uniform_type = 0; \
 	GLint uniform_size = 0; \
 \
-	LOAD_GL_FUNC(gl##_name_) \
-	LOAD_GL_FUNC(glGetActiveUniform) \
+	LOAD_GL_FUNC(gl##_name_,2,0) \
+	LOAD_GL_FUNC(glGetActiveUniform,2,0) \
 	program = (GLuint)NUM2UINT(arg1); \
 	location = (GLint)NUM2INT(arg2); \
 \
@@ -449,7 +449,7 @@ VALUE obj,arg1,arg2; \
 	GLint size; \
 	GLint i; \
 	VALUE retary; \
-	LOAD_GL_FUNC(gl##_name_) \
+	LOAD_GL_FUNC(gl##_name_,2,0) \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
 	if (pname==GL_CURRENT_VERTEX_ATTRIB) \
@@ -477,7 +477,7 @@ gl_GetVertexAttribPointerv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint index;
-	LOAD_GL_FUNC(glGetVertexAttribPointerv)
+	LOAD_GL_FUNC(glGetVertexAttribPointerv,2,0)
 	index =(GLuint) NUM2INT(arg1);
 	if (index>_MAX_VERTEX_ATTRIBS)
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
@@ -492,7 +492,7 @@ VALUE obj,arg1;
 {
 	GLuint program;
 	GLboolean ret;
-	LOAD_GL_FUNC(glIsProgram)
+	LOAD_GL_FUNC(glIsProgram,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	ret = fptr_glIsProgram(program);
 	CHECK_GLERROR
@@ -506,7 +506,7 @@ VALUE obj,arg1;
 {
 	GLuint program;
 	GLboolean ret;
-	LOAD_GL_FUNC(glIsShader)
+	LOAD_GL_FUNC(glIsShader,2,0)
 	program = (GLuint)NUM2UINT(arg1);
 	ret = fptr_glIsShader(program);
 	CHECK_GLERROR
@@ -521,7 +521,7 @@ VALUE obj,arg1,arg2;
 	GLuint shader;
 	GLint length;
 	GLchar *str;
-	LOAD_GL_FUNC(glShaderSource)
+	LOAD_GL_FUNC(glShaderSource,2,0)
 	shader = (GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	str = RSTRING(arg2)->ptr;
@@ -537,7 +537,7 @@ static VALUE \
 gl_##_name_(obj, location ARGLIST##_size_) \
 VALUE obj, location ARGLIST##_size_ ; \
 { \
-	LOAD_GL_FUNC(gl##_name_) \
+	LOAD_GL_FUNC(gl##_name_,2,0) \
 	fptr_gl##_name_(NUM2INT(location),FUNCPARAMS##_size_(_type_,_conv_)); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -563,7 +563,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLint location; \
 	GLsizei count; \
 	_type_ *value; \
-	LOAD_GL_FUNC(gl##_name_) \
+	LOAD_GL_FUNC(gl##_name_,2,0) \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLsizei)NUM2UINT(arg2); \
 	value = ALLOC_N(_type_,_size_*count); \
@@ -594,7 +594,7 @@ VALUE obj,arg1,arg2,arg3,arg4; \
 	GLsizei count; \
 	GLboolean transpose; \
 	GLfloat *value;	\
-	LOAD_GL_FUNC(gl##_name_) \
+	LOAD_GL_FUNC(gl##_name_,2,0) \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLint)NUM2INT(arg2); \
 	transpose = (GLboolean)NUM2INT(arg3); \
@@ -617,7 +617,7 @@ static VALUE \
 gl_##_name_(obj, index ARGLIST##_size_) \
 VALUE obj, index ARGLIST##_size_ ; \
 { \
-	LOAD_GL_FUNC(gl##_name_) \
+	LOAD_GL_FUNC(gl##_name_,2,0) \
 	fptr_gl##_name_(NUM2UINT(index),FUNCPARAMS##_size_(_type_,_conv_)); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -647,7 +647,7 @@ VALUE obj,arg1,arg2; \
 { \
 	GLuint index; \
 	_type_ v[_size_]; \
-	LOAD_GL_FUNC(gl##_name_)  \
+	LOAD_GL_FUNC(gl##_name_,2,0)  \
 	index = (GLuint)NUM2UINT(arg1); \
 	_conv_(arg2,v,_size_); \
 	fptr_gl##_name_(index,v); \
@@ -690,7 +690,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLenum type;
 	GLboolean normalized;
 	GLsizei stride;
-	LOAD_GL_FUNC(glVertexAttribPointer)
+	LOAD_GL_FUNC(glVertexAttribPointer,2,0)
 	index = (GLuint)NUM2UINT(arg1);
 	size = (GLuint)NUM2UINT(arg2);
 	type = (GLenum)NUM2INT(arg3);

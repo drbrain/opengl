@@ -114,7 +114,7 @@ GLboolean CheckExtension(const char *name)
 	return res;	
 }
 
-/* Checks if given OpenGL version, extension or function is available
+/* Checks if given OpenGL version or extension is available
  */
 static VALUE
 IsAvailable(obj,arg1)
@@ -136,7 +136,7 @@ VALUE obj,arg1;
 			return Qtrue;
 		else
 			return Qfalse;
-	} else if (name && name[0] && (name[0]=='G' || name[0]=='W')) { /* GL_, GLX_, WGL_ extension */
+	} else {
 		GLboolean res;
 		
 		res = CheckExtension(name);
@@ -144,13 +144,6 @@ VALUE obj,arg1;
 			return Qtrue;
 		else
 			return Qfalse;
-	} else { /* function */
-		GLvoid *ret;
-		ret = load_gl_function(name,0); /* won't raise */
-		if (ret==NULL)
-			return Qfalse;
-		else
-			return Qtrue;
 	}
 }
 

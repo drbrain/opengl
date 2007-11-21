@@ -17,7 +17,7 @@
 
 /* OpenGL 1.5 functions */
 
-GL_SIMPLE_FUNC_LOAD(EndQuery,1,GLenum,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(EndQuery,1,GLenum,NUM2INT,1,5)
 
 static void (APIENTRY * fptr_glGenQueries)(GLsizei,GLuint *);
 static VALUE
@@ -28,7 +28,7 @@ VALUE obj,arg1;
 	GLuint *queries;
 	RArray *ret;
 	int i;
-	LOAD_GL_FUNC(glGenQueries)
+	LOAD_GL_FUNC(glGenQueries,1,5)
 	n = (GLsizei)NUM2UINT(arg1);
 	queries = ALLOC_N(GLuint, n);
 	fptr_glGenQueries(n, queries);
@@ -47,7 +47,7 @@ VALUE obj,arg1;
 {
 	GLsizei n;
 	GLuint *queries;
-	LOAD_GL_FUNC(glDeleteQueries)
+	LOAD_GL_FUNC(glDeleteQueries,1,5)
 	if (TYPE(arg1)==T_ARRAY) {
 		n = RARRAY(arg1)->len;
 		queries = ALLOC_N(GLuint,n);
@@ -70,7 +70,7 @@ VALUE obj,arg1;
 {
 	GLuint query;
 	GLboolean ret;
-	LOAD_GL_FUNC(glIsQuery)
+	LOAD_GL_FUNC(glIsQuery,1,5)
 	query = (GLuint)NUM2UINT(arg1);
 	ret = fptr_glIsQuery(query);
 	CHECK_GLERROR
@@ -84,7 +84,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLuint id;
-	LOAD_GL_FUNC(glBeginQuery)
+	LOAD_GL_FUNC(glBeginQuery,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	id = (GLuint)NUM2UINT(arg2);
 	fptr_glBeginQuery(target,id);
@@ -101,7 +101,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params = 0;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetQueryiv)
+	LOAD_GL_FUNC(glGetQueryiv,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryiv(target,pname,&params);
@@ -120,7 +120,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params = 0;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetQueryObjectiv)
+	LOAD_GL_FUNC(glGetQueryObjectiv,1,5)
 	id = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectiv(id,pname,&params);
@@ -139,7 +139,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum pname;
 	GLuint params = 0;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetQueryObjectuiv)
+	LOAD_GL_FUNC(glGetQueryObjectuiv,1,5)
 	id = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectuiv(id,pname,&params);
@@ -156,7 +156,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLuint buffer;
-	LOAD_GL_FUNC(glBindBuffer)
+	LOAD_GL_FUNC(glBindBuffer,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	buffer = (GLenum)NUM2INT(arg2);
 	fptr_glBindBuffer(target,buffer);
@@ -171,7 +171,7 @@ VALUE obj,arg1;
 {
 	GLsizei n;
 	GLuint *buffers;
-	LOAD_GL_FUNC(glDeleteBuffers)
+	LOAD_GL_FUNC(glDeleteBuffers,1,5)
 	if (TYPE(arg1)==T_ARRAY) {
 		n = RARRAY(arg1)->len;
 		buffers = ALLOC_N(GLuint,n);
@@ -196,7 +196,7 @@ VALUE obj,arg1;
 	GLuint *buffers;
 	RArray *ret;
 	int i;
-	LOAD_GL_FUNC(glGenBuffers)
+	LOAD_GL_FUNC(glGenBuffers,1,5)
 	n = (GLsizei)NUM2UINT(arg1);
 	buffers = ALLOC_N(GLuint, n);
 	fptr_glGenBuffers(n, buffers);
@@ -215,7 +215,7 @@ VALUE obj,arg1;
 {
 	GLuint buffer;
 	GLboolean ret;
-	LOAD_GL_FUNC(glIsBuffer)
+	LOAD_GL_FUNC(glIsBuffer,1,5)
 	buffer = (GLuint)NUM2UINT(arg1);
 	ret = fptr_glIsBuffer(buffer);
 	CHECK_GLERROR
@@ -230,7 +230,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLenum target;
 	GLsizeiptr size;
 	GLenum usage;
-	LOAD_GL_FUNC(glBufferData)
+	LOAD_GL_FUNC(glBufferData,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	size = (GLsizeiptr)NUM2INT(arg2);
 	usage = (GLenum)NUM2INT(arg4);
@@ -253,7 +253,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLenum target;
 	GLintptr offset;
 	GLsizeiptr size;
-	LOAD_GL_FUNC(glBufferSubData)
+	LOAD_GL_FUNC(glBufferSubData,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	offset = (GLintptr)NUM2INT(arg2);
 	size = (GLsizeiptr)NUM2INT(arg3);
@@ -272,7 +272,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLintptr offset;
 	GLsizeiptr size;
 	VALUE data;
-	LOAD_GL_FUNC(glGetBufferSubData)
+	LOAD_GL_FUNC(glGetBufferSubData,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	offset = (GLintptr)NUM2INT(arg2);
 	size = (GLsizeiptr)NUM2INT(arg3);
@@ -291,7 +291,7 @@ VALUE obj,arg1,arg2;
 	GLenum value;
 	GLint data = 0;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetBufferParameteriv)
+	LOAD_GL_FUNC(glGetBufferParameteriv,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	value = (GLenum)NUM2INT(arg2);
 	fptr_glGetBufferParameteriv(target,value,&data);
@@ -311,8 +311,8 @@ VALUE obj,arg1,arg2;
 	GLint size = 0;
 	VALUE data;
 	GLvoid *buffer_ptr = NULL;
-	LOAD_GL_FUNC(glMapBuffer)
-	LOAD_GL_FUNC(glGetBufferParameteriv)
+	LOAD_GL_FUNC(glMapBuffer,1,5)
+	LOAD_GL_FUNC(glGetBufferParameteriv,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	access = (GLenum)NUM2INT(arg2);
 	fptr_glGetBufferParameteriv(target,GL_BUFFER_SIZE,&size);
@@ -333,7 +333,7 @@ VALUE obj,arg1;
 {
 	GLenum target;
 	GLboolean ret;
-	LOAD_GL_FUNC(glUnmapBuffer)
+	LOAD_GL_FUNC(glUnmapBuffer,1,5)
 	target = (GLenum)NUM2INT(arg1);
 	ret = fptr_glUnmapBuffer(target);
 	CHECK_GLERROR
@@ -345,7 +345,7 @@ static VALUE
 gl_GetBufferPointerv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
-	LOAD_GL_FUNC(glGetBufferPointerv)
+	LOAD_GL_FUNC(glGetBufferPointerv,1,5)
 	rb_raise(rb_eArgError, "glGetBufferPointerv not implemented");
 	CHECK_GLERROR
 	return Qnil;

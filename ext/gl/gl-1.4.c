@@ -16,25 +16,25 @@
 #include "../common/common.h"
 
 /* OpenGL 1.4 functions */
-GL_SIMPLE_FUNC_LOAD(BlendFuncSeparate,4,GLenum,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(FogCoordf,1,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC_LOAD(FogCoordd,1,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3b,3,GLbyte,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3d,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3f,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3i,3,GLint,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3s,3,GLshort,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3ub,3,GLubyte,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3ui,3,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3us,3,GLushort,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(WindowPos2d,2,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC_LOAD(WindowPos2f,2,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC_LOAD(WindowPos2i,2,GLint,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(WindowPos2s,2,GLshort,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(WindowPos3d,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC_LOAD(WindowPos3f,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC_LOAD(WindowPos3i,3,GLint,NUM2INT)
-GL_SIMPLE_FUNC_LOAD(WindowPos3s,3,GLshort,NUM2INT)
+GL_SIMPLE_FUNC_LOAD(BlendFuncSeparate,4,GLenum,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(FogCoordf,1,GLfloat,NUM2DBL,1,4)
+GL_SIMPLE_FUNC_LOAD(FogCoordd,1,GLdouble,NUM2DBL,1,4)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3b,3,GLbyte,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3d,3,GLdouble,NUM2DBL,1,4)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3f,3,GLfloat,NUM2DBL,1,4)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3i,3,GLint,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3s,3,GLshort,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3ub,3,GLubyte,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3ui,3,GLuint,NUM2UINT,1,4)
+GL_SIMPLE_FUNC_LOAD(SecondaryColor3us,3,GLushort,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(WindowPos2d,2,GLdouble,NUM2DBL,1,4)
+GL_SIMPLE_FUNC_LOAD(WindowPos2f,2,GLfloat,NUM2DBL,1,4)
+GL_SIMPLE_FUNC_LOAD(WindowPos2i,2,GLint,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(WindowPos2s,2,GLshort,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(WindowPos3d,3,GLdouble,NUM2DBL,1,4)
+GL_SIMPLE_FUNC_LOAD(WindowPos3f,3,GLfloat,NUM2DBL,1,4)
+GL_SIMPLE_FUNC_LOAD(WindowPos3i,3,GLint,NUM2INT,1,4)
+GL_SIMPLE_FUNC_LOAD(WindowPos3s,3,GLshort,NUM2INT,1,4)
 
 static void (APIENTRY * fptr_glFogCoordfv)(GLfloat *);
 static VALUE
@@ -42,7 +42,7 @@ gl_FogCoordfv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLfloat coord;
-	LOAD_GL_FUNC(glFogCoordfv)
+	LOAD_GL_FUNC(glFogCoordfv,1,4)
 	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,&coord,1);
 	fptr_glFogCoordfv(&coord);
@@ -56,7 +56,7 @@ gl_FogCoorddv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLdouble coord;
-	LOAD_GL_FUNC(glFogCoorddv)
+	LOAD_GL_FUNC(glFogCoorddv,1,4)
 	Check_Type(arg1,T_ARRAY);
 	ary2cdbl(arg1,&coord,1);
 	fptr_glFogCoorddv(&coord);
@@ -72,7 +72,7 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLenum type;
 	GLsizei stride;
-	LOAD_GL_FUNC(glFogCoordPointer)
+	LOAD_GL_FUNC(glFogCoordPointer,1,4)
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
@@ -97,7 +97,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint *ary1;
 	GLsizei *ary2;
   int len1,len2;
-	LOAD_GL_FUNC(glMultiDrawArrays)
+	LOAD_GL_FUNC(glMultiDrawArrays,1,4)
   len1 = RARRAY(arg2)->len;
   len2 = RARRAY(arg3)->len;
 	if (len1!=len2)
@@ -129,7 +129,7 @@ VALUE obj;
 	RArray *ary;
 	int i;
 	VALUE args[4];
-	LOAD_GL_FUNC(glMultiDrawElements)
+	LOAD_GL_FUNC(glMultiDrawElements,1,4)
 	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
 		default:
 		case 3:
@@ -184,7 +184,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum pname;
 	GLfloat param;
-	LOAD_GL_FUNC(glPointParameterf)
+	LOAD_GL_FUNC(glPointParameterf,1,4)
 	pname = (GLenum)NUM2INT(arg1);
 	param = (GLfloat)NUM2INT(arg2);
 	fptr_glPointParameterf(pname,param);
@@ -200,7 +200,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[3] = {0.0,0.0,0.0};
 	GLint size;
-	LOAD_GL_FUNC(glPointParameterfv)
+	LOAD_GL_FUNC(glPointParameterfv,1,4)
 	pname = (GLenum)NUM2INT(arg1);
 	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
@@ -220,7 +220,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum pname;
 	GLint param;
-	LOAD_GL_FUNC(glPointParameteri)
+	LOAD_GL_FUNC(glPointParameteri,1,4)
 	pname = (GLenum)NUM2INT(arg1);
 	param = (GLint)NUM2INT(arg2);
 	fptr_glPointParameteri(pname,param);
@@ -236,7 +236,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[3] = {0.0,0.0,0.0};
 	GLint size;
-	LOAD_GL_FUNC(glPointParameteriv)
+	LOAD_GL_FUNC(glPointParameteriv,1,4)
 	pname = (GLenum)NUM2INT(arg1);
 	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
@@ -303,7 +303,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLint size;
 	GLenum type;
 	GLsizei stride;
-	LOAD_GL_FUNC(glSecondaryColorPointer)
+	LOAD_GL_FUNC(glSecondaryColorPointer,1,4)
 	size = (GLint)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
 	stride = (GLsizei)NUM2UINT(arg3);
