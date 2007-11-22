@@ -34,7 +34,6 @@ class Test_misc < Test::Unit::TestCase
 
 	def test_isavailable
 		assert_equal(is_available?(1.1),true)
-		assert_equal(is_available?("glTexImage3D"),true)
 		assert_equal(is_available?("GL_ARB_multitexture"),true)
 		assert_equal(is_available?("GL_NON_EXISTENT"),false)
 	end

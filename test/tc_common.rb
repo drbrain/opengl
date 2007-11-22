@@ -40,8 +40,9 @@ def glut_init()
 	glutInitWindowPosition(1, 1)
 	glutInitWindowSize($window_size, $window_size)
 	glutCreateWindow("test")
-	glutDisplayFunc(display_func)
+
 	# hack the need to call glutMainLoop on some implementations
+	glutDisplayFunc(display_func)
 	begin
 		glutMainLoop()
 	rescue
@@ -89,7 +90,7 @@ def supported?(funcs)
 	Array(funcs).each do |name| # convert to array if it isn't already
 		if !Gl.is_available?(name)
 			puts ""				
-			puts "#{name} not supported, test skipped"
+			print "#{name} not supported, test skipped"
 			return false
 		end
 	end

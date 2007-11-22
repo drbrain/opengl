@@ -92,7 +92,7 @@ static VALUE gl_GetProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2)
 	xfree(buffer);
 
 	CHECK_GLERROR
-	return Qnil;
+	return ret_buffer;
 }
 
 static void (APIENTRY * fptr_glBindProgramARB)(GLenum,GLuint);
@@ -259,7 +259,7 @@ VALUE obj,arg1,arg2; \
 	LOAD_GL_EXT_FUNC(gl##_name_,_extension_) \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
 	ret = rb_ary_new2(4); \
-	for(i=0;i<4;i++); \
+	for(i=0;i<4;i++) \
 			rb_ary_push(ret, rb_float_new(cary[i])); \
 	CHECK_GLERROR \
 	return ret; \

@@ -90,4 +90,132 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB,GL_TRUE)
 		assert_equal(glGetIntegerv(GL_CLAMP_VERTEX_COLOR_ARB),GL_TRUE)
 	end
+
+	def test_gl_arb_vertex_program
+		return if not supported?("GL_ARB_vertex_program")
+
+		assert_equal(glIsProgram(0),GL_FALSE)
+		programs = glGenProgramsARB(1)
+		assert_equal(programs.size,1)
+		
+		program = "!!ARBvp1.0\nTEMP vv;\nEND"
+	
+	  glBindProgramARB(GL_VERTEX_PROGRAM_ARB, programs[0])
+		glProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, program)
+		assert_equal(glGetProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_STRING_ARB), program)
+		assert_equal(glIsProgramARB(programs[0]),GL_TRUE)	
+
+		assert_equal(glGetProgramivARB(GL_VERTEX_PROGRAM_ARB,GL_PROGRAM_LENGTH_ARB),program.size)
+		assert_equal(glGetProgramivARB(GL_VERTEX_PROGRAM_ARB,GL_PROGRAM_BINDING_ARB),programs[0])
+
+		glEnableVertexAttribArrayARB(1)
+		assert_equal(glGetVertexAttribivARB(1,GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB),[GL_TRUE])
+		glDisableVertexAttribArrayARB(1)
+		assert_equal(glGetVertexAttribivARB(1,GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB),[GL_FALSE])
+
+		glVertexAttribPointerARB(1,2,GL_FLOAT,GL_FALSE,0,[1,1].pack("f*"))
+		assert_equal(glGetVertexAttribPointervARB(1),[1,1].pack("f*"))
+
+
+		glProgramEnvParameter4dARB(GL_VERTEX_PROGRAM_ARB,1, 1,2,3,4)
+		assert_equal(glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramEnvParameter4fARB(GL_VERTEX_PROGRAM_ARB,1, 5,6,7,8)
+		assert_equal(glGetProgramEnvParameterfvARB(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+		glProgramEnvParameter4dvARB(GL_VERTEX_PROGRAM_ARB,1, [1,2,3,4])
+		assert_equal(glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramEnvParameter4fvARB(GL_VERTEX_PROGRAM_ARB,1, [5,6,7,8])
+		assert_equal(glGetProgramEnvParameterfvARB(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+
+		glProgramLocalParameter4dARB(GL_VERTEX_PROGRAM_ARB,1, 1,2,3,4)
+		assert_equal(glGetProgramLocalParameterdvARB(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramLocalParameter4fARB(GL_VERTEX_PROGRAM_ARB,1, 5,6,7,8)
+		assert_equal(glGetProgramLocalParameterfvARB(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+		glProgramLocalParameter4dvARB(GL_VERTEX_PROGRAM_ARB,1, [1,2,3,4])
+		assert_equal(glGetProgramLocalParameterdvARB(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramLocalParameter4fvARB(GL_VERTEX_PROGRAM_ARB,1, [5,6,7,8])
+		assert_equal(glGetProgramLocalParameterfvARB(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+
+		glVertexAttrib1dARB(1,1)
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],1)
+		glVertexAttrib1fARB(1,2)
+		assert_equal(glGetVertexAttribfvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],2)
+		glVertexAttrib1sARB(1,3)
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],3)
+		glVertexAttrib1dvARB(1,[1])
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],1)
+		glVertexAttrib1fvARB(1,[2])
+		assert_equal(glGetVertexAttribfvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],2)
+		glVertexAttrib1svARB(1,[3])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],3)
+
+		glVertexAttrib2dARB(1,1,2)
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[1,2])
+		glVertexAttrib2fARB(1,2,3)
+		assert_equal(glGetVertexAttribfvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[2,3])
+		glVertexAttrib2sARB(1,3,4)
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[3,4])
+		glVertexAttrib2dvARB(1,[1,2])
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[1,2])
+		glVertexAttrib2fvARB(1,[2,3])
+		assert_equal(glGetVertexAttribfvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[2,3])
+		glVertexAttrib2svARB(1,[3,4])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[3,4])
+
+		glVertexAttrib3dARB(1,1,2,3)
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[1,2,3])
+		glVertexAttrib3fARB(1,2,3,4)
+		assert_equal(glGetVertexAttribfvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[2,3,4])
+		glVertexAttrib3sARB(1,3,4,5)
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[3,4,5])
+		glVertexAttrib3dvARB(1,[1,2,3])
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[1,2,3])
+		glVertexAttrib3fvARB(1,[2,3,4])
+		assert_equal(glGetVertexAttribfvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[2,3,4])
+		glVertexAttrib3svARB(1,[3,4,5])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[3,4,5])
+
+		glVertexAttrib4dARB(1,1,2,3,4)
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[1,2,3,4])
+		glVertexAttrib4fARB(1,2,3,4,5)
+		assert_equal(glGetVertexAttribfvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[2,3,4,5])
+		glVertexAttrib4sARB(1,3,4,5,6)
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[3,4,5,6])
+		glVertexAttrib4dvARB(1,[1,2,3,4])
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[1,2,3,4])
+		glVertexAttrib4fvARB(1,[2,3,4,5])
+		assert_equal(glGetVertexAttribfvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[2,3,4,5])
+		glVertexAttrib4svARB(1,[3,4,5,6])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[3,4,5,6])
+
+
+		glVertexAttrib4bvARB(1,[1,2,3,4])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[1,2,3,4])
+		glVertexAttrib4ivARB(1,[2,3,4,5])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[2,3,4,5])
+		glVertexAttrib4ubvARB(1,[3,4,5,6])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[3,4,5,6])
+		glVertexAttrib4uivARB(1,[1,2,3,4])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[1,2,3,4])
+		glVertexAttrib4usvARB(1,[2,3,4,5])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[2,3,4,5])
+
+		glVertexAttrib4NbvARB(1,[0,2**7-1,0,2**7-1])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[0,1,0,1])
+		glVertexAttrib4NivARB(1,[2**31-1,0,2**31-1,0])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[1,0,1,0])
+		glVertexAttrib4NsvARB(1,[0,2**15-1,0,2**15-1])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[0,1,0,1])
+
+		glVertexAttrib4NubARB(1,2**8-1,0,2**8-1,0)
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[1,0,1,0])
+
+		glVertexAttrib4NubvARB(1,[0,2**8-1,0,2**8-1])
+		assert_equal(glGetVertexAttribdvARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[0,1,0,1])
+		glVertexAttrib4NuivARB(1,[2**32-1,0,2**32-1,0])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[1,0,1,0])
+		glVertexAttrib4NusvARB(1,[0,2**16-1,0,2**16-1])
+		assert_equal(glGetVertexAttribivARB(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,4],[0,1,0,1])
+
+		glDeleteProgramsARB(programs)
+	end
 end

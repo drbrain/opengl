@@ -38,5 +38,5 @@ void gl_init_functions_ext_gremedy(VALUE module)
 	rb_define_module_function(module, "glStringMarkerGREMEDY", gl_StringMarkerGREMEDY, 1);
 
 /* #345 GL_GREMEDY_frame_terminator */
-	rb_define_module_function(module, "glFrameTerminatorGREMEDY", gl_FrameTerminatorGREMEDY, 1);
+	rb_define_module_function(module, "glFrameTerminatorGREMEDY", gl_FrameTerminatorGREMEDY, 0);
 }
