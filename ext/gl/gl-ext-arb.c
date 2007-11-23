@@ -356,7 +356,7 @@ VALUE obj,arg1,arg2; \
 	LOAD_GL_EXT_FUNC(gl##_name_,_extension_) \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
-	if (pname==GL_CURRENT_VERTEX_ATTRIB) \
+	if (pname==GL_CURRENT_VERTEX_ATTRIB_ARB) \
 		size = 4; \
 	else \
 		size = 1; \

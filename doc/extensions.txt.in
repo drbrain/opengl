@@ -229,7 +229,7 @@ GL_NV_texture_rectangle,Supported,0.50
 GL_NV_texture_shader,Supported,0.50
 GL_NV_texture_shader2,Supported,0.50
 GL_NV_vertex_array_range2,Supported,0.50
-GL_NV_vertex_program,Unsupported,N/A
+GL_NV_vertex_program,Supported,0.60
 GLX_SGIX_visual_select_group,NonGL,N/A
 GL_SGIX_texture_coordinate_clamp,Supported,0.50
 GLX_OML_swap_method,NonGL,N/A
@@ -278,7 +278,7 @@ GL_ATI_texture_env_combine3,Supported,0.50
 GL_ATI_texture_float,Supported,0.50
 GL_NV_float_buffer,Supported,0.50
 WGL_NV_float_buffer,NonGL,N/A
-GL_NV_fragment_program,Unsupported,N/A
+GL_NV_fragment_program,Supported,0.60
 GL_NV_half_float,Unsupported,N/A
 GL_NV_pixel_data_range,Unsupported,N/A
 GL_NV_primitive_restart,Unsupported,N/A

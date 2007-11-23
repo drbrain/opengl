@@ -2836,12 +2836,13 @@ VALUE obj,arg1;
 	GLsizei size;
 	GLboolean r;
 	VALUE retary;
+	VALUE ary;
 	int i;
-	Check_Type(arg1,T_ARRAY);
-	size = RARRAY(arg1)->len;
+	ary = rb_Array(arg1);
+	size = RARRAY(ary)->len;
 	textures = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
-	ary2cuint(arg1,textures,size);	
+	ary2cuint(ary,textures,size);	
 	r = glAreTexturesResident(size,textures,residences);
 	retary = rb_ary_new2(size);
 	if (r==GL_TRUE) { /* all are resident */
