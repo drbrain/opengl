@@ -49,6 +49,43 @@ static VALUE gl_SampleCoverageARB(VALUE obj,VALUE arg1,VALUE arg2)
 	return Qnil;
 }
 
+/* #25 GL_ARB_window_pos */
+
+GL_EXT_SIMPLE_FUNC_LOAD(WindowPos2dARB,2,GLdouble,NUM2DBL,"GL_ARB_window_pos")
+GL_EXT_SIMPLE_FUNC_LOAD(WindowPos2fARB,2,GLfloat,NUM2DBL,"GL_ARB_window_pos")
+GL_EXT_SIMPLE_FUNC_LOAD(WindowPos2iARB,2,GLint,NUM2INT,"GL_ARB_window_pos")
+GL_EXT_SIMPLE_FUNC_LOAD(WindowPos2sARB,2,GLshort,NUM2INT,"GL_ARB_window_pos")
+GL_EXT_SIMPLE_FUNC_LOAD(WindowPos3dARB,3,GLdouble,NUM2DBL,"GL_ARB_window_pos")
+GL_EXT_SIMPLE_FUNC_LOAD(WindowPos3fARB,3,GLfloat,NUM2DBL,"GL_ARB_window_pos")
+GL_EXT_SIMPLE_FUNC_LOAD(WindowPos3iARB,3,GLint,NUM2INT,"GL_ARB_window_pos")
+GL_EXT_SIMPLE_FUNC_LOAD(WindowPos3sARB,3,GLshort,NUM2INT,"GL_ARB_window_pos")
+
+#define WINDOWPOSFUNCV(_name_,_type_,_conv_,_size_,_ext_) \
+static void (APIENTRY * fptr_gl##_name_)(const _type_ *); \
+static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+{ \
+	_type_ cary[_size_]; \
+	LOAD_GL_EXT_FUNC(gl##_name_,_ext_) \
+	Check_Type(arg1,T_ARRAY); \
+	if (RARRAY(arg1)->len != _size_) \
+		rb_raise(rb_eArgError, "Incorrect array length - must have '%i' elements.",_size_); \
+	_conv_(arg1,cary,_size_); \
+	fptr_gl##_name_(cary); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+WINDOWPOSFUNCV(WindowPos2dvARB,GLdouble,ary2cdbl,2,"GL_ARB_window_pos")
+WINDOWPOSFUNCV(WindowPos2fvARB,GLfloat,ary2cflt,2,"GL_ARB_window_pos")
+WINDOWPOSFUNCV(WindowPos2ivARB,GLint,ary2cint,2,"GL_ARB_window_pos")
+WINDOWPOSFUNCV(WindowPos2svARB,GLshort,ary2cshort,2,"GL_ARB_window_pos")
+WINDOWPOSFUNCV(WindowPos3dvARB,GLdouble,ary2cdbl,3,"GL_ARB_window_pos")
+WINDOWPOSFUNCV(WindowPos3fvARB,GLfloat,ary2cflt,3,"GL_ARB_window_pos")
+WINDOWPOSFUNCV(WindowPos3ivARB,GLint,ary2cint,3,"GL_ARB_window_pos")
+WINDOWPOSFUNCV(WindowPos3svARB,GLshort,ary2cshort,3,"GL_ARB_window_pos")
+#undef WINDOWPOSFUNCV
+
+
 /* #26 GL_ARB_vertex_program */
 static void (APIENTRY * fptr_glProgramStringARB)(GLenum,GLenum,GLsizei,const void *);
 static VALUE gl_ProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
@@ -386,6 +423,25 @@ void gl_init_functions_ext_arb(VALUE module)
 
 /* #5 GL_ARB_multisample */
 	rb_define_module_function(module, "glSampleCoverageARB", gl_SampleCoverageARB, 2);
+
+/* #26 GL_ARB_window_pos */
+	rb_define_module_function(module, "glWindowPos2dARB", gl_WindowPos2dARB, 2);
+	rb_define_module_function(module, "glWindowPos2fARB", gl_WindowPos2fARB, 2);
+	rb_define_module_function(module, "glWindowPos2iARB", gl_WindowPos2iARB, 2);
+	rb_define_module_function(module, "glWindowPos2sARB", gl_WindowPos2sARB, 2);
+	rb_define_module_function(module, "glWindowPos3dARB", gl_WindowPos3dARB, 3);
+	rb_define_module_function(module, "glWindowPos3fARB", gl_WindowPos3fARB, 3);
+	rb_define_module_function(module, "glWindowPos3iARB", gl_WindowPos3iARB, 3);
+	rb_define_module_function(module, "glWindowPos3sARB", gl_WindowPos3sARB, 3);
+
+	rb_define_module_function(module, "glWindowPos2dvARB", gl_WindowPos2dvARB, 1);
+	rb_define_module_function(module, "glWindowPos2fvARB", gl_WindowPos2fvARB, 1);
+	rb_define_module_function(module, "glWindowPos2ivARB", gl_WindowPos2ivARB, 1);
+	rb_define_module_function(module, "glWindowPos2svARB", gl_WindowPos2svARB, 1);
+	rb_define_module_function(module, "glWindowPos3dvARB", gl_WindowPos3dvARB, 1);
+	rb_define_module_function(module, "glWindowPos3fvARB", gl_WindowPos3fvARB, 1);
+	rb_define_module_function(module, "glWindowPos3ivARB", gl_WindowPos3ivARB, 1);
+	rb_define_module_function(module, "glWindowPos3svARB", gl_WindowPos3svARB, 1);
 
 /* #26 GL_ARB_vertex_program */
 	rb_define_module_function(module, "glProgramStringARB", gl_ProgramStringARB, 3);

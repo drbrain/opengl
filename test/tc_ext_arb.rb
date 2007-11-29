@@ -218,4 +218,45 @@ class Test_EXT_ARB < Test::Unit::TestCase
 
 		glDeleteProgramsARB(programs)
 	end
+
+	def test_arb_glwindowpos
+		return if not supported?("GL_ARB_window_pos")
+		# 2
+		glWindowPos2dARB(1.0,2.0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
+		glWindowPos2dvARB([2.0,1.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[2,1,0,1])
+		glWindowPos2fARB(1.0,2.0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
+		glWindowPos2fvARB([2.0,1.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[2,1,0,1])
+		glWindowPos2iARB(1,2)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
+		glWindowPos2ivARB([2,1])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[2,1,0,1])
+		glWindowPos2sARB(1,2)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
+		glWindowPos2svARB([2,1])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[2,1,0,1])
+
+		# 3
+		glWindowPos3dARB(1.0,2.0,0.5)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0.5,1])
+		glWindowPos3dvARB([3.0,2.0,1.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
+		glWindowPos3fARB(1.0,2.0,0.5)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0.5,1])
+		glWindowPos3fvARB([3.0,2.0,1.0])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
+		glWindowPos3iARB(1,2,0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
+		glWindowPos3ivARB([3,2,1])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
+		glWindowPos3sARB(1,2,0)
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
+		glWindowPos3svARB([3,2,1])
+		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
+	end
+
+
 end

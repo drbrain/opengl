@@ -71,4 +71,11 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		glDeleteTextures(t)
 	end
 
+	def test_gl_ext_gpu_program_parameters		
+		return if not supported?("GL_EXT_gpu_program_parameters")
+
+		glProgramEnvParameters4fvEXT(GL_VERTEX_PROGRAM_ARB,1, [1,2,3,4,5,6,7,8])
+		assert_equal(glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		assert_equal(glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB,2),[5,6,7,8])
+	end
 end

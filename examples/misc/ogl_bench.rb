@@ -13,7 +13,7 @@ require 'opengl'
 include Gl,Glut
 
 # Set up constants
-PROGRAM = "OpenGL Benchmark - Ruby Binding"
+PROGRAM = "OpenGL Benchmark - Ruby Bindings"
 CYCLES = 1000
 
 # Setup OpenGL Extensions

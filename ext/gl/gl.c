@@ -28,9 +28,11 @@ void gl_init_functions_1_5(VALUE);
 void gl_init_functions_2_0(VALUE);
 void gl_init_functions_2_1(VALUE);
 void gl_init_functions_ext_arb(VALUE);
+void gl_init_functions_ext_ati(VALUE);
 void gl_init_functions_ext_ext(VALUE);
 void gl_init_functions_ext_gremedy(VALUE);
 void gl_init_functions_ext_nv(VALUE);
+
 
 static int opengl_version[2]; /* major, minor */
 static char *opengl_extensions = NULL;
@@ -189,6 +191,7 @@ DLLEXPORT void Init_gl()
 	gl_init_functions_2_0(module);
 	gl_init_functions_2_1(module);
 	gl_init_functions_ext_arb(module);
+	gl_init_functions_ext_ati(module);
 	gl_init_functions_ext_ext(module);
 	gl_init_functions_ext_gremedy(module);
 	gl_init_functions_ext_nv(module);

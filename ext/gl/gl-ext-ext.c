@@ -209,6 +209,32 @@ static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VAL
 
 GL_EXT_SIMPLE_FUNC_LOAD(GenerateMipmapEXT,1,GLenum,NUM2UINT,"GL_EXT_framebuffer_object")
 
+/* #320 - GL_EXT_gpu_program_parameters */
+#define PROGRAMPARAM_MULTI_FUNC_V(_name_,_type_,_conv_,_extension_) \
+static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,GLsizei,const _type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2,arg3) \
+VALUE obj,arg1,arg2,arg3; \
+{ \
+	_type_ *cary; \
+	int len; \
+	LOAD_GL_EXT_FUNC(gl##_name_,_extension_) \
+	len = RARRAY(rb_Array(arg3))->len; \
+	if (len<=0 || (len % 4) != 0) \
+		rb_raise(rb_eArgError, "Parameter array size must be multiplication of 4"); \
+	cary = ALLOC_N(_type_,len); \
+	_conv_(arg3,cary,len); \
+	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),len / 4, cary); \
+	xfree(cary); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+PROGRAMPARAM_MULTI_FUNC_V(ProgramEnvParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_gpu_program_parameters")
+PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_gpu_program_parameters")
+#undef PROGRAMPARAM_MULTI_FUNC_V
+
+
 void gl_init_functions_ext_ext(VALUE module)
 {
 /* #310 - GL_EXT_framebuffer_object */
@@ -229,5 +255,10 @@ void gl_init_functions_ext_ext(VALUE module)
 	rb_define_module_function(module, "glFramebufferRenderbufferEXT", gl_FramebufferRenderbufferEXT, 4);
 	rb_define_module_function(module, "glGetFramebufferAttachmentParameterivEXT", gl_GetFramebufferAttachmentParameterivEXT, 3);
 	rb_define_module_function(module, "glGenerateMipmapEXT", gl_GenerateMipmapEXT, 1);
+
+/* #320 - GL_EXT_gpu_program_parameters */
+	rb_define_module_function(module, "glProgramEnvParameters4fvEXT", gl_ProgramEnvParameters4fvEXT, 3);
+	rb_define_module_function(module, "glProgramLocalParameters4fvEXT", gl_ProgramLocalParameters4fvEXT, 3);
+
 
 }

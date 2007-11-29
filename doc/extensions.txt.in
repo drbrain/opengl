@@ -25,7 +25,7 @@ GL_ARB_texture_mirrored_repeat,Supported,0.50
 GL_ARB_depth_texture,Supported,0.50
 GL_ARB_shadow,Supported,0.50
 GL_ARB_shadow_ambient,Supported,0.50
-GL_ARB_window_pos,Unsupported,N/A
+GL_ARB_window_pos,Supported,0.60
 GL_ARB_vertex_program,Supported,0.60
 GL_ARB_fragment_program,Supported,0.60
 GL_ARB_vertex_buffer_object,Unsupported,N/A
@@ -272,7 +272,7 @@ GL_APPLE_vertex_array_object,Unsupported,N/A
 GL_APPLE_vertex_array_range,Unsupported,N/A
 GL_APPLE_ycbcr_422,Supported,0.50
 GL_S3_s3tc,Other,N/A
-GL_ATI_draw_buffers,Unsupported,N/A
+GL_ATI_draw_buffers,Supported,0.60
 WGL_ATI_pixel_format_float,NonGL,N/A
 GL_ATI_texture_env_combine3,Supported,0.50
 GL_ATI_texture_float,Supported,0.50
@@ -316,7 +316,7 @@ GL_EXT_framebuffer_blit,Unsupported,N/A
 GL_EXT_framebuffer_multisample,Unsupported,N/A
 GL_MESAX_texture_stack,Supported,0.50
 GL_EXT_timer_query,Unsupported,N/A
-GL_EXT_gpu_program_parameters,Unsupported,N/A
+GL_EXT_gpu_program_parameters,Supported,0.60
 GL_APPLE_flush_buffer_range,Unsupported,N/A
 GL_NV_gpu_program4,Unsupported,N/A
 GL_NV_geometry_program4,Unsupported,N/A
