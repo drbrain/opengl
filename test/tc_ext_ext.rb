@@ -21,6 +21,10 @@ class Test_EXT_EXT < Test::Unit::TestCase
 	end
 
 	def teardown
+		if supported?("GL_EXT_framebuffer_object")
+			glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, 0)
+			glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, 0)
+		end
 		common_teardown()
 	end
 
@@ -78,4 +82,55 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		assert_equal(glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
 		assert_equal(glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB,2),[5,6,7,8])
 	end
+
+	def test_gl_ext_framebuffer_blit
+		return if not supported?("GL_EXT_framebuffer_blit")
+		fbo = glGenFramebuffersEXT(2)
+		texture = glGenTextures(2)
+		data = [1,1,1,1, 0,0,0,0, 1,1,1,1, 0,0,0,0]
+
+		glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, fbo[0])
+		glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, fbo[1])
+
+		glBindTexture(GL_TEXTURE_2D, texture[0])
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,2,2,0,GL_RGBA,GL_UNSIGNED_BYTE,data.pack("C*"))
+		glGenerateMipmapEXT(GL_TEXTURE_2D);
+
+		glBindTexture(GL_TEXTURE_2D, texture[1])
+		glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,2,2,0,GL_RGBA,GL_UNSIGNED_BYTE,nil)
+		glGenerateMipmapEXT(GL_TEXTURE_2D);
+
+		glFramebufferTexture2DEXT(GL_READ_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texture[0], 0)
+		glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texture[1], 0)
+
+		status = glCheckFramebufferStatusEXT(GL_READ_FRAMEBUFFER_EXT)
+		assert_equal(status,GL_FRAMEBUFFER_COMPLETE_EXT)
+		status = glCheckFramebufferStatusEXT(GL_DRAW_FRAMEBUFFER_EXT)
+		assert_equal(status,GL_FRAMEBUFFER_COMPLETE_EXT)
+
+		glBlitFramebufferEXT(0, 0, 2, 2,
+											   0, 0, 2, 2,
+											   GL_COLOR_BUFFER_BIT,
+											   GL_NEAREST)
+
+		glBindTexture(GL_TEXTURE_2D, texture[1])
+		tex = glGetTexImage(GL_TEXTURE_2D,0,GL_RGBA,GL_UNSIGNED_BYTE).unpack("C*")
+		assert_equal(tex,data)
+		
+		glDeleteTextures(texture)
+		glDeleteFramebuffersEXT(fbo)
+	end
+
+	def test_gl_ext_framebuffer_multisample
+		return if not supported?("GL_EXT_framebuffer_multisample")
+		rb = glGenRenderbuffersEXT(1)[0]
+
+		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,rb)
+		glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT,4,GL_RGBA,2,2)
+		samples = glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT,GL_RENDERBUFFER_SAMPLES_EXT)
+		assert_equal(samples,4)
+
+		glDeleteRenderbuffersEXT(rb)
+	end
+	
 end

@@ -209,6 +209,29 @@ static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VAL
 
 GL_EXT_SIMPLE_FUNC_LOAD(GenerateMipmapEXT,1,GLenum,NUM2UINT,"GL_EXT_framebuffer_object")
 
+/* #316 - GL_EXT_framebuffer_blit */
+static void (APIENTRY * fptr_glBlitFramebufferEXT)(GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLbitfield,GLenum);
+static VALUE gl_BlitFramebufferEXT(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10)
+VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
+{
+	LOAD_GL_EXT_FUNC(glBlitFramebufferEXT,"GL_EXT_framebuffer_blit")
+	fptr_glBlitFramebufferEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2INT(arg3),NUM2INT(arg4),
+														NUM2INT(arg5),NUM2INT(arg6),NUM2INT(arg7),NUM2INT(arg8),
+														NUM2UINT(arg9),NUM2UINT(arg10));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+/* #317 - GL_EXT_framebuffer_multisample */
+static void (APIENTRY * fptr_glRenderbufferStorageMultisampleEXT)(GLenum,GLsizei,GLenum,GLsizei,GLsizei);
+static VALUE gl_RenderbufferStorageMultisampleEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
+{
+	LOAD_GL_EXT_FUNC(glRenderbufferStorageMultisampleEXT,"GL_EXT_framebuffer_multisample")
+	fptr_glRenderbufferStorageMultisampleEXT(NUM2UINT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4),NUM2INT(arg5));
+	CHECK_GLERROR
+	return Qnil;
+}
+
 /* #320 - GL_EXT_gpu_program_parameters */
 #define PROGRAMPARAM_MULTI_FUNC_V(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,GLsizei,const _type_ *); \
@@ -255,6 +278,12 @@ void gl_init_functions_ext_ext(VALUE module)
 	rb_define_module_function(module, "glFramebufferRenderbufferEXT", gl_FramebufferRenderbufferEXT, 4);
 	rb_define_module_function(module, "glGetFramebufferAttachmentParameterivEXT", gl_GetFramebufferAttachmentParameterivEXT, 3);
 	rb_define_module_function(module, "glGenerateMipmapEXT", gl_GenerateMipmapEXT, 1);
+
+/* #316 - GL_EXT_framebuffer_blit */
+	rb_define_module_function(module, "glBlitFramebufferEXT", gl_BlitFramebufferEXT, 10);
+
+/* #317 - GL_EXT_framebuffer_multisample */
+	rb_define_module_function(module, "glRenderbufferStorageMultisampleEXT", gl_RenderbufferStorageMultisampleEXT, 5);
 
 /* #320 - GL_EXT_gpu_program_parameters */
 	rb_define_module_function(module, "glProgramEnvParameters4fvEXT", gl_ProgramEnvParameters4fvEXT, 3);

@@ -445,7 +445,6 @@ static VALUE gl_AreProgramsResidentNV(VALUE obj,VALUE arg1)
 	int i;
 	LOAD_GL_EXT_FUNC(glAreProgramsResidentNV,"GL_NV_vertex_program")
 	ary = rb_Array(arg1);
-	//Check_Type(arg1,T_ARRAY);
 	size = RARRAY(ary)->len;
 	programs = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
@@ -526,6 +525,18 @@ GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterdvNV,GLdouble,"GL_NV_vertex_pr
 GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterfvNV,GLfloat,"GL_NV_vertex_program")
 #undef GETPROGRAMNAMEDPARAM_FUNC
 
+/* #336 GL_NV_framebuffer_multisample_coverage */
+static void (APIENTRY * fptr_glRenderbufferStorageMultisampleCoverageNV)(GLenum,GLsizei,GLsizei,GLenum,GLsizei,GLsizei);
+static VALUE gl_RenderbufferStorageMultisampleCoverageNV(obj,arg1,arg2,arg3,arg4,arg5,arg6)
+VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
+{
+	LOAD_GL_EXT_FUNC(glRenderbufferStorageMultisampleCoverageNV,"GL_NV_framebuffer_multisample_coverage")
+	fptr_glRenderbufferStorageMultisampleCoverageNV(NUM2UINT(arg1),NUM2INT(arg2),NUM2INT(arg3),
+																									NUM2UINT(arg4),NUM2INT(arg5),NUM2INT(arg6));
+	CHECK_GLERROR
+	return Qnil;
+}
+
 void gl_init_functions_ext_nv(VALUE module)
 {
 /* #233 GL_NV_vertex_program */
@@ -601,4 +612,8 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glProgramNamedParameter4dvNV", gl_ProgramNamedParameter4dvNV, 3);
 	rb_define_module_function(module, "glGetProgramNamedParameterdvNV", gl_GetProgramNamedParameterdvNV, 2);
 	rb_define_module_function(module, "glGetProgramNamedParameterfvNV", gl_GetProgramNamedParameterfvNV, 2);
+
+/* #336 GL_NV_framebuffer_multisample_coverage */
+	rb_define_module_function(module, "glRenderbufferStorageMultisampleCoverageNV", gl_RenderbufferStorageMultisampleCoverageNV, 6);
+
 }

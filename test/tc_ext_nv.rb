@@ -191,5 +191,20 @@ class Test_EXT_NV < Test::Unit::TestCase
 
 		glDeleteProgramsNV(programs)
 	end
+
+	def test_gl_nv_framebuffer_multisample_coverage
+		return if not supported?("GL_NV_framebuffer_multisample_coverage")
+		rb = glGenRenderbuffersEXT(1)[0]
+
+		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,rb)
+		glRenderbufferStorageMultisampleCoverageNV(GL_RENDERBUFFER_EXT,4,4, GL_RGBA,2,2)
+		samples = glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT,GL_RENDERBUFFER_COVERAGE_SAMPLES_NV)
+		assert_equal(samples,4)
+		samples = glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT,GL_RENDERBUFFER_COLOR_SAMPLES_NV)
+		assert_equal(samples,4)
+
+		glDeleteRenderbuffersEXT(rb)
+	end
+
 end
 

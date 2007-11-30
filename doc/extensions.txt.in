@@ -312,8 +312,8 @@ GL_EXT_packed_depth_stencil,Supported,0.50
 WGL_3DL_stereo_control,NonGL,N/A
 GL_EXT_stencil_clear_tag,Unsupported,N/A
 GL_EXT_texture_sRGB,Supported,0.50
-GL_EXT_framebuffer_blit,Unsupported,N/A
-GL_EXT_framebuffer_multisample,Unsupported,N/A
+GL_EXT_framebuffer_blit,Supported,0.60
+GL_EXT_framebuffer_multisample,Supported,0.60
 GL_MESAX_texture_stack,Supported,0.50
 GL_EXT_timer_query,Unsupported,N/A
 GL_EXT_gpu_program_parameters,Supported,0.60
@@ -334,7 +334,7 @@ GL_EXT_texture_compression_rgtc,Supported,0.50
 GL_EXT_texture_shared_exponent,Supported,0.50
 GL_NV_depth_buffer_float,Unsupported,N/A
 GL_NV_fragment_program4,Supported,0.50
-GL_NV_framebuffer_multisample_coverage,Unsupported,N/A
+GL_NV_framebuffer_multisample_coverage,Supported,0.60
 GL_EXT_framebuffer_sRGB,Supported,0.50
 GLX_EXT_framebuffer_sRGB,NonGL,N/A
 WGL_EXT_framebuffer_sRGB,NonGL,N/A
