@@ -28,6 +28,14 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		common_teardown()
 	end
 
+	def test_gl_ext_polygon_offset
+		return if not supported?("GL_EXT_polygon_offset")
+
+		glPolygonOffsetEXT(1.0,2.0)
+		assert_equal(glGetIntegerv(GL_POLYGON_OFFSET_FACTOR_EXT),1.0)
+		assert_equal(glGetIntegerv(GL_POLYGON_OFFSET_BIAS_EXT),2.0)
+	end
+
 	def test_gl_ext_framebuffer_object
 		return if not supported?("GL_EXT_framebuffer_object")
 		t = glGenTextures(3)
@@ -131,6 +139,15 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		assert_equal(samples,4)
 
 		glDeleteRenderbuffersEXT(rb)
+	end
+
+	def test_gl_ext_pointparameter
+		return if not supported?("GL_EXT_point_parameters")
+		glPointParameterfEXT(GL_POINT_SIZE_MIN,1.0)
+		assert_equal(glGetDoublev(GL_POINT_SIZE_MIN),1.0)
+
+		glPointParameterfvEXT(GL_POINT_DISTANCE_ATTENUATION,[1,0,1])
+		assert_equal(glGetDoublev(GL_POINT_DISTANCE_ATTENUATION),[1,0,1])
 	end
 	
 end

@@ -19,6 +19,40 @@
 /* Those are extensions that are not blessed by ARB committee but were
    created or agreed upon by multiple vendors */
 
+/* #54 GL_EXT_point_parameters */
+
+static void (APIENTRY * fptr_glPointParameterfEXT)(GLenum,GLfloat);
+static VALUE gl_PointParameterfEXT(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	LOAD_GL_EXT_FUNC(glPointParameterfEXT,"GL_EXT_point_parameters")
+	fptr_glPointParameterfEXT(NUM2UINT(arg1),NUM2DBL(arg2));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glPointParameterfvEXT)(GLenum,GLfloat *);
+static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	GLfloat params[3] = {0.0,0.0,0.0};
+	GLenum pname;
+	GLint size;
+	LOAD_GL_EXT_FUNC(glPointParameterfvEXT,"GL_EXT_point_parameters")
+	pname = NUM2UINT(arg1);
+	Check_Type(arg2,T_ARRAY);
+	if (pname==GL_POINT_DISTANCE_ATTENUATION)
+		size = 3;
+	else
+		size = 1;
+	ary2cflt(arg2,params,size);
+	fptr_glPointParameterfvEXT(pname,params);
+	CHECK_GLERROR
+	return Qnil;
+}
+
+
+/* #310 - GL_EXT_polygon_offset */
+GL_EXT_SIMPLE_FUNC_LOAD(PolygonOffsetEXT,2,GLfloat,NUM2DBL,"GL_EXT_polygon_offset")
+
 /* #310 - GL_EXT_framebuffer_object */
 static GLboolean (APIENTRY * fptr_glIsRenderbufferEXT)(GLuint);
 static VALUE gl_IsRenderbufferEXT(VALUE obj,VALUE arg1)
@@ -260,6 +294,13 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_
 
 void gl_init_functions_ext_ext(VALUE module)
 {
+/* #54 GL_EXT_point_parameters */
+	rb_define_module_function(module, "glPointParameterfEXT", gl_PointParameterfEXT, 2);
+	rb_define_module_function(module, "glPointParameterfvEXT", gl_PointParameterfvEXT, 2);
+
+/* #310 - GL_EXT_polygon_offset */
+	rb_define_module_function(module, "glPolygonOffsetEXT", gl_PolygonOffsetEXT, 2);
+
 /* #310 - GL_EXT_framebuffer_object */
 	rb_define_module_function(module, "glIsRenderbufferEXT", gl_IsRenderbufferEXT, 1);
 	rb_define_module_function(module, "glBindRenderbufferEXT", gl_BindRenderbufferEXT, 2);

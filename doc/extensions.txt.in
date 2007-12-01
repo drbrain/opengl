@@ -14,7 +14,7 @@ WGL_ARB_make_current_read,NonGL,N/A
 WGL_ARB_pbuffer,NonGL,N/A
 GL_ARB_texture_compression,Unsupported,N/A
 GL_ARB_texture_border_clamp,Supported,0.50
-GL_ARB_point_parameters,Unsupported,N/A
+GL_ARB_point_parameters,Supported,0.60
 GL_ARB_vertex_blend,Unsupported,N/A
 GL_ARB_matrix_palette,Unsupported,N/A
 GL_ARB_texture_env_combine,Supported,0.50
@@ -47,7 +47,7 @@ GL_ARB_texture_float,Supported,0.50
 GL_ARB_pixel_buffer_object,Supported,0.50
 GL_EXT_abgr,Supported,0.50
 GL_EXT_blend_color,Unsupported,N/A
-GL_EXT_polygon_offset,Unsupported,N/A
+GL_EXT_polygon_offset,Supported,0.60
 GL_EXT_texture,Supported,0.50
 GL_EXT_texture3D,Supported,0.50
 GL_SGIS_texture_filter4,Unsupported,N/A
@@ -93,7 +93,7 @@ GLX_SGIX_pbuffer,NonGL,N/A
 GL_SGIS_texture_select,Supported,0.50
 GL_SGIX_sprite,Unsupported,N/A
 GL_SGIX_texture_multi_buffer,Supported,0.50
-GL_EXT_point_parameters,Unsupported,N/A
+GL_EXT_point_parameters,Supported,0.60
 GL_SGIX_instruments,Unsupported,N/A
 GL_SGIX_texture_scale_bias,Supported,0.50
 GL_SGIX_framezoom,Unsupported,N/A
@@ -205,7 +205,7 @@ GL_IBM_multimode_draw_arrays,Unsupported,N/A
 GL_IBM_vertex_array_lists,Unsupported,N/A
 GL_3DFX_texture_compression_FXT1,Supported,0.50
 GL_3DFX_multisample,NonGL,N/A
-GL_3DFX_tbuffer,Unsupported,N/A
+GL_3DFX_tbuffer,Supported,0.60
 GL_EXT_multisample,NonGL,N/A
 WGL_EXT_multisample,NonGL,N/A
 GL_SGIX_vertex_preclip,Supported,0.50

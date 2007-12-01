@@ -49,6 +49,36 @@ static VALUE gl_SampleCoverageARB(VALUE obj,VALUE arg1,VALUE arg2)
 	return Qnil;
 }
 
+/* #14 GL_ARB_point_parameters */
+
+static void (APIENTRY * fptr_glPointParameterfARB)(GLenum,GLfloat);
+static VALUE gl_PointParameterfARB(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	LOAD_GL_EXT_FUNC(glPointParameterfARB,"GL_ARB_point_parameters")
+	fptr_glPointParameterfARB(NUM2UINT(arg1),NUM2DBL(arg2));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glPointParameterfvARB)(GLenum,GLfloat *);
+static VALUE gl_PointParameterfvARB(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	GLfloat params[3] = {0.0,0.0,0.0};
+	GLenum pname;
+	GLint size;
+	LOAD_GL_EXT_FUNC(glPointParameterfvARB,"GL_ARB_point_parameters")
+	pname = NUM2UINT(arg1);
+	Check_Type(arg2,T_ARRAY);
+	if (pname==GL_POINT_DISTANCE_ATTENUATION)
+		size = 3;
+	else
+		size = 1;
+	ary2cflt(arg2,params,size);
+	fptr_glPointParameterfvARB(pname,params);
+	CHECK_GLERROR
+	return Qnil;
+}
+
 /* #25 GL_ARB_window_pos */
 
 GL_EXT_SIMPLE_FUNC_LOAD(WindowPos2dARB,2,GLdouble,NUM2DBL,"GL_ARB_window_pos")
@@ -423,6 +453,10 @@ void gl_init_functions_ext_arb(VALUE module)
 
 /* #5 GL_ARB_multisample */
 	rb_define_module_function(module, "glSampleCoverageARB", gl_SampleCoverageARB, 2);
+
+/* #14 GL_ARB_point_parameters */
+	rb_define_module_function(module, "glPointParameterfARB", gl_PointParameterfARB, 2);
+	rb_define_module_function(module, "glPointParameterfvARB", gl_PointParameterfvARB, 2);
 
 /* #26 GL_ARB_window_pos */
 	rb_define_module_function(module, "glWindowPos2dARB", gl_WindowPos2dARB, 2);

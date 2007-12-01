@@ -219,7 +219,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		glDeleteProgramsARB(programs)
 	end
 
-	def test_arb_glwindowpos
+	def test_gl_arb_windowpos
 		return if not supported?("GL_ARB_window_pos")
 		# 2
 		glWindowPos2dARB(1.0,2.0)
@@ -258,5 +258,13 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
 	end
 
+	def test_gl_arb_pointparameter
+		return if not supported?("GL_ARB_point_parameters")
+		glPointParameterfARB(GL_POINT_SIZE_MIN,1.0)
+		assert_equal(glGetDoublev(GL_POINT_SIZE_MIN),1.0)
+
+		glPointParameterfvARB(GL_POINT_DISTANCE_ATTENUATION,[1,0,1])
+		assert_equal(glGetDoublev(GL_POINT_DISTANCE_ATTENUATION),[1,0,1])
+	end
 
 end
