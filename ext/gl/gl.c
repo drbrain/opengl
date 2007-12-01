@@ -27,6 +27,7 @@ void gl_init_functions_1_4(VALUE);
 void gl_init_functions_1_5(VALUE);
 void gl_init_functions_2_0(VALUE);
 void gl_init_functions_2_1(VALUE);
+void gl_init_functions_ext_3dfx(VALUE);
 void gl_init_functions_ext_arb(VALUE);
 void gl_init_functions_ext_ati(VALUE);
 void gl_init_functions_ext_ext(VALUE);
@@ -190,6 +191,7 @@ DLLEXPORT void Init_gl()
 	gl_init_functions_1_5(module);
 	gl_init_functions_2_0(module);
 	gl_init_functions_2_1(module);
+	gl_init_functions_ext_3dfx(module);
 	gl_init_functions_ext_arb(module);
 	gl_init_functions_ext_ati(module);
 	gl_init_functions_ext_ext(module);
