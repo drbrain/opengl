@@ -249,49 +249,27 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-#define GLSECONDARYCOLOR_VFUNC(_type_) \
-static VALUE \
-gl_SecondaryColor##_type_##v(argc,argv,obj) \
-int argc; \
-VALUE *argv; \
-VALUE obj; \
+#define GLSECONDARYCOLOR_VFUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
+VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
-	int num; \
-	VALUE args[3]; \
-	RArray *ary; \
-	switch (num = rb_scan_args(argc, argv, "12", &args[0], &args[1], &args[2])) { \
-	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
-		switch (ary->len) { \
-			case 3: \
-			gl_SecondaryColor3##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
-			break; \
-			default: \
-				rb_raise(rb_eArgError, "array length:%d", num); \
-		} \
-		} \
-		else \
-			rb_raise(rb_eArgError, "array length:%d", num); \
-		break; \
-	case 3: \
-		gl_SecondaryColor3##_type_(obj,args[0], args[1], args[2]); \
-		break; \
-	default: \
-		rb_raise(rb_eArgError, "too many arguments"); \
-		break; \
-	} \
+	_type_ cary[3] = {0,0,0}; \
+	LOAD_GL_FUNC(gl##_name_,1,4) \
+	Check_Type(arg1,T_ARRAY); \
+	_conv_(arg1,cary,3); \
+	fptr_gl##_name_(cary); \
+	CHECK_GLERROR \
 	return Qnil; \
 }
 
-GLSECONDARYCOLOR_VFUNC(b)
-GLSECONDARYCOLOR_VFUNC(d)
-GLSECONDARYCOLOR_VFUNC(f)
-GLSECONDARYCOLOR_VFUNC(i)
-GLSECONDARYCOLOR_VFUNC(s)
-GLSECONDARYCOLOR_VFUNC(ui)
-GLSECONDARYCOLOR_VFUNC(ub)
-GLSECONDARYCOLOR_VFUNC(us)
+GLSECONDARYCOLOR_VFUNC(SecondaryColor3bv,GLbyte,ary2cbyte)
+GLSECONDARYCOLOR_VFUNC(SecondaryColor3dv,GLdouble,ary2cdbl)
+GLSECONDARYCOLOR_VFUNC(SecondaryColor3fv,GLfloat,ary2cflt)
+GLSECONDARYCOLOR_VFUNC(SecondaryColor3iv,GLint,ary2cint)
+GLSECONDARYCOLOR_VFUNC(SecondaryColor3sv,GLshort,ary2cshort)
+GLSECONDARYCOLOR_VFUNC(SecondaryColor3uiv,GLuint,ary2cuint)
+GLSECONDARYCOLOR_VFUNC(SecondaryColor3ubv,GLubyte,ary2cubyte)
+GLSECONDARYCOLOR_VFUNC(SecondaryColor3usv,GLushort,ary2cushort)
 #undef GLSECONDARYCOLOR_VFUNC
 
 extern VALUE g_SecondaryColor_ptr;
@@ -320,51 +298,27 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
-#define GLWINDOWPOS_VFUNC(_type_) \
-static VALUE \
-gl_WindowPos##_type_##v(argc,argv,obj) \
-int argc; \
-VALUE *argv; \
-VALUE obj; \
+#define GLWINDOWPOS_VFUNC(_name_,_type_,_size_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
+VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
-	int num; \
-	VALUE args[3]; \
-	RArray *ary; \
-	switch (num = rb_scan_args(argc, argv, "12", &args[0], &args[1], &args[2])) { \
-	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
-		switch (ary->len) { \
-			case 2: \
-			gl_WindowPos2##_type_(obj,ary->ptr[0],ary->ptr[1]); \
-			break; \
-			case 3: \
-			gl_WindowPos3##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
-			break; \
-			default: \
-				rb_raise(rb_eArgError, "array length:%d", num); \
-		} \
-		} \
-		else \
-			rb_raise(rb_eArgError, "array length:%d", num); \
-		break; \
-	case 2: \
-		gl_WindowPos2##_type_(obj,args[0], args[1]); \
-		break; \
-	case 3: \
-		gl_WindowPos3##_type_(obj,args[0], args[1], args[2]); \
-		break; \
-	default: \
-		rb_raise(rb_eArgError, "too many arguments"); \
-		break; \
-	} \
+	_type_ cary[_size_] = {TYPELIST##_size_(0)}; \
+	LOAD_GL_FUNC(gl##_name_,1,4) \
+	Check_Type(arg1,T_ARRAY); \
+	_conv_(arg1,cary,_size_); \
+	fptr_gl##_name_(cary); \
+	CHECK_GLERROR \
 	return Qnil; \
 }
 
-GLWINDOWPOS_VFUNC(d)
-GLWINDOWPOS_VFUNC(f)
-GLWINDOWPOS_VFUNC(i)
-GLWINDOWPOS_VFUNC(s)
+GLWINDOWPOS_VFUNC(WindowPos2dv,GLdouble,2,ary2cdbl)
+GLWINDOWPOS_VFUNC(WindowPos2fv,GLfloat,2,ary2cflt)
+GLWINDOWPOS_VFUNC(WindowPos2iv,GLint,2,ary2cint)
+GLWINDOWPOS_VFUNC(WindowPos2sv,GLshort,2,ary2cshort)
+GLWINDOWPOS_VFUNC(WindowPos3dv,GLdouble,3,ary2cdbl)
+GLWINDOWPOS_VFUNC(WindowPos3fv,GLfloat,3,ary2cflt)
+GLWINDOWPOS_VFUNC(WindowPos3iv,GLint,3,ary2cint)
+GLWINDOWPOS_VFUNC(WindowPos3sv,GLshort,3,ary2cshort)
 #undef GLWINDOWPOS_VFUNC
 
 
@@ -390,6 +344,14 @@ void gl_init_functions_1_4(VALUE module)
 	rb_define_module_function(module, "glSecondaryColor3ub", gl_SecondaryColor3ub, 3);
 	rb_define_module_function(module, "glSecondaryColor3ui", gl_SecondaryColor3ui, 3);
 	rb_define_module_function(module, "glSecondaryColor3us", gl_SecondaryColor3us, 3);
+	rb_define_module_function(module, "glSecondaryColor3bv", gl_SecondaryColor3bv, 1);
+	rb_define_module_function(module, "glSecondaryColor3dv", gl_SecondaryColor3dv, 1);
+	rb_define_module_function(module, "glSecondaryColor3fv", gl_SecondaryColor3fv, 1);
+	rb_define_module_function(module, "glSecondaryColor3iv", gl_SecondaryColor3iv, 1);
+	rb_define_module_function(module, "glSecondaryColor3sv", gl_SecondaryColor3sv, 1);
+	rb_define_module_function(module, "glSecondaryColor3ubv", gl_SecondaryColor3ubv, 1);
+	rb_define_module_function(module, "glSecondaryColor3uiv", gl_SecondaryColor3uiv, 1);
+	rb_define_module_function(module, "glSecondaryColor3usv", gl_SecondaryColor3usv, 1);
 	rb_define_module_function(module, "glSecondaryColorPointer", gl_SecondaryColorPointer, 4);
 	rb_define_module_function(module, "glWindowPos2d", gl_WindowPos2d, 2);
 	rb_define_module_function(module, "glWindowPos2f", gl_WindowPos2f, 2);
@@ -399,23 +361,12 @@ void gl_init_functions_1_4(VALUE module)
 	rb_define_module_function(module, "glWindowPos3f", gl_WindowPos3f, 3);
 	rb_define_module_function(module, "glWindowPos3i", gl_WindowPos3i, 3);
 	rb_define_module_function(module, "glWindowPos3s", gl_WindowPos3s, 3);
-
-	/* Additional Functions */
-	rb_define_module_function(module, "glSecondaryColor3bv", gl_SecondaryColorbv, -1);
-	rb_define_module_function(module, "glSecondaryColor3dv", gl_SecondaryColordv, -1);
-	rb_define_module_function(module, "glSecondaryColor3fv", gl_SecondaryColorfv, -1);
-	rb_define_module_function(module, "glSecondaryColor3iv", gl_SecondaryColoriv, -1);
-	rb_define_module_function(module, "glSecondaryColor3sv", gl_SecondaryColorsv, -1);
-	rb_define_module_function(module, "glSecondaryColor3ubv", gl_SecondaryColorubv, -1);
-	rb_define_module_function(module, "glSecondaryColor3uiv", gl_SecondaryColoruiv, -1);
-	rb_define_module_function(module, "glSecondaryColor3usv", gl_SecondaryColorusv, -1);
-
-	rb_define_module_function(module, "glWindowPos2dv", gl_WindowPosdv, -1);
-	rb_define_module_function(module, "glWindowPos2fv", gl_WindowPosfv, -1);
-	rb_define_module_function(module, "glWindowPos2iv", gl_WindowPosiv, -1);
-	rb_define_module_function(module, "glWindowPos2sv", gl_WindowPossv, -1);
-	rb_define_module_function(module, "glWindowPos3dv", gl_WindowPosdv, -1);
-	rb_define_module_function(module, "glWindowPos3fv", gl_WindowPosfv, -1);
-	rb_define_module_function(module, "glWindowPos3iv", gl_WindowPosiv, -1);
-	rb_define_module_function(module, "glWindowPos3sv", gl_WindowPossv, -1);
+	rb_define_module_function(module, "glWindowPos2dv", gl_WindowPos2dv, 1);
+	rb_define_module_function(module, "glWindowPos2fv", gl_WindowPos2fv, 1);
+	rb_define_module_function(module, "glWindowPos2iv", gl_WindowPos2iv, 1);
+	rb_define_module_function(module, "glWindowPos2sv", gl_WindowPos2sv, 1);
+	rb_define_module_function(module, "glWindowPos3dv", gl_WindowPos3dv, 1);
+	rb_define_module_function(module, "glWindowPos3fv", gl_WindowPos3fv, 1);
+	rb_define_module_function(module, "glWindowPos3iv", gl_WindowPos3iv, 1);
+	rb_define_module_function(module, "glWindowPos3sv", gl_WindowPos3sv, 1);
 }

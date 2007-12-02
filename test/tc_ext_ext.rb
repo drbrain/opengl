@@ -159,9 +159,69 @@ class Test_EXT_EXT < Test::Unit::TestCase
 	end
 
 	def test_gl_ext_stencil_clear_tag
-		return if not supported?("GL_EXT_stencil_clar_tag")
+		return if not supported?("GL_EXT_stencil_clear_tag")
 		glStencilClearTagEXT(1,2)
 		assert_equal(glGetIntegerv(GL_STENCIL_TAG_BITS_EXT),1)
 		assert_equal(glGetIntegerv(GL_STENCIL_CLEAR_TAG_VALUE_EXT),2)
+	end
+
+	def test_gl_ext_secondary_color
+		return if not supported?("GL_EXT_secondary_color")
+
+		glSecondaryColor3bEXT(2**7-1,0,2**7-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		glSecondaryColor3bvEXT([0,2**7-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		glSecondaryColor3dEXT(1.0,0.0,1.0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		glSecondaryColor3dvEXT([0.0,1.0,0.0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		glSecondaryColor3fEXT(1.0,0.0,1.0)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		glSecondaryColor3fvEXT([0.0,1.0,0.0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		glSecondaryColor3iEXT(2**31-1,0,2**31-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		glSecondaryColor3ivEXT([0,2**31-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		glSecondaryColor3sEXT(2**15-1,0,2**15-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		glSecondaryColor3svEXT([0,2**15-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		glSecondaryColor3ubEXT(2**8-1,0,2**8-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		glSecondaryColor3ubvEXT([0,2**8-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		glSecondaryColor3uiEXT(2**32-1,0,2**32-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		glSecondaryColor3uivEXT([0,2**32-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		glSecondaryColor3usEXT(2**16-1,0,2**16-1)
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		glSecondaryColor3usvEXT([0,2**16-1,0])
+		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+
+		sc = [0,1,0, 1,0,1].pack("f*")
+
+		glSecondaryColorPointerEXT(3,GL_FLOAT,0,sc)
+		assert_equal(glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_SIZE),3)
+		assert_equal(glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_TYPE),GL_FLOAT)
+		assert_equal(glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_STRIDE),0)
+		assert_equal(glGetPointerv(GL_SECONDARY_COLOR_ARRAY_POINTER),sc)
+		glEnableClientState(GL_SECONDARY_COLOR_ARRAY)
+
+		glBegin(GL_TRIANGLES)
+		glArrayElement(0)
+		glEnd()
+
+		assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0,1,0,1])
+
+		glBegin(GL_TRIANGLES)
+		glArrayElement(1)
+		glEnd()
+
+		assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1,0,1,1])
+
+		glDisableClientState(GL_SECONDARY_COLOR_ARRAY)
 	end
 end

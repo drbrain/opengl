@@ -155,7 +155,7 @@ GL_EXT_pixel_transform_color_table,Supported,0.50
 GL_EXT_shared_texture_palette,Supported,0.50
 GLX_SGIS_blended_overlay,NonGL,N/A
 GL_EXT_separate_specular_color,Supported,0.50
-GL_EXT_secondary_color,Unsupported,N/A
+GL_EXT_secondary_color,Supported,0.60
 GL_EXT_texture_env,Other,N/A
 GL_EXT_texture_perturb_normal,Unsupported,N/A
 GL_EXT_multi_draw_arrays,Unsupported,N/A

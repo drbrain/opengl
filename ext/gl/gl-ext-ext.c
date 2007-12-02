@@ -52,6 +52,66 @@ static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	return Qnil;
 }
 
+/* #145 - GL_EXT_secondary_color */
+GL_EXT_SIMPLE_FUNC_LOAD(SecondaryColor3bEXT,3,GLbyte,NUM2INT,"GL_EXT_secondary_color")
+GL_EXT_SIMPLE_FUNC_LOAD(SecondaryColor3sEXT,3,GLshort,NUM2INT,"GL_EXT_secondary_color")
+GL_EXT_SIMPLE_FUNC_LOAD(SecondaryColor3iEXT,3,GLint,NUM2INT,"GL_EXT_secondary_color")
+GL_EXT_SIMPLE_FUNC_LOAD(SecondaryColor3fEXT,3,GLfloat,NUM2DBL,"GL_EXT_secondary_color")
+GL_EXT_SIMPLE_FUNC_LOAD(SecondaryColor3dEXT,3,GLdouble,NUM2DBL,"GL_EXT_secondary_color")
+GL_EXT_SIMPLE_FUNC_LOAD(SecondaryColor3ubEXT,3,GLubyte,NUM2UINT,"GL_EXT_secondary_color")
+GL_EXT_SIMPLE_FUNC_LOAD(SecondaryColor3usEXT,3,GLushort,NUM2UINT,"GL_EXT_secondary_color")
+GL_EXT_SIMPLE_FUNC_LOAD(SecondaryColor3uiEXT,3,GLuint,NUM2UINT,"GL_EXT_secondary_color")
+
+#define GLSECONDARYCOLOREXT_VFUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
+VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+{ \
+	_type_ cary[3] = {0,0,0}; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_EXT_secondary_color") \
+	Check_Type(arg1,T_ARRAY); \
+	_conv_(arg1,cary,3); \
+	fptr_gl##_name_(cary); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3bvEXT,GLbyte,ary2cbyte)
+GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3dvEXT,GLdouble,ary2cdbl)
+GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3fvEXT,GLfloat,ary2cflt)
+GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3ivEXT,GLint,ary2cint)
+GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3svEXT,GLshort,ary2cshort)
+GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3uivEXT,GLuint,ary2cuint)
+GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3ubvEXT,GLubyte,ary2cubyte)
+GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3usvEXT,GLushort,ary2cushort)
+#undef GLSECONDARYCOLOREXT_VFUNC
+
+extern VALUE g_SecondaryColor_ptr;
+static void (APIENTRY * fptr_glSecondaryColorPointerEXT)(GLint,GLenum,GLsizei,const GLvoid *);
+static VALUE
+gl_SecondaryColorPointerEXT(obj,arg1,arg2,arg3,arg4)
+VALUE obj,arg1,arg2,arg3,arg4;
+{
+	GLint size;
+	GLenum type;
+	GLsizei stride;
+	LOAD_GL_EXT_FUNC(glSecondaryColorPointerEXT,"GL_EXT_secondary_color")
+	size = (GLint)NUM2INT(arg1);
+	type = (GLenum)NUM2INT(arg2);
+	stride = (GLsizei)NUM2UINT(arg3);
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_SecondaryColor_ptr = arg4;
+		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)NUM2INT(arg4));
+	} else {
+		Check_Type(arg4, T_STRING);
+		rb_str_freeze(arg4);
+		g_SecondaryColor_ptr = arg4;
+		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)RSTRING(arg4)->ptr);
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+
 /* #268 - GL_EXT_stencil_two_side */
 GL_EXT_SIMPLE_FUNC_LOAD(ActiveStencilFaceEXT,1,GLenum,NUM2UINT,"GL_EXT_stencil_two_side")
 
@@ -311,6 +371,25 @@ void gl_init_functions_ext_ext(VALUE module)
 /* #54 - GL_EXT_point_parameters */
 	rb_define_module_function(module, "glPointParameterfEXT", gl_PointParameterfEXT, 2);
 	rb_define_module_function(module, "glPointParameterfvEXT", gl_PointParameterfvEXT, 2);
+
+/* #145 - GL_EXT_secondary_color */
+	rb_define_module_function(module, "glSecondaryColor3bEXT", gl_SecondaryColor3bEXT, 3);
+	rb_define_module_function(module, "glSecondaryColor3dEXT", gl_SecondaryColor3dEXT, 3);
+	rb_define_module_function(module, "glSecondaryColor3fEXT", gl_SecondaryColor3fEXT, 3);
+	rb_define_module_function(module, "glSecondaryColor3iEXT", gl_SecondaryColor3iEXT, 3);
+	rb_define_module_function(module, "glSecondaryColor3sEXT", gl_SecondaryColor3sEXT, 3);
+	rb_define_module_function(module, "glSecondaryColor3ubEXT", gl_SecondaryColor3ubEXT, 3);
+	rb_define_module_function(module, "glSecondaryColor3uiEXT", gl_SecondaryColor3uiEXT, 3);
+	rb_define_module_function(module, "glSecondaryColor3usEXT", gl_SecondaryColor3usEXT, 3);
+	rb_define_module_function(module, "glSecondaryColor3bvEXT", gl_SecondaryColor3bvEXT, 1);
+	rb_define_module_function(module, "glSecondaryColor3dvEXT", gl_SecondaryColor3dvEXT, 1);
+	rb_define_module_function(module, "glSecondaryColor3fvEXT", gl_SecondaryColor3fvEXT, 1);
+	rb_define_module_function(module, "glSecondaryColor3ivEXT", gl_SecondaryColor3ivEXT, 1);
+	rb_define_module_function(module, "glSecondaryColor3svEXT", gl_SecondaryColor3svEXT, 1);
+	rb_define_module_function(module, "glSecondaryColor3ubvEXT", gl_SecondaryColor3ubvEXT, 1);
+	rb_define_module_function(module, "glSecondaryColor3uivEXT", gl_SecondaryColor3uivEXT, 1);
+	rb_define_module_function(module, "glSecondaryColor3usvEXT", gl_SecondaryColor3usvEXT, 1);
+	rb_define_module_function(module, "glSecondaryColorPointerEXT", gl_SecondaryColorPointerEXT, 4);
 
 /* #268 - GL_EXT_stencil_two_side */
 	rb_define_module_function(module, "glActiveStencilFaceEXT", gl_ActiveStencilFaceEXT, 1);
