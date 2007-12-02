@@ -267,4 +267,21 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(glGetDoublev(GL_POINT_DISTANCE_ATTENUATION),[1,0,1])
 	end
 
+	def test_gl_arb_occlusion_query
+		return if not supported?("GL_ARB_occlusion_query")
+
+		queries = glGenQueriesARB(2)
+		assert_equal(queries.size,2)
+
+		glBeginQueryARB(GL_SAMPLES_PASSED,queries[1])
+		assert_equal(glIsQueryARB(queries[1]),GL_TRUE)
+
+		glEndQueryARB(GL_SAMPLES_PASSED)
+		r = glGetQueryObjectivARB(queries[1],GL_QUERY_RESULT_AVAILABLE)
+		assert(r==GL_TRUE || r==GL_FALSE)
+		assert(glGetQueryObjectuivARB(queries[1],GL_QUERY_RESULT)>=0)
+
+		glDeleteQueriesARB(queries)
+		assert_equal(glIsQueryARB(queries[1]),GL_FALSE)
+	end
 end

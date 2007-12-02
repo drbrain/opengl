@@ -29,7 +29,7 @@ GL_ARB_window_pos,Supported,0.60
 GL_ARB_vertex_program,Supported,0.60
 GL_ARB_fragment_program,Supported,0.60
 GL_ARB_vertex_buffer_object,Unsupported,N/A
-GL_ARB_occlusion_query,Unsupported,N/A
+GL_ARB_occlusion_query,Supported,0.60
 GL_ARB_shader_objects,Unsupported,N/A
 GL_ARB_vertex_shader,Unsupported,N/A
 GL_ARB_fragment_shader,Unsupported,N/A
@@ -256,7 +256,7 @@ GL_SUN_mesh_array,Unsupported,N/A
 GL_SUN_slice_accum,Supported,0.50
 GL_NV_multisample_filter_hint,Supported,0.50
 GL_NV_depth_clamp,Supported,0.50
-GL_NV_occlusion_query,Unsupported,N/A
+GL_NV_occlusion_query,Supported,0.60
 GL_NV_point_sprite,Unsupported,N/A
 WGL_NV_render_depth_texture,NonGL,N/A
 WGL_NV_render_texture_rectangle,NonGL,N/A
@@ -332,7 +332,7 @@ GL_EXT_texture_buffer_object,Unsupported,N/A
 GL_EXT_texture_compression_latc,Supported,0.50
 GL_EXT_texture_compression_rgtc,Supported,0.50
 GL_EXT_texture_shared_exponent,Supported,0.50
-GL_NV_depth_buffer_float,Unsupported,N/A
+GL_NV_depth_buffer_float,Supported,0.60
 GL_NV_fragment_program4,Supported,0.50
 GL_NV_framebuffer_multisample_coverage,Supported,0.60
 GL_EXT_framebuffer_sRGB,Supported,0.50

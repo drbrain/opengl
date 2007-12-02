@@ -220,5 +220,33 @@ class Test_EXT_NV < Test::Unit::TestCase
 
 			glDeleteFencesNV(fences)
 	end
+
+	def test_gl_nv_depth_buffer_float
+		return if not supported?("GL_NV_depth_buffer_float")
+		glDepthRangedNV(0.1,0.2)
+		assert(approx_equal(glGetFloatv(GL_DEPTH_RANGE),[0.1,0.2]))
+		glDepthBoundsdNV(0.1,0.2)
+		assert(approx_equal(glGetFloatv(GL_DEPTH_BOUNDS_EXT),[0.1,0.2]))
+		glClearDepthdNV(0.3)
+		assert(approx_equal([glGetDoublev(GL_DEPTH_CLEAR_VALUE)],[0.3]))
+	end
+
+	def test_gl_nv_occlusion_query
+		return if not supported?("GL_NV_occlusion_query")
+
+		queries = glGenOcclusionQueriesNV(2)
+		assert_equal(queries.size,2)
+
+		glBeginOcclusionQueryNV(queries[0])
+		assert_equal(glIsOcclusionQueryNV(queries[0]),GL_TRUE)
+
+		glEndOcclusionQueryNV()
+		r = glGetOcclusionQueryivNV(queries[0],GL_PIXEL_COUNT_AVAILABLE_NV)
+		assert(r==GL_TRUE || r==GL_FALSE)
+		assert(glGetOcclusionQueryuivNV(queries[0],GL_PIXEL_COUNT_NV)>=0)
+
+		glDeleteOcclusionQueriesNV(queries)
+		assert_equal(glIsOcclusionQueryNV(queries[1]),GL_FALSE)
+	end
 end
 

@@ -440,6 +440,76 @@ GETVERTEXATTRIB_FUNC(GetVertexAttribfvARB,GLfloat,rb_float_new,"GL_ARB_vertex_pr
 GETVERTEXATTRIB_FUNC(GetVertexAttribivARB,GLint,INT2NUM,"GL_ARB_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
 
+/* #29 GL_ARB_occlusion_query */
+static void (APIENTRY * fptr_glGenQueriesARB)(GLsizei,GLuint *);
+static VALUE gl_GenQueriesARB(VALUE obj,VALUE arg1)
+{
+	GLsizei n;
+	GLuint *queries;
+	VALUE ret;
+	int i;
+	LOAD_GL_EXT_FUNC(glGenQueriesARB,"GL_ARB_occlusion_query")
+	n = (GLsizei)NUM2UINT(arg1);
+	queries = ALLOC_N(GLuint, n);
+	fptr_glGenQueriesARB(n,queries);
+	ret = rb_ary_new2(n);
+	for (i = 0; i < n; i++)
+		rb_ary_push(ret, INT2NUM(queries[i]));
+	xfree(queries);
+	CHECK_GLERROR
+	return ret;
+}
+
+static void (APIENTRY * fptr_glDeleteQueriesARB)(GLsizei,const GLuint *);
+static VALUE gl_DeleteQueriesARB(VALUE obj,VALUE arg1)
+{
+	GLsizei n;
+	LOAD_GL_EXT_FUNC(glDeleteQueriesARB,"GL_ARB_occlusion_query")
+	if (TYPE(arg1)==T_ARRAY) {
+		GLuint *queries;
+		n = RARRAY(arg1)->len;
+		queries = ALLOC_N(GLuint,n);
+		ary2cuint(arg1,queries,n); 
+		fptr_glDeleteQueriesARB(n,queries);
+		xfree(queries);
+	} else {
+		GLuint query;
+		query = NUM2UINT(arg1);
+		fptr_glDeleteQueriesARB(1,&query);
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static GLboolean (APIENTRY * fptr_glIsQueryARB)(GLuint);
+static VALUE gl_IsQueryARB(VALUE obj,VALUE arg1)
+{
+	GLboolean ret = 0;
+	LOAD_GL_EXT_FUNC(glIsQueryARB,"GL_ARB_occlusion_query")
+	ret = fptr_glIsQueryARB(NUM2UINT(arg1));
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
+GL_EXT_SIMPLE_FUNC_LOAD(BeginQueryARB,2,GLuint,NUM2UINT,"GL_ARB_occlusion_query")
+GL_EXT_SIMPLE_FUNC_LOAD(EndQueryARB,1,GLenum,NUM2UINT,"GL_ARB_occlusion_query")
+
+#define GETQUERY_FUNC(_name_,_type_,_coARB_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
+static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
+{ \
+	_type_ ret = 0; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_occlusion_query") \
+	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
+	CHECK_GLERROR \
+	return _coARB_(ret); \
+}
+
+GETQUERY_FUNC(GetQueryivARB,GLint,INT2NUM)
+GETQUERY_FUNC(GetQueryObjectivARB,GLint,INT2NUM)
+GETQUERY_FUNC(GetQueryObjectuivARB,GLuint,INT2NUM)
+#undef GETQUERY_FUNC
+
 /* #39 GL_ARB_color_buffer_float */
 GL_EXT_SIMPLE_FUNC_LOAD(ClampColorARB,2,GLenum,NUM2INT,"GL_ARB_color_buffer_float")
 
@@ -540,6 +610,16 @@ void gl_init_functions_ext_arb(VALUE module)
 	rb_define_module_function(module, "glGetVertexAttribdvARB", gl_GetVertexAttribdvARB, 2);
 	rb_define_module_function(module, "glGetVertexAttribfvARB", gl_GetVertexAttribfvARB, 2);
 	rb_define_module_function(module, "glGetVertexAttribivARB", gl_GetVertexAttribivARB, 2);
+
+/* #29 GL_ARB_occlusion_query */
+	rb_define_module_function(module, "glGenQueriesARB", gl_GenQueriesARB, 1);
+	rb_define_module_function(module, "glDeleteQueriesARB", gl_DeleteQueriesARB, 1);
+	rb_define_module_function(module, "glIsQueryARB", gl_IsQueryARB, 1);
+	rb_define_module_function(module, "glBeginQueryARB", gl_BeginQueryARB, 2);
+	rb_define_module_function(module, "glEndQueryARB", gl_EndQueryARB, 1);
+	rb_define_module_function(module, "glGetQueryivARB", gl_GetQueryivARB, 2);
+	rb_define_module_function(module, "glGetQueryObjectivARB", gl_GetQueryObjectivARB, 2);
+	rb_define_module_function(module, "glGetQueryObjectuivARB", gl_GetQueryObjectuivARB, 2);
 
 /* #39 GL_ARB_color_buffer_float */
 	rb_define_module_function(module, "glClampColorARB", gl_ClampColorARB, 2);

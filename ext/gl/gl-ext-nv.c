@@ -546,6 +546,75 @@ static VALUE gl_AreProgramsResidentNV(VALUE obj,VALUE arg1)
 	return retary;
 }
 
+/* #261 GL_NV_occlusion_query */
+static void (APIENTRY * fptr_glGenOcclusionQueriesNV)(GLsizei,GLuint *);
+static VALUE gl_GenOcclusionQueriesNV(VALUE obj,VALUE arg1)
+{
+	GLsizei n;
+	GLuint *occlusionqueries;
+	VALUE ret;
+	int i;
+	LOAD_GL_EXT_FUNC(glGenOcclusionQueriesNV,"GL_NV_occlusion_query")
+	n = (GLsizei)NUM2UINT(arg1);
+	occlusionqueries = ALLOC_N(GLuint, n);
+	fptr_glGenOcclusionQueriesNV(n,occlusionqueries);
+	ret = rb_ary_new2(n);
+	for (i = 0; i < n; i++)
+		rb_ary_push(ret, INT2NUM(occlusionqueries[i]));
+	xfree(occlusionqueries);
+	CHECK_GLERROR
+	return ret;
+}
+
+static void (APIENTRY * fptr_glDeleteOcclusionQueriesNV)(GLsizei,const GLuint *);
+static VALUE gl_DeleteOcclusionQueriesNV(VALUE obj,VALUE arg1)
+{
+	GLsizei n;
+	LOAD_GL_EXT_FUNC(glDeleteOcclusionQueriesNV,"GL_NV_occlusion_query")
+	if (TYPE(arg1)==T_ARRAY) {
+		GLuint *occlusionqueries;
+		n = RARRAY(arg1)->len;
+		occlusionqueries = ALLOC_N(GLuint,n);
+		ary2cuint(arg1,occlusionqueries,n); 
+		fptr_glDeleteOcclusionQueriesNV(n,occlusionqueries);
+		xfree(occlusionqueries);
+	} else {
+		GLuint occlusionquery;
+		occlusionquery = NUM2UINT(arg1);
+		fptr_glDeleteOcclusionQueriesNV(1,&occlusionquery);
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static GLboolean (APIENTRY * fptr_glIsOcclusionQueryNV)(GLuint);
+static VALUE gl_IsOcclusionQueryNV(VALUE obj,VALUE arg1)
+{
+	GLboolean ret = 0;
+	LOAD_GL_EXT_FUNC(glIsOcclusionQueryNV,"GL_NV_occlusion_query")
+	ret = fptr_glIsOcclusionQueryNV(NUM2UINT(arg1));
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
+GL_EXT_SIMPLE_FUNC_LOAD(BeginOcclusionQueryNV,1,GLuint,NUM2UINT,"GL_NV_occlusion_query")
+GL_EXT_SIMPLE_FUNC_LOAD(EndOcclusionQueryNV,0,0,0,"GL_NV_occlusion_query")
+
+#define GETOCCLUSIONQUERY_FUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
+static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
+{ \
+	_type_ ret = 0; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_NV_occlusion_query") \
+	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
+	CHECK_GLERROR \
+	return _conv_(ret); \
+}
+
+GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryivNV,GLint,INT2NUM)
+GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryuivNV,GLuint,INT2NUM)
+#undef GETOCCLUSIONQUERY_FUNC
+
 /* #282 GL_NV_fragment_program */
 
 #define PROGRAMNAMEDPARAM_FUNC(_name_,_type_,_conv_,_extension_) \
@@ -606,6 +675,11 @@ VALUE obj,arg1,arg2; \
 GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterdvNV,GLdouble,"GL_NV_vertex_program")
 GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterfvNV,GLfloat,"GL_NV_vertex_program")
 #undef GETPROGRAMNAMEDPARAM_FUNC
+
+/* #334 GL_NV_depth_buffer_float */
+GL_EXT_SIMPLE_FUNC_LOAD(DepthRangedNV,2,GLdouble,NUM2DBL,"GL_NV_depth_buffer_float")
+GL_EXT_SIMPLE_FUNC_LOAD(ClearDepthdNV,1,GLdouble,NUM2DBL,"GL_NV_depth_buffer_float")
+GL_EXT_SIMPLE_FUNC_LOAD(DepthBoundsdNV,2,GLdouble,NUM2DBL,"GL_NV_depth_buffer_float")
 
 /* #336 GL_NV_framebuffer_multisample_coverage */
 static void (APIENTRY * fptr_glRenderbufferStorageMultisampleCoverageNV)(GLenum,GLsizei,GLsizei,GLenum,GLsizei,GLsizei);
@@ -696,6 +770,15 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glRequestResidentProgramsNV", gl_RequestResidentProgramsNV, 1);
 	rb_define_module_function(module, "glAreProgramsResidentNV", gl_AreProgramsResidentNV, 1);
 
+/* #261 GL_NV_occlusion_query */
+	rb_define_module_function(module, "glGenOcclusionQueriesNV", gl_GenOcclusionQueriesNV, 1);
+	rb_define_module_function(module, "glDeleteOcclusionQueriesNV", gl_DeleteOcclusionQueriesNV, 1);
+	rb_define_module_function(module, "glIsOcclusionQueryNV", gl_IsOcclusionQueryNV, 1);
+	rb_define_module_function(module, "glBeginOcclusionQueryNV", gl_BeginOcclusionQueryNV, 1);
+	rb_define_module_function(module, "glEndOcclusionQueryNV", gl_EndOcclusionQueryNV, 0);
+	rb_define_module_function(module, "glGetOcclusionQueryivNV", gl_GetOcclusionQueryivNV, 2);
+	rb_define_module_function(module, "glGetOcclusionQueryuivNV", gl_GetOcclusionQueryuivNV, 2);
+
 /* #282 GL_NV_fragment_program */
 	rb_define_module_function(module, "glProgramNamedParameter4fNV", gl_ProgramNamedParameter4fNV, 6);
 	rb_define_module_function(module, "glProgramNamedParameter4dNV", gl_ProgramNamedParameter4dNV, 6);
@@ -703,6 +786,11 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glProgramNamedParameter4dvNV", gl_ProgramNamedParameter4dvNV, 3);
 	rb_define_module_function(module, "glGetProgramNamedParameterdvNV", gl_GetProgramNamedParameterdvNV, 2);
 	rb_define_module_function(module, "glGetProgramNamedParameterfvNV", gl_GetProgramNamedParameterfvNV, 2);
+
+/* #334 GL_NV_depth_buffer_float */
+	rb_define_module_function(module, "glDepthRangedNV", gl_DepthRangedNV, 2);
+	rb_define_module_function(module, "glClearDepthdNV", gl_ClearDepthdNV, 1);
+	rb_define_module_function(module, "glDepthBoundsdNV", gl_DepthBoundsdNV, 2);
 
 /* #336 GL_NV_framebuffer_multisample_coverage */
 	rb_define_module_function(module, "glRenderbufferStorageMultisampleCoverageNV", gl_RenderbufferStorageMultisampleCoverageNV, 6);
