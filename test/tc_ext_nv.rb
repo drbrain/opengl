@@ -206,5 +206,19 @@ class Test_EXT_NV < Test::Unit::TestCase
 		glDeleteRenderbuffersEXT(rb)
 	end
 
+	def test_gl_nv_fence
+		return if not supported?("GL_NV_fence")
+			fences = glGenFencesNV(2)
+			assert_equal(fences.size,2)
+			
+			glSetFenceNV(fences[0],GL_ALL_COMPLETED_NV)
+			assert_equal(glGetFenceivNV(fences[0],GL_FENCE_CONDITION_NV),GL_ALL_COMPLETED_NV)
+			assert_equal(glIsFenceNV(fences[0]),GL_TRUE)
+
+			glFinishFenceNV(fences[0])
+			assert_equal(glTestFenceNV(fences[0]),GL_TRUE)
+
+			glDeleteFencesNV(fences)
+	end
 end
 

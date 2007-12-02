@@ -224,4 +224,44 @@ class Test_EXT_EXT < Test::Unit::TestCase
 
 		glDisableClientState(GL_SECONDARY_COLOR_ARRAY)
 	end
+
+	def test_gl_ext_blend_color
+		return if not supported?("GL_EXT_blend_color")
+		glBlendColorEXT(1.0,0.0,1.0,0.0)
+		assert_equal(glGetFloatv(GL_BLEND_COLOR_EXT),[1,0,1,0])
+		glBlendColorEXT(0.0,1.0,0.0,1.0)
+		assert_equal(glGetFloatv(GL_BLEND_COLOR_EXT),[0,1,0,1])
+	end
+
+	def test_gl_ext_blend_minmax
+		return if not supported?("GL_EXT_blend_minmax")
+		glBlendEquationEXT(GL_MIN_EXT)
+		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_EXT),GL_MIN_EXT)
+		glBlendEquationEXT(GL_MAX_EXT)
+		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_EXT),GL_MAX_EXT)
+	end
+
+	def test_gl_ext_blend_func_separate
+		return if not supported?("GL_EXT_blend_func_separate")
+		glBlendFuncSeparateEXT(GL_ZERO,GL_ONE,GL_ZERO,GL_ONE)
+		assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB_EXT),GL_ZERO)
+		assert_equal(glGetIntegerv(GL_BLEND_DST_RGB_EXT),GL_ONE)
+		assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA_EXT),GL_ZERO)
+		assert_equal(glGetIntegerv(GL_BLEND_DST_ALPHA_EXT),GL_ONE)
+		glBlendFuncSeparateEXT(GL_ONE,GL_ZERO,GL_ONE,GL_ZERO)
+		assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB_EXT),GL_ONE)
+		assert_equal(glGetIntegerv(GL_BLEND_DST_RGB_EXT),GL_ZERO)
+		assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA_EXT),GL_ONE)
+		assert_equal(glGetIntegerv(GL_BLEND_DST_ALPHA_EXT),GL_ZERO)
+	end
+
+	def test_gl_ext_blend_equation_separate
+		return if not supported?("GL_EXT_blend_equation_separate")
+		glBlendEquationSeparateEXT(GL_FUNC_ADD,GL_FUNC_SUBTRACT)
+		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB_EXT),GL_FUNC_ADD)
+		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA_EXT),GL_FUNC_SUBTRACT)
+		glBlendEquationSeparateEXT(GL_FUNC_SUBTRACT,GL_FUNC_ADD)
+		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB_EXT),GL_FUNC_SUBTRACT)
+		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA_EXT),GL_FUNC_ADD)
+	end
 end

@@ -46,7 +46,7 @@ GL_ARB_half_float_pixel,Supported,0.50
 GL_ARB_texture_float,Supported,0.50
 GL_ARB_pixel_buffer_object,Supported,0.50
 GL_EXT_abgr,Supported,0.50
-GL_EXT_blend_color,Unsupported,N/A
+GL_EXT_blend_color,Supported,0.60
 GL_EXT_polygon_offset,Supported,0.60
 GL_EXT_texture,Supported,0.50
 GL_EXT_texture3D,Supported,0.50
@@ -78,7 +78,7 @@ GL_SGIX_clipmap,Supported,0.50
 GL_SGIX_shadow,Supported,0.50
 GL_SGIS_texture_edge_clamp,Supported,0.50
 GL_SGIS_texture_border_clamp,Supported,0.50
-GL_EXT_blend_minmax,Unsupported,N/A
+GL_EXT_blend_minmax,Supported,0.60
 GL_EXT_blend_subtract,Supported,0.50
 GL_EXT_blend_logic_op,Supported,0.50
 GLX_SGI_swap_control,NonGL,N/A
@@ -176,7 +176,7 @@ WGL_EXT_make_current_read,NonGL,N/A
 WGL_EXT_pixel_format,NonGL,N/A
 WGL_EXT_pbuffer,NonGL,N/A
 WGL_EXT_swap_control,NonGL,N/A
-GL_EXT_blend_func_separate,Unsupported,N/A
+GL_EXT_blend_func_separate,Supported,0.60
 GL_INGR_color_clamp,Supported,0.50
 GL_INGR_interlace_read,Supported,0.50
 GL_EXT_stencil_wrap,Supported,0.50
@@ -218,7 +218,7 @@ GLX_MESA_release_buffers,NonGL,N/A
 GLX_MESA_set_3dfx_mode,NonGL,N/A
 GL_EXT_texture_env_dot3,Supported,0.50
 GL_ATI_texture_mirror_once,Supported,0.50
-GL_NV_fence,Unsupported,N/A
+GL_NV_fence,Supported,0.60
 GL_IBM_static_data,Unsupported,N/A
 GL_IBM_texture_mirrored_repeat,Supported,0.50
 GL_NV_evaluators,Other,N/A
@@ -295,7 +295,7 @@ GL_OES_read_format,Supported,0.50
 GL_OES_query_matrix,Unsupported,N/A
 GL_EXT_depth_bounds_test,Unsupported,N/A
 GL_EXT_texture_mirror_clamp,Supported,0.50
-GL_EXT_blend_equation_separate,Unsupported,N/A
+GL_EXT_blend_equation_separate,Supported,0.60
 GL_MESA_pack_invert,Supported,0.50
 GL_MESA_ycbcr_texture,Supported,0.50
 GL_EXT_pixel_buffer_object,Supported,0.50

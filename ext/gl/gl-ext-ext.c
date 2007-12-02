@@ -19,8 +19,14 @@
 /* Those are extensions that are not blessed by ARB committee but were
    created or agreed upon by multiple vendors */
 
+/* #2 - GL_EXT_blend_color */
+GL_EXT_SIMPLE_FUNC_LOAD(BlendColorEXT,4,GLclampf,NUM2DBL,"GL_EXT_blend_color")
+
 /* #3 - GL_EXT_polygon_offset */
 GL_EXT_SIMPLE_FUNC_LOAD(PolygonOffsetEXT,2,GLfloat,NUM2DBL,"GL_EXT_polygon_offset")
+
+/* #37 - GL_EXT_blend_minmax */
+GL_EXT_SIMPLE_FUNC_LOAD(BlendEquationEXT,1,GLenum,NUM2UINT,"GL_EXT_blend_minmax")
 
 /* #54 - GL_EXT_point_parameters */
 
@@ -111,9 +117,14 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	return Qnil;
 }
 
+/* #173 - GL_EXT_blend_func_separate */
+GL_EXT_SIMPLE_FUNC_LOAD(BlendFuncSeparateEXT,4,GLenum,NUM2UINT,"GL_EXT_blend_func_separate")
 
 /* #268 - GL_EXT_stencil_two_side */
 GL_EXT_SIMPLE_FUNC_LOAD(ActiveStencilFaceEXT,1,GLenum,NUM2UINT,"GL_EXT_stencil_two_side")
+
+/* #299 - GL_EXT_blend_equation_separate */
+GL_EXT_SIMPLE_FUNC_LOAD(BlendEquationSeparateEXT,2,GLenum,NUM2UINT,"GL_EXT_blend_equation_separate")
 
 /* #310 - GL_EXT_framebuffer_object */
 static GLboolean (APIENTRY * fptr_glIsRenderbufferEXT)(GLuint);
@@ -365,8 +376,14 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_
 
 void gl_init_functions_ext_ext(VALUE module)
 {
+/* #2 - GL_EXT_blend_color */
+	rb_define_module_function(module, "glBlendColorEXT", gl_BlendColorEXT, 4);
+
 /* #3 - GL_EXT_polygon_offset */
 	rb_define_module_function(module, "glPolygonOffsetEXT", gl_PolygonOffsetEXT, 2);
+
+/* #37 - GL_EXT_blend_minmax */
+	rb_define_module_function(module, "glBlendEquationEXT", gl_BlendEquationEXT, 1);
 
 /* #54 - GL_EXT_point_parameters */
 	rb_define_module_function(module, "glPointParameterfEXT", gl_PointParameterfEXT, 2);
@@ -391,8 +408,14 @@ void gl_init_functions_ext_ext(VALUE module)
 	rb_define_module_function(module, "glSecondaryColor3usvEXT", gl_SecondaryColor3usvEXT, 1);
 	rb_define_module_function(module, "glSecondaryColorPointerEXT", gl_SecondaryColorPointerEXT, 4);
 
+/* #173 - GL_EXT_blend_func_separate */
+	rb_define_module_function(module, "glBlendFuncSeparateEXT", gl_BlendFuncSeparateEXT, 4);
+
 /* #268 - GL_EXT_stencil_two_side */
 	rb_define_module_function(module, "glActiveStencilFaceEXT", gl_ActiveStencilFaceEXT, 1);
+
+/* #299 - GL_EXT_blend_equation_separate */
+	rb_define_module_function(module, "glBlendEquationSeparateEXT", gl_BlendEquationSeparateEXT, 2);
 
 /* #310 - GL_EXT_framebuffer_object */
 	rb_define_module_function(module, "glIsRenderbufferEXT", gl_IsRenderbufferEXT, 1);

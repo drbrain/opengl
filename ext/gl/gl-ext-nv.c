@@ -17,6 +17,88 @@
 
 /* OpenGL NVIDIA extensions */
 
+/* #222 GL_NV_fence */
+static void (APIENTRY * fptr_glGenFencesNV)(GLsizei,GLuint *);
+static VALUE gl_GenFencesNV(VALUE obj,VALUE arg1)
+{
+	GLsizei n;
+	GLuint *fences;
+	VALUE ret;
+	int i;
+	LOAD_GL_EXT_FUNC(glGenFencesNV,"GL_NV_fence")
+	n = (GLsizei)NUM2UINT(arg1);
+	fences = ALLOC_N(GLuint, n);
+	fptr_glGenFencesNV(n,fences);
+	ret = rb_ary_new2(n);
+	for (i = 0; i < n; i++)
+		rb_ary_push(ret, INT2NUM(fences[i]));
+	xfree(fences);
+	CHECK_GLERROR
+	return ret;
+}
+
+static void (APIENTRY * fptr_glDeleteFencesNV)(GLsizei,const GLuint *);
+static VALUE gl_DeleteFencesNV(VALUE obj,VALUE arg1)
+{
+	GLsizei n;
+	LOAD_GL_EXT_FUNC(glDeleteFencesNV,"GL_NV_fence")
+	if (TYPE(arg1)==T_ARRAY) {
+		GLuint *fences;
+		n = RARRAY(arg1)->len;
+		fences = ALLOC_N(GLuint,n);
+		ary2cuint(arg1,fences,n); 
+		fptr_glDeleteFencesNV(n,fences);
+		xfree(fences);
+	} else {
+		GLuint fence;
+		fence = NUM2UINT(arg1);
+		fptr_glDeleteFencesNV(1,&fence);
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glSetFenceNV)(GLuint,GLenum);
+static VALUE gl_SetFenceNV(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	LOAD_GL_EXT_FUNC(glSetFenceNV,"GL_NV_fence")
+	fptr_glSetFenceNV(NUM2UINT(arg1),NUM2UINT(arg2));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static GLboolean (APIENTRY * fptr_glTestFenceNV)(GLuint);
+static VALUE gl_TestFenceNV(VALUE obj,VALUE arg1)
+{
+	GLboolean ret;
+	LOAD_GL_EXT_FUNC(glTestFenceNV,"GL_NV_fence")
+	ret = fptr_glTestFenceNV(NUM2UINT(arg1));
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
+static GLboolean (APIENTRY * fptr_glIsFenceNV)(GLuint);
+static VALUE gl_IsFenceNV(VALUE obj,VALUE arg1)
+{
+	GLboolean ret;
+	LOAD_GL_EXT_FUNC(glIsFenceNV,"GL_NV_fence")
+	ret = fptr_glIsFenceNV(NUM2UINT(arg1));
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
+GL_EXT_SIMPLE_FUNC_LOAD(FinishFenceNV,1,GLuint,NUM2UINT,"GL_NV_fence")
+
+static void (APIENTRY * fptr_glGetFenceivNV)(GLuint,GLenum,GLint *);
+static VALUE gl_GetFenceivNV(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	GLint ret = 0;
+	LOAD_GL_EXT_FUNC(glGetFenceivNV,"GL_NV_fence")
+	fptr_glGetFenceivNV(NUM2INT(arg1),NUM2INT(arg2),&ret);
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
 /* #233 GL_NV_vertex_program */
 static void (APIENTRY * fptr_glLoadProgramNV)(GLenum,GLuint,GLsizei,const GLubyte *);
 static VALUE gl_LoadProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
@@ -539,6 +621,15 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 
 void gl_init_functions_ext_nv(VALUE module)
 {
+/* #222 GL_NV_fence */
+	rb_define_module_function(module, "glGenFencesNV", gl_GenFencesNV, 1);
+	rb_define_module_function(module, "glDeleteFencesNV", gl_DeleteFencesNV, 1);
+	rb_define_module_function(module, "glSetFenceNV", gl_SetFenceNV, 2);
+	rb_define_module_function(module, "glTestFenceNV", gl_TestFenceNV, 1);
+	rb_define_module_function(module, "glFinishFenceNV", gl_FinishFenceNV, 1);
+	rb_define_module_function(module, "glIsFenceNV", gl_IsFenceNV, 1);
+	rb_define_module_function(module, "glGetFenceivNV", gl_GetFenceivNV, 2);
+
 /* #233 GL_NV_vertex_program */
 	rb_define_module_function(module, "glLoadProgramNV", gl_LoadProgramNV, 3);
 	rb_define_module_function(module, "glGetProgramStringNV", gl_GetProgramStringNV, 2);
