@@ -19,7 +19,10 @@
 /* Those are extensions that are not blessed by ARB committee but were
    created or agreed upon by multiple vendors */
 
-/* #54 GL_EXT_point_parameters */
+/* #3 - GL_EXT_polygon_offset */
+GL_EXT_SIMPLE_FUNC_LOAD(PolygonOffsetEXT,2,GLfloat,NUM2DBL,"GL_EXT_polygon_offset")
+
+/* #54 - GL_EXT_point_parameters */
 
 static void (APIENTRY * fptr_glPointParameterfEXT)(GLenum,GLfloat);
 static VALUE gl_PointParameterfEXT(VALUE obj,VALUE arg1,VALUE arg2)
@@ -49,9 +52,8 @@ static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	return Qnil;
 }
 
-
-/* #310 - GL_EXT_polygon_offset */
-GL_EXT_SIMPLE_FUNC_LOAD(PolygonOffsetEXT,2,GLfloat,NUM2DBL,"GL_EXT_polygon_offset")
+/* #268 - GL_EXT_stencil_two_side */
+GL_EXT_SIMPLE_FUNC_LOAD(ActiveStencilFaceEXT,1,GLenum,NUM2UINT,"GL_EXT_stencil_two_side")
 
 /* #310 - GL_EXT_framebuffer_object */
 static GLboolean (APIENTRY * fptr_glIsRenderbufferEXT)(GLuint);
@@ -230,7 +232,6 @@ static VALUE gl_FramebufferTexture3DEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 
 GL_EXT_SIMPLE_FUNC_LOAD(FramebufferRenderbufferEXT,4,GLuint,NUM2UINT,"GL_EXT_framebuffer_object")
 
-
 static void (APIENTRY * fptr_glGetFramebufferAttachmentParameterivEXT)(GLenum,GLenum,GLenum,GLint *);
 static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VALUE arg2, VALUE arg3)
 {
@@ -242,6 +243,16 @@ static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VAL
 }
 
 GL_EXT_SIMPLE_FUNC_LOAD(GenerateMipmapEXT,1,GLenum,NUM2UINT,"GL_EXT_framebuffer_object")
+
+/* #314 - GL_EXT_stencil_clear_tag */
+static void (APIENTRY * fptr_glStencilClearTagEXT)(GLsizei,GLuint);
+static VALUE gl_StencilClearTagEXT(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	LOAD_GL_EXT_FUNC(glStencilClearTagEXT,"GL_EXT_stencil_clear_tag")
+	fptr_glStencilClearTagEXT(NUM2INT(arg1),NUM2UINT(arg2));
+	CHECK_GLERROR
+	return Qnil;
+}
 
 /* #316 - GL_EXT_framebuffer_blit */
 static void (APIENTRY * fptr_glBlitFramebufferEXT)(GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLbitfield,GLenum);
@@ -294,12 +305,15 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_
 
 void gl_init_functions_ext_ext(VALUE module)
 {
-/* #54 GL_EXT_point_parameters */
+/* #3 - GL_EXT_polygon_offset */
+	rb_define_module_function(module, "glPolygonOffsetEXT", gl_PolygonOffsetEXT, 2);
+
+/* #54 - GL_EXT_point_parameters */
 	rb_define_module_function(module, "glPointParameterfEXT", gl_PointParameterfEXT, 2);
 	rb_define_module_function(module, "glPointParameterfvEXT", gl_PointParameterfvEXT, 2);
 
-/* #310 - GL_EXT_polygon_offset */
-	rb_define_module_function(module, "glPolygonOffsetEXT", gl_PolygonOffsetEXT, 2);
+/* #268 - GL_EXT_stencil_two_side */
+	rb_define_module_function(module, "glActiveStencilFaceEXT", gl_ActiveStencilFaceEXT, 1);
 
 /* #310 - GL_EXT_framebuffer_object */
 	rb_define_module_function(module, "glIsRenderbufferEXT", gl_IsRenderbufferEXT, 1);
@@ -319,6 +333,9 @@ void gl_init_functions_ext_ext(VALUE module)
 	rb_define_module_function(module, "glFramebufferRenderbufferEXT", gl_FramebufferRenderbufferEXT, 4);
 	rb_define_module_function(module, "glGetFramebufferAttachmentParameterivEXT", gl_GetFramebufferAttachmentParameterivEXT, 3);
 	rb_define_module_function(module, "glGenerateMipmapEXT", gl_GenerateMipmapEXT, 1);
+
+/* #314 - GL_EXT_stencil_clear_tag */
+	rb_define_module_function(module, "glStencilClearTagEXT", gl_StencilClearTagEXT, 2);
 
 /* #316 - GL_EXT_framebuffer_blit */
 	rb_define_module_function(module, "glBlitFramebufferEXT", gl_BlitFramebufferEXT, 10);

@@ -149,5 +149,19 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		glPointParameterfvEXT(GL_POINT_DISTANCE_ATTENUATION,[1,0,1])
 		assert_equal(glGetDoublev(GL_POINT_DISTANCE_ATTENUATION),[1,0,1])
 	end
-	
+
+	def test_gl_ext_stencil_two_side
+		return if not supported?("GL_EXT_stencil_two_side")
+		glActiveStencilFaceEXT(GL_FRONT)
+		assert_equal(glGetIntegerv(GL_ACTIVE_STENCIL_FACE_EXT),GL_FRONT)
+		glActiveStencilFaceEXT(GL_BACK)
+		assert_equal(glGetIntegerv(GL_ACTIVE_STENCIL_FACE_EXT),GL_BACK)
+	end
+
+	def test_gl_ext_stencil_clear_tag
+		return if not supported?("GL_EXT_stencil_clar_tag")
+		glStencilClearTagEXT(1,2)
+		assert_equal(glGetIntegerv(GL_STENCIL_TAG_BITS_EXT),1)
+		assert_equal(glGetIntegerv(GL_STENCIL_CLEAR_TAG_VALUE_EXT),2)
+	end
 end

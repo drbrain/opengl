@@ -263,7 +263,7 @@ WGL_NV_render_texture_rectangle,NonGL,N/A
 GL_NV_texture_shader3,Supported,0.50
 GL_NV_vertex_program1_1,Supported,0.50
 GL_EXT_shadow_funcs,Supported,0.50
-GL_EXT_stencil_two_side,Unsupported,N/A
+GL_EXT_stencil_two_side,Supported,0.60
 GL_ATI_text_fragment_shader,Supported,0.50
 GL_APPLE_client_storage,Supported,0.50
 GL_APPLE_element_array,Unsupported,N/A
@@ -310,7 +310,7 @@ GL_EXT_framebuffer_object,Supported,0.50
 GL_GREMEDY_string_marker,Supported,0.60
 GL_EXT_packed_depth_stencil,Supported,0.50
 WGL_3DL_stereo_control,NonGL,N/A
-GL_EXT_stencil_clear_tag,Unsupported,N/A
+GL_EXT_stencil_clear_tag,Supported,0.60
 GL_EXT_texture_sRGB,Supported,0.50
 GL_EXT_framebuffer_blit,Supported,0.60
 GL_EXT_framebuffer_multisample,Supported,0.60
