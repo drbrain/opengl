@@ -16,6 +16,15 @@
 /* GL types - define if system GLheaders are not recent
    Note: must be included before gl-enums.h */
 
+#if defined(_WIN32) && defined(__GNUC__)
+#include <stdint.h>
+#elif defined(_WIN32)
+typedef __int64 int64_t;
+typedef unsigned __int64 uint64_t;
+#else
+#include <inttypes.h> 
+#endif
+
 /* GL base */
 #ifndef GL_VERSION_1_5
 typedef ptrdiff_t GLintptr;
@@ -44,4 +53,13 @@ typedef ptrdiff_t GLsizeiptrARB;
 /* new GL types introduced by other extensions */
 #ifndef GL_NV_half_float
 typedef unsigned short GLhalfNV;
+#endif
+
+#ifndef GL_NV_half_float
+typedef unsigned short GLhalfNV;
+#endif
+
+#ifndef GL_EXT_timer_query
+typedef int64_t GLint64EXT;
+typedef uint64_t GLuint64EXT;
 #endif

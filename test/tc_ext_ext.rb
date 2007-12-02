@@ -264,4 +264,10 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB_EXT),GL_FUNC_SUBTRACT)
 		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA_EXT),GL_FUNC_ADD)
 	end
+
+	def test_gl_ext_depth_bounds_test
+		return if not supported?("GL_EXT_depth_bounds_test")
+		glDepthBoundsEXT(0.2,0.8)
+		assert(approx_equal(glGetDoublev(GL_DEPTH_BOUNDS_EXT),[0.2,0.8]))
+	end
 end

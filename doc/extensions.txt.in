@@ -293,7 +293,7 @@ GL_OES_single_precision,Unsupported,N/A
 GL_OES_compressed_paletted_texture,Supported,0.50
 GL_OES_read_format,Supported,0.50
 GL_OES_query_matrix,Unsupported,N/A
-GL_EXT_depth_bounds_test,Unsupported,N/A
+GL_EXT_depth_bounds_test,Supported,0.60
 GL_EXT_texture_mirror_clamp,Supported,0.50
 GL_EXT_blend_equation_separate,Supported,0.60
 GL_MESA_pack_invert,Supported,0.50

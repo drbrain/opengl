@@ -123,6 +123,9 @@ GL_EXT_SIMPLE_FUNC_LOAD(BlendFuncSeparateEXT,4,GLenum,NUM2UINT,"GL_EXT_blend_fun
 /* #268 - GL_EXT_stencil_two_side */
 GL_EXT_SIMPLE_FUNC_LOAD(ActiveStencilFaceEXT,1,GLenum,NUM2UINT,"GL_EXT_stencil_two_side")
 
+/* #297 - GL_EXT_depth_bounds_test */
+GL_EXT_SIMPLE_FUNC_LOAD(DepthBoundsEXT,2,GLclampd,NUM2DBL,"GL_EXT_depth_bounds_test")
+
 /* #299 - GL_EXT_blend_equation_separate */
 GL_EXT_SIMPLE_FUNC_LOAD(BlendEquationSeparateEXT,2,GLenum,NUM2UINT,"GL_EXT_blend_equation_separate")
 
@@ -413,6 +416,9 @@ void gl_init_functions_ext_ext(VALUE module)
 
 /* #268 - GL_EXT_stencil_two_side */
 	rb_define_module_function(module, "glActiveStencilFaceEXT", gl_ActiveStencilFaceEXT, 1);
+
+/* #297 - GL_EXT_depth_bounds_test */
+	rb_define_module_function(module, "glDepthBoundsEXT", gl_DepthBoundsEXT, 2);
 
 /* #299 - GL_EXT_blend_equation_separate */
 	rb_define_module_function(module, "glBlendEquationSeparateEXT", gl_BlendEquationSeparateEXT, 2);
