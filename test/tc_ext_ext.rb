@@ -21,7 +21,7 @@ class Test_EXT_EXT < Test::Unit::TestCase
 	end
 
 	def teardown
-		if supported?("GL_EXT_framebuffer_object")
+		if Gl.is_available?("GL_EXT_framebuffer_object")
 			glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, 0)
 			glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, 0)
 		end
@@ -290,5 +290,103 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		assert(glGetQueryObjectui64vEXT(queries[0], GL_QUERY_RESULT)>0)
 
 		glDeleteQueries(queries)
+	end
+
+	def test_gl_ext_texture_object
+		return if not supported?("GL_EXT_texture_object")
+		textures = glGenTexturesEXT(2)
+		glBindTextureEXT(GL_TEXTURE_1D,textures[0])
+		glBindTextureEXT(GL_TEXTURE_2D,textures[1])
+		assert_equal(glIsTextureEXT(textures[0]),GL_TRUE)
+		assert_equal(glAreTexturesResidentEXT(textures).size,2)
+
+		glPrioritizeTexturesEXT(textures,[0.5,1.0])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY),[0.5])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY),[1.0])
+
+		glDeleteTexturesEXT(textures)
+		assert_equal(glIsTextureEXT(textures[0]),GL_FALSE)
+	end
+
+	def test_gl_ext_compiled_vertex_array
+		return if not supported?("GL_EXT_compiled_vertex_array")
+		glLockArraysEXT(1,2)
+		assert_equal(glGetIntegerv(GL_ARRAY_ELEMENT_LOCK_FIRST_EXT),1)
+		assert_equal(glGetIntegerv(GL_ARRAY_ELEMENT_LOCK_COUNT_EXT),2)
+		glUnlockArraysEXT()
+	end
+
+	def test_gl_ext_fogcoord
+		return if not supported?("GL_EXT_fog_coord")
+
+		glFogCoordfEXT(2.0)
+		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),2.0)
+		glFogCoordfvEXT([3.0])
+		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),3.0)
+
+		glFogCoorddEXT(2.0)
+		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),2.0)
+		glFogCoorddvEXT([3.0])
+		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),3.0)
+
+		fc = [1, 0].pack("f*")
+		glFogCoordPointerEXT(GL_FLOAT,0,fc)
+		assert_equal(glGetIntegerv(GL_FOG_COORD_ARRAY_TYPE),GL_FLOAT)
+		assert_equal(glGetIntegerv(GL_FOG_COORD_ARRAY_STRIDE),0)
+		assert_equal(glGetPointerv(GL_FOG_COORD_ARRAY_POINTER),fc)
+
+		glEnableClientState(GL_FOG_COORD_ARRAY)
+
+		glBegin(GL_TRIANGLES)
+		glArrayElement(0)
+		glEnd()
+
+		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),1)
+
+		glBegin(GL_TRIANGLES)
+		glArrayElement(1)
+		glEnd()
+
+		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),0)
+
+		glDisableClientState(GL_FOG_COORD_ARRAY)
+	end
+
+	def test_gl_ext_multi_draw_arrays
+		return if not supported?("GL_EXT_multi_draw_arrays")
+		va = [0,0, 1,0, 1,1, 0,0, 1,0, 0,1].pack("f*")
+		glVertexPointer(2,GL_FLOAT,0,va)
+		
+		glEnable(GL_VERTEX_ARRAY)
+
+		buf = glFeedbackBuffer(256,GL_3D)
+		glRenderMode(GL_FEEDBACK)
+
+		glMultiDrawArraysEXT(GL_POLYGON, [0,3], [3,3])
+
+		i1 = [0,1,2].pack("C*")
+		i2 = [3,4,5].pack("C*")
+		glMultiDrawElementsEXT(GL_TRIANGLES,GL_UNSIGNED_BYTE,[i1,i2])
+
+		count = glRenderMode(GL_RENDER)
+		assert_equal(count,(3*3+2)*4)
+		glDisable(GL_VERTEX_ARRAY)
+	end
+
+	def test_gl_ext_drawrangeelements
+		return if not supported?("GL_EXT_draw_range_elements")
+		va = [0,0, 0,1, 1,1].pack("f*")
+		glVertexPointer(2,GL_FLOAT,0,va)
+
+		buf = glFeedbackBuffer(256,GL_3D)
+		glRenderMode(GL_FEEDBACK)
+
+		glEnable(GL_VERTEX_ARRAY)
+
+		glDrawRangeElementsEXT(GL_POINTS,0,2,3,GL_UNSIGNED_BYTE,[0,1,2].pack("C*"))
+		count = glRenderMode(GL_RENDER)
+		assert_equal(count,12)
+
+		glDisable(GL_VERTEX_ARRAY)
 	end
 end

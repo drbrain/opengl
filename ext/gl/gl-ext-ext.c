@@ -25,6 +25,125 @@ GL_EXT_SIMPLE_FUNC_LOAD(BlendColorEXT,4,GLclampf,NUM2DBL,"GL_EXT_blend_color")
 /* #3 - GL_EXT_polygon_offset */
 GL_EXT_SIMPLE_FUNC_LOAD(PolygonOffsetEXT,2,GLfloat,NUM2DBL,"GL_EXT_polygon_offset")
 
+/* #20 - GL_EXT_texture_object */
+static void (APIENTRY * fptr_glGenTexturesEXT)(GLsizei,GLuint *);
+static VALUE gl_GenTexturesEXT(VALUE obj,VALUE arg1)
+{
+	GLsizei n;
+	GLuint *textures;
+	VALUE ret;
+	int i;
+	LOAD_GL_EXT_FUNC(glGenTexturesEXT,"GL_EXT_texture_object")
+	n = (GLsizei)NUM2UINT(arg1);
+	textures = ALLOC_N(GLuint, n);
+	fptr_glGenTexturesEXT(n,textures);
+	ret = rb_ary_new2(n);
+	for (i = 0; i < n; i++)
+		rb_ary_push(ret, INT2NUM(textures[i]));
+	xfree(textures);
+	CHECK_GLERROR
+	return ret;
+}
+
+static void (APIENTRY * fptr_glDeleteTexturesEXT)(GLsizei,const GLuint *);
+static VALUE gl_DeleteTexturesEXT(VALUE obj,VALUE arg1)
+{
+	GLsizei n;
+	LOAD_GL_EXT_FUNC(glDeleteTexturesEXT,"GL_EXT_texture_object")
+	if (TYPE(arg1)==T_ARRAY) {
+		GLuint *textures;
+		n = RARRAY(arg1)->len;
+		textures = ALLOC_N(GLuint,n);
+		ary2cuint(arg1,textures,n); 
+		fptr_glDeleteTexturesEXT(n,textures);
+		xfree(textures);
+	} else {
+		GLuint texture;
+		texture = NUM2UINT(arg1);
+		fptr_glDeleteTexturesEXT(1,&texture);
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glBindTextureEXT)(GLenum,GLuint);
+static VALUE gl_BindTextureEXT(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	LOAD_GL_EXT_FUNC(glBindTextureEXT,"GL_EXT_texture_object")
+	fptr_glBindTextureEXT(NUM2UINT(arg1),NUM2UINT(arg2));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glPrioritizeTexturesEXT)(GLsizei,const GLuint *,const GLclampf *);
+static VALUE
+gl_PrioritizeTexturesEXT(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint *textures;
+	GLclampf *priorities;
+	GLsizei size;
+	LOAD_GL_EXT_FUNC(glPrioritizeTexturesEXT,"GL_EXT_texture_object")
+	Check_Type(arg1,T_ARRAY);
+	Check_Type(arg2,T_ARRAY);
+	if ((size = RARRAY(arg1)->len) != RARRAY(arg2)->len)
+		rb_raise(rb_eArgError, "passed arrays must have the same length");
+	textures = ALLOC_N(GLuint,size);
+	priorities = ALLOC_N(GLclampf,size);
+	ary2cuint(arg1,textures,size);	
+	ary2cflt(arg2,priorities,size);	
+	fptr_glPrioritizeTexturesEXT(size,textures,priorities);
+	xfree(textures);
+	xfree(priorities);
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static GLboolean (APIENTRY * fptr_glAreTexturesResidentEXT)(GLsizei,const GLuint *,GLboolean *);
+static VALUE
+gl_AreTexturesResidentEXT(obj,arg1)
+VALUE obj,arg1;
+{
+	GLuint *textures;
+	GLboolean *residences;
+	GLsizei size;
+	GLboolean r;
+	VALUE retary;
+	VALUE ary;
+	int i;
+	LOAD_GL_EXT_FUNC(glAreTexturesResidentEXT,"GL_EXT_texture_object")
+	ary = rb_Array(arg1);
+	size = RARRAY(ary)->len;
+	textures = ALLOC_N(GLuint,size);
+	residences = ALLOC_N(GLboolean,size);
+	ary2cuint(ary,textures,size);	
+	r = fptr_glAreTexturesResidentEXT(size,textures,residences);
+	retary = rb_ary_new2(size);
+	if (r==GL_TRUE) { /* all are resident */
+		for(i=0;i<size;i++)
+			rb_ary_push(retary, INT2NUM(GL_TRUE));
+	} else {
+		for(i=0;i<size;i++)
+			rb_ary_push(retary, INT2NUM(residences[i]));
+	}
+	xfree(textures);
+	xfree(residences);
+	CHECK_GLERROR
+	return retary;
+}
+
+
+static GLboolean (APIENTRY * fptr_glIsTextureEXT)(GLuint);
+static VALUE gl_IsTextureEXT(VALUE obj,VALUE arg1)
+{
+	GLboolean ret;
+	LOAD_GL_EXT_FUNC(glIsTextureEXT,"GL_EXT_texture_object")
+	ret = fptr_glIsTextureEXT((GLuint)NUM2UINT(arg1));
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
+
 /* #37 - GL_EXT_blend_minmax */
 GL_EXT_SIMPLE_FUNC_LOAD(BlendEquationEXT,1,GLenum,NUM2UINT,"GL_EXT_blend_minmax")
 
@@ -112,6 +231,171 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		rb_str_freeze(arg4);
 		g_SecondaryColor_ptr = arg4;
 		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)RSTRING(arg4)->ptr);
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+/* #97 - GL_EXT_compiled_vertex_array */
+GL_EXT_SIMPLE_FUNC_LOAD(LockArraysEXT,2,GLint,NUM2INT,"GL_EXT_compiled_vertex_array")
+GL_EXT_SIMPLE_FUNC_LOAD(UnlockArraysEXT,0,0,0,"GL_EXT_compiled_vertex_array")
+
+/* #112 - GL_EXT_draw_range_elements */
+static void (APIENTRY * fptr_glDrawRangeElementsEXT)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
+static VALUE
+gl_DrawRangeElementsEXT(obj,arg1,arg2,arg3,arg4,arg5,arg6)
+VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
+{
+	GLenum mode;
+	GLuint start;
+	GLuint end;
+	GLsizei count;
+	GLenum type;
+	LOAD_GL_EXT_FUNC(glDrawRangeElementsEXT,"GL_EXT_draw_range_elements")
+	mode = (GLenum)NUM2INT(arg1);
+	start = (GLuint)NUM2UINT(arg2);
+	end = (GLuint)NUM2UINT(arg3);
+	count = (GLsizei)NUM2UINT(arg4);
+	type = (GLenum)NUM2INT(arg5);
+	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
+		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, (GLvoid *)NUM2INT(arg6));
+	} else {
+		Check_Type(arg6, T_STRING);
+		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, RSTRING(arg6)->ptr);
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+/* #148 - GL_EXT_multi_draw_arrays */
+static void (APIENTRY * fptr_glMultiDrawArraysEXT)(GLenum,GLint*,GLsizei*,GLsizei);
+static VALUE
+gl_MultiDrawArraysEXT(obj,arg1,arg2,arg3)
+VALUE obj,arg1,arg2,arg3;
+{
+	GLenum mode;
+	GLint *ary1;
+	GLsizei *ary2;
+  int len1,len2;
+	LOAD_GL_EXT_FUNC(glMultiDrawArraysEXT,"GL_EXT_multi_draw_arrays")
+  len1 = RARRAY(arg2)->len;
+  len2 = RARRAY(arg3)->len;
+	if (len1!=len2)
+			rb_raise(rb_eArgError, "Passed arrays must have same length");
+	mode = (GLenum)NUM2INT(arg1);
+	ary1 = ALLOC_N(GLint,len1);
+	ary2 = ALLOC_N(GLsizei,len2);
+	ary2cint(arg2,ary1,len1);
+	ary2cint(arg3,ary2,len2);
+	fptr_glMultiDrawArraysEXT(mode,ary1,ary2,len1);
+	xfree(ary1);
+	xfree(ary2);
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glMultiDrawElementsEXT)(GLenum,const GLsizei *,GLenum,GLvoid **,GLsizei);
+static VALUE
+gl_MultiDrawElementsEXT(argc,argv,obj)
+int argc;
+VALUE *argv;
+VALUE obj;
+{
+	GLenum mode;
+	GLenum type;
+	GLsizei *counts;
+	GLvoid **indices;
+	GLint size;
+	RArray *ary;
+	int i;
+	VALUE args[4];
+	LOAD_GL_EXT_FUNC(glMultiDrawElementsEXT,"GL_EXT_multi_draw_arrays")
+	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
+		default:
+		case 3:
+			if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Element array buffer bound, but offsets array missing");
+			mode = (GLenum)NUM2INT(args[0]);
+			type = (GLenum)NUM2INT(args[1]);
+			Check_Type(args[2],T_ARRAY);
+			ary = RARRAY(args[2]);
+			size = ary->len;
+			counts = ALLOC_N(GLsizei,size);
+			indices = ALLOC_N(GLvoid*,size);
+			for (i=0;i<size;i++) {
+				indices[i] = RSTRING(ary->ptr[i])->ptr;
+				counts[i] = RSTRING(ary->ptr[i])->len;
+			}
+			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
+			xfree(counts);
+			xfree(indices);
+			break;
+		case 4:
+			if (!CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+				rb_raise(rb_eArgError, "Element array buffer not bound");
+			mode = (GLenum)NUM2INT(args[0]);
+			type = (GLenum)NUM2INT(args[1]);
+			Check_Type(args[2],T_ARRAY);
+			Check_Type(args[3],T_ARRAY);
+			if (RARRAY(args[2])->len != RARRAY(args[3])->len)
+				rb_raise(rb_eArgError, "Count and indices offset array must have same length");
+
+			size = RARRAY(args[2])->len;
+
+			counts = ALLOC_N(GLsizei,size);
+			indices = ALLOC_N(GLvoid*,size);
+			for (i=0;i<size;i++) {
+				counts[i] = NUM2INT(rb_ary_entry(args[2],i));
+				indices[i] = (GLvoid *) NUM2INT(rb_ary_entry(args[3],i));
+			}
+			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
+			xfree(counts);
+			xfree(indices);
+			break;
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+/* #149 - GL_EXT_fog_coord */
+GL_EXT_SIMPLE_FUNC_LOAD(FogCoordfEXT,1,GLfloat,NUM2DBL,"GL_EXT_fog_coord")
+GL_EXT_SIMPLE_FUNC_LOAD(FogCoorddEXT,1,GLdouble,NUM2DBL,"GL_EXT_fog_coord")
+	
+#define GLFOGCOORD_VFUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
+VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+{ \
+	_type_ cary = 0; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_EXT_secondary_color") \
+	Check_Type(arg1,T_ARRAY); \
+	_conv_(arg1,&cary,1); \
+	fptr_gl##_name_(&cary); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+GLFOGCOORD_VFUNC(FogCoordfvEXT,GLfloat,ary2cflt)
+GLFOGCOORD_VFUNC(FogCoorddvEXT,GLdouble,ary2cdbl)
+#undef GLFOGCOORD_VFUNC
+
+extern VALUE g_FogCoord_ptr;
+static void (APIENTRY * fptr_glFogCoordPointerEXT)(GLenum,GLsizei,const GLvoid *);
+static VALUE
+gl_FogCoordPointerEXT(obj,arg1,arg2,arg3)
+VALUE obj,arg1,arg2,arg3;
+{
+	GLenum type;
+	GLsizei stride;
+	LOAD_GL_EXT_FUNC(glFogCoordPointerEXT,"GL_EXT_secondary_color")
+	type = (GLenum)NUM2INT(arg1);
+	stride = (GLsizei)NUM2UINT(arg2);
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_FogCoord_ptr = arg3;
+		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)NUM2INT(arg3));
+	} else {
+		Check_Type(arg3, T_STRING);
+		rb_str_freeze(arg3);
+		g_FogCoord_ptr = arg3;
+		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -403,12 +687,28 @@ void gl_init_functions_ext_ext(VALUE module)
 /* #3 - GL_EXT_polygon_offset */
 	rb_define_module_function(module, "glPolygonOffsetEXT", gl_PolygonOffsetEXT, 2);
 
+/* #20 - GL_EXT_texture_object */
+	rb_define_module_function(module, "glGenTexturesEXT", gl_GenTexturesEXT, 1);
+	rb_define_module_function(module, "glDeleteTexturesEXT", gl_DeleteTexturesEXT, 1);
+	rb_define_module_function(module, "glBindTextureEXT", gl_BindTextureEXT, 2);
+	rb_define_module_function(module, "glPrioritizeTexturesEXT", gl_PrioritizeTexturesEXT, 2);
+	rb_define_module_function(module, "glAreTexturesResidentEXT", gl_AreTexturesResidentEXT, 1);
+	rb_define_module_function(module, "glIsTextureEXT", gl_IsTextureEXT, 1);
+
 /* #37 - GL_EXT_blend_minmax */
 	rb_define_module_function(module, "glBlendEquationEXT", gl_BlendEquationEXT, 1);
 
 /* #54 - GL_EXT_point_parameters */
 	rb_define_module_function(module, "glPointParameterfEXT", gl_PointParameterfEXT, 2);
 	rb_define_module_function(module, "glPointParameterfvEXT", gl_PointParameterfvEXT, 2);
+
+/* #97 - GL_EXT_compiled_vertex_array */
+	rb_define_module_function(module, "glLockArraysEXT", gl_LockArraysEXT, 2);
+	rb_define_module_function(module, "glUnlockArraysEXT", gl_UnlockArraysEXT, 0);
+
+
+/* #112 - GL_EXT_draw_range_elements */
+	rb_define_module_function(module, "glDrawRangeElementsEXT", gl_DrawRangeElementsEXT, 6);
 
 /* #145 - GL_EXT_secondary_color */
 	rb_define_module_function(module, "glSecondaryColor3bEXT", gl_SecondaryColor3bEXT, 3);
@@ -428,6 +728,17 @@ void gl_init_functions_ext_ext(VALUE module)
 	rb_define_module_function(module, "glSecondaryColor3uivEXT", gl_SecondaryColor3uivEXT, 1);
 	rb_define_module_function(module, "glSecondaryColor3usvEXT", gl_SecondaryColor3usvEXT, 1);
 	rb_define_module_function(module, "glSecondaryColorPointerEXT", gl_SecondaryColorPointerEXT, 4);
+
+/* #148 - GL_EXT_multi_draw_arrays */
+	rb_define_module_function(module, "glMultiDrawArraysEXT", gl_MultiDrawArraysEXT, 3);
+	rb_define_module_function(module, "glMultiDrawElementsEXT", gl_MultiDrawElementsEXT, -1);
+
+/* #149 - GL_EXT_fog_coord */
+	rb_define_module_function(module, "glFogCoordfEXT", gl_FogCoordfEXT, 1);
+	rb_define_module_function(module, "glFogCoorddEXT", gl_FogCoorddEXT, 1);
+	rb_define_module_function(module, "glFogCoordfvEXT", gl_FogCoordfvEXT, 1);
+	rb_define_module_function(module, "glFogCoorddvEXT", gl_FogCoorddvEXT, 1);
+	rb_define_module_function(module, "glFogCoordPointerEXT", gl_FogCoordPointerEXT, 3);
 
 /* #173 - GL_EXT_blend_func_separate */
 	rb_define_module_function(module, "glBlendFuncSeparateEXT", gl_BlendFuncSeparateEXT, 4);

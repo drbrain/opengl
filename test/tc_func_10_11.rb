@@ -33,29 +33,29 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_glindex
 		glIndexd(2.0)
-		assert_equal(glGetDoublev(GL_CURRENT_INDEX),2.0)
+		assert_in_delta(glGetDoublev(GL_CURRENT_INDEX),2.0,0.001)
 		glIndexdv([3.0])
-		assert_equal(glGetDoublev(GL_CURRENT_INDEX),3.0)
+		assert_in_delta(glGetDoublev(GL_CURRENT_INDEX),3.0,0.001)
 
 		glIndexf(4.0)
-		assert_equal(glGetFloatv(GL_CURRENT_INDEX),4.0)
+		assert_in_delta(glGetFloatv(GL_CURRENT_INDEX),4.0,0.001)
 		glIndexfv([5.0])
-		assert_equal(glGetFloatv(GL_CURRENT_INDEX),5.0)
+		assert_in_delta(glGetFloatv(GL_CURRENT_INDEX),5.0,0.001)
 
 		glIndexi(6)
-		assert_equal(glGetIntegerv(GL_CURRENT_INDEX),6)
+		assert_in_delta(glGetIntegerv(GL_CURRENT_INDEX),6,0.001)
 		glIndexiv([7])
-		assert_equal(glGetIntegerv(GL_CURRENT_INDEX),7)
+		assert_in_delta(glGetIntegerv(GL_CURRENT_INDEX),7,0.001)
 
 		glIndexs(8)
-		assert_equal(glGetIntegerv(GL_CURRENT_INDEX),8)
+		assert_in_delta(glGetIntegerv(GL_CURRENT_INDEX),8,0.001)
 		glIndexsv([9])
-		assert_equal(glGetIntegerv(GL_CURRENT_INDEX),9)
+		assert_in_delta(glGetIntegerv(GL_CURRENT_INDEX),9,0.001)
 
 		glIndexub(10)
-		assert_equal(glGetIntegerv(GL_CURRENT_INDEX),10)
+		assert_in_delta(glGetIntegerv(GL_CURRENT_INDEX),10,0.001)
 		glIndexubv([11])
-		assert_equal(glGetIntegerv(GL_CURRENT_INDEX),11)
+		assert_in_delta(glGetIntegerv(GL_CURRENT_INDEX),11,0.001)
 
 		# index pointer
 		glIndexPointer(GL_INT,2,"")
