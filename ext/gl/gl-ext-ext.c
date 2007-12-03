@@ -351,6 +351,24 @@ static VALUE gl_RenderbufferStorageMultisampleEXT(VALUE obj,VALUE arg1,VALUE arg
 	return Qnil;
 }
 
+/* #319 - GL_EXT_timer_query */
+
+#define GETQUERY_FUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
+static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
+{ \
+	_type_ ret = 0; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_EXT_timer_query") \
+	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
+	CHECK_GLERROR \
+	return _conv_(ret); \
+}
+
+GETQUERY_FUNC(GetQueryObjecti64vEXT,GLint64EXT,LL2NUM)
+GETQUERY_FUNC(GetQueryObjectui64vEXT,GLuint64EXT,ULL2NUM)
+#undef GETQUERY_FUNC
+
+
 /* #320 - GL_EXT_gpu_program_parameters */
 #define PROGRAMPARAM_MULTI_FUNC_V(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,GLsizei,const _type_ *); \
@@ -451,9 +469,11 @@ void gl_init_functions_ext_ext(VALUE module)
 /* #317 - GL_EXT_framebuffer_multisample */
 	rb_define_module_function(module, "glRenderbufferStorageMultisampleEXT", gl_RenderbufferStorageMultisampleEXT, 5);
 
+/* #319 - GL_EXT_timer_query */
+	rb_define_module_function(module, "glGetQueryObjecti64vEXT", gl_GetQueryObjecti64vEXT, 2);
+	rb_define_module_function(module, "glGetQueryObjectui64vEXT", gl_GetQueryObjectui64vEXT, 2);
+
 /* #320 - GL_EXT_gpu_program_parameters */
 	rb_define_module_function(module, "glProgramEnvParameters4fvEXT", gl_ProgramEnvParameters4fvEXT, 3);
 	rb_define_module_function(module, "glProgramLocalParameters4fvEXT", gl_ProgramLocalParameters4fvEXT, 3);
-
-
 }

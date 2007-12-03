@@ -270,4 +270,25 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		glDepthBoundsEXT(0.2,0.8)
 		assert(approx_equal(glGetDoublev(GL_DEPTH_BOUNDS_EXT),[0.2,0.8]))
 	end
+
+	def test_gl_ext_timer_query
+		return if not supported?("GL_EXT_timer_query")
+		queries = glGenQueries(2)
+		glBeginQuery(GL_TIME_ELAPSED_EXT,queries[0])
+		glBegin(GL_QUADS)
+			glVertex2i(0,0)
+			glVertex2i(0,1)
+			glVertex2i(1,1)
+			glVertex2i(1,0)
+		glEnd
+		glEndQuery(GL_TIME_ELAPSED_EXT)
+	
+		while glGetQueryObjectiv(queries[0], GL_QUERY_RESULT_AVAILABLE)==GL_FALSE
+			#
+		end
+		assert(glGetQueryObjecti64vEXT(queries[0], GL_QUERY_RESULT)>0)
+		assert(glGetQueryObjectui64vEXT(queries[0], GL_QUERY_RESULT)>0)
+
+		glDeleteQueries(queries)
+	end
 end

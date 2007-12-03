@@ -55,10 +55,6 @@ typedef ptrdiff_t GLsizeiptrARB;
 typedef unsigned short GLhalfNV;
 #endif
 
-#ifndef GL_NV_half_float
-typedef unsigned short GLhalfNV;
-#endif
-
 #ifndef GL_EXT_timer_query
 typedef int64_t GLint64EXT;
 typedef uint64_t GLuint64EXT;

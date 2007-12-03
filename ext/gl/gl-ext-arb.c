@@ -494,7 +494,7 @@ static VALUE gl_IsQueryARB(VALUE obj,VALUE arg1)
 GL_EXT_SIMPLE_FUNC_LOAD(BeginQueryARB,2,GLuint,NUM2UINT,"GL_ARB_occlusion_query")
 GL_EXT_SIMPLE_FUNC_LOAD(EndQueryARB,1,GLenum,NUM2UINT,"GL_ARB_occlusion_query")
 
-#define GETQUERY_FUNC(_name_,_type_,_coARB_) \
+#define GETQUERY_FUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 { \
@@ -502,7 +502,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_occlusion_query") \
 	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
 	CHECK_GLERROR \
-	return _coARB_(ret); \
+	return _conv_(ret); \
 }
 
 GETQUERY_FUNC(GetQueryivARB,GLint,INT2NUM)
