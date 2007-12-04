@@ -510,6 +510,323 @@ GETQUERY_FUNC(GetQueryObjectivARB,GLint,INT2NUM)
 GETQUERY_FUNC(GetQueryObjectuivARB,GLuint,INT2NUM)
 #undef GETQUERY_FUNC
 
+/* #30 GL_ARB_shader_objects */
+GL_EXT_SIMPLE_FUNC_LOAD(DeleteObjectARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
+GL_EXT_SIMPLE_FUNC_LOAD(DetachObjectARB,2,GLuint,NUM2UINT,"GL_ARB_shader_objects")
+GL_EXT_SIMPLE_FUNC_LOAD(CompileShaderARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
+GL_EXT_SIMPLE_FUNC_LOAD(AttachObjectARB,2,GLuint,NUM2UINT,"GL_ARB_shader_objects")
+GL_EXT_SIMPLE_FUNC_LOAD(LinkProgramARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
+GL_EXT_SIMPLE_FUNC_LOAD(UseProgramObjectARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
+GL_EXT_SIMPLE_FUNC_LOAD(ValidateProgramARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
+
+static GLuint (APIENTRY * fptr_glGetHandleARB)(GLenum);
+static VALUE gl_GetHandleARB(VALUE obj,VALUE arg1)
+{
+	GLuint ret;
+	LOAD_GL_EXT_FUNC(glGetHandleARB,"GL_ARB_shader_objects")
+	ret = fptr_glGetHandleARB(NUM2INT(arg1));
+	CHECK_GLERROR
+	return UINT2NUM(ret);
+}
+
+static GLuint (APIENTRY * fptr_glCreateShaderObjectARB)(GLenum);
+static VALUE gl_CreateShaderObjectARB(VALUE obj,VALUE arg1)
+{
+	GLuint ret;
+	LOAD_GL_EXT_FUNC(glCreateShaderObjectARB,"GL_ARB_shader_objects")
+	ret = fptr_glCreateShaderObjectARB(NUM2INT(arg1));
+	CHECK_GLERROR
+	return UINT2NUM(ret);
+}
+
+static GLuint (APIENTRY * fptr_glCreateProgramObjectARB)(void);
+static VALUE gl_CreateProgramObjectARB(VALUE obj)
+{
+	GLuint ret;
+	LOAD_GL_EXT_FUNC(glCreateProgramObjectARB,"GL_ARB_shader_objects")
+	ret = fptr_glCreateProgramObjectARB();
+	CHECK_GLERROR
+	return UINT2NUM(ret);
+}
+
+static void (APIENTRY * fptr_glShaderSourceARB)(GLuint,GLsizei,GLchar**,GLint *);
+static VALUE
+gl_ShaderSourceARB(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint shader;
+	GLint length;
+	GLchar *str;
+	LOAD_GL_EXT_FUNC(glShaderSourceARB,"GL_ARB_shader_objects")
+	shader = (GLuint)NUM2UINT(arg1);
+	Check_Type(arg2,T_STRING);
+	str = RSTRING(arg2)->ptr;
+	length = RSTRING(arg2)->len;
+	fptr_glShaderSourceARB(shader,1,&str,&length);
+	CHECK_GLERROR
+	return Qnil;
+}
+
+#define GLUNIFORM_FUNC(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLint,TYPELIST##_size_(_type_)); \
+static VALUE \
+gl_##_name_(obj,loc ARGLIST##_size_) \
+VALUE obj,loc ARGLIST##_size_ ; \
+{ \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	fptr_gl##_name_(NUM2INT(loc),FUNCPARAMS##_size_(_type_,_conv_)); \
+	return Qnil; \
+}
+
+GLUNIFORM_FUNC(Uniform1fARB,GLfloat,NUM2DBL,1)
+GLUNIFORM_FUNC(Uniform2fARB,GLfloat,NUM2DBL,2)
+GLUNIFORM_FUNC(Uniform3fARB,GLfloat,NUM2DBL,3)
+GLUNIFORM_FUNC(Uniform4fARB,GLfloat,NUM2DBL,4)
+GLUNIFORM_FUNC(Uniform1iARB,GLint,NUM2INT,1)
+GLUNIFORM_FUNC(Uniform2iARB,GLint,NUM2INT,2)
+GLUNIFORM_FUNC(Uniform3iARB,GLint,NUM2INT,3)
+GLUNIFORM_FUNC(Uniform4iARB,GLint,NUM2INT,4)
+#undef GLUNIFORM_FUNC
+
+#define GLUNIFORM_VFUNC(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,const _type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2,arg3) \
+VALUE obj,arg1,arg2,arg3; \
+{ \
+	GLint location; \
+	GLsizei count; \
+	_type_ *value; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	location = (GLint)NUM2INT(arg1); \
+	count = (GLsizei)NUM2UINT(arg2); \
+	value = ALLOC_N(_type_,_size_*count); \
+	_conv_(arg3,value,_size_*count); \
+	fptr_gl##_name_(location,count,value); \
+	xfree(value); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+GLUNIFORM_VFUNC(Uniform1fvARB,GLfloat,ary2cflt,1)
+GLUNIFORM_VFUNC(Uniform2fvARB,GLfloat,ary2cflt,2)
+GLUNIFORM_VFUNC(Uniform3fvARB,GLfloat,ary2cflt,3)
+GLUNIFORM_VFUNC(Uniform4fvARB,GLfloat,ary2cflt,4)
+GLUNIFORM_VFUNC(Uniform1ivARB,GLint,ary2cint,1)
+GLUNIFORM_VFUNC(Uniform2ivARB,GLint,ary2cint,2)
+GLUNIFORM_VFUNC(Uniform3ivARB,GLint,ary2cint,3)
+GLUNIFORM_VFUNC(Uniform4ivARB,GLint,ary2cint,4)
+#undef GLUNIFORM_VFUNC
+
+
+#define UNIFORMMATRIX_FUNC(_name_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,GLboolean,GLfloat *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2,arg3,arg4) \
+VALUE obj,arg1,arg2,arg3,arg4; \
+{ \
+	GLint location; \
+	GLsizei count; \
+	GLboolean transpose; \
+	GLfloat *value;	\
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	location = (GLint)NUM2INT(arg1); \
+	count = (GLint)NUM2INT(arg2); \
+	transpose = (GLboolean)NUM2INT(arg3); \
+	value = ALLOC_N(GLfloat, _size_*_size_*count); \
+	ary2cmatfloat(arg4,value,_size_,_size_*count); \
+	fptr_gl##_name_(location,count,transpose,value); \
+	xfree(value); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+UNIFORMMATRIX_FUNC(UniformMatrix2fvARB,2)
+UNIFORMMATRIX_FUNC(UniformMatrix3fvARB,3)
+UNIFORMMATRIX_FUNC(UniformMatrix4fvARB,4)
+#undef UNIFORMMATRIX_FUNC
+
+#define GETOBJECTPARAMETER_FUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLuint program; \
+	GLenum pname; \
+	_type_ params = 0; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	program = (GLuint)NUM2UINT(arg1); \
+	pname = (GLenum)NUM2INT(arg2); \
+	fptr_gl##_name_(program,pname,&params); \
+	CHECK_GLERROR \
+	return _conv_(params); \
+}
+
+GETOBJECTPARAMETER_FUNC(GetObjectParameterivARB,GLint,INT2NUM)
+GETOBJECTPARAMETER_FUNC(GetObjectParameterfvARB,GLfloat,rb_float_new)
+
+#undef GETOBJECTPARAMETER_FUNC
+
+static void (APIENTRY * fptr_glGetInfoLogARB)(GLuint,GLsizei,GLsizei *,GLchar *);
+static VALUE
+gl_GetInfoLogARB(obj,arg1)
+VALUE obj,arg1;
+{
+	GLuint program;	
+	GLint max_size = 0;
+	GLsizei ret_length = 0;
+	VALUE buffer;
+	LOAD_GL_EXT_FUNC(glGetInfoLogARB,"GL_ARB_shader_objects")
+	LOAD_GL_EXT_FUNC(glGetObjectParameterivARB,"GL_ARB_shader_objects")
+	program = (GLuint)NUM2UINT(arg1);
+	fptr_glGetObjectParameterivARB(program,GL_OBJECT_INFO_LOG_LENGTH_ARB,&max_size);
+	CHECK_GLERROR
+	if (max_size<=0)
+		return rb_str_new2("");
+	buffer = allocate_buffer_with_string(max_size);
+	fptr_glGetInfoLogARB(program,max_size,&ret_length,RSTRING(buffer)->ptr);
+	RSTRING(buffer)->len = ret_length;
+	CHECK_GLERROR
+	return buffer;
+}
+
+static void (APIENTRY * fptr_glGetShaderSourceARB)(GLuint,GLsizei,GLsizei *,GLchar *);
+static VALUE
+gl_GetShaderSourceARB(obj,arg1)
+VALUE obj,arg1;
+{
+	GLuint shader;
+	GLint max_size = 0;
+	GLsizei ret_length = 0;
+	VALUE buffer;
+	LOAD_GL_EXT_FUNC(glGetShaderSourceARB,"GL_ARB_shader_objects")
+	LOAD_GL_EXT_FUNC(glGetObjectParameterivARB,"GL_ARB_shader_objects")
+	shader = (GLuint)NUM2UINT(arg1);
+	fptr_glGetObjectParameterivARB(shader,GL_OBJECT_SHADER_SOURCE_LENGTH_ARB,&max_size);
+	CHECK_GLERROR
+	if (max_size==0)
+		rb_raise(rb_eTypeError, "Can't determine maximum shader source length");
+	buffer = allocate_buffer_with_string(max_size-1);
+	fptr_glGetShaderSourceARB(shader,max_size,&ret_length,RSTRING(buffer)->ptr);
+	CHECK_GLERROR
+	return buffer;
+}
+
+static void (APIENTRY * fptr_glGetActiveUniformARB)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
+static VALUE
+gl_GetActiveUniformARB(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint program;
+	GLuint index;
+	GLsizei max_size = 0;
+	GLsizei written = 0;
+	GLint uniform_size = 0;
+	GLenum uniform_type = 0;
+	VALUE buffer;
+	VALUE retary;
+	LOAD_GL_EXT_FUNC(glGetActiveUniformARB,"GL_ARB_shader_objects")
+	LOAD_GL_EXT_FUNC(glGetObjectParameterivARB,"GL_EXT_sahder_objects")
+	program = (GLuint)NUM2UINT(arg1);
+	index = (GLuint)NUM2UINT(arg2);
+	fptr_glGetObjectParameterivARB(program,GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB,&max_size);
+	CHECK_GLERROR
+	if (max_size==0)
+		rb_raise(rb_eTypeError, "Can't determine maximum uniform name length");
+	buffer = allocate_buffer_with_string(max_size-1);
+	fptr_glGetActiveUniformARB(program,index,max_size,&written,&uniform_size,&uniform_type,RSTRING(buffer)->ptr);
+	retary = rb_ary_new2(3);
+	rb_ary_push(retary, INT2NUM(uniform_size));
+	rb_ary_push(retary, INT2NUM(uniform_type));
+	rb_ary_push(retary, buffer);
+	CHECK_GLERROR
+	return retary;
+}
+
+#define GETUNIFORM_FUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLuint program; \
+	GLint location; \
+	_type_ params[16]; \
+	VALUE retary; \
+	GLint i; \
+	GLint unused = 0; \
+	GLenum uniform_type = 0; \
+	GLint uniform_size = 0; \
+\
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	LOAD_GL_EXT_FUNC(glGetActiveUniformARB,"GL_ARB_shader_objects") \
+	program = (GLuint)NUM2UINT(arg1); \
+	location = (GLint)NUM2INT(arg2); \
+\
+	fptr_glGetActiveUniformARB(program,location,0,NULL,&unused,&uniform_type,NULL); \
+	CHECK_GLERROR \
+	if (uniform_type==0) \
+		rb_raise(rb_eTypeError, "Can't determine the uniform's type"); \
+\
+	uniform_size = get_uniform_size(uniform_type); \
+\
+	memset(params,0,16*sizeof(_type_)); \
+	fptr_gl##_name_(program,location,params); \
+	retary = rb_ary_new2(uniform_size); \
+	for(i=0;i<uniform_size;i++) \
+		rb_ary_push(retary, _conv_(params[i])); \
+	CHECK_GLERROR \
+	return retary; \
+}
+
+GETUNIFORM_FUNC(GetUniformfvARB,GLfloat,rb_float_new)
+GETUNIFORM_FUNC(GetUniformivARB,GLint,INT2NUM)
+#undef GETUNIFORM_FUNC
+
+static GLint (APIENTRY * fptr_glGetUniformLocationARB)(GLuint,const GLchar*);
+static VALUE
+gl_GetUniformLocationARB(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint program;
+	GLint ret;
+	LOAD_GL_EXT_FUNC(glGetUniformLocationARB,"GL_ARB_shader_objects")
+	program=(GLuint)NUM2UINT(arg1);
+	Check_Type(arg2,T_STRING);
+	ret = fptr_glGetUniformLocationARB(program,RSTRING(arg2)->ptr);
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
+static void (APIENTRY * fptr_glGetAttachedObjectsARB)(GLuint,GLsizei,GLsizei *,GLuint *);
+static VALUE
+gl_GetAttachedObjectsARB(obj,arg1)
+VALUE obj,arg1;
+{
+	GLuint program;
+	GLint shaders_num = 0;
+	GLuint *shaders;
+	VALUE retary;
+	GLsizei count = 0;
+	GLint i;
+	LOAD_GL_EXT_FUNC(glGetAttachedObjectsARB,"GL_ARB_shader_objects")
+	LOAD_GL_EXT_FUNC(glGetObjectParameterivARB,"GL_ARB_shader_objects")
+	program = (GLuint)NUM2UINT(arg1);
+	fptr_glGetObjectParameterivARB(program,GL_OBJECT_ATTACHED_OBJECTS_ARB,&shaders_num);
+	CHECK_GLERROR
+	if (shaders_num<=0)
+		return Qnil;
+	shaders = ALLOC_N(GLuint,shaders_num);
+	fptr_glGetAttachedObjectsARB(program,shaders_num,&count,shaders);
+	retary = rb_ary_new2(shaders_num);
+	for(i=0;i<shaders_num;i++)
+		rb_ary_push(retary, INT2NUM(shaders[i]));
+	xfree(shaders);
+	CHECK_GLERROR
+	return retary;
+}
+
 /* #39 GL_ARB_color_buffer_float */
 GL_EXT_SIMPLE_FUNC_LOAD(ClampColorARB,2,GLenum,NUM2INT,"GL_ARB_color_buffer_float")
 
@@ -620,6 +937,47 @@ void gl_init_functions_ext_arb(VALUE module)
 	rb_define_module_function(module, "glGetQueryivARB", gl_GetQueryivARB, 2);
 	rb_define_module_function(module, "glGetQueryObjectivARB", gl_GetQueryObjectivARB, 2);
 	rb_define_module_function(module, "glGetQueryObjectuivARB", gl_GetQueryObjectuivARB, 2);
+
+/* #30 GL_ARB_shader_objects */
+	rb_define_module_function(module, "glDeleteObjectARB", gl_DeleteObjectARB, 1);
+	rb_define_module_function(module, "glGetHandleARB", gl_GetHandleARB, 1);
+	rb_define_module_function(module, "glDetachObjectARB", gl_DetachObjectARB, 2);
+	rb_define_module_function(module, "glCreateShaderObjectARB", gl_CreateShaderObjectARB, 1);
+	rb_define_module_function(module, "glShaderSourceARB", gl_ShaderSourceARB, 2);
+	rb_define_module_function(module, "glCompileShaderARB", gl_CompileShaderARB, 1);
+	rb_define_module_function(module, "glCreateProgramObjectARB", gl_CreateProgramObjectARB, 0);
+	rb_define_module_function(module, "glAttachObjectARB", gl_AttachObjectARB, 2);
+	rb_define_module_function(module, "glLinkProgramARB", gl_LinkProgramARB, 1);
+	rb_define_module_function(module, "glUseProgramObjectARB", gl_UseProgramObjectARB, 1);
+	rb_define_module_function(module, "glValidateProgramARB", gl_ValidateProgramARB, 1);
+	rb_define_module_function(module, "glUniform1fARB", gl_Uniform1fARB, 2);
+	rb_define_module_function(module, "glUniform2fARB", gl_Uniform2fARB, 3);
+	rb_define_module_function(module, "glUniform3fARB", gl_Uniform3fARB, 4);
+	rb_define_module_function(module, "glUniform4fARB", gl_Uniform4fARB, 5);
+	rb_define_module_function(module, "glUniform1iARB", gl_Uniform1iARB, 2);
+	rb_define_module_function(module, "glUniform2iARB", gl_Uniform2iARB, 3);
+	rb_define_module_function(module, "glUniform3iARB", gl_Uniform3iARB, 4);
+	rb_define_module_function(module, "glUniform4iARB", gl_Uniform4iARB, 5);
+	rb_define_module_function(module, "glUniform1fvARB", gl_Uniform1fvARB, 3);
+	rb_define_module_function(module, "glUniform2fvARB", gl_Uniform2fvARB, 3);
+	rb_define_module_function(module, "glUniform3fvARB", gl_Uniform3fvARB, 3);
+	rb_define_module_function(module, "glUniform4fvARB", gl_Uniform4fvARB, 3);
+	rb_define_module_function(module, "glUniform1ivARB", gl_Uniform1ivARB, 3);
+	rb_define_module_function(module, "glUniform2ivARB", gl_Uniform2ivARB, 3);
+	rb_define_module_function(module, "glUniform3ivARB", gl_Uniform3ivARB, 3);
+	rb_define_module_function(module, "glUniform4ivARB", gl_Uniform4ivARB, 3);
+	rb_define_module_function(module, "glUniformMatrix2fvARB", gl_UniformMatrix2fvARB, 4);
+	rb_define_module_function(module, "glUniformMatrix3fvARB", gl_UniformMatrix3fvARB, 4);
+	rb_define_module_function(module, "glUniformMatrix4fvARB", gl_UniformMatrix4fvARB, 4);
+	rb_define_module_function(module, "glGetObjectParameterfvARB", gl_GetObjectParameterfvARB, 2);
+	rb_define_module_function(module, "glGetObjectParameterivARB", gl_GetObjectParameterivARB, 2);
+	rb_define_module_function(module, "glGetInfoLogARB", gl_GetInfoLogARB, 1);
+	rb_define_module_function(module, "glGetShaderSourceARB", gl_GetShaderSourceARB, 1);
+	rb_define_module_function(module, "glGetAttachedObjectsARB", gl_GetAttachedObjectsARB, 1);
+	rb_define_module_function(module, "glGetUniformLocationARB", gl_GetUniformLocationARB, 2);
+	rb_define_module_function(module, "glGetActiveUniformARB", gl_GetActiveUniformARB, 2);
+	rb_define_module_function(module, "glGetUniformfvARB", gl_GetUniformfvARB, 2);
+	rb_define_module_function(module, "glGetUniformivARB", gl_GetUniformivARB, 2);
 
 /* #39 GL_ARB_color_buffer_float */
 	rb_define_module_function(module, "glClampColorARB", gl_ClampColorARB, 2);

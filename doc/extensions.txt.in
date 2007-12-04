@@ -30,7 +30,7 @@ GL_ARB_vertex_program,Supported,0.60
 GL_ARB_fragment_program,Supported,0.60
 GL_ARB_vertex_buffer_object,Unsupported,N/A
 GL_ARB_occlusion_query,Supported,0.60
-GL_ARB_shader_objects,Unsupported,N/A
+GL_ARB_shader_objects,Supported,0.60
 GL_ARB_vertex_shader,Unsupported,N/A
 GL_ARB_fragment_shader,Unsupported,N/A
 GL_ARB_shading_language_100,Supported,0.50

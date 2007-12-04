@@ -171,8 +171,8 @@ VALUE obj,arg1,arg2;
 
 static void (APIENTRY * fptr_glGetActiveUniform)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
 static VALUE
-gl_GetActiveUniform(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
+gl_GetActiveUniform(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
 {
 	GLuint program;
 	GLuint index;
@@ -345,58 +345,6 @@ VALUE obj,arg1,arg2;
 	return INT2NUM(ret);
 }
 
-
-#define GET_UNIFORM_SIZE \
-	switch (uniform_type) { \
-		case GL_FLOAT: \
-		case GL_INT: \
-		case GL_BOOL: \
-		case GL_SAMPLER_1D: \
-		case GL_SAMPLER_2D: \
-		case GL_SAMPLER_3D: \
-		case GL_SAMPLER_CUBE: \
-		case GL_SAMPLER_1D_SHADOW: \
-		case GL_SAMPLER_2D_SHADOW: \
-			uniform_size = 1; \
-			break; \
-		case GL_FLOAT_VEC2: \
-		case GL_INT_VEC2: \
-		case GL_BOOL_VEC2: \
-			uniform_size = 2; \
-			break; \
-		case GL_FLOAT_VEC3: \
-		case GL_INT_VEC3: \
-		case GL_BOOL_VEC3: \
-			uniform_size = 3; \
-			break; \
-		case GL_FLOAT_VEC4: \
-		case GL_INT_VEC4: \
-		case GL_BOOL_VEC4: \
-		case GL_FLOAT_MAT2: \
-			uniform_size = 4; \
-			break; \
-		case GL_FLOAT_MAT2x3: \
-		case GL_FLOAT_MAT3x2: \
-			uniform_size = 6; \
-			break; \
-		case GL_FLOAT_MAT2x4: \
-		case GL_FLOAT_MAT4x2: \
-			uniform_size = 8; \
-			break; \
-		case GL_FLOAT_MAT3: \
-			uniform_size = 9; \
-			break; \
-		case GL_FLOAT_MAT4x3: \
-		case GL_FLOAT_MAT3x4: \
-			uniform_size = 12; \
-			break; \
-		case GL_FLOAT_MAT4: \
-			uniform_size = 16; \
-			break; \
-		default: \
-			rb_raise(rb_eTypeError, "Unsupported type '%i'",uniform_type); \
-	}
-
 #define GETUNIFORM_FUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
 static VALUE \
@@ -422,7 +370,7 @@ VALUE obj,arg1,arg2; \
 	if (uniform_type==0) \
 		rb_raise(rb_eTypeError, "Can't determine the uniform's type"); \
 \
-	GET_UNIFORM_SIZE \
+	uniform_size = get_uniform_size(uniform_type); \
 \
 	memset(params,0,16*sizeof(_type_)); \
 	fptr_gl##_name_(program,location,params); \

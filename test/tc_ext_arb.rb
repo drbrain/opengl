@@ -284,4 +284,156 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		glDeleteQueriesARB(queries)
 		assert_equal(glIsQueryARB(queries[1]),GL_FALSE)
 	end
+
+	def test_gl_arb_shader_objects
+		return if not supported?("GL_ARB_shader_objects")
+
+		vertex_shader_source = "void main() { gl_Position = ftransform();}"
+		
+		program = glCreateProgramObjectARB()
+
+		vs = glCreateShaderObjectARB(GL_VERTEX_SHADER)
+
+		glShaderSourceARB(vs,vertex_shader_source)
+		assert_equal(glGetShaderSourceARB(vs),vertex_shader_source)
+
+		assert_equal(glGetObjectParameterivARB(vs,GL_OBJECT_TYPE_ARB),GL_SHADER_OBJECT_ARB)
+		assert_equal(glGetObjectParameterfvARB(vs,GL_OBJECT_TYPE_ARB),GL_SHADER_OBJECT_ARB)
+		assert_equal(glGetObjectParameterfvARB(vs,GL_OBJECT_SUBTYPE_ARB),GL_VERTEX_SHADER)
+		glCompileShaderARB(vs)
+		assert_equal(glGetObjectParameterivARB(vs,GL_OBJECT_COMPILE_STATUS_ARB),GL_TRUE)
+		
+		vslog = glGetInfoLogARB(vs)
+		assert_equal(vslog.class,String)
+		
+		glAttachObjectARB(program,vs)
+		assert_equal(glGetAttachedObjectsARB(program),[vs])
+
+		glValidateProgramARB(program)
+		assert_equal(glGetObjectParameterivARB(program,GL_OBJECT_VALIDATE_STATUS_ARB),GL_TRUE)
+
+		glLinkProgramARB(program)
+		assert_equal(glGetObjectParameterivARB(program,GL_OBJECT_LINK_STATUS_ARB),GL_TRUE)
+
+		glUseProgramObjectARB(program)
+		assert_equal(glGetIntegerv(GL_CURRENT_PROGRAM),program)
+
+		assert_equal(glGetHandleARB(GL_PROGRAM_OBJECT_ARB),program)
+
+		glUseProgramObjectARB(0)
+
+		glDetachObjectARB(program,vs)
+
+		glDeleteObjectARB(vs)
+		glDeleteObjectARB(program)
+	end
+
+	def test_gl_arb_shader_objects_2
+		return if not supported?("GL_ARB_shader_objects")
+
+		vertex_shader_source = "attribute vec4 test; uniform float testvec1; uniform vec2 testvec2; uniform vec3 testvec3; uniform vec4 testvec4; uniform int testivec1; uniform ivec2 testivec2; uniform ivec3 testivec3; uniform ivec4 testivec4; void main() { gl_Position = testvec1 * test * testvec2.x * testvec3.x * testivec1 * testivec2.x * testivec3.x * testivec4.x + testvec4;}"
+
+		program = glCreateProgramObjectARB()
+		vs = glCreateShaderObjectARB(GL_VERTEX_SHADER)
+		glShaderSourceARB(vs,vertex_shader_source)
+
+		glCompileShaderARB(vs)
+		assert_equal(glGetObjectParameterivARB(vs,GL_OBJECT_COMPILE_STATUS_ARB),GL_TRUE)
+
+		glAttachObjectARB(program,vs)
+
+		glLinkProgramARB(program)
+		assert_equal(glGetObjectParameterivARB(program,GL_OBJECT_LINK_STATUS_ARB),GL_TRUE)
+
+		glUseProgramObjectARB(program)
+
+		assert((tv1l = glGetUniformLocationARB(program,"testvec1"))>=0)
+		assert((tv2l = glGetUniformLocationARB(program,"testvec2"))>=0)
+		assert((tv3l = glGetUniformLocationARB(program,"testvec3"))>=0)
+		assert((tv4l = glGetUniformLocationARB(program,"testvec4"))>=0)
+		assert((tv1il = glGetUniformLocationARB(program,"testivec1"))>=0)
+		assert((tv2il = glGetUniformLocationARB(program,"testivec2"))>=0)
+		assert((tv3il = glGetUniformLocationARB(program,"testivec3"))>=0)
+		assert((tv4il = glGetUniformLocationARB(program,"testivec4"))>=0)
+
+		##
+
+		assert_equal(glGetActiveUniformARB(program,tv1il),[1,GL_INT,"testivec1"])
+
+		## f
+		glUniform1fARB(tv1l,2.0)
+		assert_equal(glGetUniformfvARB(program,tv1l),[2.0])
+		glUniform2fARB(tv2l,2.0,2.0)
+		assert_equal(glGetUniformfvARB(program,tv2l),[2.0,2.0])
+		glUniform3fARB(tv3l,2.0,2.0,2.0)
+		assert_equal(glGetUniformfvARB(program,tv3l),[2.0,2.0,2.0])
+		glUniform4fARB(tv4l,2.0,2.0,2.0,2.0)
+		assert_equal(glGetUniformfvARB(program,tv4l),[2.0,2.0,2.0,2.0])
+		# i 
+		glUniform1iARB(tv1il,3)
+		assert_equal(glGetUniformivARB(program,tv1il),[3])
+		glUniform2iARB(tv2il,3,3)
+		assert_equal(glGetUniformivARB(program,tv2il),[3,3])
+		glUniform3iARB(tv3il,3,3,3)
+		assert_equal(glGetUniformivARB(program,tv3il),[3,3,3])
+		glUniform4iARB(tv4il,3,3,3,3)
+		assert_equal(glGetUniformivARB(program,tv4il),[3,3,3,3])
+		# fv
+		glUniform1fvARB(tv1l,1,[3.0])
+		assert_equal(glGetUniformfvARB(program,tv1l),[3.0])
+		glUniform2fvARB(tv2l,1,[3.0,3.0])
+		assert_equal(glGetUniformfvARB(program,tv2l),[3.0,3.0])
+		glUniform3fvARB(tv3l,1,[3.0,3.0,3.0])
+		assert_equal(glGetUniformfvARB(program,tv3l),[3.0,3.0,3.0])
+		glUniform4fvARB(tv4l,1,[3.0,3.0,3.0,3.0])
+		assert_equal(glGetUniformfvARB(program,tv4l),[3.0,3.0,3.0,3.0])
+		# iv
+		glUniform1ivARB(tv1il,1,[2])
+		assert_equal(glGetUniformivARB(program,tv1il),[2])
+		glUniform2ivARB(tv2il,1,[2,2])
+		assert_equal(glGetUniformivARB(program,tv2il),[2,2])
+		glUniform3ivARB(tv3il,1,[2,2,2])
+		assert_equal(glGetUniformivARB(program,tv3il),[2,2,2])
+		glUniform4ivARB(tv4il,1,[2,2,2,2])
+		assert_equal(glGetUniformivARB(program,tv4il),[2,2,2,2])
+
+		glDeleteObjectARB(vs)
+		glDeleteObjectARB(program)
+	end
+
+	def test_gl_arb_shader_objects_3
+		return if not supported?("GL_ARB_shader_objects")
+
+		vertex_shader_source = "uniform mat2 testmat2; uniform mat3 testmat3; uniform mat4 testmat4; void main() { gl_Position = gl_Vertex * testmat4[0].x * testmat3[0].x * testmat2[0].x;}"
+
+		program = glCreateProgramObjectARB()
+		vs = glCreateShaderObjectARB(GL_VERTEX_SHADER)
+		glShaderSourceARB(vs,vertex_shader_source)
+
+		glCompileShaderARB(vs)
+		assert_equal(glGetObjectParameterivARB(vs,GL_OBJECT_COMPILE_STATUS_ARB),GL_TRUE)
+
+		glAttachObjectARB(program,vs)
+
+		glLinkProgramARB(program)
+		assert_equal(glGetObjectParameterivARB(program,GL_OBJECT_LINK_STATUS_ARB),GL_TRUE)
+
+		glUseProgramObjectARB(program)
+		#
+		assert((tm2l = glGetUniformLocationARB(program,"testmat2"))>=0)
+		assert((tm3l = glGetUniformLocationARB(program,"testmat3"))>=0)
+		assert((tm4l = glGetUniformLocationARB(program,"testmat4"))>=0)
+
+		glUniformMatrix2fvARB(tm2l, 1, GL_TRUE, [0,1, 1,0])
+		assert_equal(glGetUniformfvARB(program,tm2l),[0,1,1,0])
+		
+		glUniformMatrix3fvARB(tm3l, 1, GL_TRUE, [0,1,0, 1,0,1, 0,1,0])
+		assert_equal(glGetUniformfvARB(program,tm3l),[0,1,0, 1,0,1, 0,1,0])
+		
+		glUniformMatrix4fvARB(tm4l, 1, GL_TRUE, [0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
+		assert_equal(glGetUniformfvARB(program,tm4l),[0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
+
+		glDeleteObjectARB(vs)
+		glDeleteObjectARB(program)
+	end
 end

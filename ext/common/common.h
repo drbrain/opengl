@@ -372,6 +372,63 @@ static inline int gltype_glformat_unit_size(GLenum type,GLenum format)
 	}
 }
 
+/* returns size(units) for given type of shader uniform var */
+static inline int get_uniform_size(GLenum uniform_type)
+{
+	int uniform_size = 0;
+
+	switch (uniform_type) { 
+		case GL_FLOAT: 
+		case GL_INT: 
+		case GL_BOOL: 
+		case GL_SAMPLER_1D: 
+		case GL_SAMPLER_2D: 
+		case GL_SAMPLER_3D: 
+		case GL_SAMPLER_CUBE: 
+		case GL_SAMPLER_1D_SHADOW: 
+		case GL_SAMPLER_2D_SHADOW: 
+			uniform_size = 1; 
+			break; 
+		case GL_FLOAT_VEC2: 
+		case GL_INT_VEC2: 
+		case GL_BOOL_VEC2: 
+			uniform_size = 2; 
+			break; 
+		case GL_FLOAT_VEC3: 
+		case GL_INT_VEC3: 
+		case GL_BOOL_VEC3: 
+			uniform_size = 3; 
+			break; 
+		case GL_FLOAT_VEC4: 
+		case GL_INT_VEC4: 
+		case GL_BOOL_VEC4: 
+		case GL_FLOAT_MAT2: 
+			uniform_size = 4; 
+			break; 
+		case GL_FLOAT_MAT2x3: 
+		case GL_FLOAT_MAT3x2: 
+			uniform_size = 6; 
+			break; 
+		case GL_FLOAT_MAT2x4: 
+		case GL_FLOAT_MAT4x2: 
+			uniform_size = 8; 
+			break; 
+		case GL_FLOAT_MAT3: 
+			uniform_size = 9; 
+			break; 
+		case GL_FLOAT_MAT4x3: 
+		case GL_FLOAT_MAT3x4: 
+			uniform_size = 12; 
+			break; 
+		case GL_FLOAT_MAT4: 
+			uniform_size = 16; 
+			break; 
+		default: 
+			rb_raise(rb_eTypeError, "Unsupported uniform type '%i'",uniform_type);
+	}
+	return uniform_size;
+}
+
 static inline int GetDataSize(GLenum type,GLenum format,int num)
 {
 	int size;
