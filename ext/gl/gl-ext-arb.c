@@ -827,6 +827,71 @@ VALUE obj,arg1;
 	return retary;
 }
 
+/* #31 GL_ARB_vertex_shader */
+
+static void (APIENTRY * fptr_glBindAttribLocationARB)(GLuint,GLuint,GLchar *);
+static VALUE
+gl_BindAttribLocationARB(obj,arg1,arg2,arg3)
+VALUE obj,arg1,arg2,arg3;
+{
+	GLuint program;
+	GLuint index;
+	LOAD_GL_EXT_FUNC(glBindAttribLocationARB,"GL_ARB_vertex_shader")
+	program = (GLuint)NUM2UINT(arg1);
+	index = (GLuint)NUM2UINT(arg2);
+	Check_Type(arg3, T_STRING);
+	fptr_glBindAttribLocationARB(program,index,RSTRING(arg3)->ptr);
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glGetActiveAttribARB)(GLuint,GLuint,GLsizei,GLsizei *,GLint *,GLenum *,GLchar *);
+static VALUE
+gl_GetActiveAttribARB(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint program;
+	GLuint index;
+	GLsizei max_size = 0;
+	GLsizei written = 0;
+	GLint attrib_size = 0;
+	GLenum attrib_type = 0;
+	VALUE buffer;
+	VALUE retary;
+	LOAD_GL_EXT_FUNC(glGetActiveAttribARB,"GL_ARB_vertex_shader")
+	LOAD_GL_EXT_FUNC(glGetObjectParameterivARB,"GL_ARB_vertex_shader")
+	program = (GLuint)NUM2UINT(arg1);
+	index = (GLuint)NUM2UINT(arg2);
+	fptr_glGetObjectParameterivARB(program,GL_OBJECT_ACTIVE_ATTRIBUTE_MAX_LENGTH_ARB,&max_size);
+	CHECK_GLERROR
+	if (max_size==0)
+		rb_raise(rb_eTypeError, "Can't determine maximum attribute name length");
+	buffer = allocate_buffer_with_string(max_size-1);
+	fptr_glGetActiveAttribARB(program,index,max_size,&written,&attrib_size,&attrib_type,RSTRING(buffer)->ptr);
+	retary = rb_ary_new2(3);
+	rb_ary_push(retary, INT2NUM(attrib_size));
+	rb_ary_push(retary, INT2NUM(attrib_type));
+	rb_ary_push(retary, buffer);
+	CHECK_GLERROR
+	return retary;
+}
+
+static GLint (APIENTRY * fptr_glGetAttribLocationARB)(GLuint,const GLchar*);
+static VALUE
+gl_GetAttribLocationARB(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint program;
+	GLint ret;
+	LOAD_GL_EXT_FUNC(glGetAttribLocationARB,"GL_ARB_shader_objects")
+	program=(GLuint)NUM2UINT(arg1);
+	Check_Type(arg2,T_STRING);
+	ret = fptr_glGetAttribLocationARB(program,RSTRING(arg2)->ptr);
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
+
 /* #39 GL_ARB_color_buffer_float */
 GL_EXT_SIMPLE_FUNC_LOAD(ClampColorARB,2,GLenum,NUM2INT,"GL_ARB_color_buffer_float")
 
@@ -978,6 +1043,11 @@ void gl_init_functions_ext_arb(VALUE module)
 	rb_define_module_function(module, "glGetActiveUniformARB", gl_GetActiveUniformARB, 2);
 	rb_define_module_function(module, "glGetUniformfvARB", gl_GetUniformfvARB, 2);
 	rb_define_module_function(module, "glGetUniformivARB", gl_GetUniformivARB, 2);
+
+/* #31 GL_ARB_vertex_shader */
+	rb_define_module_function(module, "glBindAttribLocationARB", gl_BindAttribLocationARB, 3);
+	rb_define_module_function(module, "glGetActiveAttribARB", gl_GetActiveAttribARB, 2);
+	rb_define_module_function(module, "glGetAttribLocationARB", gl_GetAttribLocationARB, 2);
 
 /* #39 GL_ARB_color_buffer_float */
 	rb_define_module_function(module, "glClampColorARB", gl_ClampColorARB, 2);

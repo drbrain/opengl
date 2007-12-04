@@ -706,7 +706,6 @@ void gl_init_functions_ext_ext(VALUE module)
 	rb_define_module_function(module, "glLockArraysEXT", gl_LockArraysEXT, 2);
 	rb_define_module_function(module, "glUnlockArraysEXT", gl_UnlockArraysEXT, 0);
 
-
 /* #112 - GL_EXT_draw_range_elements */
 	rb_define_module_function(module, "glDrawRangeElementsEXT", gl_DrawRangeElementsEXT, 6);
 

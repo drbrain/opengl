@@ -436,4 +436,32 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		glDeleteObjectARB(vs)
 		glDeleteObjectARB(program)
 	end
+
+	def test_gl_arb_vertex_shader
+		return if not supported?("GL_ARB_vertex_shader")
+
+		vertex_shader_source = "attribute vec4 test; uniform float testvec1; uniform vec2 testvec2; uniform vec3 testvec3; uniform vec4 testvec4; uniform int testivec1; uniform ivec2 testivec2; uniform ivec3 testivec3; uniform ivec4 testivec4; void main() { gl_Position = testvec1 * test * testvec2.x * testvec3.x * testivec1 * testivec2.x * testivec3.x * testivec4.x + testvec4;}"
+
+		program = glCreateProgramObjectARB()
+		vs = glCreateShaderObjectARB(GL_VERTEX_SHADER)
+		glShaderSourceARB(vs,vertex_shader_source)
+
+		glCompileShaderARB(vs)
+		assert_equal(glGetObjectParameterivARB(vs,GL_OBJECT_COMPILE_STATUS_ARB),GL_TRUE)
+
+		glAttachObjectARB(program,vs)
+
+		glBindAttribLocationARB(program,2,"test")
+
+		glLinkProgramARB(program)
+		assert_equal(glGetObjectParameterivARB(program,GL_OBJECT_LINK_STATUS_ARB),GL_TRUE)
+
+		glUseProgramObjectARB(program)
+
+		assert_equal(glGetAttribLocationARB(program,"test"),2)
+		assert_equal(glGetActiveAttribARB(program,0),[1,GL_FLOAT_VEC4,"test"])
+
+		glDeleteObjectARB(vs)
+		glDeleteObjectARB(program)
+	end
 end
