@@ -278,8 +278,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6; \
 
 PROGRAMPARAM_FUNC(ProgramParameter4dNV,GLdouble,NUM2DBL,"GL_NV_vertex_program")
 PROGRAMPARAM_FUNC(ProgramParameter4fNV,GLfloat,NUM2DBL,"GL_NV_vertex_program")
-#undef PROGRAMPARAM_FUNC
-
 
 #define PROGRAMPARAM_FUNC_V(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,const _type_ *); \
@@ -297,9 +295,8 @@ VALUE obj,arg1,arg2,arg3; \
 
 PROGRAMPARAM_FUNC_V(ProgramParameter4dvNV,GLdouble,ary2cdbl,"GL_NV_vertex_program")
 PROGRAMPARAM_FUNC_V(ProgramParameter4fvNV,GLfloat,ary2cflt,"GL_NV_vertex_program")
-#undef PROGRAMPARAM_FUNC_V
 
-#define GETPROGRAMPARAM_FUNC(_name_,_type_,_extension_) \
+#define GETPROGRAMPARAM_FUNC(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
@@ -312,14 +309,13 @@ VALUE obj,arg1,arg2,arg3; \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),cary); \
 	ret = rb_ary_new2(4); \
 	for(i=0;i<4;i++) \
-			rb_ary_push(ret, rb_float_new(cary[i])); \
+			rb_ary_push(ret, _conv_(cary[i])); \
 	CHECK_GLERROR \
 	return ret; \
 }
 
-GETPROGRAMPARAM_FUNC(GetProgramParameterdvNV,GLdouble,"GL_NV_vertex_program")
-GETPROGRAMPARAM_FUNC(GetProgramParameterfvNV,GLfloat,"GL_NV_vertex_program")
-
+GETPROGRAMPARAM_FUNC(GetProgramParameterdvNV,GLdouble,rb_float_new,"GL_NV_vertex_program")
+GETPROGRAMPARAM_FUNC(GetProgramParameterfvNV,GLfloat,rb_float_new,"GL_NV_vertex_program")
 #undef GETPROGRAMPARAM_FUNC
 
 #define PROGRAMPARAM_MULTI_FUNC_V(_name_,_type_,_conv_,_extension_) \
@@ -344,7 +340,6 @@ VALUE obj,arg1,arg2,arg3; \
 
 PROGRAMPARAM_MULTI_FUNC_V(ProgramParameters4dvNV,GLdouble,ary2cdbl,"GL_NV_vertex_program")
 PROGRAMPARAM_MULTI_FUNC_V(ProgramParameters4fvNV,GLfloat,ary2cflt,"GL_NV_vertex_program")
-#undef PROGRAMPARAM_MULTI_FUNC_V
 
 
 #define VERTEXATTRIB_FUNC(_name_,_type_,_conv_,_size_,_extension_) \
@@ -632,7 +627,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6; \
 
 PROGRAMNAMEDPARAM_FUNC(ProgramNamedParameter4dNV,GLdouble,NUM2DBL,"GL_NV_fragment_program")
 PROGRAMNAMEDPARAM_FUNC(ProgramNamedParameter4fNV,GLfloat,NUM2DBL,"GL_NV_fragment_program")
-#undef PROGRAMPARAM_FUNC
+#undef PROGRAMNAMEDPARAM_FUNC
 
 #define PROGRAMNAMEDPARAM_FUNC_V(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLsizei,const GLubyte *,const _type_ *); \
@@ -651,7 +646,7 @@ VALUE obj,arg1,arg2,arg3; \
 
 PROGRAMNAMEDPARAM_FUNC_V(ProgramNamedParameter4dvNV,GLdouble,ary2cdbl,"GL_NV_vertex_program")
 PROGRAMNAMEDPARAM_FUNC_V(ProgramNamedParameter4fvNV,GLfloat,ary2cflt,"GL_NV_vertex_program")
-#undef PROGRAMPARAM_FUNC_V
+#undef PROGRAMNAMEDPARAM_FUNC_V
 
 #define GETPROGRAMNAMEDPARAM_FUNC(_name_,_type_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLsizei,const GLubyte *,_type_ *); \
@@ -675,6 +670,51 @@ VALUE obj,arg1,arg2; \
 GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterdvNV,GLdouble,"GL_NV_vertex_program")
 GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterfvNV,GLfloat,"GL_NV_vertex_program")
 #undef GETPROGRAMNAMEDPARAM_FUNC
+
+/* #322 GL_NV_gpu_program4 */
+PROGRAMPARAM_FUNC(ProgramLocalParameterI4iNV,GLint,NUM2INT,"GL_NV_gpu_program4")
+PROGRAMPARAM_FUNC(ProgramLocalParameterI4uiNV,GLuint,NUM2UINT,"GL_NV_gpu_program4")
+PROGRAMPARAM_FUNC(ProgramEnvParameterI4iNV,GLint,NUM2INT,"GL_NV_gpu_program4")
+PROGRAMPARAM_FUNC(ProgramEnvParameterI4uiNV,GLuint,NUM2UINT,"GL_NV_gpu_program4")
+
+PROGRAMPARAM_FUNC_V(ProgramLocalParameterI4ivNV,GLint,ary2cint,"GL_NV_gpu_program4")
+PROGRAMPARAM_FUNC_V(ProgramLocalParameterI4uivNV,GLuint,ary2cuint,"GL_NV_gpu_program4")
+PROGRAMPARAM_FUNC_V(ProgramEnvParameterI4ivNV,GLint,ary2cint,"GL_NV_gpu_program4")
+PROGRAMPARAM_FUNC_V(ProgramEnvParameterI4uivNV,GLuint,ary2cuint,"GL_NV_gpu_program4")
+
+PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParametersI4ivNV,GLint,ary2cint,"GL_NV_gpu_program4")
+PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParametersI4uivNV,GLuint,ary2cuint,"GL_NV_gpu_program4")
+PROGRAMPARAM_MULTI_FUNC_V(ProgramEnvParametersI4ivNV,GLint,ary2cint,"GL_NV_gpu_program4")
+PROGRAMPARAM_MULTI_FUNC_V(ProgramEnvParametersI4uivNV,GLuint,ary2cuint,"GL_NV_gpu_program4")
+
+#undef PROGRAMPARAM_MULTI_FUNC_V
+#undef PROGRAMPARAM_FUNC_V
+#undef PROGRAMPARAM_FUNC
+
+#define GETPROGRAMPARAM_FUNC_2(_name_,_type_,_conv_,_extension_) \
+static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
+	VALUE ret; \
+	int i; \
+	LOAD_GL_EXT_FUNC(gl##_name_,_extension_) \
+	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
+	ret = rb_ary_new2(4); \
+	for(i=0;i<4;i++) \
+			rb_ary_push(ret, _conv_(cary[i])); \
+	CHECK_GLERROR \
+	return ret; \
+}
+
+GETPROGRAMPARAM_FUNC_2(GetProgramLocalParameterIivNV,GLint,INT2NUM,"GL_NV_gpu_program4")
+GETPROGRAMPARAM_FUNC_2(GetProgramLocalParameterIuivNV,GLuint,UINT2NUM,"GL_NV_gpu_program4")
+GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIivNV,GLint,INT2NUM,"GL_NV_gpu_program4")
+GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIuivNV,GLuint,UINT2NUM,"GL_NV_gpu_program4")
+#undef GETPROGRAMPARAM_FUNC_2
+
 
 /* #334 GL_NV_depth_buffer_float */
 GL_EXT_SIMPLE_FUNC_LOAD(DepthRangedNV,2,GLdouble,NUM2DBL,"GL_NV_depth_buffer_float")
@@ -786,6 +826,24 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glProgramNamedParameter4dvNV", gl_ProgramNamedParameter4dvNV, 3);
 	rb_define_module_function(module, "glGetProgramNamedParameterdvNV", gl_GetProgramNamedParameterdvNV, 2);
 	rb_define_module_function(module, "glGetProgramNamedParameterfvNV", gl_GetProgramNamedParameterfvNV, 2);
+
+/* #322 GL_NV_gpu_program4 */
+	rb_define_module_function(module, "glProgramLocalParameterI4iNV", gl_ProgramLocalParameterI4iNV, 6);
+	rb_define_module_function(module, "glProgramLocalParameterI4uiNV", gl_ProgramLocalParameterI4uiNV, 6);
+	rb_define_module_function(module, "glProgramLocalParameterI4ivNV", gl_ProgramLocalParameterI4ivNV, 3);
+	rb_define_module_function(module, "glProgramLocalParameterI4uivNV", gl_ProgramLocalParameterI4uivNV, 3);
+	rb_define_module_function(module, "glProgramLocalParametersI4ivNV", gl_ProgramLocalParametersI4ivNV, 3);
+	rb_define_module_function(module, "glProgramLocalParametersI4uivNV", gl_ProgramLocalParametersI4uivNV, 3);
+	rb_define_module_function(module, "glGetProgramLocalParameterIivNV", gl_GetProgramLocalParameterIivNV, 2);
+	rb_define_module_function(module, "glGetProgramLocalParameterIuivNV", gl_GetProgramLocalParameterIuivNV, 2);
+	rb_define_module_function(module, "glProgramEnvParameterI4iNV", gl_ProgramEnvParameterI4iNV, 6);
+	rb_define_module_function(module, "glProgramEnvParameterI4uiNV", gl_ProgramEnvParameterI4uiNV, 6);
+	rb_define_module_function(module, "glProgramEnvParameterI4ivNV", gl_ProgramEnvParameterI4ivNV, 3);
+	rb_define_module_function(module, "glProgramEnvParameterI4uivNV", gl_ProgramEnvParameterI4uivNV, 3);
+	rb_define_module_function(module, "glProgramEnvParametersI4ivNV", gl_ProgramEnvParametersI4ivNV, 3);
+	rb_define_module_function(module, "glProgramEnvParametersI4uivNV", gl_ProgramEnvParametersI4uivNV, 3);
+	rb_define_module_function(module, "glGetProgramEnvParameterIivNV", gl_GetProgramEnvParameterIivNV, 2);
+	rb_define_module_function(module, "glGetProgramEnvParameterIuivNV", gl_GetProgramEnvParameterIuivNV, 2);
 
 /* #334 GL_NV_depth_buffer_float */
 	rb_define_module_function(module, "glDepthRangedNV", gl_DepthRangedNV, 2);

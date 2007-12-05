@@ -318,7 +318,7 @@ GL_MESAX_texture_stack,Supported,0.50
 GL_EXT_timer_query,Supported,0.60
 GL_EXT_gpu_program_parameters,Supported,0.60
 GL_APPLE_flush_buffer_range,Unsupported,N/A
-GL_NV_gpu_program4,Unsupported,N/A
+GL_NV_gpu_program4,Supported,0.60
 GL_NV_geometry_program4,Unsupported,N/A
 GL_EXT_geometry_shader4,Unsupported,N/A
 GL_NV_vertex_program4,Unsupported,N/A

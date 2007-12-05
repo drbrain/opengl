@@ -248,5 +248,43 @@ class Test_EXT_NV < Test::Unit::TestCase
 		glDeleteOcclusionQueriesNV(queries)
 		assert_equal(glIsOcclusionQueryNV(queries[1]),GL_FALSE)
 	end
+
+	def test_gl_nv_gpu_program4
+		return if not supported?(["GL_NV_gpu_program4","GL_ARB_vertex_program"])
+
+		programs = glGenProgramsARB(1)
+		program = "!!ARBvp1.0\nTEMP vv;\nEND"
+	
+	  glBindProgramARB(GL_VERTEX_PROGRAM_ARB, programs[0])
+		glProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, program)
+		
+		glProgramLocalParameterI4iNV(GL_VERTEX_PROGRAM_ARB,1, 1,2,3,4)
+		assert_equal(glGetProgramLocalParameterIivNV(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramLocalParameterI4uiNV(GL_VERTEX_PROGRAM_ARB,1, 5,6,7,8)
+		assert_equal(glGetProgramLocalParameterIuivNV(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+		glProgramLocalParameterI4ivNV(GL_VERTEX_PROGRAM_ARB,1, [1,2,3,4])
+		assert_equal(glGetProgramLocalParameterIivNV(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramLocalParameterI4uivNV(GL_VERTEX_PROGRAM_ARB,1, [5,6,7,8])
+		assert_equal(glGetProgramLocalParameterIuivNV(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+		glProgramLocalParametersI4ivNV(GL_VERTEX_PROGRAM_ARB,1, [1,2,3,4])
+		assert_equal(glGetProgramLocalParameterIivNV(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramLocalParametersI4uivNV(GL_VERTEX_PROGRAM_ARB,1, [5,6,7,8])
+		assert_equal(glGetProgramLocalParameterIuivNV(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+
+		glProgramEnvParameterI4iNV(GL_VERTEX_PROGRAM_ARB,1, 1,2,3,4)
+		assert_equal(glGetProgramEnvParameterIivNV(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramEnvParameterI4uiNV(GL_VERTEX_PROGRAM_ARB,1, 5,6,7,8)
+		assert_equal(glGetProgramEnvParameterIuivNV(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+		glProgramEnvParameterI4ivNV(GL_VERTEX_PROGRAM_ARB,1, [1,2,3,4])
+		assert_equal(glGetProgramEnvParameterIivNV(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramEnvParameterI4uivNV(GL_VERTEX_PROGRAM_ARB,1, [5,6,7,8])
+		assert_equal(glGetProgramEnvParameterIuivNV(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+		glProgramEnvParametersI4ivNV(GL_VERTEX_PROGRAM_ARB,1, [1,2,3,4])
+		assert_equal(glGetProgramEnvParameterIivNV(GL_VERTEX_PROGRAM_ARB,1),[1,2,3,4])
+		glProgramEnvParametersI4uivNV(GL_VERTEX_PROGRAM_ARB,1, [5,6,7,8])
+		assert_equal(glGetProgramEnvParameterIuivNV(GL_VERTEX_PROGRAM_ARB,1),[5,6,7,8])
+
+		glDeleteProgramsARB(programs)
+	end
 end
 
