@@ -320,7 +320,7 @@ GL_EXT_gpu_program_parameters,Supported,0.60
 GL_APPLE_flush_buffer_range,Unsupported,N/A
 GL_NV_gpu_program4,Supported,0.60
 GL_NV_geometry_program4,Supported,0.60
-GL_EXT_geometry_shader4,Unsupported,N/A
+GL_EXT_geometry_shader4,Supported,0.60
 GL_NV_vertex_program4,Unsupported,N/A
 GL_EXT_gpu_shader4,Unsupported,N/A
 GL_EXT_draw_instanced,Unsupported,N/A

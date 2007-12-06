@@ -389,4 +389,14 @@ class Test_EXT_EXT < Test::Unit::TestCase
 
 		glDisable(GL_VERTEX_ARRAY)
 	end
+
+	def test_gl_ext_geometry_shader4
+		return if not supported?("GL_EXT_geometry_shader4")
+		program = glCreateProgramObjectARB()
+
+		glProgramParameteriEXT(program,GL_GEOMETRY_INPUT_TYPE_EXT ,GL_LINES_ADJACENCY_EXT)
+		assert_equal(glGetObjectParameterivARB(program,GL_GEOMETRY_INPUT_TYPE_EXT),GL_LINES_ADJACENCY_EXT)
+
+		glDeleteObjectARB(program)
+	end
 end

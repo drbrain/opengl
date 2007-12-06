@@ -728,7 +728,7 @@ static VALUE gl_ProgramVertexLimitNV(VALUE obj,VALUE arg1,VALUE arg2)
 static void (APIENTRY * fptr_glFramebufferTextureEXT)(GLenum,GLenum,GLuint,GLint);
 static VALUE gl_FramebufferTextureEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4)
 {
-	LOAD_GL_EXT_FUNC(glFramebufferTextureEXT,"GL_NV_gpu_program4")
+	LOAD_GL_EXT_FUNC(glFramebufferTextureEXT,"GL_EXT_geometry_shader4")
 	fptr_glFramebufferTextureEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4));
 	CHECK_GLERROR
 	return Qnil;
@@ -738,7 +738,7 @@ static void (APIENTRY * fptr_glFramebufferTextureLayerEXT)(GLenum,GLenum,GLuint,
 static VALUE gl_FramebufferTextureLayerEXT(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
 {
-	LOAD_GL_EXT_FUNC(glFramebufferTextureLayerEXT,"GL_NV_gpu_program4")
+	LOAD_GL_EXT_FUNC(glFramebufferTextureLayerEXT,"GL_EXT_geometry_shader4")
 	fptr_glFramebufferTextureLayerEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4),NUM2INT(arg5));
 	CHECK_GLERROR
 	return Qnil;
@@ -748,7 +748,7 @@ static void (APIENTRY * fptr_glFramebufferTextureFaceEXT)(GLenum,GLenum,GLuint,G
 static VALUE gl_FramebufferTextureFaceEXT(obj,arg1,arg2,arg3,arg4,arg5)
 VALUE obj,arg1,arg2,arg3,arg4,arg5;
 {
-	LOAD_GL_EXT_FUNC(glFramebufferTextureFaceEXT,"GL_NV_gpu_program4")
+	LOAD_GL_EXT_FUNC(glFramebufferTextureFaceEXT,"GL_EXT_geometry_shader4")
 	fptr_glFramebufferTextureFaceEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4),NUM2INT(arg5));
 	CHECK_GLERROR
 	return Qnil;

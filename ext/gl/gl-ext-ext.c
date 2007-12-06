@@ -678,6 +678,15 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramEnvParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_gp
 PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_gpu_program_parameters")
 #undef PROGRAMPARAM_MULTI_FUNC_V
 
+/* #324 - GL_EXT_geometry_shader4 */
+static void (APIENTRY * fptr_glProgramParameteriEXT)(GLuint,GLenum,GLint);
+static VALUE gl_ProgramParameteriEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
+{
+	LOAD_GL_EXT_FUNC(glProgramParameteriEXT,"GL_EXT_geometry_shader4")
+	fptr_glProgramParameteriEXT(NUM2UINT(arg1),NUM2INT(arg2),NUM2INT(arg3));
+	CHECK_GLERROR
+	return Qnil;
+}
 
 void gl_init_functions_ext_ext(VALUE module)
 {
@@ -786,4 +795,7 @@ void gl_init_functions_ext_ext(VALUE module)
 /* #320 - GL_EXT_gpu_program_parameters */
 	rb_define_module_function(module, "glProgramEnvParameters4fvEXT", gl_ProgramEnvParameters4fvEXT, 3);
 	rb_define_module_function(module, "glProgramLocalParameters4fvEXT", gl_ProgramLocalParameters4fvEXT, 3);
+
+/* #324 - GL_EXT_geometry_shader4 */
+	rb_define_module_function(module, "glProgramParameteriEXT", gl_ProgramParameteriEXT, 3);
 }
