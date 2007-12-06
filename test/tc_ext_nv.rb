@@ -286,5 +286,50 @@ class Test_EXT_NV < Test::Unit::TestCase
 
 		glDeleteProgramsARB(programs)
 	end
-end
 
+	def test_gl_nv_gpu_program4
+		return if not supported?(["GL_NV_gpu_program4","GL_EXT_framebuffer_object"])
+		geometry_program = <<-EOP
+!!NVgp4.0
+PRIMITIVE_IN TRIANGLES;
+PRIMITIVE_OUT TRIANGLE_STRIP;
+VERTICES_OUT 1;
+END
+		EOP
+			
+    program_id = glGenProgramsARB(1)[0]
+		glBindProgramARB(GL_GEOMETRY_PROGRAM_NV, program_id)
+    glProgramStringARB(GL_GEOMETRY_PROGRAM_NV, GL_PROGRAM_FORMAT_ASCII_ARB, geometry_program);
+
+		assert_equal(glGetProgramivARB(GL_GEOMETRY_PROGRAM_NV,GL_GEOMETRY_VERTICES_OUT_EXT),1)
+    glProgramVertexLimitNV(GL_GEOMETRY_PROGRAM_NV, 2)
+		assert_equal(glGetProgramivARB(GL_GEOMETRY_PROGRAM_NV,GL_GEOMETRY_VERTICES_OUT_EXT),2)
+
+		#
+
+		fbo = glGenFramebuffersEXT(1)[0]
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fbo)
+	
+		texture2d,texture3d,texture_cube = glGenTextures(3)
+		glBindTexture(GL_TEXTURE_2D, texture2d)
+		glBindTexture(GL_TEXTURE_3D, texture3d)
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture_cube)
+
+		glFramebufferTextureEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,texture2d,0)
+		assert_equal(glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME_EXT),texture2d)
+		assert_equal(glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_EXT),0)
+		glFramebufferTextureLayerEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,texture3d,0,1)
+		assert_equal(glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME_EXT),texture3d)
+		assert_equal(glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_EXT),0)
+		assert_equal(glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER_EXT),1)
+
+		glFramebufferTextureFaceEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,texture_cube,0,GL_TEXTURE_CUBE_MAP_POSITIVE_X)
+		assert_equal(glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME_EXT),texture_cube)
+		assert_equal(glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_EXT),0)
+		assert_equal(glGetFramebufferAttachmentParameterivEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE_EXT),GL_TEXTURE_CUBE_MAP_POSITIVE_X)
+
+		glDeleteTextures([texture2d,texture3d])
+		glDeleteFramebuffersEXT(fbo)
+		glDeleteProgramsARB(program_id)
+	end
+end

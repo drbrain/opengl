@@ -715,6 +715,44 @@ GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIivNV,GLint,INT2NUM,"GL_NV_gpu_prog
 GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIuivNV,GLuint,UINT2NUM,"GL_NV_gpu_program4")
 #undef GETPROGRAMPARAM_FUNC_2
 
+/* #323 GL_NV_geometry_program4 */
+static void (APIENTRY * fptr_glProgramVertexLimitNV)(GLenum,GLint);
+static VALUE gl_ProgramVertexLimitNV(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	LOAD_GL_EXT_FUNC(glProgramVertexLimitNV,"GL_NV_gpu_program4")
+	fptr_glProgramVertexLimitNV(NUM2INT(arg1),NUM2INT(arg2));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glFramebufferTextureEXT)(GLenum,GLenum,GLuint,GLint);
+static VALUE gl_FramebufferTextureEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4)
+{
+	LOAD_GL_EXT_FUNC(glFramebufferTextureEXT,"GL_NV_gpu_program4")
+	fptr_glFramebufferTextureEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glFramebufferTextureLayerEXT)(GLenum,GLenum,GLuint,GLint,GLint);
+static VALUE gl_FramebufferTextureLayerEXT(obj,arg1,arg2,arg3,arg4,arg5)
+VALUE obj,arg1,arg2,arg3,arg4,arg5;
+{
+	LOAD_GL_EXT_FUNC(glFramebufferTextureLayerEXT,"GL_NV_gpu_program4")
+	fptr_glFramebufferTextureLayerEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4),NUM2INT(arg5));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glFramebufferTextureFaceEXT)(GLenum,GLenum,GLuint,GLint,GLenum);
+static VALUE gl_FramebufferTextureFaceEXT(obj,arg1,arg2,arg3,arg4,arg5)
+VALUE obj,arg1,arg2,arg3,arg4,arg5;
+{
+	LOAD_GL_EXT_FUNC(glFramebufferTextureFaceEXT,"GL_NV_gpu_program4")
+	fptr_glFramebufferTextureFaceEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4),NUM2INT(arg5));
+	CHECK_GLERROR
+	return Qnil;
+}
 
 /* #334 GL_NV_depth_buffer_float */
 GL_EXT_SIMPLE_FUNC_LOAD(DepthRangedNV,2,GLdouble,NUM2DBL,"GL_NV_depth_buffer_float")
@@ -844,6 +882,12 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glProgramEnvParametersI4uivNV", gl_ProgramEnvParametersI4uivNV, 3);
 	rb_define_module_function(module, "glGetProgramEnvParameterIivNV", gl_GetProgramEnvParameterIivNV, 2);
 	rb_define_module_function(module, "glGetProgramEnvParameterIuivNV", gl_GetProgramEnvParameterIuivNV, 2);
+
+/* #323 GL_NV_geometry_program4 */
+	rb_define_module_function(module, "glProgramVertexLimitNV", gl_ProgramVertexLimitNV, 2);
+	rb_define_module_function(module, "glFramebufferTextureEXT", gl_FramebufferTextureEXT, 4);
+	rb_define_module_function(module, "glFramebufferTextureLayerEXT", gl_FramebufferTextureLayerEXT, 5);
+	rb_define_module_function(module, "glFramebufferTextureFaceEXT", gl_FramebufferTextureFaceEXT, 5);
 
 /* #334 GL_NV_depth_buffer_float */
 	rb_define_module_function(module, "glDepthRangedNV", gl_DepthRangedNV, 2);
