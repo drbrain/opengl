@@ -910,6 +910,42 @@ static VALUE gl_GetFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	return INT2NUM(ret);
 }
 
+/* #327 - GL_EXT_draw_instanced */
+static void (APIENTRY * fptr_glDrawArraysInstancedEXT)(GLenum,GLint,GLsizei,GLsizei);
+static VALUE gl_DrawArraysInstancedEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4)
+{
+	LOAD_GL_EXT_FUNC(glDrawArraysInstancedEXT,"GL_EXT_draw_instanced")
+	fptr_glDrawArraysInstancedEXT(NUM2UINT(arg1),NUM2INT(arg2),NUM2INT(arg3),NUM2INT(arg4));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glDrawElementsInstancedEXT)(GLenum,GLsizei,GLenum,const GLvoid *,GLsizei);
+static VALUE gl_DrawElementsInstancedEXT(obj,arg1,arg2,arg3,arg4,arg5)
+VALUE obj,arg1,arg2,arg3,arg4,arg5;
+{
+	GLenum mode;
+	GLsizei count;
+	GLenum type;
+	GLsizei primcount;
+	LOAD_GL_EXT_FUNC(glDrawElementsInstancedEXT,"GL_EXT_draw_instanced")
+	mode = (GLenum)NUM2INT(arg1);
+	count = (GLsizei)NUM2UINT(arg2);
+	type = (GLenum)NUM2INT(arg3);
+	primcount = (GLsizei)NUM2INT(arg5);
+	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
+		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)NUM2INT(arg4), primcount);
+	} else {
+		Check_Type(arg4, T_STRING);
+		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)RSTRING(arg4)->ptr, primcount);
+	}
+	CHECK_GLERROR
+	return Qnil;
+}
+
+/* #330 - GL_EXT_texture_buffer_object */
+GL_EXT_SIMPLE_FUNC_LOAD(TexBufferEXT,3,GLenum,NUM2UINT,"GL_EXT_texture_buffer_object")
+
 void gl_init_functions_ext_ext(VALUE module)
 {
 /* #2 - GL_EXT_blend_color */
@@ -1056,4 +1092,11 @@ void gl_init_functions_ext_ext(VALUE module)
 	rb_define_module_function(module, "glGetUniformuivEXT", gl_GetUniformuivEXT, 2);
 	rb_define_module_function(module, "glBindFragDataLocationEXT", gl_BindFragDataLocationEXT, 3);
 	rb_define_module_function(module, "glGetFragDataLocationEXT", gl_GetFragDataLocationEXT, 2);
+
+/* #327 - GL_EXT_draw_instanced */
+	rb_define_module_function(module, "glDrawArraysInstancedEXT", gl_DrawArraysInstancedEXT, 4);
+	rb_define_module_function(module, "glDrawElementsInstancedEXT", gl_DrawElementsInstancedEXT, 5);
+
+/* #330 - GL_EXT_texture_buffer_object */
+	rb_define_module_function(module, "glTexBufferEXT", gl_TexBufferEXT, 3);
 }

@@ -323,12 +323,12 @@ GL_NV_geometry_program4,Supported,0.60
 GL_EXT_geometry_shader4,Supported,0.60
 GL_NV_vertex_program4,Supported,0.60
 GL_EXT_gpu_shader4,Supported,0.60
-GL_EXT_draw_instanced,Unsupported,N/A
+GL_EXT_draw_instanced,Supported,0.60
 GL_EXT_packed_float,Supported,0.50
 WGL_EXT_pixel_format_packed_float,NonGL,N/A
 GLX_EXT_fbconfig_packed_float,NonGL,N/A
-GL_EXT_texture_array,Unsupported,N/A
-GL_EXT_texture_buffer_object,Unsupported,N/A
+GL_EXT_texture_array,Supported,0.60
+GL_EXT_texture_buffer_object,Supported,0.60
 GL_EXT_texture_compression_latc,Supported,0.50
 GL_EXT_texture_compression_rgtc,Supported,0.50
 GL_EXT_texture_shared_exponent,Supported,0.50

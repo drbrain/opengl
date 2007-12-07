@@ -499,4 +499,41 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		glBindFragDataLocationEXT(program,1,"test")
 		assert_equal(glGetFragDataLocationEXT(program,"test"),-1)
 	end
+
+	def test_gl_ext_draw_instanced
+		return if not supported?("GL_EXT_draw_instanced")
+
+		glEnableClientState(GL_VERTEX_ARRAY)
+	
+		va = [0,0, 0,1, 1,1].pack("f*")
+		glVertexPointer(2,GL_FLOAT,0,va)
+
+		buf = glFeedbackBuffer(256,GL_3D)
+		glRenderMode(GL_FEEDBACK)
+		
+		glDrawArraysInstancedEXT(GL_TRIANGLES,0,3,2)
+		
+		glDrawElementsInstancedEXT(GL_TRIANGLES,3,GL_UNSIGNED_BYTE,[0,1,2].pack("C*"),2)
+		count = glRenderMode(GL_RENDER)
+		assert_equal(count,2*2*11)
+		
+		glDisableClientState(GL_VERTEX_ARRAY)
+	end
+
+	def test_gl_ext_texture_buffer_object
+		return if not supported?("GL_EXT_texture_buffer_object")
+
+		buf = glGenBuffers(1)[0]
+		glBindBuffer(GL_TEXTURE_BUFFER_EXT, buf)
+
+		tex = glGenTextures(1)[0]
+		glBindTexture(GL_TEXTURE_BUFFER_EXT, tex)
+		glTexBufferEXT(GL_TEXTURE_BUFFER_EXT, GL_RGBA32F_ARB, buf)
+
+		assert_equal(glGetIntegerv(GL_TEXTURE_BINDING_BUFFER_EXT),tex)
+		assert_equal(glGetIntegerv(GL_TEXTURE_BUFFER_FORMAT_EXT),GL_RGBA32F_ARB)
+			
+		glDeleteBuffers(buf)
+		glDeleteTextures(tex)
+	end
 end
