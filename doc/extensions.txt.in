@@ -343,6 +343,6 @@ GL_NV_parameter_buffer_object,Unsupported,N/A
 GL_EXT_draw_buffers2,Unsupported,N/A
 GL_NV_transform_feedback,Unsupported,N/A
 GL_EXT_bindable_uniform,Unsupported,N/A
-GL_EXT_texture_integer,Unsupported,N/A
+GL_EXT_texture_integer,Supported,0.60
 GLX_EXT_texture_from_pixmap,NonGL,N/A
 GL_GREMEDY_frame_terminator,Supported,0.60

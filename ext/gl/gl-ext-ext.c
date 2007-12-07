@@ -946,6 +946,71 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 /* #330 - GL_EXT_texture_buffer_object */
 GL_EXT_SIMPLE_FUNC_LOAD(TexBufferEXT,3,GLenum,NUM2UINT,"GL_EXT_texture_buffer_object")
 
+/* #343 - GL_EXT_texture_integer */
+GL_EXT_SIMPLE_FUNC_LOAD(ClearColorIiEXT,4,GLint,NUM2INT,"GL_EXT_texture_integer")
+GL_EXT_SIMPLE_FUNC_LOAD(ClearColorIuiEXT,4,GLuint,NUM2UINT,"GL_EXT_texture_integer")
+
+#define TEXPARAMETER_VFUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLenum,GLenum,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2,arg3) \
+VALUE obj,arg1,arg2,arg3; \
+{ \
+	GLenum target; \
+	GLenum pname; \
+	_type_ params[4] = {0,0,0,0}; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_EXT_texture_integer") \
+	target = (GLenum)NUM2UINT(arg1); \
+	pname = (GLenum)NUM2UINT(arg2); \
+	Check_Type(arg3,T_ARRAY); \
+	_conv_(arg3,params,4); \
+	fptr_gl##_name_(target,pname,params); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+TEXPARAMETER_VFUNC(TexParameterIivEXT,GLint,ary2cint)
+TEXPARAMETER_VFUNC(TexParameterIuivEXT,GLuint,ary2cuint)
+#undef TEXPARAMETER_VFUNC
+
+#define GETTEXPARAMETER_VFUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLenum,GLenum,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLenum target; \
+	GLenum pname; \
+	_type_ params[4] = {0,0,0,0}; \
+	int size; \
+	VALUE retary; \
+	int i; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_EXT_texture_integer") \
+	target = (GLenum)NUM2INT(arg1); \
+	pname = (GLenum)NUM2INT(arg2); \
+	switch(pname) { \
+		case GL_TEXTURE_BORDER_COLOR: \
+		case GL_TEXTURE_BORDER_VALUES_NV: \
+		case GL_POST_TEXTURE_FILTER_BIAS_SGIX: \
+		case GL_POST_TEXTURE_FILTER_SCALE_SGIX: \
+			size = 4; \
+			break; \
+		default: \
+			size = 1; \
+			break; \
+	} \
+	fptr_gl##_name_(target,pname,params); \
+	retary = rb_ary_new2(size); \
+	for(i=0;i<size;i++) \
+		rb_ary_push(retary, _conv_(params[i])); \
+	CHECK_GLERROR \
+	return retary; \
+}
+
+GETTEXPARAMETER_VFUNC(GetTexParameterIivEXT,GLint,INT2NUM)
+GETTEXPARAMETER_VFUNC(GetTexParameterIuivEXT,GLuint,INT2NUM)
+#undef GETTEXPARAMETER_VFUNC
+
 void gl_init_functions_ext_ext(VALUE module)
 {
 /* #2 - GL_EXT_blend_color */
@@ -1099,4 +1164,12 @@ void gl_init_functions_ext_ext(VALUE module)
 
 /* #330 - GL_EXT_texture_buffer_object */
 	rb_define_module_function(module, "glTexBufferEXT", gl_TexBufferEXT, 3);
+
+/* #343 - GL_EXT_texture_integer */
+	rb_define_module_function(module, "glClearColorIiEXT", gl_ClearColorIiEXT, 4);
+	rb_define_module_function(module, "glClearColorIuiEXT", gl_ClearColorIuiEXT, 4);
+	rb_define_module_function(module, "glTexParameterIivEXT", gl_TexParameterIivEXT, 3);
+	rb_define_module_function(module, "glTexParameterIuivEXT", gl_TexParameterIuivEXT, 3);
+	rb_define_module_function(module, "glGetTexParameterIivEXT", gl_GetTexParameterIivEXT, 2);
+	rb_define_module_function(module, "glGetTexParameterIuivEXT", gl_GetTexParameterIuivEXT, 2);
 }

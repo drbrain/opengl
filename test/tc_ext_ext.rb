@@ -536,4 +536,16 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		glDeleteBuffers(buf)
 		glDeleteTextures(tex)
 	end
+
+	def test_gl_ext_texture_integer
+		return if not supported?("GL_EXT_texture_integer")
+
+		glClearColorIiEXT(1,2,3,4)	
+		glClearColorIuiEXT(1,2,3,4)	
+
+		glTexParameterIivEXT(GL_TEXTURE_2D,GL_TEXTURE_BORDER_COLOR,[1,2,3,4])
+		assert_equal(glGetTexParameterIivEXT(GL_TEXTURE_2D,GL_TEXTURE_BORDER_COLOR),[1,2,3,4])
+		glTexParameterIuivEXT(GL_TEXTURE_2D,GL_TEXTURE_BORDER_COLOR,[5,6,7,8])
+		assert_equal(glGetTexParameterIuivEXT(GL_TEXTURE_2D,GL_TEXTURE_BORDER_COLOR),[5,6,7,8])
+	end
 end
