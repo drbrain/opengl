@@ -399,4 +399,104 @@ class Test_EXT_EXT < Test::Unit::TestCase
 
 		glDeleteObjectARB(program)
 	end
+
+	def test_gl_ext_gpu_shader4
+		return if not supported?(["GL_EXT_gpu_shader4","GL_ARB_vertex_program"])
+
+		programs = glGenProgramsARB(1)
+		program = "!!ARBvp1.0\nTEMP vv;\nEND"
+	
+	  glBindProgramARB(GL_VERTEX_PROGRAM_ARB, programs[0])
+		glProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, program)
+
+		glVertexAttribI1iEXT(1,1)
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],1)
+		glVertexAttribI1uiEXT(1,2)
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],2)
+		glVertexAttribI1ivEXT(1,[3])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],3)
+		glVertexAttribI1uivEXT(1,[4])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0],4)
+
+		glVertexAttribI2iEXT(1,1,2)
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[1,2])
+		glVertexAttribI2uiEXT(1,2,3)
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[2,3])
+		glVertexAttribI2ivEXT(1,[3,4])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[3,4])
+		glVertexAttribI2uivEXT(1,[4,5])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,2],[4,5])
+
+		glVertexAttribI3iEXT(1,1,2,3)
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[1,2,3])
+		glVertexAttribI3uiEXT(1,2,3,4)
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[2,3,4])
+		glVertexAttribI3ivEXT(1,[3,4,5])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[3,4,5])
+		glVertexAttribI3uivEXT(1,[4,5,6])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB)[0,3],[4,5,6])
+
+		glVertexAttribI4iEXT(1,1,2,3,4)
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB),[1,2,3,4])
+		glVertexAttribI4uiEXT(1,2,3,4,5)
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB),[2,3,4,5])
+		glVertexAttribI4ivEXT(1,[3,4,5,6])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB),[3,4,5,6])
+		glVertexAttribI4uivEXT(1,[4,5,6,7])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB),[4,5,6,7])
+
+		glVertexAttribI4bvEXT(1,[1,2,3,4])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB),[1,2,3,4])
+		glVertexAttribI4svEXT(1,[2,3,4,5])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB),[2,3,4,5])
+		glVertexAttribI4ubvEXT(1,[1,2,3,4])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB),[1,2,3,4])
+		glVertexAttribI4usvEXT(1,[2,3,4,5])
+		assert_equal(glGetVertexAttribIivEXT(1,GL_CURRENT_VERTEX_ATTRIB_ARB),[2,3,4,5])
+
+		glVertexAttribIPointerEXT(1,2,GL_INT,0,[1,1].pack("i*"))
+		assert_equal(glGetVertexAttribPointervARB(1),[1,1].pack("i*"))
+
+		glDeleteProgramsARB(programs)
+	end
+
+	def test_gl_ext_gpu_shader4_2
+		return if not supported?(["GL_EXT_gpu_shader4","GL_ARB_shader_objects"])
+
+		vertex_shader_source = "attribute vec4 test; uniform float testvec1; uniform vec2 testvec2; uniform vec3 testvec3; uniform vec4 testvec4; uniform unsigned int testivec1; uniform uvec2 testivec2; uniform uvec3 testivec3; uniform uvec4 testivec4; void main() { gl_Position = testvec1 * test * testvec2.x * testvec3.x * testivec1 * testivec2.x * testivec3.x * testivec4.x + testvec4;}"
+
+		program = glCreateProgramObjectARB()
+		vs = glCreateShaderObjectARB(GL_VERTEX_SHADER)
+		glShaderSourceARB(vs,vertex_shader_source)
+
+		glCompileShaderARB(vs)
+		glAttachObjectARB(program,vs)
+		glLinkProgramARB(program)
+		glUseProgramObjectARB(program)
+
+		assert((tv1il = glGetUniformLocationARB(program,"testivec1"))>=0)
+		assert((tv2il = glGetUniformLocationARB(program,"testivec2"))>=0)
+		assert((tv3il = glGetUniformLocationARB(program,"testivec3"))>=0)
+		assert((tv4il = glGetUniformLocationARB(program,"testivec4"))>=0)
+
+		glUniform1uiEXT(tv1il,3)
+		assert_equal(glGetUniformuivEXT(program,tv1il),[3])
+		glUniform1uivEXT(tv1il,1,[4])
+		assert_equal(glGetUniformuivEXT(program,tv1il),[4])
+		glUniform2uiEXT(tv2il,1,2)
+		assert_equal(glGetUniformuivEXT(program,tv2il),[1,2])
+		glUniform2uivEXT(tv2il,1,[3,4])
+		assert_equal(glGetUniformuivEXT(program,tv2il),[3,4])
+		glUniform3uiEXT(tv3il,1,2,3)
+		assert_equal(glGetUniformuivEXT(program,tv3il),[1,2,3])
+		glUniform3uivEXT(tv3il,1,[3,4,5])
+		assert_equal(glGetUniformuivEXT(program,tv3il),[3,4,5])
+		glUniform4uiEXT(tv4il,1,2,3,4)
+		assert_equal(glGetUniformuivEXT(program,tv4il),[1,2,3,4])
+		glUniform4uivEXT(tv4il,1,[3,4,5,6])
+		assert_equal(glGetUniformuivEXT(program,tv4il),[3,4,5,6])
+
+		glBindFragDataLocationEXT(program,1,"test")
+		assert_equal(glGetFragDataLocationEXT(program,"test"),-1)
+	end
 end

@@ -688,6 +688,228 @@ static VALUE gl_ProgramParameteriEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 	return Qnil;
 }
 
+/* #326 - GL_EXT_gpu_shader4 */
+
+#define GLVERTEXATTRIB_FUNC(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,TYPELIST##_size_(_type_)); \
+static VALUE \
+gl_##_name_(obj,index ARGLIST##_size_) \
+VALUE obj,index ARGLIST##_size_ ; \
+{ \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	fptr_gl##_name_(NUM2UINT(index),FUNCPARAMS##_size_(_type_,_conv_)); \
+	return Qnil; \
+}
+
+GLVERTEXATTRIB_FUNC(VertexAttribI1iEXT,GLint,NUM2INT,1)
+GLVERTEXATTRIB_FUNC(VertexAttribI2iEXT,GLint,NUM2INT,2)
+GLVERTEXATTRIB_FUNC(VertexAttribI3iEXT,GLint,NUM2INT,3)
+GLVERTEXATTRIB_FUNC(VertexAttribI4iEXT,GLint,NUM2INT,4)
+GLVERTEXATTRIB_FUNC(VertexAttribI1uiEXT,GLuint,NUM2UINT,1)
+GLVERTEXATTRIB_FUNC(VertexAttribI2uiEXT,GLuint,NUM2UINT,2)
+GLVERTEXATTRIB_FUNC(VertexAttribI3uiEXT,GLuint,NUM2UINT,3)
+GLVERTEXATTRIB_FUNC(VertexAttribI4uiEXT,GLuint,NUM2UINT,4)
+#undef GLVERTEXATTRIB_FUNC
+
+#define GLVERTEXATTRIB_VFUNC(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,const _type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	_type_ value[_size_]; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	_conv_(arg2,value,_size_); \
+	fptr_gl##_name_(NUM2UINT(arg1),value); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+GLVERTEXATTRIB_VFUNC(VertexAttribI1ivEXT,GLint,ary2cint,1)
+GLVERTEXATTRIB_VFUNC(VertexAttribI2ivEXT,GLint,ary2cint,2)
+GLVERTEXATTRIB_VFUNC(VertexAttribI3ivEXT,GLint,ary2cint,3)
+GLVERTEXATTRIB_VFUNC(VertexAttribI4ivEXT,GLint,ary2cint,4)
+GLVERTEXATTRIB_VFUNC(VertexAttribI1uivEXT,GLuint,ary2cuint,1)
+GLVERTEXATTRIB_VFUNC(VertexAttribI2uivEXT,GLuint,ary2cuint,2)
+GLVERTEXATTRIB_VFUNC(VertexAttribI3uivEXT,GLuint,ary2cuint,3)
+GLVERTEXATTRIB_VFUNC(VertexAttribI4uivEXT,GLuint,ary2cuint,4)
+GLVERTEXATTRIB_VFUNC(VertexAttribI4bvEXT,GLbyte,ary2cbyte,4)
+GLVERTEXATTRIB_VFUNC(VertexAttribI4svEXT,GLshort,ary2cshort,4)
+GLVERTEXATTRIB_VFUNC(VertexAttribI4ubvEXT,GLubyte,ary2cubyte,4)
+GLVERTEXATTRIB_VFUNC(VertexAttribI4usvEXT,GLushort,ary2cushort,4)
+#undef GLVERTEXATTRIB_VFUNC
+
+
+#define GETVERTEXATTRIB_FUNC(_name_,_type_,_conv_,_extension_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLuint index; \
+	GLenum pname; \
+	_type_ params[4] = {0,0,0,0}; \
+	GLint size; \
+	GLint i; \
+	VALUE retary; \
+	LOAD_GL_EXT_FUNC(gl##_name_,_extension_) \
+	index = (GLuint)NUM2UINT(arg1); \
+	pname = (GLenum)NUM2INT(arg2); \
+	if (pname==GL_CURRENT_VERTEX_ATTRIB_ARB) \
+		size = 4; \
+	else \
+		size = 1; \
+	fptr_gl##_name_(index,pname,params); \
+	retary = rb_ary_new2(size); \
+	for(i=0;i<size;i++) \
+		rb_ary_push(retary, _conv_(params[i])); \
+	CHECK_GLERROR \
+	return retary; \
+}
+
+GETVERTEXATTRIB_FUNC(GetVertexAttribIivEXT,GLint,INT2NUM,"GL_EXT_gpu_shader4")
+GETVERTEXATTRIB_FUNC(GetVertexAttribIuivEXT,GLuint,INT2NUM,"GL_EXT_gpu_shader4")
+#undef GETVERTEXATTRIB_FUNC
+
+extern VALUE g_VertexAttrib_ptr[];
+
+static void (APIENTRY * fptr_glVertexAttribIPointerEXT)(GLuint,GLint,GLenum,GLsizei,const GLvoid *);
+static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
+{
+	GLuint index;
+	GLuint size;
+	GLenum type;
+	GLsizei stride;
+
+	LOAD_GL_EXT_FUNC(glVertexAttribIPointerEXT,"GL_EXT_gpu_shader4")
+
+	index = (GLuint)NUM2UINT(arg1);
+	size = (GLuint)NUM2UINT(arg2);
+	type = (GLenum)NUM2INT(arg3);
+	stride = (GLsizei)NUM2UINT(arg4);
+	if (index>_MAX_VERTEX_ATTRIBS)
+		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
+
+	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+		g_VertexAttrib_ptr[index] = arg5;
+		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)NUM2INT(arg5));
+	} else {
+		Check_Type(arg5, T_STRING);
+		rb_str_freeze(arg5);
+		g_VertexAttrib_ptr[index] = arg5;
+		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)RSTRING(arg5)->ptr);
+	}
+
+	CHECK_GLERROR
+	return Qnil;
+}
+
+#define GLUNIFORM_FUNC(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLint,TYPELIST##_size_(_type_)); \
+static VALUE \
+gl_##_name_(obj,loc ARGLIST##_size_) \
+VALUE obj,loc ARGLIST##_size_ ; \
+{ \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
+	fptr_gl##_name_(NUM2INT(loc),FUNCPARAMS##_size_(_type_,_conv_)); \
+	return Qnil; \
+}
+
+GLUNIFORM_FUNC(Uniform1uiEXT,GLuint,NUM2INT,1)
+GLUNIFORM_FUNC(Uniform2uiEXT,GLuint,NUM2INT,2)
+GLUNIFORM_FUNC(Uniform3uiEXT,GLuint,NUM2INT,3)
+GLUNIFORM_FUNC(Uniform4uiEXT,GLuint,NUM2INT,4)
+
+#undef GLUNIFORM_FUNC
+
+#define GLUNIFORM_VFUNC(_name_,_type_,_conv_,_size_) \
+static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,const _type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2,arg3) \
+VALUE obj,arg1,arg2,arg3; \
+{ \
+	GLint location; \
+	GLsizei count; \
+	_type_ *value; \
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
+	location = (GLint)NUM2INT(arg1); \
+	count = (GLsizei)NUM2UINT(arg2); \
+	value = ALLOC_N(_type_,_size_*count); \
+	_conv_(arg3,value,_size_*count); \
+	fptr_gl##_name_(location,count,value); \
+	xfree(value); \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+GLUNIFORM_VFUNC(Uniform1uivEXT,GLuint,ary2cuint,1)
+GLUNIFORM_VFUNC(Uniform2uivEXT,GLuint,ary2cuint,2)
+GLUNIFORM_VFUNC(Uniform3uivEXT,GLuint,ary2cuint,3)
+GLUNIFORM_VFUNC(Uniform4uivEXT,GLuint,ary2cuint,4)
+
+#undef GLUNIFORM_VFUNC
+
+static void (APIENTRY * fptr_glGetActiveUniformARB)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
+#define GETUNIFORM_FUNC(_name_,_type_,_conv_) \
+static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLuint program; \
+	GLint location; \
+	_type_ params[16]; \
+	VALUE retary; \
+	GLint i; \
+	GLint unused = 0; \
+	GLenum uniform_type = 0; \
+	GLint uniform_size = 0; \
+\
+	LOAD_GL_EXT_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
+	LOAD_GL_EXT_FUNC(glGetActiveUniformARB,"GL_ARB_shader_objects") \
+	program = (GLuint)NUM2UINT(arg1); \
+	location = (GLint)NUM2INT(arg2); \
+\
+	fptr_glGetActiveUniformARB(program,location,0,NULL,&unused,&uniform_type,NULL); \
+	CHECK_GLERROR \
+	if (uniform_type==0) \
+		rb_raise(rb_eTypeError, "Can't determine the uniform's type"); \
+\
+	uniform_size = get_uniform_size(uniform_type); \
+\
+	memset(params,0,16*sizeof(_type_)); \
+	fptr_gl##_name_(program,location,params); \
+	retary = rb_ary_new2(uniform_size); \
+	for(i=0;i<uniform_size;i++) \
+		rb_ary_push(retary, _conv_(params[i])); \
+	CHECK_GLERROR \
+	return retary; \
+}
+
+GETUNIFORM_FUNC(GetUniformuivEXT,GLuint,INT2NUM)
+#undef GETUNIFORM_FUNC
+
+static void (APIENTRY * fptr_glBindFragDataLocationEXT)(GLuint,GLuint,const GLchar *);
+static VALUE gl_BindFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
+{
+	LOAD_GL_EXT_FUNC(glBindFragDataLocationEXT,"GL_EXT_gpu_shader4")
+	Check_Type(arg3,T_STRING);
+	fptr_glBindFragDataLocationEXT(NUM2UINT(arg1),NUM2UINT(arg2),RSTRING(arg3)->ptr);
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static GLint (APIENTRY * fptr_glGetFragDataLocationEXT)(GLuint,const GLchar *);
+static VALUE gl_GetFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	GLint ret;
+	LOAD_GL_EXT_FUNC(glGetFragDataLocationEXT,"GL_EXT_gpu_shader4")
+	Check_Type(arg2,T_STRING);
+	ret = fptr_glGetFragDataLocationEXT(NUM2UINT(arg1),RSTRING(arg2)->ptr);
+	CHECK_GLERROR
+	return INT2NUM(ret);
+}
+
 void gl_init_functions_ext_ext(VALUE module)
 {
 /* #2 - GL_EXT_blend_color */
@@ -798,4 +1020,40 @@ void gl_init_functions_ext_ext(VALUE module)
 
 /* #324 - GL_EXT_geometry_shader4 */
 	rb_define_module_function(module, "glProgramParameteriEXT", gl_ProgramParameteriEXT, 3);
+
+/* #326 - GL_EXT_gpu_shader4 */
+	rb_define_module_function(module, "glVertexAttribI1iEXT", gl_VertexAttribI1iEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI2iEXT", gl_VertexAttribI2iEXT, 3);
+	rb_define_module_function(module, "glVertexAttribI3iEXT", gl_VertexAttribI3iEXT, 4);
+	rb_define_module_function(module, "glVertexAttribI4iEXT", gl_VertexAttribI4iEXT, 5);
+	rb_define_module_function(module, "glVertexAttribI1uiEXT", gl_VertexAttribI1uiEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI2uiEXT", gl_VertexAttribI2uiEXT, 3);
+	rb_define_module_function(module, "glVertexAttribI3uiEXT", gl_VertexAttribI3uiEXT, 4);
+	rb_define_module_function(module, "glVertexAttribI4uiEXT", gl_VertexAttribI4uiEXT, 5);
+	rb_define_module_function(module, "glVertexAttribI1ivEXT", gl_VertexAttribI1ivEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI2ivEXT", gl_VertexAttribI2ivEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI3ivEXT", gl_VertexAttribI3ivEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI4ivEXT", gl_VertexAttribI4ivEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI1uivEXT", gl_VertexAttribI1uivEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI2uivEXT", gl_VertexAttribI2uivEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI3uivEXT", gl_VertexAttribI3uivEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI4uivEXT", gl_VertexAttribI4uivEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI4bvEXT", gl_VertexAttribI4bvEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI4svEXT", gl_VertexAttribI4svEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI4ubvEXT", gl_VertexAttribI4ubvEXT, 2);
+	rb_define_module_function(module, "glVertexAttribI4usvEXT", gl_VertexAttribI4usvEXT, 2);
+	rb_define_module_function(module, "glVertexAttribIPointerEXT", gl_VertexAttribIPointerEXT, 5);
+	rb_define_module_function(module, "glGetVertexAttribIivEXT", gl_GetVertexAttribIivEXT, 2);
+	rb_define_module_function(module, "glGetVertexAttribIuivEXT", gl_GetVertexAttribIuivEXT, 2);
+	rb_define_module_function(module, "glUniform1uiEXT", gl_Uniform1uiEXT, 2);
+	rb_define_module_function(module, "glUniform2uiEXT", gl_Uniform2uiEXT, 3);
+	rb_define_module_function(module, "glUniform3uiEXT", gl_Uniform3uiEXT, 4);
+	rb_define_module_function(module, "glUniform4uiEXT", gl_Uniform4uiEXT, 5);
+	rb_define_module_function(module, "glUniform1uivEXT", gl_Uniform1uivEXT, 3);
+	rb_define_module_function(module, "glUniform2uivEXT", gl_Uniform2uivEXT, 3);
+	rb_define_module_function(module, "glUniform3uivEXT", gl_Uniform3uivEXT, 3);
+	rb_define_module_function(module, "glUniform4uivEXT", gl_Uniform4uivEXT, 3);
+	rb_define_module_function(module, "glGetUniformuivEXT", gl_GetUniformuivEXT, 2);
+	rb_define_module_function(module, "glBindFragDataLocationEXT", gl_BindFragDataLocationEXT, 3);
+	rb_define_module_function(module, "glGetFragDataLocationEXT", gl_GetFragDataLocationEXT, 2);
 }

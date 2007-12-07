@@ -380,6 +380,7 @@ static inline int get_uniform_size(GLenum uniform_type)
 	switch (uniform_type) { 
 		case GL_FLOAT: 
 		case GL_INT: 
+		case GL_UNSIGNED_INT: 
 		case GL_BOOL: 
 		case GL_SAMPLER_1D: 
 		case GL_SAMPLER_2D: 
@@ -387,20 +388,47 @@ static inline int get_uniform_size(GLenum uniform_type)
 		case GL_SAMPLER_CUBE: 
 		case GL_SAMPLER_1D_SHADOW: 
 		case GL_SAMPLER_2D_SHADOW: 
+		case GL_SAMPLER_2D_RECT_ARB: 
+		case GL_SAMPLER_2D_RECT_SHADOW_ARB: 
+		case GL_SAMPLER_1D_ARRAY_EXT: 
+		case GL_SAMPLER_2D_ARRAY_EXT: 
+		case GL_SAMPLER_BUFFER_EXT: 
+		case GL_SAMPLER_1D_ARRAY_SHADOW_EXT: 
+		case GL_SAMPLER_2D_ARRAY_SHADOW_EXT: 
+		case GL_SAMPLER_CUBE_SHADOW_EXT: 
+		case GL_INT_SAMPLER_1D_EXT: 
+		case GL_INT_SAMPLER_2D_EXT: 
+		case GL_INT_SAMPLER_3D_EXT: 
+		case GL_INT_SAMPLER_CUBE_EXT: 
+		case GL_INT_SAMPLER_2D_RECT_EXT: 
+		case GL_INT_SAMPLER_1D_ARRAY_EXT: 
+		case GL_INT_SAMPLER_2D_ARRAY_EXT: 
+		case GL_INT_SAMPLER_BUFFER_EXT: 
+		case GL_UNSIGNED_INT_SAMPLER_1D_EXT: 
+		case GL_UNSIGNED_INT_SAMPLER_2D_EXT: 
+		case GL_UNSIGNED_INT_SAMPLER_3D_EXT: 
+		case GL_UNSIGNED_INT_SAMPLER_CUBE_EXT: 
+		case GL_UNSIGNED_INT_SAMPLER_2D_RECT_EXT: 
+		case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY_EXT: 
+		case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY_EXT: 
+		case GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT: 
 			uniform_size = 1; 
 			break; 
 		case GL_FLOAT_VEC2: 
 		case GL_INT_VEC2: 
+		case GL_UNSIGNED_INT_VEC2_EXT: 
 		case GL_BOOL_VEC2: 
 			uniform_size = 2; 
 			break; 
 		case GL_FLOAT_VEC3: 
 		case GL_INT_VEC3: 
+		case GL_UNSIGNED_INT_VEC3_EXT: 
 		case GL_BOOL_VEC3: 
 			uniform_size = 3; 
 			break; 
 		case GL_FLOAT_VEC4: 
 		case GL_INT_VEC4: 
+		case GL_UNSIGNED_INT_VEC4_EXT: 
 		case GL_BOOL_VEC4: 
 		case GL_FLOAT_MAT2: 
 			uniform_size = 4; 
