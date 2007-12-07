@@ -610,6 +610,27 @@ GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryivNV,GLint,INT2NUM)
 GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryuivNV,GLuint,INT2NUM)
 #undef GETOCCLUSIONQUERY_FUNC
 
+/* #262 GL_NV_point_sprite */
+static void (APIENTRY * fptr_glPointParameteriNV)(GLenum,GLint);
+static VALUE gl_PointParameteriNV(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	LOAD_GL_EXT_FUNC(glPointParameteriNV,"GL_NV_point_sprite")
+	fptr_glPointParameteriNV(NUM2UINT(arg1),NUM2INT(arg2));
+	CHECK_GLERROR
+	return Qnil;
+}
+
+static void (APIENTRY * fptr_glPointParameterivNV)(GLenum,const GLint *);
+static VALUE gl_PointParameterivNV(VALUE obj,VALUE arg1,VALUE arg2)
+{
+	GLint param = 0;
+	LOAD_GL_EXT_FUNC(glPointParameterivNV,"GL_NV_point_sprite")
+	ary2cint(arg2,&param,1);
+	fptr_glPointParameterivNV(NUM2UINT(arg1),&param);
+	CHECK_GLERROR
+	return Qnil;
+}
+
 /* #282 GL_NV_fragment_program */
 
 #define PROGRAMNAMEDPARAM_FUNC(_name_,_type_,_conv_,_extension_) \
@@ -670,6 +691,10 @@ VALUE obj,arg1,arg2; \
 GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterdvNV,GLdouble,"GL_NV_vertex_program")
 GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterfvNV,GLfloat,"GL_NV_vertex_program")
 #undef GETPROGRAMNAMEDPARAM_FUNC
+
+/* #285 GL_NV_primitive_restart */
+GL_EXT_SIMPLE_FUNC_LOAD(PrimitiveRestartNV,0,0,0,"GL_NV_primitive_restart")
+GL_EXT_SIMPLE_FUNC_LOAD(PrimitiveRestartIndexNV,1,GLuint,NUM2UINT,"GL_NV_primitive_restart")
 
 /* #322 GL_NV_gpu_program4 */
 PROGRAMPARAM_FUNC(ProgramLocalParameterI4iNV,GLint,NUM2INT,"GL_NV_gpu_program4")
@@ -857,6 +882,10 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glGetOcclusionQueryivNV", gl_GetOcclusionQueryivNV, 2);
 	rb_define_module_function(module, "glGetOcclusionQueryuivNV", gl_GetOcclusionQueryuivNV, 2);
 
+/* #262 GL_NV_point_sprite */
+	rb_define_module_function(module, "glPointParameteriNV", gl_PointParameteriNV, 2);
+	rb_define_module_function(module, "glPointParameterivNV", gl_PointParameterivNV, 2);
+
 /* #282 GL_NV_fragment_program */
 	rb_define_module_function(module, "glProgramNamedParameter4fNV", gl_ProgramNamedParameter4fNV, 6);
 	rb_define_module_function(module, "glProgramNamedParameter4dNV", gl_ProgramNamedParameter4dNV, 6);
@@ -864,6 +893,10 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glProgramNamedParameter4dvNV", gl_ProgramNamedParameter4dvNV, 3);
 	rb_define_module_function(module, "glGetProgramNamedParameterdvNV", gl_GetProgramNamedParameterdvNV, 2);
 	rb_define_module_function(module, "glGetProgramNamedParameterfvNV", gl_GetProgramNamedParameterfvNV, 2);
+
+/* #285 GL_NV_primitive_restart */
+	rb_define_module_function(module, "glPrimitiveRestartNV", gl_PrimitiveRestartNV, 0);
+	rb_define_module_function(module, "glPrimitiveRestartIndexNV", gl_PrimitiveRestartIndexNV, 1);
 
 /* #322 GL_NV_gpu_program4 */
 	rb_define_module_function(module, "glProgramLocalParameterI4iNV", gl_ProgramLocalParameterI4iNV, 6);

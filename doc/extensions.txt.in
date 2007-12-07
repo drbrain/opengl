@@ -257,7 +257,7 @@ GL_SUN_slice_accum,Supported,0.50
 GL_NV_multisample_filter_hint,Supported,0.50
 GL_NV_depth_clamp,Supported,0.50
 GL_NV_occlusion_query,Supported,0.60
-GL_NV_point_sprite,Unsupported,N/A
+GL_NV_point_sprite,Supported,0.60
 WGL_NV_render_depth_texture,NonGL,N/A
 WGL_NV_render_texture_rectangle,NonGL,N/A
 GL_NV_texture_shader3,Supported,0.50
@@ -281,7 +281,7 @@ WGL_NV_float_buffer,NonGL,N/A
 GL_NV_fragment_program,Supported,0.60
 GL_NV_half_float,Unsupported,N/A
 GL_NV_pixel_data_range,Unsupported,N/A
-GL_NV_primitive_restart,Unsupported,N/A
+GL_NV_primitive_restart,Supported,0.60
 GL_NV_texture_expand_normal,Supported,0.50
 GL_NV_vertex_program2,Supported,0.50
 GL_ATI_map_object_buffer,Unsupported,N/A

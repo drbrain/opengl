@@ -332,4 +332,26 @@ END
 		glDeleteFramebuffersEXT(fbo)
 		glDeleteProgramsARB(program_id)
 	end
+
+	def test_gl_nv_primitive_restart
+		return if not supported?("GL_NV_primitive_restart")
+		glBegin(GL_TRIANGLES)
+	  glPrimitiveRestartNV()
+		glEnd
+		glPrimitiveRestartIndexNV(2)
+		assert_equal(glGetIntegerv(GL_PRIMITIVE_RESTART_INDEX_NV),2)
+	end
+
+	def test_gl_nv_point_sprite
+		return if not supported?("GL_NV_point_sprite")
+		glPointParameteriNV(GL_POINT_SPRITE_R_MODE_NV, GL_ZERO)
+		assert_equal(glGetIntegerv(GL_POINT_SPRITE_R_MODE_NV),GL_ZERO)
+		glPointParameteriNV(GL_POINT_SPRITE_R_MODE_NV, GL_S)
+		assert_equal(glGetIntegerv(GL_POINT_SPRITE_R_MODE_NV),GL_S)
+
+		glPointParameterivNV(GL_POINT_SPRITE_R_MODE_NV, [GL_ZERO])
+		assert_equal(glGetIntegerv(GL_POINT_SPRITE_R_MODE_NV),GL_ZERO)
+		glPointParameterivNV(GL_POINT_SPRITE_R_MODE_NV, [GL_S])
+		assert_equal(glGetIntegerv(GL_POINT_SPRITE_R_MODE_NV),GL_S)
+	end
 end
