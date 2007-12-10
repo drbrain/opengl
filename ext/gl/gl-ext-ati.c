@@ -23,7 +23,7 @@ static VALUE gl_DrawBuffersATI(VALUE obj,VALUE arg1)
 {
 	GLsizei size;
 	GLenum *buffers;
-	LOAD_GL_EXT_FUNC(glDrawBuffersATI,"GL_ATI_draw_buffers")
+	LOAD_GL_FUNC(glDrawBuffersATI,"GL_ATI_draw_buffers")
 	Check_Type(arg1,T_ARRAY); 
 	size = RARRAY(arg1)->len;
 	buffers = ALLOC_N(GLenum,size);

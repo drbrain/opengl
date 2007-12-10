@@ -18,7 +18,7 @@
 /* OpenGL 3DFX extensions */
 
 /* #208 - GL_3DFX_tbuffer */
-GL_EXT_SIMPLE_FUNC_LOAD(TbufferMask3DFX,1,GLuint,NUM2UINT,"GL_3DFX_tbuffer")
+GL_SIMPLE_FUNC_LOAD(TbufferMask3DFX,1,GLuint,NUM2UINT,"GL_3DFX_tbuffer")
 
 void gl_init_functions_ext_3dfx(VALUE module)
 {

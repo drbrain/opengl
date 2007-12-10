@@ -24,6 +24,8 @@
 
 #include <ruby.h>
 
+#include <ctype.h>
+
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
@@ -78,20 +80,16 @@ typedef struct RArray RArray;
 extern VALUE cProc;
 
 /* will load function pointer for function _NAME_ on first call to the
-  function, or raise if the OpenGL version is less then required */
-#define LOAD_GL_FUNC(_NAME_,_VER_MAJ_,_VER_MIN_) \
+  function, or raise if the OpenGL version is less then required or the
+  required extension is not supported */
+#define LOAD_GL_FUNC(_NAME_,_VEREXT_) \
 if (fptr_##_NAME_==NULL) { \
-	if (CheckOpenglVersion(_VER_MAJ_,_VER_MIN_)==GL_FALSE) \
-		rb_raise(rb_eNotImpError,"OpenGL version %i.%i is not available on this system",_VER_MAJ_,_VER_MIN_); \
-	fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
-}
-
-/* will load extension function pointer for function _NAME_ on first call
-  to the function, or raise if the extension _EXTNAME_ is not available */
-#define LOAD_GL_EXT_FUNC(_NAME_,_EXTNAME_) \
-if (fptr_##_NAME_==NULL) {\
-	if (CheckExtension(_EXTNAME_)==GL_FALSE) \
-		rb_raise(rb_eNotImpError,"Extension %s is not available on this system",_EXTNAME_); \
+	if (CheckVersionExtension(_VEREXT_)==GL_FALSE) { \
+		if (isdigit(_VEREXT_[0])) \
+			rb_raise(rb_eNotImpError,"OpenGL version %s is not available on this system",_VEREXT_); \
+		else \
+			rb_raise(rb_eNotImpError,"Extension %s is not available on this system",_VEREXT_); \
+	} \
 	fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
 }
 
@@ -106,7 +104,7 @@ if (fptr_##_NAME_==NULL) {\
 	glPixelStorei(GL_PACK_ROW_LENGTH, 0); \
 	glPixelStorei(GL_PACK_SKIP_IMAGES, 0); \
 	glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0); \
-	if (CheckExtension("GL_SGIS_texture4D")) { \
+	if (CheckVersionExtension("GL_SGIS_texture4D")) { \
 		glPixelStorei(GL_PACK_SKIP_VOLUMES_SGIS, 0); \
 		glPixelStorei(GL_PACK_IMAGE_DEPTH_SGIS, 0); \
 	}
@@ -114,8 +112,7 @@ if (fptr_##_NAME_==NULL) {\
 #define RESTORE_PIXEL_STORE_MODE \
 	glPopClientAttrib();
 
-GLboolean CheckExtension(const char *name);
-GLboolean CheckOpenglVersion(int major, int minor);
+GLboolean CheckVersionExtension(const char *name);
 GLint CheckBufferBinding(GLint buffer);
 
 /* -------------------------------------------------------------------- */
@@ -130,6 +127,9 @@ static inline double num2double( VALUE val )
     return flt->value;
 }
 #endif
+
+#define GLBOOL2RUBY(x) (x)==GL_TRUE? Qtrue : Qfalse
+#define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
 
 /* -------------------------------------------------------------------- */
 #define ARY2INTEGRAL(_type_,_convert_) \
@@ -573,26 +573,13 @@ VALUE obj ARGLIST##_numparams_; \
 	return Qnil; \
 } 
 
-#define GL_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_,_ver_major_,_ver_minor_) \
+#define GL_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_,_ver_) \
 static void (APIENTRY * fptr_gl##_name_)( TYPELIST##_numparams_(_ctype_) ); \
 static VALUE \
 gl_##_name_(obj ARGLIST##_numparams_) \
 VALUE obj ARGLIST##_numparams_; \
 { \
-	LOAD_GL_FUNC(gl##_name_,_ver_major_,_ver_minor_) \
-	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
-	CHECK_GLERROR \
-	return Qnil; \
-} 
-
-
-#define GL_EXT_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_,_extensionname_) \
-static void (APIENTRY * fptr_gl##_name_)( TYPELIST##_numparams_(_ctype_) ); \
-static VALUE \
-gl_##_name_(obj ARGLIST##_numparams_) \
-VALUE obj ARGLIST##_numparams_; \
-{ \
-	LOAD_GL_EXT_FUNC(gl##_name_,_extensionname_) \
+	LOAD_GL_FUNC(gl##_name_,_ver_) \
 	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
 	CHECK_GLERROR \
 	return Qnil; \

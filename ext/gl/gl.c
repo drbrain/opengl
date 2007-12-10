@@ -118,6 +118,22 @@ GLboolean CheckExtension(const char *name)
 	return res;	
 }
 
+/* wrapper for CheckOpenglVersion and CheckExtension, also used by macros
+ */
+GLboolean CheckVersionExtension(const char *name)
+{
+	if (name && name[0] && name[0]>='0' && name[0]<='9') { /* GL version query */
+		int major,minor;
+
+		if (sscanf( name, "%d.%d", &major, &minor ) != 2)
+				return GL_FALSE;
+	
+		return (CheckOpenglVersion(major,minor));
+	} else {
+		return (CheckExtension(name));
+	}
+}
+
 /* Checks if given OpenGL version or extension is available
  */
 static VALUE
@@ -126,29 +142,14 @@ VALUE obj,arg1;
 {
 	char *name = NULL;
 	VALUE s;
+	GLboolean res;
 
 	s = rb_funcall(arg1, rb_intern("to_s"),0);
 	name = RSTRING(s)->ptr;
 
-	if (name && name[0] && name[0]>='0' && name[0]<='9') { /* GL version query */
-		int major,minor;
+	res = CheckVersionExtension(name);
 
-		if (sscanf( name, "%d.%d", &major, &minor ) != 2)
-				return Qfalse;
-	
-		if (CheckOpenglVersion(major,minor)==1)
-			return Qtrue;
-		else
-			return Qfalse;
-	} else {
-		GLboolean res;
-		
-		res = CheckExtension(name);
-		if (res==GL_TRUE)
-			return Qtrue;
-		else
-			return Qfalse;
-	}
+	return GLBOOL2RUBY(res);
 }
 
 /* Checks whether non-zero buffer of type $buffer is bound

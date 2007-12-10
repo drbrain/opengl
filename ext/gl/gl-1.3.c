@@ -17,8 +17,8 @@
 
 /* OpenGL 1.3 functions */
 
-GL_SIMPLE_FUNC_LOAD(ActiveTexture,1,GLenum,NUM2INT,1,3)
-GL_SIMPLE_FUNC_LOAD(ClientActiveTexture,1,GLenum,NUM2INT,1,3)
+GL_SIMPLE_FUNC_LOAD(ActiveTexture,1,GLenum,NUM2INT,"1.3")
+GL_SIMPLE_FUNC_LOAD(ClientActiveTexture,1,GLenum,NUM2INT,"1.3")
 
 static void (APIENTRY * fptr_glMultiTexCoord1d)(GLenum,GLdouble);
 static VALUE
@@ -27,7 +27,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLdouble s;
-	LOAD_GL_FUNC(glMultiTexCoord1d,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord1d,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLdouble)NUM2DBL(arg2);
 	fptr_glMultiTexCoord1d(target,s);
@@ -42,7 +42,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLfloat s;
-	LOAD_GL_FUNC(glMultiTexCoord1f,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord1f,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLfloat)NUM2DBL(arg2);
 	fptr_glMultiTexCoord1f(target,s);
@@ -57,7 +57,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLint s;
-	LOAD_GL_FUNC(glMultiTexCoord1i,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord1i,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLint)NUM2INT(arg2);
 	fptr_glMultiTexCoord1i(target,s);
@@ -72,7 +72,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLshort s;
-	LOAD_GL_FUNC(glMultiTexCoord1s,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord1s,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLshort)NUM2INT(arg2);
 	fptr_glMultiTexCoord1s(target,s);
@@ -88,7 +88,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLdouble s;
 	GLdouble t;
-	LOAD_GL_FUNC(glMultiTexCoord2d,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord2d,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLdouble)NUM2DBL(arg2);
 	t = (GLdouble)NUM2DBL(arg3);
@@ -105,7 +105,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLfloat s;
 	GLfloat t;
-	LOAD_GL_FUNC(glMultiTexCoord2f,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord2f,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLfloat)NUM2DBL(arg2);
 	t = (GLfloat)NUM2DBL(arg3);
@@ -122,7 +122,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLint s;
 	GLint t;
-	LOAD_GL_FUNC(glMultiTexCoord2i,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord2i,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLint)NUM2INT(arg2);
 	t = (GLint)NUM2INT(arg3);
@@ -139,7 +139,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLshort s;
 	GLshort t;
-	LOAD_GL_FUNC(glMultiTexCoord2s,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord2s,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLshort)NUM2INT(arg2);
 	t = (GLshort)NUM2INT(arg3);
@@ -157,7 +157,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLdouble s;
 	GLdouble t;
 	GLdouble r;
-	LOAD_GL_FUNC(glMultiTexCoord3d,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord3d,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLdouble)NUM2DBL(arg2);
 	t = (GLdouble)NUM2DBL(arg3);
@@ -176,7 +176,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLfloat s;
 	GLfloat t;
 	GLfloat r;
-	LOAD_GL_FUNC(glMultiTexCoord3f,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord3f,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLfloat)NUM2DBL(arg2);
 	t = (GLfloat)NUM2DBL(arg3);
@@ -195,7 +195,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLint s;
 	GLint t;
 	GLint r;
-	LOAD_GL_FUNC(glMultiTexCoord3i,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord3i,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLint)NUM2INT(arg2);
 	t = (GLint)NUM2INT(arg3);
@@ -214,7 +214,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLshort s;
 	GLshort t;
 	GLshort r;
-	LOAD_GL_FUNC(glMultiTexCoord3s,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord3s,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLshort)NUM2INT(arg2);
 	t = (GLshort)NUM2INT(arg3);
@@ -234,7 +234,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLdouble t;
 	GLdouble r;
 	GLdouble q;
-	LOAD_GL_FUNC(glMultiTexCoord4d,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord4d,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLdouble)NUM2DBL(arg2);
 	t = (GLdouble)NUM2DBL(arg3);
@@ -255,7 +255,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLfloat t;
 	GLfloat r;
 	GLfloat q;
-	LOAD_GL_FUNC(glMultiTexCoord4f,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord4f,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLfloat)NUM2DBL(arg2);
 	t = (GLfloat)NUM2DBL(arg3);
@@ -276,7 +276,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLint t;
 	GLint r;
 	GLint q;
-	LOAD_GL_FUNC(glMultiTexCoord4i,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord4i,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLint)NUM2INT(arg2);
 	t = (GLint)NUM2INT(arg3);
@@ -297,7 +297,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLshort t;
 	GLshort r;
 	GLshort q;
-	LOAD_GL_FUNC(glMultiTexCoord4s,1,3)
+	LOAD_GL_FUNC(glMultiTexCoord4s,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	s = (GLshort)NUM2INT(arg2);
 	t = (GLshort)NUM2INT(arg3);
@@ -373,7 +373,7 @@ gl_##_name_(obj,arg1) \
 VALUE obj,arg1; \
 { \
 	_type_ m[4*4]; \
-	LOAD_GL_FUNC(gl##_name_,2,0) \
+	LOAD_GL_FUNC(gl##_name_,"1.3") \
 	ary2cmat##_type_(arg1, m, 4, 4); \
 	fptr_gl##_name_(m); \
 	CHECK_GLERROR \
@@ -394,7 +394,7 @@ VALUE obj,arg1,arg2;
 {
 	GLclampf value;
 	GLboolean invert;
-	LOAD_GL_FUNC(glSampleCoverage,1,3)
+	LOAD_GL_FUNC(glSampleCoverage,"1.3")
 	value = (GLclampf)NUM2DBL(arg1);
 	invert = (GLboolean)NUM2INT(arg2);
 	fptr_glSampleCoverage(value,invert);
@@ -416,7 +416,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexImage3D,1,3)
+	LOAD_GL_FUNC(glCompressedTexImage3D,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
@@ -457,7 +457,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexImage2D,1,3)
+	LOAD_GL_FUNC(glCompressedTexImage2D,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
@@ -496,7 +496,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexImage1D,1,3)
+	LOAD_GL_FUNC(glCompressedTexImage1D,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
@@ -538,7 +538,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexSubImage3D,1,3)
+	LOAD_GL_FUNC(glCompressedTexSubImage3D,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -580,7 +580,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexSubImage2D,1,3)
+	LOAD_GL_FUNC(glCompressedTexSubImage2D,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -618,7 +618,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexSubImage1D,1,3)
+	LOAD_GL_FUNC(glCompressedTexSubImage1D,"1.3")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -655,7 +655,7 @@ VALUE obj;
 	VALUE data;
 	VALUE args[3];
 	int numargs;
-	LOAD_GL_FUNC(glGetCompressedTexImage,1,3)
+	LOAD_GL_FUNC(glGetCompressedTexImage,"1.3")
 	numargs = rb_scan_args(argc, argv, "21", &args[0], &args[1], &args[2]);
 	target = (GLenum)NUM2INT(args[0]);
 	lod = (GLenum)NUM2INT(args[1]);

@@ -21,7 +21,7 @@
 static void (APIENTRY * fptr_glStringMarkerGREMEDY)(GLsizei,const void *);
 static VALUE gl_StringMarkerGREMEDY(VALUE obj,VALUE arg1)
 {
-	LOAD_GL_EXT_FUNC(glStringMarkerGREMEDY,"GL_GREMEDY_string_marker")
+	LOAD_GL_FUNC(glStringMarkerGREMEDY,"GL_GREMEDY_string_marker")
 	Check_Type(arg1,T_STRING);
 	fptr_glStringMarkerGREMEDY(RSTRING(arg1)->len,RSTRING(arg1)->ptr);
 	CHECK_GLERROR
@@ -29,7 +29,7 @@ static VALUE gl_StringMarkerGREMEDY(VALUE obj,VALUE arg1)
 }
 
 /* #345 GL_GREMEDY_frame_terminator */
-GL_EXT_SIMPLE_FUNC_LOAD(FrameTerminatorGREMEDY,0,0,0,"GL_GREMEDY_frame_terminator")
+GL_SIMPLE_FUNC_LOAD(FrameTerminatorGREMEDY,0,0,0,"GL_GREMEDY_frame_terminator")
 
 
 void gl_init_functions_ext_gremedy(VALUE module)

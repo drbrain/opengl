@@ -19,8 +19,8 @@
 
 /* OpenGL 1.2 functions */
 
-GL_SIMPLE_FUNC_LOAD(BlendColor,4,GLclampf,NUM2DBL, 1,2)
-GL_SIMPLE_FUNC_LOAD(BlendEquation,1,GLenum,NUM2INT, 1,2)
+GL_SIMPLE_FUNC_LOAD(BlendColor,4,GLclampf,NUM2DBL, "1.2")
+GL_SIMPLE_FUNC_LOAD(BlendEquation,1,GLenum,NUM2INT, "1.2")
 
 static void (APIENTRY * fptr_glDrawRangeElements)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
 static VALUE
@@ -32,7 +32,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLuint end;
 	GLsizei count;
 	GLenum type;
-	LOAD_GL_FUNC(glDrawRangeElements,1,2)
+	LOAD_GL_FUNC(glDrawRangeElements,"1.2")
 	mode = (GLenum)NUM2INT(arg1);
 	start = (GLuint)NUM2UINT(arg2);
 	end = (GLuint)NUM2UINT(arg3);
@@ -58,7 +58,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLsizei width;
 	GLenum format;
 	GLenum type;
-	LOAD_GL_FUNC(glColorTable,1,2)
+	LOAD_GL_FUNC(glColorTable,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
 	width = (GLsizei)NUM2UINT(arg3);
@@ -83,7 +83,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum pname;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
-	LOAD_GL_FUNC(glColorTableParameterfv,1,2)
+	LOAD_GL_FUNC(glColorTableParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	Check_Type(arg3,T_ARRAY);
@@ -101,7 +101,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
-	LOAD_GL_FUNC(glColorTableParameteriv,1,2)
+	LOAD_GL_FUNC(glColorTableParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	Check_Type(arg3,T_ARRAY);
@@ -121,7 +121,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLint x;
 	GLint y;
 	GLsizei width;
-	LOAD_GL_FUNC(glCopyColorTable,1,2)
+	LOAD_GL_FUNC(glCopyColorTable,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
 	x = (GLint)NUM2INT(arg3);
@@ -143,7 +143,7 @@ VALUE obj,arg1,arg2;
 	GLsizei size;
 	VALUE retary;
 	int i;
-	LOAD_GL_FUNC(glGetColorTableParameterfv,1,2)
+	LOAD_GL_FUNC(glGetColorTableParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch (pname) {
@@ -174,7 +174,7 @@ VALUE obj,arg1,arg2;
 	GLsizei size;
 	VALUE retary;
 	int i;
-	LOAD_GL_FUNC(glGetColorTableParameteriv,1,2)
+	LOAD_GL_FUNC(glGetColorTableParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch (pname) {
@@ -204,8 +204,8 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum type;
 	GLsizei width = 0;
 	VALUE data;
-	LOAD_GL_FUNC(glGetColorTable,1,2)
-	LOAD_GL_FUNC(glGetColorTableParameteriv,1,2)
+	LOAD_GL_FUNC(glGetColorTable,"1.2")
+	LOAD_GL_FUNC(glGetColorTableParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	format = (GLenum)NUM2INT(arg2);
 	type = (GLenum)NUM2INT(arg3);
@@ -229,7 +229,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLsizei count;
 	GLenum format;
 	GLenum type;
-	LOAD_GL_FUNC(glColorSubTable,1,2)
+	LOAD_GL_FUNC(glColorSubTable,"1.2")
 	target = (GLenum)NUM2INT(arg1);	
 	start = (GLsizei)NUM2UINT(arg2);	
 	count = (GLsizei)NUM2UINT(arg3);	
@@ -256,7 +256,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLint x;
 	GLint y;
 	GLsizei width;
-	LOAD_GL_FUNC(glCopyColorSubTable,1,2)
+	LOAD_GL_FUNC(glCopyColorSubTable,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	start = (GLsizei)NUM2UINT(arg2);
 	x = (GLint)NUM2INT(arg3);
@@ -277,7 +277,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLsizei width;
 	GLenum format;
 	GLenum type;
-	LOAD_GL_FUNC(glConvolutionFilter1D,1,2)
+	LOAD_GL_FUNC(glConvolutionFilter1D,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
 	width = (GLsizei)NUM2UINT(arg3);
@@ -305,7 +305,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLsizei height;
 	GLenum format;
 	GLenum type;
-	LOAD_GL_FUNC(glConvolutionFilter2D,1,2)
+	LOAD_GL_FUNC(glConvolutionFilter2D,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
 	width = (GLsizei)NUM2UINT(arg3);
@@ -331,7 +331,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum pname;
 	GLfloat params;
-	LOAD_GL_FUNC(glConvolutionParameterf,1,2)
+	LOAD_GL_FUNC(glConvolutionParameterf,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	params = (GLfloat)NUM2INT(arg3);
@@ -348,7 +348,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum pname;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
-	LOAD_GL_FUNC(glConvolutionParameterfv,1,2)
+	LOAD_GL_FUNC(glConvolutionParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	Check_Type(arg3,T_ARRAY);
@@ -366,7 +366,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum pname;
 	GLint params;
-	LOAD_GL_FUNC(glConvolutionParameteri,1,2)
+	LOAD_GL_FUNC(glConvolutionParameteri,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	params = (GLint)NUM2INT(arg3);
@@ -383,7 +383,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
-	LOAD_GL_FUNC(glConvolutionParameteriv,1,2)
+	LOAD_GL_FUNC(glConvolutionParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	Check_Type(arg3,T_ARRAY);
@@ -403,7 +403,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLint x;
 	GLint y;
 	GLsizei width;
-	LOAD_GL_FUNC(glCopyConvolutionFilter1D,1,2)
+	LOAD_GL_FUNC(glCopyConvolutionFilter1D,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
 	x = (GLint)NUM2INT(arg3);
@@ -425,7 +425,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLint y;
 	GLsizei width;
 	GLsizei height;
-	LOAD_GL_FUNC(glCopyConvolutionFilter2D,1,2)
+	LOAD_GL_FUNC(glCopyConvolutionFilter2D,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
 	x = (GLint)NUM2INT(arg3);
@@ -448,7 +448,7 @@ VALUE obj,arg1,arg2;
 	GLsizei size;
 	int i;
 	VALUE retary;	
-	LOAD_GL_FUNC(glGetConvolutionParameterfv,1,2)
+	LOAD_GL_FUNC(glGetConvolutionParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
@@ -480,7 +480,7 @@ VALUE obj,arg1,arg2;
 	GLsizei size;
 	int i;
 	VALUE retary;	
-	LOAD_GL_FUNC(glGetConvolutionParameteriv,1,2)
+	LOAD_GL_FUNC(glGetConvolutionParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
@@ -515,8 +515,8 @@ VALUE obj;
 	VALUE data;
 	VALUE args[4];
 	int numargs;
-	LOAD_GL_FUNC(glGetConvolutionFilter,1,2)
-	LOAD_GL_FUNC(glGetConvolutionParameteriv,1,2)
+	LOAD_GL_FUNC(glGetConvolutionFilter,"1.2")
+	LOAD_GL_FUNC(glGetConvolutionParameteriv,"1.2")
 	numargs = rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2], &args[3]);
 	target = (GLenum)NUM2INT(args[0]);
 	format = (GLenum)NUM2INT(args[1]);
@@ -572,8 +572,8 @@ VALUE obj;
 	VALUE retary;
 	VALUE args[6];
 	int numargs;
-	LOAD_GL_FUNC(glGetSeparableFilter,1,2)
-	LOAD_GL_FUNC(glGetConvolutionParameteriv,1,2)
+	LOAD_GL_FUNC(glGetSeparableFilter,"1.2")
+	LOAD_GL_FUNC(glGetConvolutionParameteriv,"1.2")
 	numargs = rb_scan_args(argc, argv, "33", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5]);
 	target = (GLenum)NUM2INT(args[0]);
 	format = (GLenum)NUM2INT(args[1]);
@@ -621,7 +621,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	GLsizei height;
 	GLenum format;
 	GLenum type;
-	LOAD_GL_FUNC(glSeparableFilter2D,1,2)
+	LOAD_GL_FUNC(glSeparableFilter2D,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
 	width = (GLsizei)NUM2UINT(arg3);
@@ -650,7 +650,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum pname;
 	GLfloat params = 0.0;
 	VALUE retary;	
-	LOAD_GL_FUNC(glGetHistogramParameterfv,1,2)
+	LOAD_GL_FUNC(glGetHistogramParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetHistogramParameterfv(target,pname,&params);
@@ -669,7 +669,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum pname;
 	GLint params = 0;
 	VALUE retary;	
-	LOAD_GL_FUNC(glGetHistogramParameteriv,1,2)
+	LOAD_GL_FUNC(glGetHistogramParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetHistogramParameteriv(target,pname,&params);
@@ -694,8 +694,8 @@ VALUE obj;
 	VALUE data;
 	VALUE args[5];
 	int numargs;
-	LOAD_GL_FUNC(glGetHistogram,1,2)
-	LOAD_GL_FUNC(glGetHistogramParameteriv,1,2)
+	LOAD_GL_FUNC(glGetHistogram,"1.2")
+	LOAD_GL_FUNC(glGetHistogramParameteriv,"1.2")
 	numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
 	target = (GLenum)NUM2INT(args[0]);
 	reset = (GLboolean)NUM2INT(args[1]);
@@ -743,7 +743,7 @@ VALUE obj;
 	VALUE data;
 	VALUE args[5];
 	int numargs;
-	LOAD_GL_FUNC(glGetMinmax,1,2)
+	LOAD_GL_FUNC(glGetMinmax,"1.2")
 	numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
 	target = (GLenum)NUM2INT(args[0]);
 	reset = (GLboolean)NUM2INT(args[1]);
@@ -784,7 +784,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params = 0.0;
 	VALUE retary;	
-	LOAD_GL_FUNC(glGetMinmaxParameterfv,1,2)
+	LOAD_GL_FUNC(glGetMinmaxParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetMinmaxParameterfv(target,pname,&params);
@@ -803,7 +803,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params = 0;
 	VALUE retary;	
-	LOAD_GL_FUNC(glGetMinmaxParameteriv,1,2)
+	LOAD_GL_FUNC(glGetMinmaxParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetMinmaxParameteriv(target,pname,&params);
@@ -822,7 +822,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLsizei width;
 	GLenum internalformat;
 	GLboolean sink;
-	LOAD_GL_FUNC(glHistogram,1,2)
+	LOAD_GL_FUNC(glHistogram,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	width = (GLsizei)NUM2UINT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
@@ -840,7 +840,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum internalformat;
 	GLboolean sink;
-	LOAD_GL_FUNC(glMinmax,1,2)
+	LOAD_GL_FUNC(glMinmax,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	internalformat = (GLenum)NUM2INT(arg2);
 	sink = (GLboolean)NUM2INT(arg3);
@@ -855,7 +855,7 @@ gl_ResetHistogram(obj,arg1)
 VALUE obj,arg1;
 {
 	GLenum target;
-	LOAD_GL_FUNC(glResetHistogram,1,2)
+	LOAD_GL_FUNC(glResetHistogram,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	fptr_glResetHistogram(target);
 	CHECK_GLERROR
@@ -868,7 +868,7 @@ gl_ResetMinmax(obj,arg1)
 VALUE obj,arg1;
 {
 	GLenum target;
-	LOAD_GL_FUNC(glResetMinmax,1,2)
+	LOAD_GL_FUNC(glResetMinmax,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	fptr_glResetMinmax(target);
 	CHECK_GLERROR
@@ -890,7 +890,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	GLenum format;
 	GLenum type;
 	const char *pixels;
-	LOAD_GL_FUNC(glTexImage3D,1,2)
+	LOAD_GL_FUNC(glTexImage3D,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalFormat = (GLint)NUM2INT(arg3);
@@ -940,7 +940,7 @@ VALUE arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	GLsizei depth;
 	GLenum format;
 	GLenum type;
-	LOAD_GL_FUNC(glTexSubImage3D,1,2)
+	LOAD_GL_FUNC(glTexSubImage3D,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -980,7 +980,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLint y;
 	GLsizei width;
 	GLsizei height;
-	LOAD_GL_FUNC(glCopyTexSubImage3D,1,2)
+	LOAD_GL_FUNC(glCopyTexSubImage3D,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
