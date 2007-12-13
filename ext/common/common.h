@@ -50,6 +50,9 @@
 #include "glu-enums.h"
 #include "gl-error.h"
 
+#include "funcdef.h"
+#include "conv.h"
+
 #ifndef APIENTRY
 #define APIENTRY
 #endif
@@ -79,20 +82,6 @@ typedef struct RArray RArray;
 
 extern VALUE cProc;
 
-/* will load function pointer for function _NAME_ on first call to the
-  function, or raise if the OpenGL version is less then required or the
-  required extension is not supported */
-#define LOAD_GL_FUNC(_NAME_,_VEREXT_) \
-if (fptr_##_NAME_==NULL) { \
-	if (CheckVersionExtension(_VEREXT_)==GL_FALSE) { \
-		if (isdigit(_VEREXT_[0])) \
-			rb_raise(rb_eNotImpError,"OpenGL version %s is not available on this system",_VEREXT_); \
-		else \
-			rb_raise(rb_eNotImpError,"Extension %s is not available on this system",_VEREXT_); \
-	} \
-	fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
-}
-
 /* For now we do not honor pixel store modes, so we need to
   force them to defaults on each affected function call for
   correct size requirement calculations */
@@ -116,90 +105,6 @@ GLboolean CheckVersionExtension(const char *name);
 GLint CheckBufferBinding(GLint buffer);
 
 /* -------------------------------------------------------------------- */
-#ifndef NUM2DBL
-#define NUM2DBL(_val) num2double(_val) 
-
-static inline double num2double( VALUE val )
-{
-    struct RFloat* flt;
-    if (NIL_P(val)) return 0;
-    flt = RFLOAT(f_float(0, val));
-    return flt->value;
-}
-#endif
-
-#define GLBOOL2RUBY(x) (x)==GL_TRUE? Qtrue : Qfalse
-#define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
-
-/* -------------------------------------------------------------------- */
-#define ARY2INTEGRAL(_type_,_convert_) \
-static inline int ary2c##_type_( arg, cary, maxlen ) \
-VALUE arg; \
-GL##_type_ cary[]; \
-int maxlen; \
-{ \
-    int i; \
-    struct RArray* ary; \
-    VALUE entry; \
-    ary = RARRAY(rb_Array(arg)); \
-    if (maxlen < 1) \
-        maxlen = ary->len; \
-    else \
-        maxlen = maxlen < ary->len ? maxlen : ary->len; \
-    for (i=0; i < maxlen; i++) \
-    { \
-        entry = rb_ary_entry((VALUE)ary,i); \
-        cary[i] = (GL##_type_)_convert_(entry); \
-    } \
-    return i; \
-}
-
-ARY2INTEGRAL(int,NUM2INT)
-ARY2INTEGRAL(uint,NUM2UINT)
-ARY2INTEGRAL(byte,NUM2INT)
-ARY2INTEGRAL(ubyte,NUM2INT)
-ARY2INTEGRAL(short,NUM2INT)
-ARY2INTEGRAL(ushort,NUM2INT)
-ARY2INTEGRAL(boolean,NUM2INT)
-#undef ARY2INTEGRAL
-
-/* -------------------------------------------------------------------- */
-static inline int ary2cflt(arg, cary, maxlen)
-VALUE arg;
-float cary[];
-int maxlen;
-{
-    int i;
-    struct RArray* ary;
-    ary = RARRAY(rb_Array(arg));
-    if (maxlen < 1)
-        maxlen = ary->len;
-    else
-        maxlen = maxlen < ary->len ? maxlen : ary->len;
-    for (i=0; i < maxlen; i++)
-        cary[i] = (float)NUM2DBL(rb_ary_entry((VALUE)ary,i));
-    return i;
-}
-
-/* -------------------------------------------------------------------- */
-static inline int ary2cdbl(arg, cary, maxlen)
-VALUE arg;
-double cary[];
-int maxlen;
-{
-    int i;
-    struct RArray* ary;
-    ary = RARRAY(rb_Array(arg));
-    if (maxlen < 1)
-        maxlen = ary->len;
-    else
-        maxlen = maxlen < ary->len ? maxlen : ary->len;
-    for (i=0; i < maxlen; i++)
-        cary[i] = NUM2DBL(rb_ary_entry((VALUE)ary,i));
-    return i;
-}
-
-/* -------------------------------------------------------------------- */
 /* Array.flatten */
 static inline void mary2ary(src, ary)
 VALUE src;
@@ -216,30 +121,6 @@ VALUE ary;
             rb_ary_push(ary, tmp_ary->ptr[i]);
     }
 }
-
-/* -------------------------------------------------------------------- */
-/* converts either array or object responding to #to_a to C-style array */
-#define ARY2CMAT(_type_) \
-static inline void ary2cmat##_type_(rary, cary, cols, rows) \
-VALUE rary; \
-_type_ cary[]; \
-int cols,rows; \
-{ \
-	int i; \
-\
-	rary = rb_Array(rary); \
-	rary = rb_funcall(rary,rb_intern("flatten"),0); \
-\
-	if (RARRAY(rary)->len != cols*rows) \
-		rb_raise(rb_eArgError, "passed array/matrix must have %i*%i elements",cols,rows); \
-\
-	for (i=0; i < cols*rows; i++) \
-		cary[i] = (_type_) NUM2DBL(rb_ary_entry(rary,i)); \
-}
-
-ARY2CMAT(double)
-ARY2CMAT(float)
-#undef ARY2CMAT
 
 /* -------------------------------------------------------------------- */
 
@@ -532,57 +413,5 @@ static inline void *load_gl_function(const char *name,int raise)
 }
 
 /* -------------------------------------------------------------------- */
-
-/* Macroset for defining simple functions, i.e. functions that take n arguments of
-  the same type and pass them to GL API function without any additional processing.
-
-  Some checking is implicit in _conversion_ argument - e.g. NUM2INT makes sure that
-  user is really passing type that can be converted to INT, otherwire raises. */
-
-#define ARGLIST0 
-#define ARGLIST1 ,arg1
-#define ARGLIST2 ,arg1,arg2
-#define ARGLIST3 ,arg1,arg2,arg3
-#define ARGLIST4 ,arg1,arg2,arg3,arg4
-#define ARGLIST5 ,arg1,arg2,arg3,arg4,arg5
-#define ARGLIST6 ,arg1,arg2,arg3,arg4,arg5,arg6
-
-#define TYPELIST0(_ctype_) void
-#define TYPELIST1(_ctype_) _ctype_
-#define TYPELIST2(_ctype_) _ctype_,_ctype_
-#define TYPELIST3(_ctype_) _ctype_,_ctype_,_ctype_
-#define TYPELIST4(_ctype_) _ctype_,_ctype_,_ctype_,_ctype_
-#define TYPELIST5(_ctype_) _ctype_,_ctype_,_ctype_,_ctype_,_ctype_
-#define TYPELIST6(_ctype_) _ctype_,_ctype_,_ctype_,_ctype_,_ctype_,_ctype_
-
-#define FUNCPARAMS0(_ctype_,_conversion_) 
-#define FUNCPARAMS1(_ctype_,_conversion_) (_ctype_)_conversion_(arg1)
-#define FUNCPARAMS2(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2)
-#define FUNCPARAMS3(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2),(_ctype_)_conversion_(arg3)
-#define FUNCPARAMS4(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2),(_ctype_)_conversion_(arg3),(_ctype_)_conversion_(arg4)
-#define FUNCPARAMS5(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2),(_ctype_)_conversion_(arg3),(_ctype_)_conversion_(arg4),(_ctype_)_conversion_(arg5)
-#define FUNCPARAMS6(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2),(_ctype_)_conversion_(arg3),(_ctype_)_conversion_(arg4),(_ctype_)_conversion_(arg5),(_ctype_)_conversion_(arg6)
-
-#define GL_SIMPLE_FUNC(_name_,_numparams_,_ctype_,_conversion_) \
-static VALUE \
-gl_##_name_(obj ARGLIST##_numparams_) \
-VALUE obj ARGLIST##_numparams_; \
-{ \
-	gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
-	CHECK_GLERROR \
-	return Qnil; \
-} 
-
-#define GL_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_,_ver_) \
-static void (APIENTRY * fptr_gl##_name_)( TYPELIST##_numparams_(_ctype_) ); \
-static VALUE \
-gl_##_name_(obj ARGLIST##_numparams_) \
-VALUE obj ARGLIST##_numparams_; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,_ver_) \
-	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
-	CHECK_GLERROR \
-	return Qnil; \
-} 
 
 #endif /* _COMMON_H_ */
