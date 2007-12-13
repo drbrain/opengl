@@ -13,15 +13,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# This Rakefile currently only deals with generating docs and uploading
-# the web site. The actual modules are build using mkrf and, for now,
-# the top-level build.sh script.
-
-#====================================================================
-# Generate html docs from the markdown source and upload to the site.
-# All doc files that are destined for the website have filenames that
-# end in .txt.
-
 begin
     require 'rubygems'
 rescue LoadError
@@ -34,6 +25,10 @@ require 'rake/gempackagetask'
 require 'rake/testtask'
 
 require 'mkrf/rakehelper'
+
+# Generate html docs from the markdown source and upload to the site.
+# All doc files that are destined for the website have filenames that
+# end in .txt.
 
 WEBSITE_MKDN = FileList['./doc/*.txt'] << 'README.txt'
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
