@@ -16,17 +16,21 @@
 /* Functions and macros for datatype conversion between Ruby and C */
 
 /* -------------------------------------------------------------------- */
-#ifndef NUM2DBL
-#define NUM2DBL(_val) num2double(_val) 
-
-static inline double num2double( VALUE val )
+#undef NUM2DBL
+#define NUM2DBL num2double
+static inline double
+num2double(val)
+VALUE val;
 {
-    struct RFloat* flt;
-    if (NIL_P(val)) return 0;
-    flt = RFLOAT(f_float(0, val));
-    return flt->value;
+	if (FIXNUM_P(val))
+		return (GLdouble) FIX2LONG(val);
+
+	if (TYPE(val) == T_FLOAT)
+		return RFLOAT(val)->value;
+
+	return NUM2DBL(val);
 }
-#endif
+
 
 #define GLBOOL2RUBY(x) (x)==GL_TRUE? Qtrue : Qfalse
 #define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
