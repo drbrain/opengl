@@ -28,7 +28,7 @@ VALUE val;
 	if (TYPE(val) == T_FLOAT)
 		return RFLOAT(val)->value;
 
-	return NUM2DBL(val);
+	return (rb_num2dbl(val));
 }
 
 
