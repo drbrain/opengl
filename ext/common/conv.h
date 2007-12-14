@@ -15,28 +15,58 @@
 
 /* Functions and macros for datatype conversion between Ruby and C */
 
-/* -------------------------------------------------------------------- */
-#undef NUM2DBL
-#define NUM2DBL num2double
-static inline double
-num2double(val)
-VALUE val;
-{
-	if (FIXNUM_P(val))
-		return (GLdouble) FIX2LONG(val);
+/*
+   Fast inline conversion functions as a replacement for the ones in libruby.
+   FIXNUM_P is simple logical AND check so it comes first, TYPE() is simple function,
+   and specified in header file so it can be inlined. For conversion, FIX2LONG is
+   simple right shift, and RFLOAT()-> just pointer dereference. For converting
+   Fixnum and Float types (which accounts for 99.9% of things you would want to pass
+   to OpenGL), there is large performance boost as result.
 
-	if (TYPE(val) == T_FLOAT)
-		return RFLOAT(val)->value;
-
-	return (rb_num2dbl(val));
+	 Also ruby 'true' and 'false' are converted to GL_TRUE/GL_FALSE for compatibility, and
+	 finally, we fallback to library functions for any other data types (and error handling).
+*/
+#define FASTCONV(_name_,_type_,_convfix_,_convfallback_) \
+static inline _type_ _name_(val) \
+VALUE val; \
+{ \
+	if (FIXNUM_P(val)) \
+		return (_type_) _convfix_(val); \
+\
+	if (TYPE(val) == T_FLOAT) \
+		return (_type_)(RFLOAT(val)->value); \
+\
+	if ((val) == Qtrue) \
+		return (_type_)(GL_TRUE); \
+\
+	if ((val) == Qfalse || (val) == Qnil) \
+		return (_type_)(GL_FALSE); \
+\
+	return (_convfallback_(val)); \
 }
 
+FASTCONV(num2double,double,FIX2LONG,rb_num2dbl)
+FASTCONV(num2int,long,FIX2LONG,rb_num2int)
+FASTCONV(num2uint,unsigned long,FIX2ULONG,rb_num2uint)
 
+#undef NUM2DBL
+#define NUM2DBL num2double
+
+#undef NUM2INT
+#define NUM2INT num2int
+
+#undef NUM2UINT
+#define NUM2UINT num2uint
+
+#undef FASTCONV
+
+/* For conversion between ruby and GL boolean values */
 #define GLBOOL2RUBY(x) (x)==GL_TRUE? Qtrue : Qfalse
 #define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
 
-/* -------------------------------------------------------------------- */
-#define ARY2INTEGRAL(_type_,_convert_) \
+/* For conversion between ruby array (or object that can be converted to array) and C array.
+   The C array has to be preallocated by calling function. */
+#define ARY2CTYPE(_type_,_convert_) \
 static inline int ary2c##_type_( arg, cary, maxlen ) \
 VALUE arg; \
 GL##_type_ cary[]; \
@@ -44,64 +74,30 @@ int maxlen; \
 { \
     int i; \
     struct RArray* ary; \
-    VALUE entry; \
     ary = RARRAY(rb_Array(arg)); \
     if (maxlen < 1) \
         maxlen = ary->len; \
     else \
         maxlen = maxlen < ary->len ? maxlen : ary->len; \
     for (i=0; i < maxlen; i++) \
-    { \
-        entry = rb_ary_entry((VALUE)ary,i); \
-        cary[i] = (GL##_type_)_convert_(entry); \
-    } \
+        cary[i] = (GL##_type_)_convert_(rb_ary_entry((VALUE)ary,i)); \
     return i; \
 }
 
-ARY2INTEGRAL(int,NUM2INT)
-ARY2INTEGRAL(uint,NUM2UINT)
-ARY2INTEGRAL(byte,NUM2INT)
-ARY2INTEGRAL(ubyte,NUM2INT)
-ARY2INTEGRAL(short,NUM2INT)
-ARY2INTEGRAL(ushort,NUM2INT)
-ARY2INTEGRAL(boolean,NUM2INT)
-#undef ARY2INTEGRAL
+ARY2CTYPE(int,NUM2INT)
+ARY2CTYPE(uint,NUM2UINT)
+ARY2CTYPE(byte,NUM2INT)
+ARY2CTYPE(ubyte,NUM2INT)
+ARY2CTYPE(short,NUM2INT)
+ARY2CTYPE(ushort,NUM2INT)
+ARY2CTYPE(boolean,NUM2INT)
+ARY2CTYPE(float,NUM2DBL)
+ARY2CTYPE(double,NUM2DBL)
 
-/* -------------------------------------------------------------------- */
-static inline int ary2cflt(arg, cary, maxlen)
-VALUE arg;
-float cary[];
-int maxlen;
-{
-    int i;
-    struct RArray* ary;
-    ary = RARRAY(rb_Array(arg));
-    if (maxlen < 1)
-        maxlen = ary->len;
-    else
-        maxlen = maxlen < ary->len ? maxlen : ary->len;
-    for (i=0; i < maxlen; i++)
-        cary[i] = (float)NUM2DBL(rb_ary_entry((VALUE)ary,i));
-    return i;
-}
+#define ary2cflt ary2cfloat
+#define ary2cdbl ary2cdouble
 
-/* -------------------------------------------------------------------- */
-static inline int ary2cdbl(arg, cary, maxlen)
-VALUE arg;
-double cary[];
-int maxlen;
-{
-    int i;
-    struct RArray* ary;
-    ary = RARRAY(rb_Array(arg));
-    if (maxlen < 1)
-        maxlen = ary->len;
-    else
-        maxlen = maxlen < ary->len ? maxlen : ary->len;
-    for (i=0; i < maxlen; i++)
-        cary[i] = NUM2DBL(rb_ary_entry((VALUE)ary,i));
-    return i;
-}
+#undef ARY2CTYPE
 
 /* Converts either array or object responding to #to_a to C-style array */
 #define ARY2CMAT(_type_) \
