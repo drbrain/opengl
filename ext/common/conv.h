@@ -46,8 +46,13 @@ VALUE val; \
 }
 
 FASTCONV(num2double,double,FIX2LONG,rb_num2dbl)
+#if SIZEOF_INT < SIZEOF_LONG
 FASTCONV(num2int,long,FIX2LONG,rb_num2int)
 FASTCONV(num2uint,unsigned long,FIX2ULONG,rb_num2uint)
+#else
+FASTCONV(num2int,long,FIX2LONG,(int)NUM2LONG)
+FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG(x))
+#endif
 
 #undef NUM2DBL
 #define NUM2DBL num2double
