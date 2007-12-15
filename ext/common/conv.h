@@ -51,7 +51,7 @@ FASTCONV(num2int,long,FIX2LONG,rb_num2int)
 FASTCONV(num2uint,unsigned long,FIX2ULONG,rb_num2uint)
 #else
 FASTCONV(num2int,long,FIX2LONG,(int)NUM2LONG)
-FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG(x))
+FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG)
 #endif
 
 #undef NUM2DBL
