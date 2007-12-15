@@ -34,7 +34,7 @@ WEBSITE_MKDN = FileList['./doc/*.txt'] << 'README.txt'
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 
 # defines columns in the HTML extension list
-GLEXT_VERSIONS = ["svn","0.50"]
+GLEXT_VERSIONS = ["svn","0.60","0.50"]
 
 CLEAN.include("ext/gl*/Rakefile", "ext/*/mkrf.log", "ext/*/*.so", 
               "ext/**/*.bundle", "lib/*.so", "lib/*.bundle", "ext/*/*.o{,bj}", 
@@ -44,6 +44,7 @@ CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
                 "doc/*.html", "website/*.html", "website/images/*")
 # Make sure these files aren't deleted in a clobber op
 CLOBBER.exclude("website/images/tab_bottom.gif")
+CLOBBER.exclude("website/images/*.jpg")
 
 setup_extension('gl', 'gl')
 setup_extension('glu', 'glu')

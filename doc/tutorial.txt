@@ -219,7 +219,7 @@ Reverse works just the same:
 <a name="error_checking"></a>
 Error Checking
 --------------
-Starting with version 0.60.0, ruby-opengl provides automatic checking of OpenGL errors.
+Starting with version 0.60.0, ruby-opengl performs automatic checking of OpenGL errors.
 Functions:
 
 	{{ruby}}
@@ -227,7 +227,7 @@ Functions:
 	Gl.disable_error_checking
 	Gl.is_error_checking_enabled? # true/false
 
-When the checking is enabled, glGetError() is executed after each OpenGL call, and should error
+When the checking is enabled (default), glGetError() is executed after each OpenGL call, and should error
 occur, Gl::Error exception is raised:
 
 	{{ruby}}
@@ -246,8 +246,9 @@ occur, Gl::Error exception is raised:
 		...
 	end
 
-It is usually good idea to enable error checking for all your code, as OpenGL errors have habit to pop-up in
-unexpected places, and the performance hit per each OpenGL call isn't that big in Ruby.
+It is usually good idea to leave error checking on for all your code, as OpenGL errors have habit to pop-up in
+unexpected places. For now there is no measurable performance hit for error checking, although this may change
+in future ruby implementations.
 
 <a name="examples"></a>
 The Examples

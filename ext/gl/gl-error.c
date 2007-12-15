@@ -15,7 +15,7 @@
 
 #include "../common/common.h"
 
-VALUE error_checking = Qfalse;
+VALUE error_checking = Qtrue;
 
 VALUE Class_GLError;
 
@@ -30,7 +30,8 @@ void check_for_glerror(void)
 	} else { /* process errors */
 		char *error_string;
 		int queued_errors = 0;
-		char message[256];
+		const int bufsize = 256;
+		char message[bufsize];
 		VALUE exc;
 	
 		/* check for queued errors */
@@ -52,9 +53,9 @@ void check_for_glerror(void)
 		}
 		
 		if (queued_errors==0) {
-			snprintf(message,256,"%s",error_string);
+			snprintf(message,bufsize,"%s",error_string);
 		} else {
-			snprintf(message,256,"%s [%i queued error(s) cleaned]",error_string,queued_errors);
+			snprintf(message,bufsize,"%s [%i queued error(s) cleaned]",error_string,queued_errors);
 		}
 
 		exc = rb_funcall(Class_GLError, rb_intern("new"), 2, rb_str_new2(message), INT2NUM(error));
@@ -91,7 +92,7 @@ void gl_init_error(VALUE module)
 {
 	Class_GLError = rb_define_class_under(module, "Error", rb_eStandardError);
 
-	rb_define_method(Class_GLError, "initialize", GLError_initialize, 2); 
+	rb_define_method(Class_GLError, "initialize", GLError_initialize, 2);
 	rb_define_attr(Class_GLError, "id", 1, 0);
 
 	rb_define_module_function(module, "enable_error_checking", enable_error_checking, 0);
