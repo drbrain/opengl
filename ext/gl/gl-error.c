@@ -19,6 +19,8 @@ VALUE error_checking = Qtrue;
 
 VALUE Class_GLError;
 
+#define BUFSIZE 256
+
 void check_for_glerror(void)
 {
 	GLenum error;
@@ -28,10 +30,9 @@ void check_for_glerror(void)
 	if (error==GL_NO_ERROR) { /* no errors == instant return */
 		return;
 	} else { /* process errors */
-		char *error_string;
+		const char *error_string;
 		int queued_errors = 0;
-		const int bufsize = 256;
-		char message[bufsize];
+		char message[BUFSIZE];
 		VALUE exc;
 	
 		/* check for queued errors */
@@ -53,9 +54,9 @@ void check_for_glerror(void)
 		}
 		
 		if (queued_errors==0) {
-			snprintf(message,bufsize,"%s",error_string);
+			snprintf(message,BUFSIZE,"%s",error_string);
 		} else {
-			snprintf(message,bufsize,"%s [%i queued error(s) cleaned]",error_string,queued_errors);
+			snprintf(message,BUFSIZE,"%s [%i queued error(s) cleaned]",error_string,queued_errors);
 		}
 
 		exc = rb_funcall(Class_GLError, rb_intern("new"), 2, rb_str_new2(message), INT2NUM(error));

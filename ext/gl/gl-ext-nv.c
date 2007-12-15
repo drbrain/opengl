@@ -219,7 +219,7 @@ static VALUE gl_ExecuteProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 extern VALUE g_VertexAttrib_ptr[];
 
 static void (APIENTRY * fptr_glVertexAttribPointerNV)(GLuint,GLint,GLenum,GLsizei,const GLvoid *);
-static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5,VALUE arg6)
+static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
 {
 	GLuint index;
 	GLuint size;

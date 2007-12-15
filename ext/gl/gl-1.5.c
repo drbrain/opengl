@@ -132,8 +132,8 @@ VALUE obj,arg1,arg2;
 
 static void (APIENTRY * fptr_glGetQueryObjectuiv)(GLuint,GLenum,GLuint *);
 static VALUE
-gl_GetQueryObjectuiv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
+gl_GetQueryObjectuiv(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
 {
 	GLuint id;
 	GLenum pname;
