@@ -19,8 +19,19 @@
 
 /* OpenGL 1.2 functions */
 
-GL_SIMPLE_FUNC_LOAD(BlendColor,4,GLclampf,NUM2DBL, "1.2")
-GL_SIMPLE_FUNC_LOAD(BlendEquation,1,GLenum,NUM2INT, "1.2")
+GL_FUNC_LOAD_4(BlendColor,GLvoid, GLclampf,GLclampf,GLclampf,GLclampf, "1.2")
+GL_FUNC_LOAD_1(BlendEquation,GLvoid, GLenum, "1.2")
+GL_FUNC_LOAD_5(CopyColorTable,GLvoid, GLenum,GLenum,GLint,GLint,GLsizei, "1.2")
+GL_FUNC_LOAD_5(CopyColorSubTable,GLvoid, GLenum,GLsizei,GLint,GLint,GLsizei, "1.2")
+GL_FUNC_LOAD_3(ConvolutionParameterf,GLvoid, GLenum,GLenum,GLfloat, "1.2")
+GL_FUNC_LOAD_3(ConvolutionParameteri,GLvoid, GLenum,GLenum,GLint, "1.2")
+GL_FUNC_LOAD_5(CopyConvolutionFilter1D,GLvoid, GLenum,GLenum,GLint,GLint,GLsizei, "1.2")
+GL_FUNC_LOAD_6(CopyConvolutionFilter2D,GLvoid, GLenum,GLenum,GLint,GLint,GLsizei,GLsizei, "1.2")
+GL_FUNC_LOAD_4(Histogram,GLvoid, GLenum,GLsizei,GLenum,GLboolean, "1.2")
+GL_FUNC_LOAD_3(Minmax,GLvoid, GLenum,GLenum,GLboolean, "1.2")
+GL_FUNC_LOAD_1(ResetHistogram,GLvoid, GLenum, "1.2")
+GL_FUNC_LOAD_1(ResetMinmax,GLvoid, GLenum, "1.2")
+GL_FUNC_LOAD_9(CopyTexSubImage3D,GLvoid, GLenum,GLint,GLint,GLint,GLint,GLint,GLint,GLsizei,GLsizei, "1.2")
 
 static void (APIENTRY * fptr_glDrawRangeElements)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
 static VALUE
@@ -111,26 +122,6 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glCopyColorTable)(GLenum,GLenum,GLint,GLint,GLsizei);
-static VALUE
-gl_CopyColorTable(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLenum target;
-	GLenum internalformat;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	LOAD_GL_FUNC(glCopyColorTable,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	internalformat = (GLenum)NUM2INT(arg2);
-	x = (GLint)NUM2INT(arg3);
-	y = (GLint)NUM2INT(arg4);
-	width = (GLsizei)NUM2INT(arg5);
-	fptr_glCopyColorTable(target,internalformat,x,y,width);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static void (APIENTRY * fptr_glGetColorTableParameterfv)(GLenum,GLenum,GLfloat *);
 static VALUE
@@ -246,27 +237,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glCopyColorSubTable)(GLenum,GLsizei,GLint,GLint,GLsizei);
-static VALUE
-gl_CopyColorSubTable(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLenum target;
-	GLsizei start;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	LOAD_GL_FUNC(glCopyColorSubTable,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	start = (GLsizei)NUM2UINT(arg2);
-	x = (GLint)NUM2INT(arg3);
-	y = (GLint)NUM2INT(arg4);
-	width = (GLsizei)NUM2UINT(arg5);
-	fptr_glCopyColorSubTable(target,start,x,y,width);
-	CHECK_GLERROR
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glConvolutionFilter1D)(GLenum,GLenum,GLsizei,GLenum,GLenum,const GLvoid *);
 static VALUE
 gl_ConvolutionFilter1D(obj,arg1,arg2,arg3,arg4,arg5,arg6)
@@ -323,23 +293,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glConvolutionParameterf)(GLenum,GLenum,GLfloat);
-static VALUE
-gl_ConvolutionParameterf(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLfloat params;
-	LOAD_GL_FUNC(glConvolutionParameterf,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	params = (GLfloat)NUM2INT(arg3);
-	fptr_glConvolutionParameterf(target,pname,params);
-	CHECK_GLERROR
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glConvolutionParameterfv)(GLenum,GLenum,const GLfloat *);
 static VALUE
 gl_ConvolutionParameterfv(obj,arg1,arg2,arg3)
@@ -358,23 +311,6 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glConvolutionParameteri)(GLenum,GLenum,GLint);
-static VALUE
-gl_ConvolutionParameteri(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLint params;
-	LOAD_GL_FUNC(glConvolutionParameteri,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	params = (GLint)NUM2INT(arg3);
-	fptr_glConvolutionParameteri(target,pname,params);
-	CHECK_GLERROR
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glConvolutionParameteriv)(GLenum,GLenum,const GLint *);
 static VALUE
 gl_ConvolutionParameteriv(obj,arg1,arg2,arg3)
@@ -389,50 +325,6 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	fptr_glConvolutionParameteriv(target,pname,params);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glCopyConvolutionFilter1D)(GLenum,GLenum,GLint,GLint,GLsizei);
-static VALUE
-gl_CopyConvolutionFilter1D(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLenum target;
-	GLenum internalformat;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	LOAD_GL_FUNC(glCopyConvolutionFilter1D,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	internalformat = (GLenum)NUM2INT(arg2);
-	x = (GLint)NUM2INT(arg3);
-	y = (GLint)NUM2INT(arg4);
-	width = (GLsizei)NUM2UINT(arg5);
-	fptr_glCopyConvolutionFilter1D(target,internalformat,x,y,width);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glCopyConvolutionFilter2D)(GLenum,GLenum,GLint,GLint,GLsizei,GLsizei);
-static VALUE
-gl_CopyConvolutionFilter2D(obj,arg1,arg2,arg3,arg4,arg5,arg6)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
-{
-	GLenum target;
-	GLenum internalformat;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	GLsizei height;
-	LOAD_GL_FUNC(glCopyConvolutionFilter2D,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	internalformat = (GLenum)NUM2INT(arg2);
-	x = (GLint)NUM2INT(arg3);
-	y = (GLint)NUM2INT(arg4);
-	width = (GLsizei)NUM2UINT(arg5);
-	height = (GLsizei)NUM2UINT(arg6);
-	fptr_glCopyConvolutionFilter2D(target,internalformat,x,y,width,height);
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -813,68 +705,6 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (APIENTRY * fptr_glHistogram)(GLenum,GLsizei,GLenum,GLboolean);
-static VALUE
-gl_Histogram(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLenum target;
-	GLsizei width;
-	GLenum internalformat;
-	GLboolean sink;
-	LOAD_GL_FUNC(glHistogram,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	width = (GLsizei)NUM2UINT(arg2);
-	internalformat = (GLenum)NUM2INT(arg3);
-	sink = (GLboolean)NUM2INT(arg4);
-	fptr_glHistogram(target,width,internalformat,sink);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glMinmax)(GLenum,GLenum,GLboolean);
-static VALUE
-gl_Minmax(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum internalformat;
-	GLboolean sink;
-	LOAD_GL_FUNC(glMinmax,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	internalformat = (GLenum)NUM2INT(arg2);
-	sink = (GLboolean)NUM2INT(arg3);
-	fptr_glMinmax(target,internalformat,sink);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glResetHistogram)(GLenum);
-static VALUE
-gl_ResetHistogram(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum target;
-	LOAD_GL_FUNC(glResetHistogram,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	fptr_glResetHistogram(target);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glResetMinmax)(GLenum);
-static VALUE
-gl_ResetMinmax(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum target;
-	LOAD_GL_FUNC(glResetMinmax,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	fptr_glResetMinmax(target);
-	CHECK_GLERROR
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glTexImage3D)(GLenum,GLint,GLint,GLsizei,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*);
 static VALUE
 gl_TexImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10)
@@ -962,37 +792,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 			width, height, depth,
 			format, type, RSTRING(arg11)->ptr);
 	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glCopyTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLint,GLint,GLsizei,GLsizei);
-static VALUE
-gl_CopyTexSubImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
-{
-	GLenum target;
-	GLint level;
-	GLint xoffset;
-	GLint yoffset;
-	GLint zoffset;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	GLsizei height;
-	LOAD_GL_FUNC(glCopyTexSubImage3D,"1.2")
-	target = (GLenum)NUM2INT(arg1);
-	level = (GLint)NUM2INT(arg2);
-	xoffset = (GLint)NUM2INT(arg3);
-	yoffset = (GLint)NUM2INT(arg4);
-	zoffset = (GLint)NUM2INT(arg5);
-	x = (GLint)NUM2INT(arg6);
-	y = (GLint)NUM2INT(arg7);
-	width = (GLsizei)NUM2UINT(arg8);
-	height = (GLsizei)NUM2UINT(arg9);
-	fptr_glCopyTexSubImage3D( target, level,
-			xoffset, yoffset, zoffset,
-			x, y, width, height );
 	CHECK_GLERROR
 	return Qnil;
 }

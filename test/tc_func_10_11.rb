@@ -170,9 +170,9 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_clientstate
 		glEnableClientState(GL_COLOR_ARRAY)
-		assert_equal(glIsEnabled(GL_COLOR_ARRAY),GL_TRUE)
+		assert_equal(glIsEnabled(GL_COLOR_ARRAY),true)
 		glDisableClientState(GL_COLOR_ARRAY)
-		assert_equal(glIsEnabled(GL_COLOR_ARRAY),GL_FALSE)
+		assert_equal(glIsEnabled(GL_COLOR_ARRAY),false)
 	end
 
 	def test_glshademodel
@@ -706,9 +706,9 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_glenable_disable
 		glEnable(GL_FOG)
-		assert_equal(glIsEnabled(GL_FOG),GL_TRUE)
+		assert_equal(glIsEnabled(GL_FOG),true)
 		glDisable(GL_FOG)
-		assert_equal(glIsEnabled(GL_FOG),GL_FALSE)
+		assert_equal(glIsEnabled(GL_FOG),false)
 	end
 
 	def test_gltexparameter
@@ -907,9 +907,9 @@ class Test_10_11 < Test::Unit::TestCase
 	def test_textures
 		textures = glGenTextures(2)
 		assert_equal(textures.size, 2)
-		assert_equal(glIsTexture(textures[0]),GL_FALSE)
+		assert_equal(glIsTexture(textures[0]),false)
 		glBindTexture(GL_TEXTURE_2D,textures[0])
-		assert_equal(glIsTexture(textures[0]),GL_TRUE)
+		assert_equal(glIsTexture(textures[0]),true)
 
 		image = ([0,0,0,1,1,1] * 8).pack("f*") # 16 RGB pixels
 
@@ -922,7 +922,7 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetTexImage(GL_TEXTURE_1D,0,GL_RGB,GL_FLOAT), image)
 
 		glDeleteTextures(textures)
-		assert_equal(glIsTexture(textures[0]),GL_FALSE)
+		assert_equal(glIsTexture(textures[0]),false)
 	end
 
 	def test_pixels
@@ -1180,9 +1180,9 @@ class Test_10_11 < Test::Unit::TestCase
 		glEnd()
 		glEndList()
 
-		assert_equal(glIsList(base+0),GL_TRUE)
-		assert_equal(glIsList(base+1),GL_TRUE)
-		assert_equal(glIsList(base+2),GL_FALSE)
+		assert_equal(glIsList(base+0),true)
+		assert_equal(glIsList(base+1),true)
+		assert_equal(glIsList(base+2),false)
 
 		#		
 		buf = glFeedbackBuffer(256,GL_3D)
@@ -1197,8 +1197,8 @@ class Test_10_11 < Test::Unit::TestCase
 
 		glDeleteLists(base,2)
 
-		assert_equal(glIsList(base+0),GL_FALSE)
-		assert_equal(glIsList(base+1),GL_FALSE)
+		assert_equal(glIsList(base+0),false)
+		assert_equal(glIsList(base+1),false)
 	end
 
 	def test_arrays

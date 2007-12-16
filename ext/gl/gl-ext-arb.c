@@ -40,25 +40,10 @@ TRANSPOSEMATRIX_FUNC(MultTransposeMatrixdARB,GLdouble,ary2cmatdouble)
 #undef TRANSPOSEMATRIX_FUNC
 
 /* #5 GL_ARB_multisample */
-static void (APIENTRY * fptr_glSampleCoverageARB)(GLclampf,GLboolean);
-static VALUE gl_SampleCoverageARB(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glSampleCoverageARB,"GL_ARB_multisample")
-	fptr_glSampleCoverageARB((GLclampf)NUM2DBL(arg1),(GLboolean)NUM2INT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(SampleCoverageARB,GLvoid, GLclampf,GLboolean, "GL_ARB_multisample")
 
 /* #14 GL_ARB_point_parameters */
-
-static void (APIENTRY * fptr_glPointParameterfARB)(GLenum,GLfloat);
-static VALUE gl_PointParameterfARB(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glPointParameterfARB,"GL_ARB_point_parameters")
-	fptr_glPointParameterfARB(NUM2UINT(arg1),NUM2DBL(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(PointParameterfARB,GLvoid, GLenum,GLfloat, "GL_ARB_point_parameters")
 
 static void (APIENTRY * fptr_glPointParameterfvARB)(GLenum,GLfloat *);
 static VALUE gl_PointParameterfvARB(VALUE obj,VALUE arg1,VALUE arg2)
@@ -80,15 +65,14 @@ static VALUE gl_PointParameterfvARB(VALUE obj,VALUE arg1,VALUE arg2)
 }
 
 /* #25 GL_ARB_window_pos */
-
-GL_SIMPLE_FUNC_LOAD(WindowPos2dARB,2,GLdouble,NUM2DBL,"GL_ARB_window_pos")
-GL_SIMPLE_FUNC_LOAD(WindowPos2fARB,2,GLfloat,NUM2DBL,"GL_ARB_window_pos")
-GL_SIMPLE_FUNC_LOAD(WindowPos2iARB,2,GLint,NUM2INT,"GL_ARB_window_pos")
-GL_SIMPLE_FUNC_LOAD(WindowPos2sARB,2,GLshort,NUM2INT,"GL_ARB_window_pos")
-GL_SIMPLE_FUNC_LOAD(WindowPos3dARB,3,GLdouble,NUM2DBL,"GL_ARB_window_pos")
-GL_SIMPLE_FUNC_LOAD(WindowPos3fARB,3,GLfloat,NUM2DBL,"GL_ARB_window_pos")
-GL_SIMPLE_FUNC_LOAD(WindowPos3iARB,3,GLint,NUM2INT,"GL_ARB_window_pos")
-GL_SIMPLE_FUNC_LOAD(WindowPos3sARB,3,GLshort,NUM2INT,"GL_ARB_window_pos")
+GL_FUNC_LOAD_2(WindowPos2dARB,GLvoid, GLdouble,GLdouble, "GL_ARB_window_pos")
+GL_FUNC_LOAD_2(WindowPos2fARB,GLvoid, GLfloat,GLfloat, "GL_ARB_window_pos")
+GL_FUNC_LOAD_2(WindowPos2iARB,GLvoid, GLint,GLint, "GL_ARB_window_pos")
+GL_FUNC_LOAD_2(WindowPos2sARB,GLvoid, GLshort,GLshort, "GL_ARB_window_pos")
+GL_FUNC_LOAD_3(WindowPos3dARB,GLvoid, GLdouble,GLdouble,GLdouble, "GL_ARB_window_pos")
+GL_FUNC_LOAD_3(WindowPos3fARB,GLvoid, GLfloat,GLfloat,GLfloat, "GL_ARB_window_pos")
+GL_FUNC_LOAD_3(WindowPos3iARB,GLvoid, GLint,GLint,GLint, "GL_ARB_window_pos")
+GL_FUNC_LOAD_3(WindowPos3sARB,GLvoid, GLshort,GLshort,GLshort, "GL_ARB_window_pos")
 
 #define WINDOWPOSFUNCV(_name_,_type_,_conv_,_size_,_ext_) \
 static void (APIENTRY * fptr_gl##_name_)(const _type_ *); \
@@ -162,14 +146,7 @@ static VALUE gl_GetProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2)
 	return ret_buffer;
 }
 
-static void (APIENTRY * fptr_glBindProgramARB)(GLenum,GLuint);
-static VALUE gl_BindProgramARB(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glBindProgramARB,"GL_ARB_vertex_program")
-	fptr_glBindProgramARB(NUM2INT(arg1),NUM2UINT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(BindProgramARB,GLvoid, GLenum,GLuint, "GL_ARB_vertex_program")
 
 static void (APIENTRY * fptr_glGenProgramsARB)(GLsizei, GLuint *);
 static VALUE gl_GenProgramsARB(VALUE obj,VALUE arg1)
@@ -212,18 +189,9 @@ static VALUE gl_DeleteProgramsARB(VALUE obj,VALUE arg1)
 	return Qnil;
 }
 
-static GLboolean (APIENTRY * fptr_glIsProgramARB)(GLuint);
-static VALUE gl_IsProgramARB(VALUE obj,VALUE arg1)
-{
-	GLboolean ret = 0;
-	LOAD_GL_FUNC(glIsProgramARB,"GL_ARB_vertex_program")
-	ret = fptr_glIsProgramARB(NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-GL_SIMPLE_FUNC_LOAD(EnableVertexAttribArrayARB,1,GLuint,NUM2UINT,"GL_ARB_vertex_program")
-GL_SIMPLE_FUNC_LOAD(DisableVertexAttribArrayARB,1,GLuint,NUM2UINT,"GL_ARB_vertex_program")
+GL_FUNC_LOAD_1(IsProgramARB,GLboolean, GLuint, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_1(EnableVertexAttribArrayARB,GLvoid, GLuint, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_1(DisableVertexAttribArrayARB,GLvoid, GLuint, "GL_ARB_vertex_program")
 
 extern VALUE g_VertexAttrib_ptr[];
 
@@ -275,24 +243,10 @@ VALUE obj,arg1;
 	return g_VertexAttrib_ptr[index];
 }
 
-#define PROGRAMPARAM_FUNC(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,_type_,_type_,_type_,_type_); \
-static VALUE \
-gl_##_name_(obj,arg1,arg2,arg3,arg4,arg5,arg6) \
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
-	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),_conv_(arg3),_conv_(arg4),_conv_(arg5),_conv_(arg6)); \
-	CHECK_GLERROR \
-	return Qnil; \
-}
-
-PROGRAMPARAM_FUNC(ProgramEnvParameter4dARB,GLdouble,NUM2DBL,"GL_ARB_vertex_program")
-PROGRAMPARAM_FUNC(ProgramEnvParameter4fARB,GLfloat,NUM2DBL,"GL_ARB_vertex_program")
-PROGRAMPARAM_FUNC(ProgramLocalParameter4dARB,GLdouble,NUM2DBL,"GL_ARB_vertex_program")
-PROGRAMPARAM_FUNC(ProgramLocalParameter4fARB,GLfloat,NUM2DBL,"GL_ARB_vertex_program")
-#undef PROGRAMPARAM_FUNC
-
+GL_FUNC_LOAD_6(ProgramEnvParameter4dARB,GLvoid, GLenum,GLuint,GLdouble,GLdouble,GLdouble,GLdouble, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_6(ProgramEnvParameter4fARB,GLvoid, GLenum,GLuint,GLfloat,GLfloat,GLfloat,GLfloat, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_6(ProgramLocalParameter4dARB,GLvoid, GLenum,GLuint,GLdouble,GLdouble,GLdouble,GLdouble, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_6(ProgramLocalParameter4fARB,GLvoid, GLenum,GLuint,GLfloat,GLfloat,GLfloat,GLfloat, "GL_ARB_vertex_program")
 
 #define PROGRAMPARAM_FUNC_V(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,const _type_ *); \
@@ -339,33 +293,19 @@ GETPROGRAMPARAM_FUNC(GetProgramLocalParameterfvARB,GLfloat,"GL_ARB_vertex_progra
 
 #undef GETPROGRAMPARAM_FUNC
 
-#define VERTEXATTRIB_FUNC(_name_,_type_,_conv_,_size_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,TYPELIST##_size_(_type_)); \
-static VALUE \
-gl_##_name_(obj, index ARGLIST##_size_) \
-VALUE obj, index ARGLIST##_size_ ; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
-	fptr_gl##_name_(NUM2UINT(index),FUNCPARAMS##_size_(_type_,_conv_)); \
-	CHECK_GLERROR \
-	return Qnil; \
-}
-
-VERTEXATTRIB_FUNC(VertexAttrib1dARB,GLdouble,NUM2DBL,1,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib1fARB,GLfloat,NUM2DBL,1,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib1sARB,GLshort,NUM2INT,1,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib2dARB,GLdouble,NUM2DBL,2,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib2fARB,GLfloat,NUM2DBL,2,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib2sARB,GLshort,NUM2INT,2,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib3dARB,GLdouble,NUM2DBL,3,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib3fARB,GLfloat,NUM2DBL,3,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib3sARB,GLshort,NUM2INT,3,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib4dARB,GLdouble,NUM2DBL,4,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib4fARB,GLfloat,NUM2DBL,4,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib4sARB,GLshort,NUM2INT,4,"GL_ARB_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib4NubARB,GLubyte,NUM2UINT,4,"GL_ARB_vertex_program")
-#undef VERTEXATTRIB_FUNC
-
+GL_FUNC_LOAD_2(VertexAttrib1dARB,GLvoid, GLuint,GLdouble, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_2(VertexAttrib1fARB,GLvoid, GLuint,GLfloat, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_2(VertexAttrib1sARB,GLvoid, GLuint,GLshort, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_3(VertexAttrib2dARB,GLvoid, GLuint,GLdouble,GLdouble, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_3(VertexAttrib2fARB,GLvoid, GLuint,GLfloat,GLfloat, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_3(VertexAttrib2sARB,GLvoid, GLuint,GLshort,GLshort, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_4(VertexAttrib3dARB,GLvoid, GLuint,GLdouble,GLdouble,GLdouble, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_4(VertexAttrib3fARB,GLvoid, GLuint,GLfloat,GLfloat,GLfloat, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_4(VertexAttrib3sARB,GLvoid, GLuint,GLshort,GLshort,GLshort, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_5(VertexAttrib4dARB,GLvoid, GLuint,GLdouble,GLdouble,GLdouble,GLdouble, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_5(VertexAttrib4fARB,GLvoid, GLuint,GLfloat,GLfloat,GLfloat,GLfloat, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_5(VertexAttrib4sARB,GLvoid, GLuint,GLshort,GLshort,GLshort,GLshort, "GL_ARB_vertex_program")
+GL_FUNC_LOAD_5(VertexAttrib4NubARB,GLvoid, GLuint,GLubyte,GLubyte,GLubyte,GLubyte, "GL_ARB_vertex_program")
 
 #define VERTEXATTRIB_FUNC_V(_name_,_type_,_conv_,_size_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,_type_ *); \
@@ -481,18 +421,9 @@ static VALUE gl_DeleteQueriesARB(VALUE obj,VALUE arg1)
 	return Qnil;
 }
 
-static GLboolean (APIENTRY * fptr_glIsQueryARB)(GLuint);
-static VALUE gl_IsQueryARB(VALUE obj,VALUE arg1)
-{
-	GLboolean ret = 0;
-	LOAD_GL_FUNC(glIsQueryARB,"GL_ARB_occlusion_query")
-	ret = fptr_glIsQueryARB(NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-GL_SIMPLE_FUNC_LOAD(BeginQueryARB,2,GLuint,NUM2UINT,"GL_ARB_occlusion_query")
-GL_SIMPLE_FUNC_LOAD(EndQueryARB,1,GLenum,NUM2UINT,"GL_ARB_occlusion_query")
+GL_FUNC_LOAD_1(IsQueryARB,GLboolean, GLuint, "GL_ARB_occlusion_query")
+GL_FUNC_LOAD_2(BeginQueryARB,GLvoid, GLuint,GLuint, "GL_ARB_occlusion_query")
+GL_FUNC_LOAD_1(EndQueryARB,GLvoid, GLenum, "GL_ARB_occlusion_query")
 
 #define GETQUERY_FUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
@@ -511,43 +442,16 @@ GETQUERY_FUNC(GetQueryObjectuivARB,GLuint,INT2NUM)
 #undef GETQUERY_FUNC
 
 /* #30 GL_ARB_shader_objects */
-GL_SIMPLE_FUNC_LOAD(DeleteObjectARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
-GL_SIMPLE_FUNC_LOAD(DetachObjectARB,2,GLuint,NUM2UINT,"GL_ARB_shader_objects")
-GL_SIMPLE_FUNC_LOAD(CompileShaderARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
-GL_SIMPLE_FUNC_LOAD(AttachObjectARB,2,GLuint,NUM2UINT,"GL_ARB_shader_objects")
-GL_SIMPLE_FUNC_LOAD(LinkProgramARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
-GL_SIMPLE_FUNC_LOAD(UseProgramObjectARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
-GL_SIMPLE_FUNC_LOAD(ValidateProgramARB,1,GLuint,NUM2UINT,"GL_ARB_shader_objects")
-
-static GLuint (APIENTRY * fptr_glGetHandleARB)(GLenum);
-static VALUE gl_GetHandleARB(VALUE obj,VALUE arg1)
-{
-	GLuint ret;
-	LOAD_GL_FUNC(glGetHandleARB,"GL_ARB_shader_objects")
-	ret = fptr_glGetHandleARB(NUM2INT(arg1));
-	CHECK_GLERROR
-	return UINT2NUM(ret);
-}
-
-static GLuint (APIENTRY * fptr_glCreateShaderObjectARB)(GLenum);
-static VALUE gl_CreateShaderObjectARB(VALUE obj,VALUE arg1)
-{
-	GLuint ret;
-	LOAD_GL_FUNC(glCreateShaderObjectARB,"GL_ARB_shader_objects")
-	ret = fptr_glCreateShaderObjectARB(NUM2INT(arg1));
-	CHECK_GLERROR
-	return UINT2NUM(ret);
-}
-
-static GLuint (APIENTRY * fptr_glCreateProgramObjectARB)(void);
-static VALUE gl_CreateProgramObjectARB(VALUE obj)
-{
-	GLuint ret;
-	LOAD_GL_FUNC(glCreateProgramObjectARB,"GL_ARB_shader_objects")
-	ret = fptr_glCreateProgramObjectARB();
-	CHECK_GLERROR
-	return UINT2NUM(ret);
-}
+GL_FUNC_LOAD_1(DeleteObjectARB,GLvoid, GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_2(DetachObjectARB,GLvoid, GLuint,GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_1(CompileShaderARB,GLvoid, GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_2(AttachObjectARB,GLvoid, GLuint,GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_1(LinkProgramARB,GLvoid, GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_1(UseProgramObjectARB,GLvoid, GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_1(ValidateProgramARB,GLvoid, GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_1(GetHandleARB,GLuint, GLenum, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_1(CreateShaderObjectARB,GLuint, GLenum, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_0(CreateProgramObjectARB,GLuint, "GL_ARB_shader_objects")
 
 static void (APIENTRY * fptr_glShaderSourceARB)(GLuint,GLsizei,GLchar**,GLint *);
 static VALUE
@@ -567,26 +471,14 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-#define GLUNIFORM_FUNC(_name_,_type_,_conv_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLint,TYPELIST##_size_(_type_)); \
-static VALUE \
-gl_##_name_(obj,loc ARGLIST##_size_) \
-VALUE obj,loc ARGLIST##_size_ ; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
-	fptr_gl##_name_(NUM2INT(loc),FUNCPARAMS##_size_(_type_,_conv_)); \
-	return Qnil; \
-}
-
-GLUNIFORM_FUNC(Uniform1fARB,GLfloat,NUM2DBL,1)
-GLUNIFORM_FUNC(Uniform2fARB,GLfloat,NUM2DBL,2)
-GLUNIFORM_FUNC(Uniform3fARB,GLfloat,NUM2DBL,3)
-GLUNIFORM_FUNC(Uniform4fARB,GLfloat,NUM2DBL,4)
-GLUNIFORM_FUNC(Uniform1iARB,GLint,NUM2INT,1)
-GLUNIFORM_FUNC(Uniform2iARB,GLint,NUM2INT,2)
-GLUNIFORM_FUNC(Uniform3iARB,GLint,NUM2INT,3)
-GLUNIFORM_FUNC(Uniform4iARB,GLint,NUM2INT,4)
-#undef GLUNIFORM_FUNC
+GL_FUNC_LOAD_2(Uniform1fARB,GLvoid, GLint,GLfloat, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_3(Uniform2fARB,GLvoid, GLint,GLfloat,GLfloat, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_4(Uniform3fARB,GLvoid, GLint,GLfloat,GLfloat,GLfloat, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_5(Uniform4fARB,GLvoid, GLint,GLfloat,GLfloat,GLfloat,GLfloat, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_2(Uniform1iARB,GLvoid, GLint,GLint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_3(Uniform2iARB,GLvoid, GLint,GLint,GLint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_4(Uniform3iARB,GLvoid, GLint,GLint,GLint,GLint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_5(Uniform4iARB,GLvoid, GLint,GLint,GLint,GLint,GLint, "GL_ARB_shader_objects")
 
 #define GLUNIFORM_VFUNC(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,const _type_ *); \
@@ -893,7 +785,7 @@ VALUE obj,arg1,arg2;
 
 
 /* #39 GL_ARB_color_buffer_float */
-GL_SIMPLE_FUNC_LOAD(ClampColorARB,2,GLenum,NUM2INT,"GL_ARB_color_buffer_float")
+GL_FUNC_LOAD_2(ClampColorARB,GLvoid, GLenum,GLenum, "GL_ARB_color_buffer_float")
 
 void gl_init_functions_ext_arb(VALUE module)
 {

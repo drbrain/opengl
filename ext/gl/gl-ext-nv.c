@@ -58,36 +58,10 @@ static VALUE gl_DeleteFencesNV(VALUE obj,VALUE arg1)
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glSetFenceNV)(GLuint,GLenum);
-static VALUE gl_SetFenceNV(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glSetFenceNV,"GL_NV_fence")
-	fptr_glSetFenceNV(NUM2UINT(arg1),NUM2UINT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static GLboolean (APIENTRY * fptr_glTestFenceNV)(GLuint);
-static VALUE gl_TestFenceNV(VALUE obj,VALUE arg1)
-{
-	GLboolean ret;
-	LOAD_GL_FUNC(glTestFenceNV,"GL_NV_fence")
-	ret = fptr_glTestFenceNV(NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-static GLboolean (APIENTRY * fptr_glIsFenceNV)(GLuint);
-static VALUE gl_IsFenceNV(VALUE obj,VALUE arg1)
-{
-	GLboolean ret;
-	LOAD_GL_FUNC(glIsFenceNV,"GL_NV_fence")
-	ret = fptr_glIsFenceNV(NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-GL_SIMPLE_FUNC_LOAD(FinishFenceNV,1,GLuint,NUM2UINT,"GL_NV_fence")
+GL_FUNC_LOAD_2(SetFenceNV,GLvoid, GLuint,GLenum, "GL_NV_fence")
+GL_FUNC_LOAD_1(TestFenceNV,GLboolean, GLuint,"GL_NV_fence")
+GL_FUNC_LOAD_1(IsFenceNV,GLboolean, GLuint,"GL_NV_fence")
+GL_FUNC_LOAD_1(FinishFenceNV,GLvoid, GLuint,"GL_NV_fence")
 
 static void (APIENTRY * fptr_glGetFenceivNV)(GLuint,GLenum,GLint *);
 static VALUE gl_GetFenceivNV(VALUE obj,VALUE arg1,VALUE arg2)
@@ -145,14 +119,7 @@ static VALUE gl_GetProgramStringNV(VALUE obj,VALUE arg1,VALUE arg2)
 	return ret_buffer;
 }
 
-static void (APIENTRY * fptr_glBindProgramNV)(GLenum,GLuint);
-static VALUE gl_BindProgramNV(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glBindProgramNV,"GL_NV_vertex_program")
-	fptr_glBindProgramNV(NUM2INT(arg1),NUM2UINT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(BindProgramNV,GLvoid, GLenum,GLuint,"GL_NV_vertex_program")
 
 static void (APIENTRY * fptr_glGenProgramsNV)(GLsizei, GLuint *);
 static VALUE gl_GenProgramsNV(VALUE obj,VALUE arg1)
@@ -195,15 +162,7 @@ static VALUE gl_DeleteProgramsNV(VALUE obj,VALUE arg1)
 	return Qnil;
 }
 
-static GLboolean (APIENTRY * fptr_glIsProgramNV)(GLuint);
-static VALUE gl_IsProgramNV(VALUE obj,VALUE arg1)
-{
-	GLboolean ret = 0;
-	LOAD_GL_FUNC(glIsProgramNV,"GL_NV_vertex_program")
-	ret = fptr_glIsProgramNV(NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
+GL_FUNC_LOAD_1(IsProgramNV,GLboolean, GLuint,"GL_NV_vertex_program")
 
 static void (APIENTRY * fptr_glExecuteProgramNV)(GLenum,GLuint,const GLfloat *);
 static VALUE gl_ExecuteProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
@@ -264,20 +223,8 @@ VALUE obj,arg1;
 	return g_VertexAttrib_ptr[index];
 }
 
-#define PROGRAMPARAM_FUNC(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,_type_,_type_,_type_,_type_); \
-static VALUE \
-gl_##_name_(obj,arg1,arg2,arg3,arg4,arg5,arg6) \
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
-	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),_conv_(arg3),_conv_(arg4),_conv_(arg5),_conv_(arg6)); \
-	CHECK_GLERROR \
-	return Qnil; \
-}
-
-PROGRAMPARAM_FUNC(ProgramParameter4dNV,GLdouble,NUM2DBL,"GL_NV_vertex_program")
-PROGRAMPARAM_FUNC(ProgramParameter4fNV,GLfloat,NUM2DBL,"GL_NV_vertex_program")
+GL_FUNC_LOAD_6(ProgramParameter4dNV,GLvoid, GLenum,GLuint,GLdouble,GLdouble,GLdouble,GLdouble, "GL_NV_vertex_program")
+GL_FUNC_LOAD_6(ProgramParameter4fNV,GLvoid, GLenum,GLuint,GLfloat,GLfloat,GLfloat,GLfloat, "GL_NV_vertex_program")
 
 #define PROGRAMPARAM_FUNC_V(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,const _type_ *); \
@@ -341,34 +288,19 @@ VALUE obj,arg1,arg2,arg3; \
 PROGRAMPARAM_MULTI_FUNC_V(ProgramParameters4dvNV,GLdouble,ary2cdbl,"GL_NV_vertex_program")
 PROGRAMPARAM_MULTI_FUNC_V(ProgramParameters4fvNV,GLfloat,ary2cflt,"GL_NV_vertex_program")
 
-
-#define VERTEXATTRIB_FUNC(_name_,_type_,_conv_,_size_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,TYPELIST##_size_(_type_)); \
-static VALUE \
-gl_##_name_(obj, index ARGLIST##_size_) \
-VALUE obj, index ARGLIST##_size_ ; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
-	fptr_gl##_name_(NUM2UINT(index),FUNCPARAMS##_size_(_type_,_conv_)); \
-	CHECK_GLERROR \
-	return Qnil; \
-}
-
-VERTEXATTRIB_FUNC(VertexAttrib1dNV,GLdouble,NUM2DBL,1,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib1fNV,GLfloat,NUM2DBL,1,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib1sNV,GLshort,NUM2INT,1,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib2dNV,GLdouble,NUM2DBL,2,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib2fNV,GLfloat,NUM2DBL,2,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib2sNV,GLshort,NUM2INT,2,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib3dNV,GLdouble,NUM2DBL,3,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib3fNV,GLfloat,NUM2DBL,3,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib3sNV,GLshort,NUM2INT,3,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib4dNV,GLdouble,NUM2DBL,4,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib4fNV,GLfloat,NUM2DBL,4,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib4sNV,GLshort,NUM2INT,4,"GL_NV_vertex_program")
-VERTEXATTRIB_FUNC(VertexAttrib4ubNV,GLubyte,NUM2UINT,4,"GL_NV_vertex_program")
-#undef VERTEXATTRIB_FUNC
-
+GL_FUNC_LOAD_2(VertexAttrib1dNV,GLvoid, GLuint,GLdouble, "GL_NV_vertex_program")
+GL_FUNC_LOAD_2(VertexAttrib1fNV,GLvoid, GLuint,GLfloat, "GL_NV_vertex_program")
+GL_FUNC_LOAD_2(VertexAttrib1sNV,GLvoid, GLuint,GLshort, "GL_NV_vertex_program")
+GL_FUNC_LOAD_3(VertexAttrib2dNV,GLvoid, GLuint,GLdouble,GLdouble, "GL_NV_vertex_program")
+GL_FUNC_LOAD_3(VertexAttrib2fNV,GLvoid, GLuint,GLfloat,GLfloat, "GL_NV_vertex_program")
+GL_FUNC_LOAD_3(VertexAttrib2sNV,GLvoid, GLuint,GLshort,GLshort, "GL_NV_vertex_program")
+GL_FUNC_LOAD_4(VertexAttrib3dNV,GLvoid, GLuint,GLdouble,GLdouble,GLdouble, "GL_NV_vertex_program")
+GL_FUNC_LOAD_4(VertexAttrib3fNV,GLvoid, GLuint,GLfloat,GLfloat,GLfloat, "GL_NV_vertex_program")
+GL_FUNC_LOAD_4(VertexAttrib3sNV,GLvoid, GLuint,GLshort,GLshort,GLshort, "GL_NV_vertex_program")
+GL_FUNC_LOAD_5(VertexAttrib4dNV,GLvoid, GLuint,GLdouble,GLdouble,GLdouble,GLdouble, "GL_NV_vertex_program")
+GL_FUNC_LOAD_5(VertexAttrib4fNV,GLvoid, GLuint,GLfloat,GLfloat,GLfloat,GLfloat, "GL_NV_vertex_program")
+GL_FUNC_LOAD_5(VertexAttrib4sNV,GLvoid, GLuint,GLshort,GLshort,GLshort,GLshort, "GL_NV_vertex_program")
+GL_FUNC_LOAD_5(VertexAttrib4ubNV,GLvoid, GLuint,GLubyte,GLubyte,GLubyte,GLubyte, "GL_NV_vertex_program")
 
 #define VERTEXATTRIB_FUNC_V(_name_,_type_,_conv_,_size_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,_type_ *); \
@@ -470,14 +402,7 @@ GETVERTEXATTRIB_FUNC(GetVertexAttribfvNV,GLfloat,rb_float_new,"GL_NV_vertex_prog
 GETVERTEXATTRIB_FUNC(GetVertexAttribivNV,GLint,INT2NUM,"GL_NV_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
 
-static void (APIENTRY * fptr_glTrackMatrixNV)(GLenum,GLuint,GLenum,GLenum);
-static VALUE gl_TrackMatrixNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4)
-{
-	LOAD_GL_FUNC(glTrackMatrixNV,"GL_NV_vertex_program")
-	fptr_glTrackMatrixNV(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),NUM2UINT(arg4));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_4(TrackMatrixNV,GLvoid, GLenum,GLuint,GLenum,GLenum, "GL_NV_vertex_program")
 
 static void (APIENTRY * fptr_glGetTrackMatrixivNV)(GLenum,GLuint,GLenum,GLint *);
 static VALUE gl_GetTrackMatrixivNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
@@ -582,18 +507,9 @@ static VALUE gl_DeleteOcclusionQueriesNV(VALUE obj,VALUE arg1)
 	return Qnil;
 }
 
-static GLboolean (APIENTRY * fptr_glIsOcclusionQueryNV)(GLuint);
-static VALUE gl_IsOcclusionQueryNV(VALUE obj,VALUE arg1)
-{
-	GLboolean ret = 0;
-	LOAD_GL_FUNC(glIsOcclusionQueryNV,"GL_NV_occlusion_query")
-	ret = fptr_glIsOcclusionQueryNV(NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-GL_SIMPLE_FUNC_LOAD(BeginOcclusionQueryNV,1,GLuint,NUM2UINT,"GL_NV_occlusion_query")
-GL_SIMPLE_FUNC_LOAD(EndOcclusionQueryNV,0,0,0,"GL_NV_occlusion_query")
+GL_FUNC_LOAD_1(IsOcclusionQueryNV,GLboolean, GLuint, "GL_NV_occlusion_query")
+GL_FUNC_LOAD_1(BeginOcclusionQueryNV,GLvoid, GLuint, "GL_NV_occlusion_query")
+GL_FUNC_LOAD_0(EndOcclusionQueryNV,GLvoid, "GL_NV_occlusion_query")
 
 #define GETOCCLUSIONQUERY_FUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
@@ -611,14 +527,7 @@ GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryuivNV,GLuint,INT2NUM)
 #undef GETOCCLUSIONQUERY_FUNC
 
 /* #262 GL_NV_point_sprite */
-static void (APIENTRY * fptr_glPointParameteriNV)(GLenum,GLint);
-static VALUE gl_PointParameteriNV(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glPointParameteriNV,"GL_NV_point_sprite")
-	fptr_glPointParameteriNV(NUM2UINT(arg1),NUM2INT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(PointParameteriNV,GLvoid, GLenum,GLint, "GL_NV_point_sprite")
 
 static void (APIENTRY * fptr_glPointParameterivNV)(GLenum,const GLint *);
 static VALUE gl_PointParameterivNV(VALUE obj,VALUE arg1,VALUE arg2)
@@ -632,7 +541,6 @@ static VALUE gl_PointParameterivNV(VALUE obj,VALUE arg1,VALUE arg2)
 }
 
 /* #282 GL_NV_fragment_program */
-
 #define PROGRAMNAMEDPARAM_FUNC(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLsizei,const GLubyte *,_type_,_type_,_type_,_type_); \
 static VALUE \
@@ -693,14 +601,14 @@ GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterfvNV,GLfloat,"GL_NV_vertex_pro
 #undef GETPROGRAMNAMEDPARAM_FUNC
 
 /* #285 GL_NV_primitive_restart */
-GL_SIMPLE_FUNC_LOAD(PrimitiveRestartNV,0,0,0,"GL_NV_primitive_restart")
-GL_SIMPLE_FUNC_LOAD(PrimitiveRestartIndexNV,1,GLuint,NUM2UINT,"GL_NV_primitive_restart")
+GL_FUNC_LOAD_0(PrimitiveRestartNV,GLvoid, "GL_NV_primitive_restart")
+GL_FUNC_LOAD_1(PrimitiveRestartIndexNV,GLvoid, GLuint, "GL_NV_primitive_restart")
 
 /* #322 GL_NV_gpu_program4 */
-PROGRAMPARAM_FUNC(ProgramLocalParameterI4iNV,GLint,NUM2INT,"GL_NV_gpu_program4")
-PROGRAMPARAM_FUNC(ProgramLocalParameterI4uiNV,GLuint,NUM2UINT,"GL_NV_gpu_program4")
-PROGRAMPARAM_FUNC(ProgramEnvParameterI4iNV,GLint,NUM2INT,"GL_NV_gpu_program4")
-PROGRAMPARAM_FUNC(ProgramEnvParameterI4uiNV,GLuint,NUM2UINT,"GL_NV_gpu_program4")
+GL_FUNC_LOAD_6(ProgramLocalParameterI4iNV,GLvoid, GLenum,GLuint, GLint,GLint,GLint,GLint, "GL_NV_gpu_program4")
+GL_FUNC_LOAD_6(ProgramLocalParameterI4uiNV,GLvoid, GLenum,GLuint, GLuint,GLuint,GLuint,GLuint, "GL_NV_gpu_program4")
+GL_FUNC_LOAD_6(ProgramEnvParameterI4iNV,GLvoid, GLenum,GLuint, GLint,GLint,GLint,GLint, "GL_NV_gpu_program4")
+GL_FUNC_LOAD_6(ProgramEnvParameterI4uiNV,GLvoid, GLenum,GLuint, GLuint,GLuint,GLuint,GLuint, "GL_NV_gpu_program4")
 
 PROGRAMPARAM_FUNC_V(ProgramLocalParameterI4ivNV,GLint,ary2cint,"GL_NV_gpu_program4")
 PROGRAMPARAM_FUNC_V(ProgramLocalParameterI4uivNV,GLuint,ary2cuint,"GL_NV_gpu_program4")
@@ -714,7 +622,6 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramEnvParametersI4uivNV,GLuint,ary2cuint,"GL_NV_gp
 
 #undef PROGRAMPARAM_MULTI_FUNC_V
 #undef PROGRAMPARAM_FUNC_V
-#undef PROGRAMPARAM_FUNC
 
 #define GETPROGRAMPARAM_FUNC_2(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,_type_ *); \
@@ -741,60 +648,18 @@ GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIuivNV,GLuint,UINT2NUM,"GL_NV_gpu_p
 #undef GETPROGRAMPARAM_FUNC_2
 
 /* #323 GL_NV_geometry_program4 */
-static void (APIENTRY * fptr_glProgramVertexLimitNV)(GLenum,GLint);
-static VALUE gl_ProgramVertexLimitNV(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glProgramVertexLimitNV,"GL_NV_gpu_program4")
-	fptr_glProgramVertexLimitNV(NUM2INT(arg1),NUM2INT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glFramebufferTextureEXT)(GLenum,GLenum,GLuint,GLint);
-static VALUE gl_FramebufferTextureEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4)
-{
-	LOAD_GL_FUNC(glFramebufferTextureEXT,"GL_EXT_geometry_shader4")
-	fptr_glFramebufferTextureEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4));
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glFramebufferTextureLayerEXT)(GLenum,GLenum,GLuint,GLint,GLint);
-static VALUE gl_FramebufferTextureLayerEXT(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	LOAD_GL_FUNC(glFramebufferTextureLayerEXT,"GL_EXT_geometry_shader4")
-	fptr_glFramebufferTextureLayerEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4),NUM2INT(arg5));
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glFramebufferTextureFaceEXT)(GLenum,GLenum,GLuint,GLint,GLenum);
-static VALUE gl_FramebufferTextureFaceEXT(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	LOAD_GL_FUNC(glFramebufferTextureFaceEXT,"GL_EXT_geometry_shader4")
-	fptr_glFramebufferTextureFaceEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4),NUM2INT(arg5));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(ProgramVertexLimitNV,GLvoid, GLenum,GLint, "GL_NV_gpu_program4")
+GL_FUNC_LOAD_4(FramebufferTextureEXT,GLvoid, GLenum,GLenum,GLuint,GLuint, "GL_EXT_geometry_shader4")
+GL_FUNC_LOAD_5(FramebufferTextureLayerEXT,GLvoid, GLenum,GLenum,GLuint,GLint,GLint, "GL_EXT_geometry_shader4")
+GL_FUNC_LOAD_5(FramebufferTextureFaceEXT,GLvoid, GLenum,GLenum,GLuint,GLint,GLenum, "GL_EXT_geometry_shader4")
 
 /* #334 GL_NV_depth_buffer_float */
-GL_SIMPLE_FUNC_LOAD(DepthRangedNV,2,GLdouble,NUM2DBL,"GL_NV_depth_buffer_float")
-GL_SIMPLE_FUNC_LOAD(ClearDepthdNV,1,GLdouble,NUM2DBL,"GL_NV_depth_buffer_float")
-GL_SIMPLE_FUNC_LOAD(DepthBoundsdNV,2,GLdouble,NUM2DBL,"GL_NV_depth_buffer_float")
+GL_FUNC_LOAD_2(DepthRangedNV,GLvoid, GLdouble,GLdouble, "GL_NV_depth_buffer_float")
+GL_FUNC_LOAD_1(ClearDepthdNV,GLvoid, GLdouble, "GL_NV_depth_buffer_float")
+GL_FUNC_LOAD_2(DepthBoundsdNV,GLvoid, GLdouble,GLdouble, "GL_NV_depth_buffer_float")
 
 /* #336 GL_NV_framebuffer_multisample_coverage */
-static void (APIENTRY * fptr_glRenderbufferStorageMultisampleCoverageNV)(GLenum,GLsizei,GLsizei,GLenum,GLsizei,GLsizei);
-static VALUE gl_RenderbufferStorageMultisampleCoverageNV(obj,arg1,arg2,arg3,arg4,arg5,arg6)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
-{
-	LOAD_GL_FUNC(glRenderbufferStorageMultisampleCoverageNV,"GL_NV_framebuffer_multisample_coverage")
-	fptr_glRenderbufferStorageMultisampleCoverageNV(NUM2UINT(arg1),NUM2INT(arg2),NUM2INT(arg3),
-																									NUM2UINT(arg4),NUM2INT(arg5),NUM2INT(arg6));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_6(RenderbufferStorageMultisampleCoverageNV,GLvoid, GLenum,GLsizei,GLsizei,GLenum,GLsizei,GLsizei, "GL_NV_framebuffer_multisample_coverage")
 
 void gl_init_functions_ext_nv(VALUE module)
 {

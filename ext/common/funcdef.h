@@ -53,43 +53,147 @@ if (fptr_##_NAME_==NULL) { \
 #define ARGLIST4 ,arg1,arg2,arg3,arg4
 #define ARGLIST5 ,arg1,arg2,arg3,arg4,arg5
 #define ARGLIST6 ,arg1,arg2,arg3,arg4,arg5,arg6
+#define ARGLIST7 ,arg1,arg2,arg3,arg4,arg5,arg6,arg7
+#define ARGLIST8 ,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8
+#define ARGLIST9 ,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9
+#define ARGLIST10 ,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10
 
-#define TYPELIST0(_ctype_) void
-#define TYPELIST1(_ctype_) _ctype_
-#define TYPELIST2(_ctype_) _ctype_,_ctype_
-#define TYPELIST3(_ctype_) _ctype_,_ctype_,_ctype_
-#define TYPELIST4(_ctype_) _ctype_,_ctype_,_ctype_,_ctype_
-#define TYPELIST5(_ctype_) _ctype_,_ctype_,_ctype_,_ctype_,_ctype_
-#define TYPELIST6(_ctype_) _ctype_,_ctype_,_ctype_,_ctype_,_ctype_,_ctype_
+#define CONV_GLenum (GLenum)NUM2UINT
+#define CONV_GLboolean (GLboolean)NUM2UINT
+#define CONV_GLbitfield (GLbitfield)NUM2UINT
+#define CONV_GLbyte (GLbyte)NUM2INT
+#define CONV_GLshort (GLshort)NUM2INT
+#define CONV_GLint (GLint)NUM2INT
+#define CONV_GLubyte (GLubyte)NUM2UINT
+#define CONV_GLushort (GLushort)NUM2UINT
+#define CONV_GLuint (GLuint)NUM2UINT
+#define CONV_GLsizei (GLsizei)NUM2INT
+#define CONV_GLfloat (GLfloat)NUM2DBL
+#define CONV_GLclampf (GLclampf)NUM2DBL
+#define CONV_GLdouble (GLdouble)NUM2DBL
+#define CONV_GLclampd (GLclampd)NUM2DBL
 
-#define FUNCPARAMS0(_ctype_,_conversion_) 
-#define FUNCPARAMS1(_ctype_,_conversion_) (_ctype_)_conversion_(arg1)
-#define FUNCPARAMS2(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2)
-#define FUNCPARAMS3(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2),(_ctype_)_conversion_(arg3)
-#define FUNCPARAMS4(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2),(_ctype_)_conversion_(arg3),(_ctype_)_conversion_(arg4)
-#define FUNCPARAMS5(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2),(_ctype_)_conversion_(arg3),(_ctype_)_conversion_(arg4),(_ctype_)_conversion_(arg5)
-#define FUNCPARAMS6(_ctype_,_conversion_) (_ctype_)_conversion_(arg1),(_ctype_)_conversion_(arg2),(_ctype_)_conversion_(arg3),(_ctype_)_conversion_(arg4),(_ctype_)_conversion_(arg5),(_ctype_)_conversion_(arg6)
+#define RETDECL_BASE(_t_) _t_ ret = (_t_) 0;
+#define RETDECL_GLvoid
+#define RETDECL_void
+#define RETDECL_GLenum RETDECL_BASE(GLenum)
+#define RETDECL_GLboolean RETDECL_BASE(GLboolean)
+#define RETDECL_GLbitfield RETDECL_BASE(GLbitfield)
+#define RETDECL_GLbyte RETDECL_BASE(GLbyte)
+#define RETDECL_GLshort RETDECL_BASE(GLshort)
+#define RETDECL_GLint RETDECL_BASE(GLint)
+#define RETDECL_GLubyte RETDECL_BASE(GLubyte)
+#define RETDECL_GLushort RETDECL_BASE(GLushort)
+#define RETDECL_GLuint RETDECL_BASE(GLuint)
+#define RETDECL_GLsizei RETDECL_BASE(GLsizei)
+#define RETDECL_GLfloat RETDECL_BASE(GLfloat)
+#define RETDECL_GLclampf RETDECL_BASE(GLclampf)
+#define RETDECL_GLdouble RETDECL_BASE(GLdouble)
+#define RETDECL_GLclampd RETDECL_BASE(GLclampd)
 
+#define RETSTAT_GLvoid
+#define RETSTAT_void
+#define RETSTAT_GLenum ret=
+#define RETSTAT_GLboolean ret=
+#define RETSTAT_GLbitfield ret=
+#define RETSTAT_GLbyte ret=
+#define RETSTAT_GLshort ret=
+#define RETSTAT_GLint ret=
+#define RETSTAT_GLubyte ret=
+#define RETSTAT_GLushort ret=
+#define RETSTAT_GLuint ret=
+#define RETSTAT_GLsizei ret=
+#define RETSTAT_GLfloat ret=
+#define RETSTAT_GLclampf ret=
+#define RETSTAT_GLdouble ret=
+#define RETSTAT_GLclampd ret=
 
+#define RETCONV_GLvoid Qnil
+#define RETCONV_void Qnil
+#define RETCONV_GLenum UINT2NUM(ret)
+#define RETCONV_GLboolean GLBOOL2RUBY(ret)
+#define RETCONV_GLbitfield UINT2NUM(ret)
+#define RETCONV_GLbyte INT2NUM(ret)
+#define RETCONV_GLshort INT2NUM(ret)
+#define RETCONV_GLint INT2NUM(ret)
+#define RETCONV_GLubyte UINT2NUM(ret)
+#define RETCONV_GLushort UINT2NUM(ret)
+#define RETCONV_GLuint UINT2NUM(ret)
+#define RETCONV_GLsizei INT2NUM(ret)
+#define RETCONV_GLfloat rb_float_new(ret)
+#define RETCONV_GLclampf rb_float_new(ret)
+#define RETCONV_GLdouble rb_float_new(ret)
+#define RETCONV_GLclampd rb_float_new(ret)
 
-#define GL_SIMPLE_FUNC(_name_,_numparams_,_ctype_,_conversion_) \
+#define PROTOPARAM0(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) void
+#define PROTOPARAM1(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1
+#define PROTOPARAM2(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2
+#define PROTOPARAM3(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3
+#define PROTOPARAM4(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4
+#define PROTOPARAM5(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4,p5
+#define PROTOPARAM6(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4,p5,p6
+#define PROTOPARAM7(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4,p5,p6,p7
+#define PROTOPARAM8(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4,p5,p6,p7,p8
+#define PROTOPARAM9(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4,p5,p6,p7,p8,p9
+#define PROTOPARAM10(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4,p5,p6,p7,p8,p9,p10
+
+#define CALLCONV0(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) 
+#define CALLCONV1(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1)
+#define CALLCONV2(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2)
+#define CALLCONV3(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3)
+#define CALLCONV4(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4)
+#define CALLCONV5(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4),CONV_##cv5(arg5)
+#define CALLCONV6(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4),CONV_##cv5(arg5),CONV_##cv6(arg6)
+#define CALLCONV7(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4),CONV_##cv5(arg5),CONV_##cv6(arg6),CONV_##cv7(arg7)
+#define CALLCONV8(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4),CONV_##cv5(arg5),CONV_##cv6(arg6),CONV_##cv7(arg7),CONV_##cv8(arg8)
+#define CALLCONV9(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4),CONV_##cv5(arg5),CONV_##cv6(arg6),CONV_##cv7(arg7),CONV_##cv8(arg8),CONV_##cv9(arg9)
+#define CALLCONV10(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4),CONV_##cv5(arg5),CONV_##cv6(arg6),CONV_##cv7(arg7),CONV_##cv8(arg8),CONV_##cv9(arg9),CONV_##cv10(arg10)
+
+#define GL_FUNC_LOAD(_num_,_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_) \
+static _returntype_ (APIENTRY * fptr_gl##_name_)(PROTOPARAM##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
 static VALUE \
-gl_##_name_(obj ARGLIST##_numparams_) \
-VALUE obj ARGLIST##_numparams_; \
+gl_##_name_(obj ARGLIST##_num_) \
+VALUE obj ARGLIST##_num_; \
 { \
-	gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
-	CHECK_GLERROR \
-	return Qnil; \
-} 
-
-#define GL_SIMPLE_FUNC_LOAD(_name_,_numparams_,_ctype_,_conversion_,_ver_) \
-static void (APIENTRY * fptr_gl##_name_)( TYPELIST##_numparams_(_ctype_) ); \
-static VALUE \
-gl_##_name_(obj ARGLIST##_numparams_) \
-VALUE obj ARGLIST##_numparams_; \
-{ \
+	RETDECL_##_returntype_ \
 	LOAD_GL_FUNC(gl##_name_,_ver_) \
-	fptr_gl##_name_(FUNCPARAMS##_numparams_(_ctype_,_conversion_)); \
+	RETSTAT_##_returntype_ fptr_gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
 	CHECK_GLERROR \
-	return Qnil; \
-} 
+	return RETCONV_##_returntype_ ; \
+}
+
+#define GL_FUNC_STATIC(_num_,_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10) \
+static VALUE \
+gl_##_name_(obj ARGLIST##_num_) \
+VALUE obj ARGLIST##_num_; \
+{ \
+	RETDECL_##_returntype_ \
+	RETSTAT_##_returntype_ gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
+	CHECK_GLERROR \
+	return RETCONV_##_returntype_ ; \
+}
+
+#define GL_FUNC_LOAD_0(_name_,_returntype_,_ver_) GL_FUNC_LOAD(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_1(_name_,_returntype_,targ1,_ver_) GL_FUNC_LOAD(1, _name_,_returntype_,targ1,0,0,0,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_2(_name_,_returntype_,targ1,targ2,_ver_) GL_FUNC_LOAD(2, _name_,_returntype_,targ1,targ2,0,0,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_3(_name_,_returntype_,targ1,targ2,targ3,_ver_) GL_FUNC_LOAD(3, _name_,_returntype_,targ1,targ2,targ3,0,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_4(_name_,_returntype_,targ1,targ2,targ3,targ4,_ver_) GL_FUNC_LOAD(4, _name_,_returntype_,targ1,targ2,targ3,targ4,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_5(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,_ver_) GL_FUNC_LOAD(5, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_6(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,_ver_) GL_FUNC_LOAD(6, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_7(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,_ver_) GL_FUNC_LOAD(7, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,0,0,0,_ver_)
+#define GL_FUNC_LOAD_8(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,_ver_) GL_FUNC_LOAD(8, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,0,0,_ver_)
+#define GL_FUNC_LOAD_9(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,_ver_) GL_FUNC_LOAD(9, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,0,_ver_)
+#define GL_FUNC_LOAD_10(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_) GL_FUNC_LOAD(10, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_)
+
+#define GL_FUNC_STATIC_0(_name_,_returntype_) GL_FUNC_STATIC(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_1(_name_,_returntype_,targ1) GL_FUNC_STATIC(1, _name_,_returntype_,targ1,0,0,0,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_2(_name_,_returntype_,targ1,targ2) GL_FUNC_STATIC(2, _name_,_returntype_,targ1,targ2,0,0,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_3(_name_,_returntype_,targ1,targ2,targ3) GL_FUNC_STATIC(3, _name_,_returntype_,targ1,targ2,targ3,0,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_4(_name_,_returntype_,targ1,targ2,targ3,targ4) GL_FUNC_STATIC(4, _name_,_returntype_,targ1,targ2,targ3,targ4,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_5(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5) GL_FUNC_STATIC(5, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,0,0,0,0,0)
+#define GL_FUNC_STATIC_6(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6) GL_FUNC_STATIC(6, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,0,0,0,0)
+#define GL_FUNC_STATIC_7(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7) GL_FUNC_STATIC(7, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,0,0,0)
+#define GL_FUNC_STATIC_8(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8) GL_FUNC_STATIC(8, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,0,0)
+#define GL_FUNC_STATIC_9(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9) GL_FUNC_STATIC(9, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,0)
+#define GL_FUNC_STATIC_10(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10_ver_) GL_FUNC_STATIC(10, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)
+

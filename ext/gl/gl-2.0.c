@@ -15,18 +15,45 @@
 
 #include "../common/common.h"
 
-GL_SIMPLE_FUNC_LOAD(BlendEquationSeparate,2,GLenum,NUM2INT,"2.0")
-GL_SIMPLE_FUNC_LOAD(StencilOpSeparate,4,GLenum,NUM2INT,"2.0")
-GL_SIMPLE_FUNC_LOAD(AttachShader,2,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(CompileShader,1,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(DeleteProgram,1,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(DeleteShader,1,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(DetachShader,2,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(DisableVertexAttribArray,1,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(EnableVertexAttribArray,1,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(LinkProgram,1,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(UseProgram,1,GLuint,NUM2UINT,"2.0")
-GL_SIMPLE_FUNC_LOAD(ValidateProgram,1,GLuint,NUM2UINT,"2.0")
+GL_FUNC_LOAD_2(BlendEquationSeparate,GLvoid, GLenum,GLenum, "2.0")
+GL_FUNC_LOAD_4(StencilOpSeparate,GLvoid, GLenum,GLenum,GLenum,GLenum, "2.0")
+GL_FUNC_LOAD_2(AttachShader,GLvoid, GLuint,GLuint, "2.0")
+GL_FUNC_LOAD_1(CompileShader,GLvoid, GLuint, "2.0")
+GL_FUNC_LOAD_1(DeleteProgram,GLvoid, GLuint, "2.0")
+GL_FUNC_LOAD_1(DeleteShader,GLvoid, GLuint, "2.0")
+GL_FUNC_LOAD_2(DetachShader,GLvoid, GLuint,GLuint, "2.0")
+GL_FUNC_LOAD_1(DisableVertexAttribArray,GLvoid, GLuint, "2.0")
+GL_FUNC_LOAD_1(EnableVertexAttribArray,GLvoid, GLuint, "2.0")
+GL_FUNC_LOAD_1(LinkProgram,GLvoid, GLuint, "2.0")
+GL_FUNC_LOAD_1(UseProgram,GLvoid, GLuint, "2.0")
+GL_FUNC_LOAD_1(ValidateProgram,GLvoid, GLuint, "2.0")
+GL_FUNC_LOAD_4(StencilFuncSeparate,GLvoid, GLenum,GLenum,GLint,GLuint, "2.0")
+GL_FUNC_LOAD_2(StencilMaskSeparate,GLvoid, GLenum,GLuint, "2.0")
+GL_FUNC_LOAD_0(CreateProgram,GLuint, "2.0")
+GL_FUNC_LOAD_1(CreateShader,GLuint, GLenum, "2.0")
+GL_FUNC_LOAD_1(IsProgram,GLboolean, GLuint, "2.0")
+GL_FUNC_LOAD_1(IsShader,GLboolean, GLuint, "2.0")
+GL_FUNC_LOAD_2(Uniform1f,GLvoid, GLint,GLfloat, "2.0")
+GL_FUNC_LOAD_2(Uniform1i,GLvoid, GLint,GLint, "2.0")
+GL_FUNC_LOAD_3(Uniform2f,GLvoid, GLint,GLfloat,GLfloat, "2.0")
+GL_FUNC_LOAD_3(Uniform2i,GLvoid, GLint,GLint,GLint, "2.0")
+GL_FUNC_LOAD_4(Uniform3f,GLvoid, GLint,GLfloat,GLfloat,GLfloat, "2.0")
+GL_FUNC_LOAD_4(Uniform3i,GLvoid, GLint,GLint,GLint,GLint, "2.0")
+GL_FUNC_LOAD_5(Uniform4f,GLvoid, GLint,GLfloat,GLfloat,GLfloat,GLfloat, "2.0")
+GL_FUNC_LOAD_5(Uniform4i,GLvoid, GLint,GLint,GLint,GLint,GLint, "2.0")
+GL_FUNC_LOAD_2(VertexAttrib1d,GLvoid, GLuint,GLdouble, "2.0")
+GL_FUNC_LOAD_2(VertexAttrib1f,GLvoid, GLuint,GLfloat, "2.0")
+GL_FUNC_LOAD_2(VertexAttrib1s,GLvoid, GLuint,GLshort, "2.0")
+GL_FUNC_LOAD_3(VertexAttrib2d,GLvoid, GLuint,GLdouble,GLdouble, "2.0")
+GL_FUNC_LOAD_3(VertexAttrib2f,GLvoid, GLuint,GLfloat,GLfloat, "2.0")
+GL_FUNC_LOAD_3(VertexAttrib2s,GLvoid, GLuint,GLshort,GLshort, "2.0")
+GL_FUNC_LOAD_4(VertexAttrib3d,GLvoid, GLuint,GLdouble,GLdouble,GLdouble, "2.0")
+GL_FUNC_LOAD_4(VertexAttrib3f,GLvoid, GLuint,GLfloat,GLfloat,GLfloat, "2.0")
+GL_FUNC_LOAD_4(VertexAttrib3s,GLvoid, GLuint,GLshort,GLshort,GLshort, "2.0")
+GL_FUNC_LOAD_5(VertexAttrib4d,GLvoid, GLuint,GLdouble,GLdouble,GLdouble,GLdouble, "2.0")
+GL_FUNC_LOAD_5(VertexAttrib4f,GLvoid, GLuint,GLfloat,GLfloat,GLfloat,GLfloat, "2.0")
+GL_FUNC_LOAD_5(VertexAttrib4s,GLvoid, GLuint,GLshort,GLshort,GLshort,GLshort, "2.0")
+GL_FUNC_LOAD_5(VertexAttrib4Nub,GLvoid, GLuint,GLubyte,GLubyte,GLubyte,GLubyte, "2.0")
 
 static void (APIENTRY * fptr_glDrawBuffers)(GLsizei,GLenum *);
 static VALUE
@@ -46,40 +73,6 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glStencilFuncSeparate)(GLenum,GLenum,GLint,GLuint);
-static VALUE
-gl_StencilFuncSeparate(obj,arg1,arg2,arg3,arg4)
-VALUE obj,arg1,arg2,arg3,arg4;
-{
-	GLenum face;
-	GLenum func;
-	GLint ref;
-	GLuint mask;
-	LOAD_GL_FUNC(glStencilFuncSeparate,"2.0")
-	face = (GLenum)NUM2INT(arg1);
-	func = (GLenum)NUM2INT(arg2);
-	ref = (GLint)NUM2INT(arg3);
-	mask = (GLuint)NUM2UINT(arg4);
-	fptr_glStencilFuncSeparate(face,func,ref,mask);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glStencilMaskSeparate)(GLenum face,GLuint mask);
-static VALUE
-gl_StencilMaskSeparate(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum face;
-	GLuint mask;
-	LOAD_GL_FUNC(glStencilMaskSeparate,"2.0")
-	face = (GLenum)NUM2INT(arg1);
-	mask = (GLenum)NUM2INT(arg2);
-	fptr_glStencilMaskSeparate(face,mask);
-	CHECK_GLERROR
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glBindAttribLocation)(GLuint,GLuint,GLchar *);
 static VALUE
 gl_BindAttribLocation(obj,arg1,arg2,arg3)
@@ -94,32 +87,6 @@ VALUE obj,arg1,arg2,arg3;
 	fptr_glBindAttribLocation(program,index,RSTRING(arg3)->ptr);
 	CHECK_GLERROR
 	return Qnil;
-}
-
-static GLuint (APIENTRY * fptr_glCreateProgram)(void);
-static VALUE
-gl_CreateProgram(obj)
-VALUE obj;
-{
-	GLuint ret;
-	LOAD_GL_FUNC(glCreateProgram,"2.0")
-	ret = fptr_glCreateProgram();
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-static GLuint (APIENTRY * fptr_glCreateShader)(GLenum);
-static VALUE
-gl_CreateShader(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum shaderType;
-	GLuint ret;
-	LOAD_GL_FUNC(glCreateShader,"2.0")
-	shaderType = (GLenum)NUM2INT(arg1);
-	ret = fptr_glCreateShader(shaderType);
-	CHECK_GLERROR
-	return INT2NUM(ret);
 }
 
 static void (APIENTRY * fptr_glGetProgramiv)(GLuint,GLenum,GLint *);
@@ -433,34 +400,6 @@ VALUE obj,arg1;
 	return g_VertexAttrib_ptr[index];
 }
 
-static GLboolean (APIENTRY * fptr_glIsProgram)(GLuint);
-static VALUE
-gl_IsProgram(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint program;
-	GLboolean ret;
-	LOAD_GL_FUNC(glIsProgram,"2.0")
-	program = (GLuint)NUM2UINT(arg1);
-	ret = fptr_glIsProgram(program);
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-static GLboolean (APIENTRY * fptr_glIsShader)(GLuint);
-static VALUE
-gl_IsShader(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint program;
-	GLboolean ret;
-	LOAD_GL_FUNC(glIsShader,"2.0")
-	program = (GLuint)NUM2UINT(arg1);
-	ret = fptr_glIsShader(program);
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
 static void (APIENTRY * fptr_glShaderSource)(GLuint,GLsizei,GLchar**,GLint *);
 static VALUE
 gl_ShaderSource(obj,arg1,arg2)
@@ -478,29 +417,6 @@ VALUE obj,arg1,arg2;
 	CHECK_GLERROR
 	return Qnil;
 }
-
-#define UNIFORM_FUNC(_name_,_type_,_conv_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLint,TYPELIST##_size_(_type_)); \
-static VALUE \
-gl_##_name_(obj, location ARGLIST##_size_) \
-VALUE obj, location ARGLIST##_size_ ; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,"2.0") \
-	fptr_gl##_name_(NUM2INT(location),FUNCPARAMS##_size_(_type_,_conv_)); \
-	CHECK_GLERROR \
-	return Qnil; \
-}
-
-UNIFORM_FUNC(Uniform1f,GLfloat,NUM2DBL,1)
-UNIFORM_FUNC(Uniform1i,GLint,NUM2INT,1)
-UNIFORM_FUNC(Uniform2f,GLfloat,NUM2DBL,2)
-UNIFORM_FUNC(Uniform2i,GLint,NUM2INT,2)
-UNIFORM_FUNC(Uniform3f,GLfloat,NUM2DBL,3)
-UNIFORM_FUNC(Uniform3i,GLint,NUM2INT,3)
-UNIFORM_FUNC(Uniform4f,GLfloat,NUM2DBL,4)
-UNIFORM_FUNC(Uniform4i,GLint,NUM2INT,4)
-#undef UNIFORM_FUNC
-
 
 #define UNIFORM_FUNC_V(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,_type_ *); \
@@ -558,34 +474,6 @@ UNIFORMMATRIX_FUNC(UniformMatrix2fv,2)
 UNIFORMMATRIX_FUNC(UniformMatrix3fv,3)
 UNIFORMMATRIX_FUNC(UniformMatrix4fv,4)
 #undef UNIFORMMATRIX_FUNC
-
-#define VERTEXATTRIB_FUNC(_name_,_type_,_conv_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,TYPELIST##_size_(_type_)); \
-static VALUE \
-gl_##_name_(obj, index ARGLIST##_size_) \
-VALUE obj, index ARGLIST##_size_ ; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,"2.0") \
-	fptr_gl##_name_(NUM2UINT(index),FUNCPARAMS##_size_(_type_,_conv_)); \
-	CHECK_GLERROR \
-	return Qnil; \
-}
-
-VERTEXATTRIB_FUNC(VertexAttrib1d,GLdouble,NUM2DBL,1)
-VERTEXATTRIB_FUNC(VertexAttrib1f,GLfloat,NUM2DBL,1)
-VERTEXATTRIB_FUNC(VertexAttrib1s,GLshort,NUM2INT,1)
-VERTEXATTRIB_FUNC(VertexAttrib2d,GLdouble,NUM2DBL,2)
-VERTEXATTRIB_FUNC(VertexAttrib2f,GLfloat,NUM2DBL,2)
-VERTEXATTRIB_FUNC(VertexAttrib2s,GLshort,NUM2INT,2)
-VERTEXATTRIB_FUNC(VertexAttrib3d,GLdouble,NUM2DBL,3)
-VERTEXATTRIB_FUNC(VertexAttrib3f,GLfloat,NUM2DBL,3)
-VERTEXATTRIB_FUNC(VertexAttrib3s,GLshort,NUM2INT,3)
-VERTEXATTRIB_FUNC(VertexAttrib4d,GLdouble,NUM2DBL,4)
-VERTEXATTRIB_FUNC(VertexAttrib4f,GLfloat,NUM2DBL,4)
-VERTEXATTRIB_FUNC(VertexAttrib4s,GLshort,NUM2INT,4)
-VERTEXATTRIB_FUNC(VertexAttrib4Nub,GLubyte,NUM2UINT,4)
-#undef VERTEXATTRIB_FUNC
-
 
 #define VERTEXATTRIB_FUNC_V(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,_type_ *); \

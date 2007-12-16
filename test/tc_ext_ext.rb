@@ -51,12 +51,12 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		fb = glGenFramebuffersEXT(1)
 		assert(fb.size==1)
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,fb[0])
-		assert_equal(glIsFramebufferEXT(fb[0]),GL_TRUE)
+		assert_equal(glIsFramebufferEXT(fb[0]),true)
 
 		rb = glGenRenderbuffersEXT(1)
 		assert(rb.size==1)
 		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,rb[0])
-		assert_equal(glIsRenderbufferEXT(rb[0]),GL_TRUE)
+		assert_equal(glIsRenderbufferEXT(rb[0]),true)
 
 		glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, $window_size, $window_size)
 
@@ -297,7 +297,7 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		textures = glGenTexturesEXT(2)
 		glBindTextureEXT(GL_TEXTURE_1D,textures[0])
 		glBindTextureEXT(GL_TEXTURE_2D,textures[1])
-		assert_equal(glIsTextureEXT(textures[0]),GL_TRUE)
+		assert_equal(glIsTextureEXT(textures[0]),true)
 		assert_equal(glAreTexturesResidentEXT(textures).size,2)
 
 		glPrioritizeTexturesEXT(textures,[0.5,1.0])
@@ -305,7 +305,7 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY),[1.0])
 
 		glDeleteTexturesEXT(textures)
-		assert_equal(glIsTextureEXT(textures[0]),GL_FALSE)
+		assert_equal(glIsTextureEXT(textures[0]),false)
 	end
 
 	def test_gl_ext_compiled_vertex_array

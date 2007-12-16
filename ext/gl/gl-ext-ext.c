@@ -20,10 +20,10 @@
    created or agreed upon by multiple vendors */
 
 /* #2 - GL_EXT_blend_color */
-GL_SIMPLE_FUNC_LOAD(BlendColorEXT,4,GLclampf,NUM2DBL,"GL_EXT_blend_color")
+GL_FUNC_LOAD_4(BlendColorEXT,GLvoid, GLclampf,GLclampf,GLclampf,GLclampf, "GL_EXT_blend_color")
 
 /* #3 - GL_EXT_polygon_offset */
-GL_SIMPLE_FUNC_LOAD(PolygonOffsetEXT,2,GLfloat,NUM2DBL,"GL_EXT_polygon_offset")
+GL_FUNC_LOAD_2(PolygonOffsetEXT,GLvoid, GLfloat,GLfloat, "GL_EXT_polygon_offset")
 
 /* #20 - GL_EXT_texture_object */
 static void (APIENTRY * fptr_glGenTexturesEXT)(GLsizei,GLuint *);
@@ -66,14 +66,7 @@ static VALUE gl_DeleteTexturesEXT(VALUE obj,VALUE arg1)
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glBindTextureEXT)(GLenum,GLuint);
-static VALUE gl_BindTextureEXT(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glBindTextureEXT,"GL_EXT_texture_object")
-	fptr_glBindTextureEXT(NUM2UINT(arg1),NUM2UINT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(BindTextureEXT,GLvoid, GLenum,GLint, "GL_EXT_texture_object")
 
 static void (APIENTRY * fptr_glPrioritizeTexturesEXT)(GLsizei,const GLuint *,const GLclampf *);
 static VALUE
@@ -132,31 +125,13 @@ VALUE obj,arg1;
 	return retary;
 }
 
-
-static GLboolean (APIENTRY * fptr_glIsTextureEXT)(GLuint);
-static VALUE gl_IsTextureEXT(VALUE obj,VALUE arg1)
-{
-	GLboolean ret;
-	LOAD_GL_FUNC(glIsTextureEXT,"GL_EXT_texture_object")
-	ret = fptr_glIsTextureEXT((GLuint)NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
+GL_FUNC_LOAD_1(IsTextureEXT,GLboolean, GLuint, "GL_EXT_texture_object")
 
 /* #37 - GL_EXT_blend_minmax */
-GL_SIMPLE_FUNC_LOAD(BlendEquationEXT,1,GLenum,NUM2UINT,"GL_EXT_blend_minmax")
+GL_FUNC_LOAD_1(BlendEquationEXT,GLvoid, GLenum, "GL_EXT_blend_minmax")
 
 /* #54 - GL_EXT_point_parameters */
-
-static void (APIENTRY * fptr_glPointParameterfEXT)(GLenum,GLfloat);
-static VALUE gl_PointParameterfEXT(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glPointParameterfEXT,"GL_EXT_point_parameters")
-	fptr_glPointParameterfEXT(NUM2UINT(arg1),NUM2DBL(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(PointParameterfEXT,GLvoid, GLenum,GLfloat, "GL_EXT_point_parameters")
 
 static void (APIENTRY * fptr_glPointParameterfvEXT)(GLenum,GLfloat *);
 static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
@@ -178,14 +153,14 @@ static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
 }
 
 /* #145 - GL_EXT_secondary_color */
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3bEXT,3,GLbyte,NUM2INT,"GL_EXT_secondary_color")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3sEXT,3,GLshort,NUM2INT,"GL_EXT_secondary_color")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3iEXT,3,GLint,NUM2INT,"GL_EXT_secondary_color")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3fEXT,3,GLfloat,NUM2DBL,"GL_EXT_secondary_color")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3dEXT,3,GLdouble,NUM2DBL,"GL_EXT_secondary_color")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3ubEXT,3,GLubyte,NUM2UINT,"GL_EXT_secondary_color")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3usEXT,3,GLushort,NUM2UINT,"GL_EXT_secondary_color")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3uiEXT,3,GLuint,NUM2UINT,"GL_EXT_secondary_color")
+GL_FUNC_LOAD_3(SecondaryColor3bEXT,GLvoid, GLbyte,GLbyte,GLbyte, "GL_EXT_secondary_color")
+GL_FUNC_LOAD_3(SecondaryColor3sEXT,GLvoid, GLshort,GLshort,GLshort, "GL_EXT_secondary_color")
+GL_FUNC_LOAD_3(SecondaryColor3iEXT,GLvoid, GLint,GLint,GLint, "GL_EXT_secondary_color")
+GL_FUNC_LOAD_3(SecondaryColor3fEXT,GLvoid, GLfloat,GLfloat,GLfloat, "GL_EXT_secondary_color")
+GL_FUNC_LOAD_3(SecondaryColor3dEXT,GLvoid, GLdouble,GLdouble,GLdouble, "GL_EXT_secondary_color")
+GL_FUNC_LOAD_3(SecondaryColor3ubEXT,GLvoid, GLubyte,GLubyte,GLubyte, "GL_EXT_secondary_color")
+GL_FUNC_LOAD_3(SecondaryColor3usEXT,GLvoid, GLushort,GLushort,GLushort, "GL_EXT_secondary_color")
+GL_FUNC_LOAD_3(SecondaryColor3uiEXT,GLvoid, GLuint,GLuint,GLuint, "GL_EXT_secondary_color")
 
 #define GLSECONDARYCOLOREXT_VFUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
@@ -237,8 +212,8 @@ VALUE obj,arg1,arg2,arg3,arg4;
 }
 
 /* #97 - GL_EXT_compiled_vertex_array */
-GL_SIMPLE_FUNC_LOAD(LockArraysEXT,2,GLint,NUM2INT,"GL_EXT_compiled_vertex_array")
-GL_SIMPLE_FUNC_LOAD(UnlockArraysEXT,0,0,0,"GL_EXT_compiled_vertex_array")
+GL_FUNC_LOAD_2(LockArraysEXT,GLvoid, GLint,GLint, "GL_EXT_compiled_vertex_array")
+GL_FUNC_LOAD_0(UnlockArraysEXT,GLvoid, "GL_EXT_compiled_vertex_array")
 
 /* #112 - GL_EXT_draw_range_elements */
 static void (APIENTRY * fptr_glDrawRangeElementsEXT)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
@@ -358,9 +333,9 @@ VALUE obj;
 }
 
 /* #149 - GL_EXT_fog_coord */
-GL_SIMPLE_FUNC_LOAD(FogCoordfEXT,1,GLfloat,NUM2DBL,"GL_EXT_fog_coord")
-GL_SIMPLE_FUNC_LOAD(FogCoorddEXT,1,GLdouble,NUM2DBL,"GL_EXT_fog_coord")
-	
+GL_FUNC_LOAD_1(FogCoordfEXT,GLvoid, GLfloat, "GL_EXT_fog_coord")
+GL_FUNC_LOAD_1(FogCoorddEXT,GLvoid, GLdouble, "GL_EXT_fog_coord")
+
 #define GLFOGCOORD_VFUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
 VALUE gl_##_name_(VALUE obj,VALUE arg1) \
@@ -402,36 +377,20 @@ VALUE obj,arg1,arg2,arg3;
 }
 
 /* #173 - GL_EXT_blend_func_separate */
-GL_SIMPLE_FUNC_LOAD(BlendFuncSeparateEXT,4,GLenum,NUM2UINT,"GL_EXT_blend_func_separate")
+GL_FUNC_LOAD_4(BlendFuncSeparateEXT,GLvoid, GLenum,GLenum,GLenum,GLenum, "GL_EXT_blend_func_separate")
 
 /* #268 - GL_EXT_stencil_two_side */
-GL_SIMPLE_FUNC_LOAD(ActiveStencilFaceEXT,1,GLenum,NUM2UINT,"GL_EXT_stencil_two_side")
+GL_FUNC_LOAD_1(ActiveStencilFaceEXT,GLvoid, GLenum, "GL_EXT_stencil_two_side")
 
 /* #297 - GL_EXT_depth_bounds_test */
-GL_SIMPLE_FUNC_LOAD(DepthBoundsEXT,2,GLclampd,NUM2DBL,"GL_EXT_depth_bounds_test")
+GL_FUNC_LOAD_2(DepthBoundsEXT,GLvoid, GLclampd,GLclampd, "GL_EXT_depth_bounds_test")
 
 /* #299 - GL_EXT_blend_equation_separate */
-GL_SIMPLE_FUNC_LOAD(BlendEquationSeparateEXT,2,GLenum,NUM2UINT,"GL_EXT_blend_equation_separate")
+GL_FUNC_LOAD_2(BlendEquationSeparateEXT,GLvoid, GLenum,GLenum, "GL_EXT_blend_equation_separate")
 
 /* #310 - GL_EXT_framebuffer_object */
-static GLboolean (APIENTRY * fptr_glIsRenderbufferEXT)(GLuint);
-static VALUE gl_IsRenderbufferEXT(VALUE obj,VALUE arg1)
-{
-	GLboolean ret;
-	LOAD_GL_FUNC(glIsRenderbufferEXT,"GL_EXT_framebuffer_object")
-	ret = fptr_glIsRenderbufferEXT((GLuint)NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-static void (APIENTRY * fptr_glBindRenderbufferEXT)(GLenum,GLuint);
-static VALUE gl_BindRenderbufferEXT(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glBindRenderbufferEXT,"GL_EXT_framebuffer_object")
-	fptr_glBindRenderbufferEXT((GLenum)NUM2INT(arg1),(GLuint)NUM2UINT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_1(IsRenderbufferEXT,GLboolean, GLuint, "GL_EXT_framebuffer_object")
+GL_FUNC_LOAD_2(BindRenderbufferEXT,GLvoid, GLenum,GLuint, "GL_EXT_framebuffer_object")
 
 static void (APIENTRY * fptr_glDeleteRenderbuffersEXT)(GLsizei,const GLuint *);
 static VALUE gl_DeleteRenderbuffersEXT(VALUE obj,VALUE arg1)
@@ -473,14 +432,7 @@ static VALUE gl_GenRenderbuffersEXT(VALUE obj,VALUE arg1)
 	return ret;
 }
 
-static void (APIENTRY * fptr_glRenderbufferStorageEXT)(GLenum,GLenum,GLsizei,GLsizei);
-static VALUE gl_RenderbufferStorageEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4)
-{
-	LOAD_GL_FUNC(glRenderbufferStorageEXT,"GL_EXT_framebuffer_object")
-	fptr_glRenderbufferStorageEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2INT(arg3),NUM2INT(arg4));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_4(RenderbufferStorageEXT,GLvoid, GLenum,GLenum,GLsizei,GLsizei, "GL_EXT_framebuffer_object")
 
 static void (APIENTRY * fptr_glGetRenderbufferParameterivEXT)(GLenum,GLenum,GLint *);
 static VALUE gl_GetRenderbufferParameterivEXT(VALUE obj,VALUE arg1,VALUE arg2)
@@ -492,24 +444,8 @@ static VALUE gl_GetRenderbufferParameterivEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	return INT2NUM(param);
 }
 
-static GLboolean (APIENTRY * fptr_glIsFramebufferEXT)(GLuint);
-static VALUE gl_IsFramebufferEXT(VALUE obj,VALUE arg1)
-{
-	GLboolean ret;
-	LOAD_GL_FUNC(glIsFramebufferEXT,"GL_EXT_framebuffer_object")
-	ret = fptr_glIsFramebufferEXT(NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-static void (APIENTRY * fptr_glBindFramebufferEXT)(GLenum,GLuint);
-static VALUE gl_BindFramebufferEXT(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glBindFramebufferEXT,"GL_EXT_framebuffer_object")
-	fptr_glBindFramebufferEXT((GLenum)NUM2INT(arg1),(GLuint)NUM2UINT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_1(IsFramebufferEXT,GLboolean, GLuint, "GL_EXT_framebuffer_object")
+GL_FUNC_LOAD_2(BindFramebufferEXT,GLvoid, GLenum,GLuint, "GL_EXT_framebuffer_object")
 
 static void (APIENTRY * fptr_glDeleteFramebuffersEXT)(GLsizei,const GLuint *);
 static VALUE gl_DeleteFramebuffersEXT(VALUE obj,VALUE arg1)
@@ -551,44 +487,12 @@ static VALUE gl_GenFramebuffersEXT(VALUE obj,VALUE arg1)
 	return ret;
 }
 
-static GLenum (APIENTRY * fptr_glCheckFramebufferStatusEXT)(GLenum);
-static VALUE gl_CheckFramebufferStatusEXT(VALUE obj,VALUE arg1)
-{
-	GLenum ret;
-	LOAD_GL_FUNC(glCheckFramebufferStatusEXT,"GL_EXT_framebuffer_object")
-	ret = fptr_glCheckFramebufferStatusEXT(NUM2UINT(arg1));
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
+GL_FUNC_LOAD_1(CheckFramebufferStatusEXT,GLenum, GLenum, "GL_EXT_framebuffer_object")
+GL_FUNC_LOAD_5(FramebufferTexture1DEXT,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint, "GL_EXT_framebuffer_object")
+GL_FUNC_LOAD_5(FramebufferTexture2DEXT,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint, "GL_EXT_framebuffer_object")
+GL_FUNC_LOAD_6(FramebufferTexture3DEXT,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint,GLint, "GL_EXT_framebuffer_object")
 
-static void (APIENTRY * fptr_glFramebufferTexture1DEXT)(GLenum,GLenum,GLenum,GLuint,GLint);
-static VALUE gl_FramebufferTexture1DEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
-{
-	LOAD_GL_FUNC(glFramebufferTexture1DEXT,"GL_EXT_framebuffer_object")
-	fptr_glFramebufferTexture1DEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),NUM2UINT(arg4),NUM2INT(arg5));
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glFramebufferTexture2DEXT)(GLenum,GLenum,GLenum,GLuint,GLint);
-static VALUE gl_FramebufferTexture2DEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
-{
-	LOAD_GL_FUNC(glFramebufferTexture2DEXT,"GL_EXT_framebuffer_object")
-	fptr_glFramebufferTexture2DEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),NUM2UINT(arg4),NUM2INT(arg5));
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glFramebufferTexture3DEXT)(GLenum,GLenum,GLenum,GLuint,GLint,GLint);
-static VALUE gl_FramebufferTexture3DEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5,VALUE arg6)
-{
-	LOAD_GL_FUNC(glFramebufferTexture3DEXT,"GL_EXT_framebuffer_object")
-	fptr_glFramebufferTexture3DEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),NUM2UINT(arg4),NUM2INT(arg5),NUM2INT(arg6));
-	CHECK_GLERROR
-	return Qnil;
-}
-
-GL_SIMPLE_FUNC_LOAD(FramebufferRenderbufferEXT,4,GLuint,NUM2UINT,"GL_EXT_framebuffer_object")
+GL_FUNC_LOAD_4(FramebufferRenderbufferEXT,GLvoid, GLuint,GLuint,GLuint,GLuint, "GL_EXT_framebuffer_object")
 
 static void (APIENTRY * fptr_glGetFramebufferAttachmentParameterivEXT)(GLenum,GLenum,GLenum,GLint *);
 static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VALUE arg2, VALUE arg3)
@@ -600,40 +504,16 @@ static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VAL
 	return INT2NUM(ret);
 }
 
-GL_SIMPLE_FUNC_LOAD(GenerateMipmapEXT,1,GLenum,NUM2UINT,"GL_EXT_framebuffer_object")
+GL_FUNC_LOAD_1(GenerateMipmapEXT,GLvoid, GLenum, "GL_EXT_framebuffer_object")
 
 /* #314 - GL_EXT_stencil_clear_tag */
-static void (APIENTRY * fptr_glStencilClearTagEXT)(GLsizei,GLuint);
-static VALUE gl_StencilClearTagEXT(VALUE obj,VALUE arg1,VALUE arg2)
-{
-	LOAD_GL_FUNC(glStencilClearTagEXT,"GL_EXT_stencil_clear_tag")
-	fptr_glStencilClearTagEXT(NUM2INT(arg1),NUM2UINT(arg2));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_2(StencilClearTagEXT,GLvoid, GLsizei,GLuint, "GL_EXT_stencil_clear_tag")
 
 /* #316 - GL_EXT_framebuffer_blit */
-static void (APIENTRY * fptr_glBlitFramebufferEXT)(GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLbitfield,GLenum);
-static VALUE gl_BlitFramebufferEXT(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
-{
-	LOAD_GL_FUNC(glBlitFramebufferEXT,"GL_EXT_framebuffer_blit")
-	fptr_glBlitFramebufferEXT(NUM2INT(arg1),NUM2INT(arg2),NUM2INT(arg3),NUM2INT(arg4),
-														NUM2INT(arg5),NUM2INT(arg6),NUM2INT(arg7),NUM2INT(arg8),
-														NUM2UINT(arg9),NUM2UINT(arg10));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_10(BlitFramebufferEXT,GLvoid, GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLbitfield,GLenum, "GL_EXT_framebuffer_blit")
 
 /* #317 - GL_EXT_framebuffer_multisample */
-static void (APIENTRY * fptr_glRenderbufferStorageMultisampleEXT)(GLenum,GLsizei,GLenum,GLsizei,GLsizei);
-static VALUE gl_RenderbufferStorageMultisampleEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
-{
-	LOAD_GL_FUNC(glRenderbufferStorageMultisampleEXT,"GL_EXT_framebuffer_multisample")
-	fptr_glRenderbufferStorageMultisampleEXT(NUM2UINT(arg1),NUM2INT(arg2),NUM2UINT(arg3),NUM2INT(arg4),NUM2INT(arg5));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_5(RenderbufferStorageMultisampleEXT,GLvoid, GLenum,GLsizei,GLenum,GLsizei,GLsizei, "GL_EXT_framebuffer_multisample")
 
 /* #319 - GL_EXT_timer_query */
 
@@ -679,37 +559,17 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_
 #undef PROGRAMPARAM_MULTI_FUNC_V
 
 /* #324 - GL_EXT_geometry_shader4 */
-static void (APIENTRY * fptr_glProgramParameteriEXT)(GLuint,GLenum,GLint);
-static VALUE gl_ProgramParameteriEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
-{
-	LOAD_GL_FUNC(glProgramParameteriEXT,"GL_EXT_geometry_shader4")
-	fptr_glProgramParameteriEXT(NUM2UINT(arg1),NUM2INT(arg2),NUM2INT(arg3));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_3(ProgramParameteriEXT,GLvoid, GLuint,GLenum,GLint, "GL_EXT_geometry_shader4")
 
 /* #326 - GL_EXT_gpu_shader4 */
-
-#define GLVERTEXATTRIB_FUNC(_name_,_type_,_conv_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,TYPELIST##_size_(_type_)); \
-static VALUE \
-gl_##_name_(obj,index ARGLIST##_size_) \
-VALUE obj,index ARGLIST##_size_ ; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
-	fptr_gl##_name_(NUM2UINT(index),FUNCPARAMS##_size_(_type_,_conv_)); \
-	return Qnil; \
-}
-
-GLVERTEXATTRIB_FUNC(VertexAttribI1iEXT,GLint,NUM2INT,1)
-GLVERTEXATTRIB_FUNC(VertexAttribI2iEXT,GLint,NUM2INT,2)
-GLVERTEXATTRIB_FUNC(VertexAttribI3iEXT,GLint,NUM2INT,3)
-GLVERTEXATTRIB_FUNC(VertexAttribI4iEXT,GLint,NUM2INT,4)
-GLVERTEXATTRIB_FUNC(VertexAttribI1uiEXT,GLuint,NUM2UINT,1)
-GLVERTEXATTRIB_FUNC(VertexAttribI2uiEXT,GLuint,NUM2UINT,2)
-GLVERTEXATTRIB_FUNC(VertexAttribI3uiEXT,GLuint,NUM2UINT,3)
-GLVERTEXATTRIB_FUNC(VertexAttribI4uiEXT,GLuint,NUM2UINT,4)
-#undef GLVERTEXATTRIB_FUNC
+GL_FUNC_LOAD_2(VertexAttribI1iEXT,GLvoid, GLuint,GLint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_3(VertexAttribI2iEXT,GLvoid, GLuint,GLint,GLint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_4(VertexAttribI3iEXT,GLvoid, GLuint,GLint,GLint,GLint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_5(VertexAttribI4iEXT,GLvoid, GLuint,GLint,GLint,GLint,GLint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_2(VertexAttribI1uiEXT,GLvoid, GLuint,GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_3(VertexAttribI2uiEXT,GLvoid, GLuint,GLuint,GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_4(VertexAttribI3uiEXT,GLvoid, GLuint,GLuint,GLuint,GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_5(VertexAttribI4uiEXT,GLvoid, GLuint,GLuint,GLuint,GLuint,GLuint, "GL_ARB_shader_objects")
 
 #define GLVERTEXATTRIB_VFUNC(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,const _type_ *); \
@@ -738,7 +598,6 @@ GLVERTEXATTRIB_VFUNC(VertexAttribI4svEXT,GLshort,ary2cshort,4)
 GLVERTEXATTRIB_VFUNC(VertexAttribI4ubvEXT,GLubyte,ary2cubyte,4)
 GLVERTEXATTRIB_VFUNC(VertexAttribI4usvEXT,GLushort,ary2cushort,4)
 #undef GLVERTEXATTRIB_VFUNC
-
 
 #define GETVERTEXATTRIB_FUNC(_name_,_type_,_conv_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
@@ -804,23 +663,10 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 	return Qnil;
 }
 
-#define GLUNIFORM_FUNC(_name_,_type_,_conv_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLint,TYPELIST##_size_(_type_)); \
-static VALUE \
-gl_##_name_(obj,loc ARGLIST##_size_) \
-VALUE obj,loc ARGLIST##_size_ ; \
-{ \
-	LOAD_GL_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
-	fptr_gl##_name_(NUM2INT(loc),FUNCPARAMS##_size_(_type_,_conv_)); \
-	return Qnil; \
-}
-
-GLUNIFORM_FUNC(Uniform1uiEXT,GLuint,NUM2INT,1)
-GLUNIFORM_FUNC(Uniform2uiEXT,GLuint,NUM2INT,2)
-GLUNIFORM_FUNC(Uniform3uiEXT,GLuint,NUM2INT,3)
-GLUNIFORM_FUNC(Uniform4uiEXT,GLuint,NUM2INT,4)
-
-#undef GLUNIFORM_FUNC
+GL_FUNC_LOAD_2(Uniform1uiEXT,GLvoid, GLint,GLuint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_3(Uniform2uiEXT,GLvoid, GLint,GLuint,GLuint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_4(Uniform3uiEXT,GLvoid, GLint,GLuint,GLuint,GLuint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_5(Uniform4uiEXT,GLvoid, GLint,GLuint,GLuint,GLuint,GLuint, "GL_EXT_gpu_shader4")
 
 #define GLUNIFORM_VFUNC(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,const _type_ *); \
@@ -846,7 +692,6 @@ GLUNIFORM_VFUNC(Uniform1uivEXT,GLuint,ary2cuint,1)
 GLUNIFORM_VFUNC(Uniform2uivEXT,GLuint,ary2cuint,2)
 GLUNIFORM_VFUNC(Uniform3uivEXT,GLuint,ary2cuint,3)
 GLUNIFORM_VFUNC(Uniform4uivEXT,GLuint,ary2cuint,4)
-
 #undef GLUNIFORM_VFUNC
 
 static void (APIENTRY * fptr_glGetActiveUniformARB)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
@@ -911,14 +756,7 @@ static VALUE gl_GetFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2)
 }
 
 /* #327 - GL_EXT_draw_instanced */
-static void (APIENTRY * fptr_glDrawArraysInstancedEXT)(GLenum,GLint,GLsizei,GLsizei);
-static VALUE gl_DrawArraysInstancedEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4)
-{
-	LOAD_GL_FUNC(glDrawArraysInstancedEXT,"GL_EXT_draw_instanced")
-	fptr_glDrawArraysInstancedEXT(NUM2UINT(arg1),NUM2INT(arg2),NUM2INT(arg3),NUM2INT(arg4));
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_LOAD_4(DrawArraysInstancedEXT,GLvoid, GLenum,GLint,GLsizei,GLsizei, "GL_EXT_draw_instanced")
 
 static void (APIENTRY * fptr_glDrawElementsInstancedEXT)(GLenum,GLsizei,GLenum,const GLvoid *,GLsizei);
 static VALUE gl_DrawElementsInstancedEXT(obj,arg1,arg2,arg3,arg4,arg5)
@@ -944,11 +782,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 }
 
 /* #330 - GL_EXT_texture_buffer_object */
-GL_SIMPLE_FUNC_LOAD(TexBufferEXT,3,GLenum,NUM2UINT,"GL_EXT_texture_buffer_object")
+GL_FUNC_LOAD_3(TexBufferEXT,GLvoid, GLenum,GLenum,GLenum, "GL_EXT_texture_buffer_object")
 
 /* #343 - GL_EXT_texture_integer */
-GL_SIMPLE_FUNC_LOAD(ClearColorIiEXT,4,GLint,NUM2INT,"GL_EXT_texture_integer")
-GL_SIMPLE_FUNC_LOAD(ClearColorIuiEXT,4,GLuint,NUM2UINT,"GL_EXT_texture_integer")
+GL_FUNC_LOAD_4(ClearColorIiEXT,GLvoid, GLint,GLint,GLint,GLint, "GL_EXT_texture_integer")
+GL_FUNC_LOAD_4(ClearColorIuiEXT,GLvoid, GLuint,GLuint,GLuint,GLuint, "GL_EXT_texture_integer")
 
 #define TEXPARAMETER_VFUNC(_name_,_type_,_conv_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLenum,_type_ *); \

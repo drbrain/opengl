@@ -27,7 +27,7 @@ class Test_EXT_NV < Test::Unit::TestCase
 	def test_gl_nv_vertex_program
 		return if not supported?("GL_NV_vertex_program")
 	
-		assert_equal(glIsProgram(0),GL_FALSE)
+		assert_equal(glIsProgramNV(0),false)
 		programs = glGenProgramsNV(2)
 		assert_equal(programs.size,2)
 		
@@ -36,7 +36,7 @@ class Test_EXT_NV < Test::Unit::TestCase
 	  glBindProgramNV(GL_VERTEX_PROGRAM_NV, programs[1])
 		glLoadProgramNV(GL_VERTEX_STATE_PROGRAM_NV, programs[0], program)
 		assert_equal(glGetProgramStringNV(programs[0], GL_PROGRAM_STRING_NV), program)
-		assert_equal(glIsProgramNV(programs[0]),GL_TRUE)	
+		assert_equal(glIsProgramNV(programs[0]),true)	
 	
 		assert_equal(glGetProgramivNV(programs[0],GL_PROGRAM_LENGTH_NV),program.size)
 
@@ -213,10 +213,10 @@ class Test_EXT_NV < Test::Unit::TestCase
 			
 			glSetFenceNV(fences[0],GL_ALL_COMPLETED_NV)
 			assert_equal(glGetFenceivNV(fences[0],GL_FENCE_CONDITION_NV),GL_ALL_COMPLETED_NV)
-			assert_equal(glIsFenceNV(fences[0]),GL_TRUE)
+			assert_equal(glIsFenceNV(fences[0]),true)
 
 			glFinishFenceNV(fences[0])
-			assert_equal(glTestFenceNV(fences[0]),GL_TRUE)
+			assert_equal(glTestFenceNV(fences[0]),true)
 
 			glDeleteFencesNV(fences)
 	end
@@ -238,7 +238,7 @@ class Test_EXT_NV < Test::Unit::TestCase
 		assert_equal(queries.size,2)
 
 		glBeginOcclusionQueryNV(queries[0])
-		assert_equal(glIsOcclusionQueryNV(queries[0]),GL_TRUE)
+		assert_equal(glIsOcclusionQueryNV(queries[0]),true)
 
 		glEndOcclusionQueryNV()
 		r = glGetOcclusionQueryivNV(queries[0],GL_PIXEL_COUNT_AVAILABLE_NV)
@@ -246,7 +246,7 @@ class Test_EXT_NV < Test::Unit::TestCase
 		assert(glGetOcclusionQueryuivNV(queries[0],GL_PIXEL_COUNT_NV)>=0)
 
 		glDeleteOcclusionQueriesNV(queries)
-		assert_equal(glIsOcclusionQueryNV(queries[1]),GL_FALSE)
+		assert_equal(glIsOcclusionQueryNV(queries[1]),false)
 	end
 
 	def test_gl_nv_gpu_program4

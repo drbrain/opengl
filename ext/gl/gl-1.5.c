@@ -17,7 +17,11 @@
 
 /* OpenGL 1.5 functions */
 
-GL_SIMPLE_FUNC_LOAD(EndQuery,1,GLenum,NUM2INT,"1.5")
+GL_FUNC_LOAD_1(EndQuery,GLvoid, GLenum, "1.5")
+GL_FUNC_LOAD_1(IsQuery,GLboolean, GLuint, "1.5")
+GL_FUNC_LOAD_2(BeginQuery,GLvoid, GLenum,GLuint, "1.5")
+GL_FUNC_LOAD_2(BindBuffer,GLvoid, GLenum,GLuint, "1.5")
+GL_FUNC_LOAD_1(IsBuffer,GLboolean, GLuint, "1.5")
 
 static void (APIENTRY * fptr_glGenQueries)(GLsizei,GLuint *);
 static VALUE
@@ -59,35 +63,6 @@ VALUE obj,arg1;
 		query = NUM2INT(arg1);
 		fptr_glDeleteQueries( 1, &query);
 	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static GLboolean (APIENTRY * fptr_glIsQuery)(GLuint);
-static VALUE
-gl_IsQuery(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint query;
-	GLboolean ret;
-	LOAD_GL_FUNC(glIsQuery,"1.5")
-	query = (GLuint)NUM2UINT(arg1);
-	ret = fptr_glIsQuery(query);
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-static void (APIENTRY * fptr_glBeginQuery)(GLenum,GLuint);
-static VALUE
-gl_BeginQuery(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLuint id;
-	LOAD_GL_FUNC(glBeginQuery,"1.5")
-	target = (GLenum)NUM2INT(arg1);
-	id = (GLuint)NUM2UINT(arg2);
-	fptr_glBeginQuery(target,id);
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -149,21 +124,6 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-static void (APIENTRY * fptr_glBindBuffer)(GLenum,GLuint);
-static VALUE
-gl_BindBuffer(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLuint buffer;
-	LOAD_GL_FUNC(glBindBuffer,"1.5")
-	target = (GLenum)NUM2INT(arg1);
-	buffer = (GLenum)NUM2INT(arg2);
-	fptr_glBindBuffer(target,buffer);
-	CHECK_GLERROR
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glDeleteBuffers)(GLsizei,GLuint *);
 static VALUE
 gl_DeleteBuffers(obj,arg1)
@@ -206,20 +166,6 @@ VALUE obj,arg1;
 	xfree(buffers);
 	CHECK_GLERROR
 	return (VALUE)ret;
-}
-
-static GLboolean (APIENTRY * fptr_glIsBuffer)(GLuint);
-static VALUE
-gl_IsBuffer(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint buffer;
-	GLboolean ret;
-	LOAD_GL_FUNC(glIsBuffer,"1.5")
-	buffer = (GLuint)NUM2UINT(arg1);
-	ret = fptr_glIsBuffer(buffer);
-	CHECK_GLERROR
-	return INT2NUM(ret);
 }
 
 static void (APIENTRY * fptr_glBufferData)(GLenum,GLsizeiptr,GLvoid *,GLenum);

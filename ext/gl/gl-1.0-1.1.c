@@ -23,144 +23,187 @@
 
 /* OpenGL 1.0 + 1.1 functions */
 
-/* simple functions - see common.h */
-GL_SIMPLE_FUNC(ArrayElement,1,GLint,NUM2INT)
-GL_SIMPLE_FUNC(BlendFunc,2,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(CallList,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(Clear,1,GLbitfield,NUM2UINT)
-GL_SIMPLE_FUNC(ClearAccum,4,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(ClearColor,4,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(ClearDepth,1,GLclampd,NUM2DBL)
-GL_SIMPLE_FUNC(ClearIndex,1,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(ClearStencil,1,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Color3b,3,GLbyte,NUM2INT)
-GL_SIMPLE_FUNC(Color3d,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Color3f,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Color3i,3,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Color3s,3,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Color3ub,3,GLubyte,NUM2INT)
-GL_SIMPLE_FUNC(Color3ui,3,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(Color3us,3,GLushort,NUM2INT)
-GL_SIMPLE_FUNC(Color4b,4,GLbyte,NUM2INT)
-GL_SIMPLE_FUNC(Color4d,4,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Color4f,4,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Color4i,4,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Color4s,4,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Color4ub,4,GLubyte,NUM2INT)
-GL_SIMPLE_FUNC(Color4ui,4,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(Color4us,4,GLushort,NUM2INT)
-GL_SIMPLE_FUNC(ColorMask,4,GLboolean,NUM2INT)
-GL_SIMPLE_FUNC(ColorMaterial,2,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(CullFace,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(DeleteLists,2,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(DepthFunc,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(DepthMask,1,GLboolean,NUM2INT)
-GL_SIMPLE_FUNC(DepthRange,2,GLclampd,NUM2DBL)
-GL_SIMPLE_FUNC(Disable,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(DisableClientState,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(DrawBuffer,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(EdgeFlag,1,GLboolean,NUM2INT)
-GL_SIMPLE_FUNC(Enable,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(EnableClientState,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(EndList,0,0,0)
-GL_SIMPLE_FUNC(EvalCoord1d,1,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(EvalCoord1f,1,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(EvalCoord2d,2,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(EvalCoord2f,2,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(EvalPoint1,1,GLint,NUM2INT)
-GL_SIMPLE_FUNC(EvalPoint2,2,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Finish,0,0,0)
-GL_SIMPLE_FUNC(Flush,0,0,0)
-GL_SIMPLE_FUNC(FrontFace,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(Frustum,6,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Hint,2,GLenum,NUM2UINT)
-GL_SIMPLE_FUNC(Indexd,1,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Indexf,1,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Indexi,1,GLint,NUM2INT)
-GL_SIMPLE_FUNC(IndexMask,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(Indexs,1,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Indexub,1,GLubyte,NUM2INT)
-GL_SIMPLE_FUNC(InitNames,0,0,0)
-GL_SIMPLE_FUNC(LineWidth,1,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(ListBase,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(LoadIdentity,0,0,0)
-GL_SIMPLE_FUNC(LoadName,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(LogicOp,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(MatrixMode,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(Normal3b,3,GLbyte,NUM2INT)
-GL_SIMPLE_FUNC(Normal3d,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Normal3f,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Normal3i,3,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Normal3s,3,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Ortho,6,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(PassThrough,1,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(PixelZoom,2,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(PointSize,1,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(PolygonMode,2,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(PopAttrib,0,0,0)
-GL_SIMPLE_FUNC(PopClientAttrib,0,0,0)
-GL_SIMPLE_FUNC(PopMatrix,0,0,0)
-GL_SIMPLE_FUNC(PopName,0,0,0)
-GL_SIMPLE_FUNC(PushAttrib,1,GLbitfield,NUM2UINT)
-GL_SIMPLE_FUNC(PushClientAttrib,1,GLbitfield,NUM2UINT)
-GL_SIMPLE_FUNC(PushMatrix,0,0,0)
-GL_SIMPLE_FUNC(PushName,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(RasterPos2d,2,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(RasterPos2f,2,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(RasterPos2i,2,GLint,NUM2INT)
-GL_SIMPLE_FUNC(RasterPos2s,2,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(RasterPos3d,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(RasterPos3f,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(RasterPos3i,3,GLint,NUM2INT)
-GL_SIMPLE_FUNC(RasterPos3s,3,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(RasterPos4d,4,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(RasterPos4f,4,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(RasterPos4i,4,GLint,NUM2INT)
-GL_SIMPLE_FUNC(RasterPos4s,4,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(ReadBuffer,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(Rectd,4,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Rectf,4,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Recti,4,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Rects,4,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Rotated,4,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Rotatef,4,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Scaled,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Scalef,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Scissor,4,GLint,NUM2UINT)
-GL_SIMPLE_FUNC(ShadeModel,1,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(StencilMask,1,GLuint,NUM2UINT)
-GL_SIMPLE_FUNC(StencilOp,3,GLenum,NUM2INT)
-GL_SIMPLE_FUNC(TexCoord1d,1,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(TexCoord1f,1,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(TexCoord1i,1,GLint,NUM2INT)
-GL_SIMPLE_FUNC(TexCoord1s,1,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(TexCoord2d,2,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(TexCoord2f,2,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(TexCoord2i,2,GLint,NUM2INT)
-GL_SIMPLE_FUNC(TexCoord2s,2,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(TexCoord3d,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(TexCoord3f,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(TexCoord3i,3,GLint,NUM2INT)
-GL_SIMPLE_FUNC(TexCoord3s,3,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(TexCoord4d,4,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(TexCoord4f,4,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(TexCoord4i,4,GLint,NUM2INT)
-GL_SIMPLE_FUNC(TexCoord4s,4,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Translated,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Translatef,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Vertex2d,2,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Vertex2f,2,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Vertex2i,2,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Vertex2s,2,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Vertex3d,3,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Vertex3f,3,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Vertex3i,3,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Vertex3s,3,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Vertex4d,4,GLdouble,NUM2DBL)
-GL_SIMPLE_FUNC(Vertex4f,4,GLfloat,NUM2DBL)
-GL_SIMPLE_FUNC(Vertex4i,4,GLint,NUM2INT)
-GL_SIMPLE_FUNC(Vertex4s,4,GLshort,NUM2INT)
-GL_SIMPLE_FUNC(Viewport,4,GLuint,NUM2UINT)
+GL_FUNC_STATIC_2(Accum,GLvoid, GLenum,GLfloat)
+GL_FUNC_STATIC_2(AlphaFunc,GLvoid, GLenum,GLclampf)
+GL_FUNC_STATIC_1(ArrayElement,GLvoid, GLint)
+GL_FUNC_STATIC_2(BindTexture,GLvoid, GLenum,GLuint)
+GL_FUNC_STATIC_2(BlendFunc,GLvoid, GLenum,GLenum)
+GL_FUNC_STATIC_1(CallList,GLvoid, GLuint)
+GL_FUNC_STATIC_1(Clear,GLvoid, GLbitfield)
+GL_FUNC_STATIC_4(ClearAccum,GLvoid, GLfloat,GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_4(ClearColor,GLvoid, GLfloat,GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_1(ClearDepth,GLvoid, GLclampd)
+GL_FUNC_STATIC_1(ClearIndex,GLvoid, GLfloat)
+GL_FUNC_STATIC_1(ClearStencil,GLvoid, GLint)
+GL_FUNC_STATIC_3(Color3b,GLvoid, GLbyte,GLbyte,GLbyte)
+GL_FUNC_STATIC_3(Color3d,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_3(Color3f,GLvoid, GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_3(Color3i,GLvoid, GLint,GLint,GLint)
+GL_FUNC_STATIC_3(Color3s,GLvoid, GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_3(Color3ub,GLvoid, GLubyte,GLubyte,GLubyte)
+GL_FUNC_STATIC_3(Color3ui,GLvoid, GLuint,GLuint,GLuint)
+GL_FUNC_STATIC_3(Color3us,GLvoid, GLushort,GLushort,GLushort)
+GL_FUNC_STATIC_4(Color4b,GLvoid, GLbyte,GLbyte,GLbyte,GLbyte)
+GL_FUNC_STATIC_4(Color4d,GLvoid, GLdouble,GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_4(Color4f,GLvoid, GLfloat,GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_4(Color4i,GLvoid, GLint,GLint,GLint,GLint)
+GL_FUNC_STATIC_4(Color4s,GLvoid, GLshort,GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_4(Color4ub,GLvoid, GLubyte,GLubyte,GLubyte,GLubyte)
+GL_FUNC_STATIC_4(Color4ui,GLvoid, GLuint,GLuint,GLuint,GLuint)
+GL_FUNC_STATIC_4(Color4us,GLvoid, GLushort,GLushort,GLushort,GLushort)
+GL_FUNC_STATIC_4(ColorMask,GLvoid, GLboolean,GLboolean,GLboolean,GLboolean)
+GL_FUNC_STATIC_2(ColorMaterial,GLvoid, GLenum,GLenum)
+GL_FUNC_STATIC_5(CopyPixels,GLvoid, GLint,GLint,GLsizei,GLsizei,GLenum)
+GL_FUNC_STATIC_7(CopyTexImage1D,GLvoid, GLenum,GLint,GLenum,GLint,GLint,GLsizei,GLint)
+GL_FUNC_STATIC_8(CopyTexImage2D,GLvoid, GLenum,GLint,GLenum,GLint,GLint,GLsizei,GLsizei,GLint)
+GL_FUNC_STATIC_6(CopyTexSubImage1D,GLvoid, GLenum,GLint,GLint,GLint,GLint,GLsizei)
+GL_FUNC_STATIC_8(CopyTexSubImage2D,GLvoid, GLenum,GLint,GLint,GLint,GLint,GLint,GLsizei,GLsizei)
+GL_FUNC_STATIC_1(CullFace,GLvoid, GLenum)
+GL_FUNC_STATIC_2(DeleteLists,GLvoid, GLuint,GLuint)
+GL_FUNC_STATIC_1(DepthFunc,GLvoid, GLenum)
+GL_FUNC_STATIC_1(DepthMask,GLvoid, GLboolean)
+GL_FUNC_STATIC_2(DepthRange,GLvoid, GLclampd,GLclampd)
+GL_FUNC_STATIC_1(Disable,GLvoid, GLenum)
+GL_FUNC_STATIC_1(DisableClientState,GLvoid, GLenum)
+GL_FUNC_STATIC_3(DrawArrays,GLvoid, GLenum,GLint,GLsizei)
+GL_FUNC_STATIC_1(DrawBuffer,GLvoid, GLenum)
+GL_FUNC_STATIC_1(EdgeFlag,GLvoid, GLboolean)
+GL_FUNC_STATIC_1(Enable,GLvoid, GLenum)
+GL_FUNC_STATIC_1(EnableClientState,GLvoid, GLenum)
+GL_FUNC_STATIC_0(EndList,GLvoid)
+GL_FUNC_STATIC_1(EvalCoord1d,GLvoid, GLdouble)
+GL_FUNC_STATIC_1(EvalCoord1f,GLvoid, GLfloat)
+GL_FUNC_STATIC_2(EvalCoord2d,GLvoid, GLdouble,GLdouble)
+GL_FUNC_STATIC_2(EvalCoord2f,GLvoid, GLfloat,GLfloat)
+GL_FUNC_STATIC_3(EvalMesh1,GLvoid, GLenum,GLint,GLint)
+GL_FUNC_STATIC_5(EvalMesh2,GLvoid, GLenum,GLint,GLint,GLint,GLint)
+GL_FUNC_STATIC_1(EvalPoint1,GLvoid, GLint)
+GL_FUNC_STATIC_2(EvalPoint2,GLvoid, GLint,GLint)
+GL_FUNC_STATIC_0(Finish,GLvoid)
+GL_FUNC_STATIC_0(Flush,GLvoid)
+GL_FUNC_STATIC_2(Fogi,GLvoid, GLenum,GLint)
+GL_FUNC_STATIC_2(Fogf,GLvoid, GLenum,GLfloat)
+GL_FUNC_STATIC_1(FrontFace,GLvoid, GLenum)
+GL_FUNC_STATIC_6(Frustum,GLvoid, GLdouble,GLdouble,GLdouble,GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_1(GenLists,GLuint, GLsizei)
+GL_FUNC_STATIC_0(GetError,GLenum)
+GL_FUNC_STATIC_2(Hint,GLvoid, GLenum,GLenum)
+GL_FUNC_STATIC_1(Indexd,GLvoid, GLdouble)
+GL_FUNC_STATIC_1(Indexf,GLvoid, GLfloat)
+GL_FUNC_STATIC_1(Indexi,GLvoid, GLint)
+GL_FUNC_STATIC_1(IndexMask,GLvoid, GLuint)
+GL_FUNC_STATIC_1(Indexs,GLvoid, GLshort)
+GL_FUNC_STATIC_1(Indexub,GLvoid, GLubyte)
+GL_FUNC_STATIC_0(InitNames,GLvoid)
+GL_FUNC_STATIC_1(IsEnabled,GLboolean, GLenum)
+GL_FUNC_STATIC_1(IsList,GLboolean, GLuint)
+GL_FUNC_STATIC_1(IsTexture,GLboolean, GLuint)
+GL_FUNC_STATIC_2(LightModelf,GLvoid, GLenum,GLfloat)
+GL_FUNC_STATIC_2(LightModeli,GLvoid, GLenum,GLint)
+GL_FUNC_STATIC_3(Lightf,GLvoid, GLenum,GLenum,GLfloat)
+GL_FUNC_STATIC_3(Lighti,GLvoid, GLenum,GLenum,GLint)
+GL_FUNC_STATIC_2(LineStipple,GLvoid, GLint,GLushort)
+GL_FUNC_STATIC_1(LineWidth,GLvoid, GLfloat)
+GL_FUNC_STATIC_1(ListBase,GLvoid, GLuint)
+GL_FUNC_STATIC_0(LoadIdentity,GLvoid)
+GL_FUNC_STATIC_1(LoadName,GLvoid, GLuint)
+GL_FUNC_STATIC_1(LogicOp,GLvoid, GLenum)
+GL_FUNC_STATIC_3(MapGrid1d,GLvoid, GLint,GLdouble,GLdouble)
+GL_FUNC_STATIC_3(MapGrid1f,GLvoid, GLint,GLfloat,GLfloat)
+GL_FUNC_STATIC_6(MapGrid2d,GLvoid, GLint,GLdouble,GLdouble,GLint,GLdouble,GLdouble)
+GL_FUNC_STATIC_6(MapGrid2f,GLvoid, GLint,GLfloat,GLfloat,GLint,GLfloat,GLfloat)
+GL_FUNC_STATIC_3(Materialf,GLvoid, GLenum,GLenum,GLfloat)
+GL_FUNC_STATIC_3(Materiali,GLvoid, GLenum,GLenum,GLint)
+GL_FUNC_STATIC_1(MatrixMode,GLvoid, GLenum)
+GL_FUNC_STATIC_2(NewList,GLvoid, GLuint,GLenum)
+GL_FUNC_STATIC_3(Normal3b,GLvoid, GLbyte,GLbyte,GLbyte)
+GL_FUNC_STATIC_3(Normal3d,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_3(Normal3f,GLvoid, GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_3(Normal3i,GLvoid, GLint,GLint,GLint)
+GL_FUNC_STATIC_3(Normal3s,GLvoid, GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_6(Ortho,GLvoid, GLdouble,GLdouble,GLdouble,GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_1(PassThrough,GLvoid, GLfloat)
+GL_FUNC_STATIC_2(PixelStoref,GLvoid, GLenum,GLfloat)
+GL_FUNC_STATIC_2(PixelStorei,GLvoid, GLenum,GLint)
+GL_FUNC_STATIC_2(PixelTransferf,GLvoid, GLenum,GLfloat)
+GL_FUNC_STATIC_2(PixelTransferi,GLvoid, GLenum,GLint)
+GL_FUNC_STATIC_2(PixelZoom,GLvoid, GLfloat,GLfloat)
+GL_FUNC_STATIC_1(PointSize,GLvoid, GLfloat)
+GL_FUNC_STATIC_2(PolygonMode,GLvoid, GLenum,GLenum)
+GL_FUNC_STATIC_2(PolygonOffset,GLvoid, GLfloat,GLfloat)
+GL_FUNC_STATIC_0(PopAttrib,GLvoid)
+GL_FUNC_STATIC_0(PopClientAttrib,GLvoid)
+GL_FUNC_STATIC_0(PopMatrix,GLvoid)
+GL_FUNC_STATIC_0(PopName,GLvoid)
+GL_FUNC_STATIC_1(PushAttrib,GLvoid, GLbitfield)
+GL_FUNC_STATIC_1(PushClientAttrib,GLvoid, GLbitfield)
+GL_FUNC_STATIC_0(PushMatrix,GLvoid)
+GL_FUNC_STATIC_1(PushName,GLvoid, GLuint)
+GL_FUNC_STATIC_2(RasterPos2d,GLvoid, GLdouble,GLdouble)
+GL_FUNC_STATIC_2(RasterPos2f,GLvoid, GLfloat,GLfloat)
+GL_FUNC_STATIC_2(RasterPos2i,GLvoid, GLint,GLint)
+GL_FUNC_STATIC_2(RasterPos2s,GLvoid, GLshort,GLshort)
+GL_FUNC_STATIC_3(RasterPos3d,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_3(RasterPos3f,GLvoid, GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_3(RasterPos3i,GLvoid, GLint,GLint,GLint)
+GL_FUNC_STATIC_3(RasterPos3s,GLvoid, GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_4(RasterPos4d,GLvoid, GLdouble,GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_4(RasterPos4f,GLvoid, GLfloat,GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_4(RasterPos4i,GLvoid, GLint,GLint,GLint,GLint)
+GL_FUNC_STATIC_4(RasterPos4s,GLvoid, GLshort,GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_1(ReadBuffer,GLvoid, GLenum)
+GL_FUNC_STATIC_4(Rectd,GLvoid, GLdouble,GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_4(Rectf,GLvoid, GLfloat,GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_4(Recti,GLvoid, GLint,GLint,GLint,GLint)
+GL_FUNC_STATIC_4(Rects,GLvoid, GLshort,GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_1(RenderMode,GLint, GLenum)
+GL_FUNC_STATIC_4(Rotated,GLvoid, GLdouble,GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_4(Rotatef,GLvoid, GLfloat,GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_3(Scaled,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_3(Scalef,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_4(Scissor,GLvoid, GLint,GLint,GLint,GLint)
+GL_FUNC_STATIC_1(ShadeModel,GLvoid, GLenum)
+GL_FUNC_STATIC_3(StencilFunc,GLvoid, GLenum,GLint,GLuint)
+GL_FUNC_STATIC_1(StencilMask,GLvoid, GLuint)
+GL_FUNC_STATIC_3(StencilOp,GLvoid, GLenum,GLenum,GLenum)
+GL_FUNC_STATIC_1(TexCoord1d,GLvoid, GLdouble)
+GL_FUNC_STATIC_1(TexCoord1f,GLvoid, GLfloat)
+GL_FUNC_STATIC_1(TexCoord1i,GLvoid, GLint)
+GL_FUNC_STATIC_1(TexCoord1s,GLvoid, GLshort)
+GL_FUNC_STATIC_2(TexCoord2d,GLvoid, GLdouble,GLdouble)
+GL_FUNC_STATIC_2(TexCoord2f,GLvoid, GLfloat,GLfloat)
+GL_FUNC_STATIC_2(TexCoord2i,GLvoid, GLint,GLint)
+GL_FUNC_STATIC_2(TexCoord2s,GLvoid, GLshort,GLshort)
+GL_FUNC_STATIC_3(TexCoord3d,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_3(TexCoord3f,GLvoid, GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_3(TexCoord3i,GLvoid, GLint,GLint,GLint)
+GL_FUNC_STATIC_3(TexCoord3s,GLvoid, GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_4(TexCoord4d,GLvoid, GLdouble,GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_4(TexCoord4f,GLvoid, GLfloat,GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_4(TexCoord4i,GLvoid, GLint,GLint,GLint,GLint)
+GL_FUNC_STATIC_4(TexCoord4s,GLvoid, GLshort,GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_3(TexEnvf,GLvoid, GLenum,GLenum,GLfloat)
+GL_FUNC_STATIC_3(TexEnvi,GLvoid, GLenum,GLenum,GLint)
+GL_FUNC_STATIC_3(TexGend,GLvoid, GLenum,GLenum,GLdouble)
+GL_FUNC_STATIC_3(TexGenf,GLvoid, GLenum,GLenum,GLfloat)
+GL_FUNC_STATIC_3(TexGeni,GLvoid, GLenum,GLenum,GLint)
+GL_FUNC_STATIC_3(TexParameterf,GLvoid, GLenum,GLenum,GLfloat)
+GL_FUNC_STATIC_3(TexParameteri,GLvoid, GLenum,GLenum,GLint)
+GL_FUNC_STATIC_3(Translated,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_3(Translatef,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_2(Vertex2d,GLvoid, GLdouble,GLdouble)
+GL_FUNC_STATIC_2(Vertex2f,GLvoid, GLfloat,GLfloat)
+GL_FUNC_STATIC_2(Vertex2i,GLvoid, GLint,GLint)
+GL_FUNC_STATIC_2(Vertex2s,GLvoid, GLshort,GLshort)
+GL_FUNC_STATIC_3(Vertex3d,GLvoid, GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_3(Vertex3f,GLvoid, GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_3(Vertex3i,GLvoid, GLint,GLint,GLint)
+GL_FUNC_STATIC_3(Vertex3s,GLvoid, GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_4(Vertex4d,GLvoid, GLdouble,GLdouble,GLdouble,GLdouble)
+GL_FUNC_STATIC_4(Vertex4f,GLvoid, GLfloat,GLfloat,GLfloat,GLfloat)
+GL_FUNC_STATIC_4(Vertex4i,GLvoid, GLint,GLint,GLint,GLint)
+GL_FUNC_STATIC_4(Vertex4s,GLvoid, GLshort,GLshort,GLshort,GLshort)
+GL_FUNC_STATIC_4(Viewport,GLvoid, GLuint,GLuint,GLuint,GLuint)
 
 VALUE inside_begin_end = Qfalse;
 
@@ -168,7 +211,7 @@ static VALUE
 gl_Begin(obj,arg1)
 VALUE obj,arg1;
 {
-	glBegin(NUM2INT(arg1));
+	glBegin(CONV_GLenum(arg1));
 	inside_begin_end = Qtrue;
 	return Qnil;	
 }
@@ -181,19 +224,6 @@ VALUE obj;
 	glEnd();
 	CHECK_GLERROR
 	return Qnil;	
-}
-
-static VALUE
-gl_NewList(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLuint list;
-	GLenum mode;
-	list = (GLuint)NUM2UINT(arg1);
-	mode = (GLenum)NUM2INT(arg2);
-	glNewList(list,mode);
-	CHECK_GLERROR
-	return Qnil;
 }
 
 static VALUE
@@ -219,18 +249,6 @@ VALUE obj,arg1;
 	if (type == GL_INT) xfree(lists);
 	CHECK_GLERROR
 	return Qnil;
-}
-
-static VALUE
-gl_GenLists(obj,arg1)
-VALUE obj,arg1;
-{
-	GLsizei range;
-	GLuint ret;
-	range = (GLsizei)NUM2UINT(arg1);
-	ret = glGenLists(range);
-	CHECK_GLERROR
-	return INT2NUM(ret);
 }
 
 static VALUE
@@ -340,19 +358,6 @@ VALUE obj,arg1,arg2;
 }
 
 static VALUE
-gl_Fogf(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLfloat param;
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLfloat)NUM2DBL(arg2);
-	glFogf(pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
 gl_Fogfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
@@ -367,19 +372,6 @@ VALUE obj,arg1,arg2;
 }
 
 static VALUE
-gl_Fogi(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLint param;
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLint)NUM2INT(arg2);
-	glFogi(pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
 gl_Fogiv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
@@ -389,21 +381,6 @@ VALUE obj,arg1,arg2;
 	Check_Type(arg2,T_ARRAY);
 	ary2cint(arg2,params,4);
 	glFogiv(pname,params);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_Lightf(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum light;
-	GLenum pname;
-	GLfloat param;
-	light = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLfloat)NUM2DBL(arg3);
-	glLightf(light,pname,param);
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -425,21 +402,6 @@ VALUE obj,arg1,arg2,arg3;
 }
 
 static VALUE
-gl_Lighti(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum light;
-	GLenum pname;
-	GLint param;
-	light = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLint)NUM2INT(arg3);
-	glLighti(light,pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
 gl_Lightiv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
@@ -451,19 +413,6 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cint(arg3,params,4);
 	glLightiv(light,pname,params);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_LightModelf(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLfloat param;
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLfloat)NUM2DBL(arg2);
-	glLightModelf(pname,param);
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -483,19 +432,6 @@ VALUE obj,arg1,arg2;
 }
 
 static VALUE
-gl_LightModeli(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLint param;
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLint)NUM2INT(arg2);
-	glLightModeli(pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
 gl_LightModeliv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
@@ -509,33 +445,6 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static VALUE
-gl_LineStipple(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLint factor;
-	GLushort pattern;
-	factor = (GLint)NUM2INT(arg1);
-	pattern = (GLushort)(NUM2INT(arg2) & 0xFFFF);
-	glLineStipple(factor,pattern);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_Materialf(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum face;
-	GLenum pname;
-	GLfloat param;
-	face = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLfloat)NUM2DBL(arg3);
-	glMaterialf(face,pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_Materialfv(obj,arg1,arg2,arg3)
@@ -549,21 +458,6 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	glMaterialfv(face,pname,params);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_Materiali(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum face;
-	GLenum pname;
-	GLint param;
-	face = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLint)NUM2INT(arg3);
-	glMateriali(face,pname,param);
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -610,20 +504,6 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static VALUE
-gl_TexParameterf(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLfloat param;
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLfloat)NUM2DBL(arg3);
-	glTexParameterf(target,pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_TexParameterfv(obj,arg1,arg2,arg3)
@@ -637,21 +517,6 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	glTexParameterfv(target,pname,params);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_TexParameteri(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLint param;
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLint)NUM2INT(arg3);
-	glTexParameteri(target,pname,param);
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -751,21 +616,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 }
 
 static VALUE
-gl_TexEnvf(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLfloat param;
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLfloat)NUM2DBL(arg3);
-	glTexEnvf(target,pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
 gl_TexEnvfv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
@@ -777,21 +627,6 @@ VALUE obj,arg1,arg2,arg3;
 	Check_Type(arg3,T_ARRAY);
 	ary2cflt(arg3,params,4);
 	glTexEnvfv(target,pname,params);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_TexEnvi(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLint param;
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLint)NUM2INT(arg3);
-	glTexEnvi(target,pname,param);
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -812,20 +647,6 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static VALUE
-gl_TexGend(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum coord;
-	GLenum pname;
-	GLdouble param;
-	coord = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLdouble)NUM2DBL(arg3);
-	glTexGend(coord,pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_TexGendv(obj,arg1,arg2,arg3)
@@ -845,21 +666,6 @@ VALUE obj,arg1,arg2,arg3;
 
 
 static VALUE
-gl_TexGenf(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum coord;
-	GLenum pname;
-	GLfloat param;
-	coord = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLfloat)NUM2DBL(arg3);
-	glTexGenf(coord,pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
 gl_TexGenfv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
@@ -875,20 +681,6 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static VALUE
-gl_TexGeni(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum coord;
-	GLenum pname;
-	GLint param;
-	coord = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	param = (GLint)NUM2INT(arg3);
-	glTexGeni(coord,pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_TexGeniv(obj,arg1,arg2,arg3)
@@ -935,30 +727,6 @@ VALUE obj,arg1;
 	return g_current_sel_buffer;
 }
 
-static VALUE
-gl_RenderMode(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum mode;
-	GLint ret;
-	mode = (GLenum)NUM2INT(arg1);
-	ret = glRenderMode(mode);
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-static VALUE
-gl_Accum(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum op;
-	GLfloat value;
-	op = (GLenum)NUM2INT(arg1);
-	value = (GLfloat)NUM2DBL(arg2);
-	glAccum(op,value);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_Map1d(obj,arg1,arg2,arg3,arg4,arg5,arg6)
@@ -1089,78 +857,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 }
 
 static VALUE
-gl_MapGrid1d(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint un;
-	GLdouble u1;
-	GLdouble u2;
-	un = (GLint)NUM2INT(arg1);
-	u1 = (GLdouble)NUM2DBL(arg2);
-	u2 = (GLdouble)NUM2DBL(arg3);
-	glMapGrid1d(un,u1,u2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_MapGrid1f(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLint un;
-	GLfloat u1;
-	GLfloat u2;
-	un = (GLint)NUM2INT(arg1);
-	u1 = (GLfloat)NUM2DBL(arg2);
-	u2 = (GLfloat)NUM2DBL(arg3);
-	glMapGrid1f(un,u1,u2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_MapGrid2d(obj,arg1,arg2,arg3,arg4,arg5,arg6)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
-{
-	GLint un;
-	GLdouble u1;
-	GLdouble u2;
-	GLint vn;
-	GLdouble v1;
-	GLdouble v2;
-	un = (GLint)NUM2INT(arg1);
-	u1 = (GLdouble)NUM2DBL(arg2);
-	u2 = (GLdouble)NUM2DBL(arg3);
-	vn = (GLint)NUM2INT(arg4);
-	v1 = (GLdouble)NUM2DBL(arg5);
-	v2 = (GLdouble)NUM2DBL(arg6);
-	glMapGrid2d(un,u1,u2,vn,v1,v2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_MapGrid2f(obj,arg1,arg2,arg3,arg4,arg5,arg6)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
-{
-	GLint un;
-	GLfloat u1;
-	GLfloat u2;
-	GLint vn;
-	GLfloat v1;
-	GLfloat v2;
-	un = (GLint)NUM2INT(arg1);
-	u1 = (GLfloat)NUM2DBL(arg2);
-	u2 = (GLfloat)NUM2DBL(arg3);
-	vn = (GLint)NUM2INT(arg4);
-	v1 = (GLfloat)NUM2DBL(arg5);
-	v2 = (GLfloat)NUM2DBL(arg6);
-	glMapGrid2f(un,u1,u2,vn,v1,v2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
 gl_EvalCoord1dv(obj,arg1)
 VALUE obj,arg1;
 {
@@ -1208,119 +904,6 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static VALUE
-gl_EvalMesh1(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum mode;
-	GLint i1;
-	GLint i2;
-	mode = (GLenum)NUM2INT(arg1);
-	i1 = (GLint)NUM2INT(arg2);
-	i2 = (GLint)NUM2INT(arg3);
-	glEvalMesh1(mode,i1,i2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_EvalMesh2(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLenum mode;
-	GLint i1;
-	GLint i2;
-	GLint j1;
-	GLint j2;
-	mode = (GLenum)NUM2INT(arg1);
-	i1 = (GLint)NUM2INT(arg2);
-	i2 = (GLint)NUM2INT(arg3);
-	j1 = (GLint)NUM2INT(arg4);
-	j2 = (GLint)NUM2INT(arg5);
-	glEvalMesh2(mode,i1,i2,j1,j2);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_AlphaFunc(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum func;
-	GLclampf ref;
-	func = (GLenum)NUM2INT(arg1);
-	ref = (GLclampf)NUM2DBL(arg2);
-	glAlphaFunc(func,ref);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_StencilFunc(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum func;
-	GLint ref;
-	GLuint mask;
-	func = (GLenum)NUM2INT(arg1);
-	ref = (GLint)NUM2INT(arg2);
-	mask = (GLuint)NUM2UINT(arg3);
-	glStencilFunc(func,ref,mask);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_PixelTransferf(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLfloat param;
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLfloat)NUM2DBL(arg2);
-	glPixelTransferf(pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_PixelTransferi(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLint param;
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLint)NUM2INT(arg2);
-	glPixelTransferi(pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_PixelStoref(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLfloat param;
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLfloat)NUM2DBL(arg2);
-	glPixelStoref(pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_PixelStorei(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLint param;
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLint)NUM2INT(arg2);
-	glPixelStorei(pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 #define GLPIXELMAP_FUNC(_type_,_vartype_,_convert_) \
 static VALUE \
@@ -1363,24 +946,6 @@ GLPIXELMAP_FUNC(ui,GLuint,ary2cuint)
 GLPIXELMAP_FUNC(us,GLushort,ary2cushort)
 #undef GLPIXELMAP_FUNC
 
-static VALUE
-gl_CopyPixels(obj,arg1,arg2,arg3,arg4,arg5)
-VALUE obj,arg1,arg2,arg3,arg4,arg5;
-{
-	GLint x;
-	GLint y;
-	GLsizei width;
-	GLsizei height;
-	GLenum type;
-	x = (GLint)NUM2INT(arg1);
-	y = (GLint)NUM2INT(arg2);
-	width = (GLsizei)NUM2UINT(arg3);
-	height = (GLsizei)NUM2UINT(arg4);
-	type = (GLenum)NUM2INT(arg5);
-	glCopyPixels(x,y,width,height,type);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_ReadPixels(argc,argv,obj)
@@ -1621,14 +1186,6 @@ GLGET_FUNC(Boolean,GLboolean,INT2NUM)
 
 #undef GLGET_FUNC
 
-static VALUE
-gl_GetError(obj)
-VALUE obj;
-{
-	GLenum ret;
-	ret = glGetError();
-	return INT2NUM(ret);
-}
 
 static VALUE
 gl_GetLightfv(obj,arg1,arg2)
@@ -2413,29 +1970,6 @@ VALUE obj,arg1,arg2,arg3;
 	return retary;
 }
 
-static VALUE
-gl_IsEnabled(obj,arg1)
-VALUE obj,arg1;
-{
-	GLenum cap;
-	GLboolean ret;
-	cap = (GLenum)NUM2INT(arg1);
-	ret = glIsEnabled(cap);
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
-
-static VALUE
-gl_IsList(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint list;
-	GLboolean ret;
-	list = (GLuint)NUM2UINT(arg1);
-	ret = glIsList(list);
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
 
 static VALUE
 gl_LoadMatrixf(obj,arg1)
@@ -2519,21 +2053,6 @@ POINTER_FUNC(Color)
 POINTER_FUNC(TexCoord)
 
 #undef POINTER_FUNC
-
-static VALUE
-gl_DrawArrays(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum mode;
-	GLint first;
-	GLsizei count;
-	mode = (GLenum)NUM2INT(arg1);
-	first = (GLint)NUM2INT(arg2);
-	count = (GLsizei)NUM2UINT(arg3);
-	glDrawArrays(mode,first,count);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_DrawElements(obj,arg1,arg2,arg3,arg4)
@@ -2665,101 +2184,6 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-GL_SIMPLE_FUNC(PolygonOffset,2,GLfloat,NUM2DBL)
-
-static VALUE
-gl_CopyTexImage1D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
-{
-	GLenum target;
-	GLint level;
-	GLenum internalformat;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	GLint border;
-	target = (GLenum)NUM2INT(arg1);
-	level = (GLint)NUM2INT(arg2);
-	internalformat = (GLenum)NUM2INT(arg3);
-	x = (GLint)NUM2INT(arg4);
-	y = (GLint)NUM2INT(arg5);
-	width = (GLsizei)NUM2UINT(arg6);
-	border = (GLint)NUM2INT(arg7);
-	glCopyTexImage1D(target,level,internalformat,x,y,width,border);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_CopyTexImage2D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
-{
-	GLenum target;
-	GLint level;
-	GLenum internalformat;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	GLsizei height;
-	GLint border;
-	target = (GLenum)NUM2INT(arg1);
-	level = (GLint)NUM2INT(arg2);
-	internalformat = (GLenum)NUM2INT(arg3);
-	x = (GLint)NUM2INT(arg4);
-	y = (GLint)NUM2INT(arg5);
-	width = (GLsizei)NUM2UINT(arg6);
-	height = (GLsizei)NUM2UINT(arg7);
-	border = (GLint)NUM2INT(arg8);
-	glCopyTexImage2D(target,level,internalformat,x,y,width,height,border);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_CopyTexSubImage1D(obj,arg1,arg2,arg3,arg4,arg5,arg6)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
-{
-	GLenum target;
-	GLint level;
-	GLint xoffset;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	target = (GLenum)NUM2INT(arg1);
-	level = (GLint)NUM2INT(arg2);
-	xoffset = (GLint)NUM2INT(arg3);
-	x = (GLint)NUM2INT(arg4);
-	y = (GLint)NUM2INT(arg5);
-	width = (GLsizei)NUM2UINT(arg6);
-	glCopyTexSubImage1D(target,level,xoffset,x,y,width);
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_CopyTexSubImage2D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
-{
-	GLenum target;
-	GLint level;
-	GLint xoffset;
-	GLint yoffset;
-	GLint x;
-	GLint y;
-	GLsizei width;
-	GLsizei height;
-	target = (GLenum)NUM2INT(arg1);
-	level = (GLint)NUM2INT(arg2);
-	xoffset = (GLint)NUM2INT(arg3);
-	yoffset = (GLint)NUM2INT(arg4);
-	x = (GLint)NUM2INT(arg5);
-	y = (GLint)NUM2INT(arg6);
-	width = (GLsizei)NUM2UINT(arg7);
-	height = (GLsizei)NUM2UINT(arg8);
-	glCopyTexSubImage2D(target,level,xoffset,yoffset,x,y,width,height);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_TexSubImage1D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
@@ -2858,18 +2282,6 @@ VALUE obj,arg1;
 	return retary;
 }
 
-static VALUE
-gl_BindTexture(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLuint texture;
-	target = (GLenum)NUM2INT(arg1);
-	texture = (GLuint)NUM2UINT(arg2);
-	glBindTexture(target,texture);
-	CHECK_GLERROR
-	return Qnil;
-}
 
 static VALUE
 gl_DeleteTextures(obj,arg1)
@@ -2911,17 +2323,6 @@ VALUE obj,arg1;
 	return (VALUE)ret;
 }
 
-static VALUE
-gl_IsTexture(obj,arg1)
-VALUE obj,arg1;
-{
-	GLuint texture;
-	GLboolean ret;
-	texture = (GLuint)NUM2UINT(arg1);
-	ret = glIsTexture(texture);
-	CHECK_GLERROR
-	return INT2NUM(ret);
-}
 
 static VALUE
 gl_PrioritizeTextures(obj,arg1,arg2)

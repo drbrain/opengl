@@ -16,25 +16,28 @@
 #include "../common/common.h"
 
 /* OpenGL 1.4 functions */
-GL_SIMPLE_FUNC_LOAD(BlendFuncSeparate,4,GLenum,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(FogCoordf,1,GLfloat,NUM2DBL,"1.4")
-GL_SIMPLE_FUNC_LOAD(FogCoordd,1,GLdouble,NUM2DBL,"1.4")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3b,3,GLbyte,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3d,3,GLdouble,NUM2DBL,"1.4")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3f,3,GLfloat,NUM2DBL,"1.4")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3i,3,GLint,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3s,3,GLshort,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3ub,3,GLubyte,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3ui,3,GLuint,NUM2UINT,"1.4")
-GL_SIMPLE_FUNC_LOAD(SecondaryColor3us,3,GLushort,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(WindowPos2d,2,GLdouble,NUM2DBL,"1.4")
-GL_SIMPLE_FUNC_LOAD(WindowPos2f,2,GLfloat,NUM2DBL,"1.4")
-GL_SIMPLE_FUNC_LOAD(WindowPos2i,2,GLint,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(WindowPos2s,2,GLshort,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(WindowPos3d,3,GLdouble,NUM2DBL,"1.4")
-GL_SIMPLE_FUNC_LOAD(WindowPos3f,3,GLfloat,NUM2DBL,"1.4")
-GL_SIMPLE_FUNC_LOAD(WindowPos3i,3,GLint,NUM2INT,"1.4")
-GL_SIMPLE_FUNC_LOAD(WindowPos3s,3,GLshort,NUM2INT,"1.4")
+
+GL_FUNC_LOAD_4(BlendFuncSeparate,GLvoid, GLenum,GLenum,GLenum,GLenum, "1.4")
+GL_FUNC_LOAD_1(FogCoordf,GLvoid, GLfloat, "1.4")
+GL_FUNC_LOAD_1(FogCoordd,GLvoid, GLdouble, "1.4")
+GL_FUNC_LOAD_2(PointParameteri,GLvoid, GLenum,GLint, "1.4")
+GL_FUNC_LOAD_2(PointParameterf,GLvoid, GLenum,GLfloat, "1.4")
+GL_FUNC_LOAD_3(SecondaryColor3b,GLvoid, GLbyte,GLbyte,GLbyte, "1.4")
+GL_FUNC_LOAD_3(SecondaryColor3d,GLvoid, GLdouble,GLdouble,GLdouble, "1.4")
+GL_FUNC_LOAD_3(SecondaryColor3f,GLvoid, GLfloat,GLfloat,GLfloat, "1.4")
+GL_FUNC_LOAD_3(SecondaryColor3i,GLvoid, GLint,GLint,GLint, "1.4")
+GL_FUNC_LOAD_3(SecondaryColor3s,GLvoid, GLshort,GLshort,GLshort, "1.4")
+GL_FUNC_LOAD_3(SecondaryColor3ub,GLvoid, GLubyte,GLubyte,GLubyte, "1.4")
+GL_FUNC_LOAD_3(SecondaryColor3ui,GLvoid, GLuint,GLuint,GLuint, "1.4")
+GL_FUNC_LOAD_3(SecondaryColor3us,GLvoid, GLushort,GLushort,GLushort, "1.4")
+GL_FUNC_LOAD_2(WindowPos2d,GLvoid, GLdouble,GLdouble, "1.4")
+GL_FUNC_LOAD_2(WindowPos2f,GLvoid, GLfloat,GLfloat, "1.4")
+GL_FUNC_LOAD_2(WindowPos2i,GLvoid, GLint,GLint, "1.4")
+GL_FUNC_LOAD_2(WindowPos2s,GLvoid, GLshort,GLshort, "1.4")
+GL_FUNC_LOAD_3(WindowPos3d,GLvoid, GLdouble,GLdouble,GLdouble, "1.4")
+GL_FUNC_LOAD_3(WindowPos3f,GLvoid, GLfloat,GLfloat,GLfloat, "1.4")
+GL_FUNC_LOAD_3(WindowPos3i,GLvoid, GLint,GLint,GLint, "1.4")
+GL_FUNC_LOAD_3(WindowPos3s,GLvoid, GLshort,GLshort,GLshort, "1.4")
 
 static void (APIENTRY * fptr_glFogCoordfv)(GLfloat *);
 static VALUE
@@ -177,21 +180,6 @@ VALUE obj;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glPointParameterf)(GLenum,GLfloat);
-static VALUE
-gl_PointParameterf(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLfloat param;
-	LOAD_GL_FUNC(glPointParameterf,"1.4")
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLfloat)NUM2INT(arg2);
-	fptr_glPointParameterf(pname,param);
-	CHECK_GLERROR
-	return Qnil;
-}
-
 static void (APIENTRY * fptr_glPointParameterfv)(GLenum,GLfloat *);
 static VALUE
 gl_PointParameterfv(obj,arg1,arg2)
@@ -209,21 +197,6 @@ VALUE obj,arg1,arg2;
 		size = 1;
 	ary2cflt(arg2,params,size);
 	fptr_glPointParameterfv(pname,params);	
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glPointParameteri)(GLenum,GLint);
-static VALUE
-gl_PointParameteri(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum pname;
-	GLint param;
-	LOAD_GL_FUNC(glPointParameteri,"1.4")
-	pname = (GLenum)NUM2INT(arg1);
-	param = (GLint)NUM2INT(arg2);
-	fptr_glPointParameteri(pname,param);
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -302,7 +275,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
 VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
-	_type_ cary[_size_] = {TYPELIST##_size_(0)}; \
+	_type_ cary[3] = {0,0,0}; \
 	LOAD_GL_FUNC(gl##_name_,"1.4") \
 	Check_Type(arg1,T_ARRAY); \
 	_conv_(arg1,cary,_size_); \

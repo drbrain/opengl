@@ -94,7 +94,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 	def test_gl_arb_vertex_program
 		return if not supported?("GL_ARB_vertex_program")
 
-		assert_equal(glIsProgram(0),GL_FALSE)
+		assert_equal(glIsProgramARB(0),false)
 		programs = glGenProgramsARB(1)
 		assert_equal(programs.size,1)
 		
@@ -103,7 +103,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 	  glBindProgramARB(GL_VERTEX_PROGRAM_ARB, programs[0])
 		glProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, program)
 		assert_equal(glGetProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_STRING_ARB), program)
-		assert_equal(glIsProgramARB(programs[0]),GL_TRUE)	
+		assert_equal(glIsProgramARB(programs[0]),true)	
 
 		assert_equal(glGetProgramivARB(GL_VERTEX_PROGRAM_ARB,GL_PROGRAM_LENGTH_ARB),program.size)
 		assert_equal(glGetProgramivARB(GL_VERTEX_PROGRAM_ARB,GL_PROGRAM_BINDING_ARB),programs[0])
@@ -274,7 +274,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(queries.size,2)
 
 		glBeginQueryARB(GL_SAMPLES_PASSED,queries[1])
-		assert_equal(glIsQueryARB(queries[1]),GL_TRUE)
+		assert_equal(glIsQueryARB(queries[1]),true)
 
 		glEndQueryARB(GL_SAMPLES_PASSED)
 		r = glGetQueryObjectivARB(queries[1],GL_QUERY_RESULT_AVAILABLE)
@@ -282,7 +282,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert(glGetQueryObjectuivARB(queries[1],GL_QUERY_RESULT)>=0)
 
 		glDeleteQueriesARB(queries)
-		assert_equal(glIsQueryARB(queries[1]),GL_FALSE)
+		assert_equal(glIsQueryARB(queries[1]),false)
 	end
 
 	def test_gl_arb_shader_objects

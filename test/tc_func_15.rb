@@ -30,7 +30,7 @@ class Test_15 < Test::Unit::TestCase
 		assert_equal(queries.size,2)
 
 		glBeginQuery(GL_SAMPLES_PASSED,queries[1])
-		assert_equal(glIsQuery(queries[1]),GL_TRUE)
+		assert_equal(glIsQuery(queries[1]),true)
 		
 		glBegin(GL_TRIANGLES)
 		glVertex2i(0,0)
@@ -51,14 +51,14 @@ class Test_15 < Test::Unit::TestCase
 		end
 		
 		glDeleteQueries(queries)
-		assert_equal(glIsQuery(queries[1]),GL_FALSE)
+		assert_equal(glIsQuery(queries[1]),false)
 	end
 	
 	def test_buffers
 		return if not supported?(1.5)
 		buffers = glGenBuffers(2)
 		glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
-		assert_equal(glIsBuffer(buffers[0]),GL_TRUE)		
+		assert_equal(glIsBuffer(buffers[0]),true)		
 
 		data = [0,1,2,3].pack("C*")
 		data2 = [4,5,6,7].pack("C*")
@@ -75,7 +75,7 @@ class Test_15 < Test::Unit::TestCase
 		r = glUnmapBuffer(GL_ARRAY_BUFFER)
 		assert(r == GL_TRUE || r == GL_FALSE)
 		glDeleteBuffers(buffers)		
-		assert_equal(glIsBuffer(buffers[0]),GL_FALSE)
+		assert_equal(glIsBuffer(buffers[0]),false)
 
 		# FIXME: GetBufferPointerv not yet implemented
 	end

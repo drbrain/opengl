@@ -172,10 +172,10 @@ class Test_20 < Test::Unit::TestCase
 		vertex_shader_source = "void main() { gl_Position = ftransform();}"
 	
 		program = glCreateProgram()
-		assert_equal(glIsProgram(program),GL_TRUE)
+		assert_equal(glIsProgram(program),true)
 
 		vs = glCreateShader(GL_VERTEX_SHADER)
-		assert_equal(glIsShader(vs),GL_TRUE)
+		assert_equal(glIsShader(vs),true)
 
 		glShaderSource(vs,vertex_shader_source)
 		assert_equal(glGetShaderSource(vs),vertex_shader_source)
@@ -208,10 +208,10 @@ class Test_20 < Test::Unit::TestCase
 
 		glDetachShader(program,vs)
 		glDeleteShader(vs)
-		assert_equal(glIsShader(vs),GL_FALSE)
+		assert_equal(glIsShader(vs),false)
 
 		glDeleteProgram(program)
-		assert_equal(glIsProgram(program),GL_FALSE)
+		assert_equal(glIsProgram(program),false)
 	end
 
 	def test_shaders_2

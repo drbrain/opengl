@@ -29,8 +29,7 @@ static VALUE gl_StringMarkerGREMEDY(VALUE obj,VALUE arg1)
 }
 
 /* #345 GL_GREMEDY_frame_terminator */
-GL_SIMPLE_FUNC_LOAD(FrameTerminatorGREMEDY,0,0,0,"GL_GREMEDY_frame_terminator")
-
+GL_FUNC_LOAD_0(FrameTerminatorGREMEDY,GLvoid, "GL_GREMEDY_frame_terminator")
 
 void gl_init_functions_ext_gremedy(VALUE module)
 {
