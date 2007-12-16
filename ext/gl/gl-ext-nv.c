@@ -18,46 +18,8 @@
 /* OpenGL NVIDIA extensions */
 
 /* #222 GL_NV_fence */
-static void (APIENTRY * fptr_glGenFencesNV)(GLsizei,GLuint *);
-static VALUE gl_GenFencesNV(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	GLuint *fences;
-	VALUE ret;
-	int i;
-	LOAD_GL_FUNC(glGenFencesNV,"GL_NV_fence")
-	n = (GLsizei)NUM2UINT(arg1);
-	fences = ALLOC_N(GLuint, n);
-	fptr_glGenFencesNV(n,fences);
-	ret = rb_ary_new2(n);
-	for (i = 0; i < n; i++)
-		rb_ary_push(ret, INT2NUM(fences[i]));
-	xfree(fences);
-	CHECK_GLERROR
-	return ret;
-}
-
-static void (APIENTRY * fptr_glDeleteFencesNV)(GLsizei,const GLuint *);
-static VALUE gl_DeleteFencesNV(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	LOAD_GL_FUNC(glDeleteFencesNV,"GL_NV_fence")
-	if (TYPE(arg1)==T_ARRAY) {
-		GLuint *fences;
-		n = RARRAY(arg1)->len;
-		fences = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,fences,n); 
-		fptr_glDeleteFencesNV(n,fences);
-		xfree(fences);
-	} else {
-		GLuint fence;
-		fence = NUM2UINT(arg1);
-		fptr_glDeleteFencesNV(1,&fence);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
+GL_FUNC_GENOBJECTS_LOAD(GenFencesNV,"GL_NV_fence")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteFencesNV,"GL_NV_fence")
 GL_FUNC_LOAD_2(SetFenceNV,GLvoid, GLuint,GLenum, "GL_NV_fence")
 GL_FUNC_LOAD_1(TestFenceNV,GLboolean, GLuint,"GL_NV_fence")
 GL_FUNC_LOAD_1(IsFenceNV,GLboolean, GLuint,"GL_NV_fence")
@@ -120,49 +82,9 @@ static VALUE gl_GetProgramStringNV(VALUE obj,VALUE arg1,VALUE arg2)
 }
 
 GL_FUNC_LOAD_2(BindProgramNV,GLvoid, GLenum,GLuint,"GL_NV_vertex_program")
-
-static void (APIENTRY * fptr_glGenProgramsNV)(GLsizei, GLuint *);
-static VALUE gl_GenProgramsNV(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	GLuint *programs;
-	RArray *ret;
-	int i;
-
-	LOAD_GL_FUNC(glGenProgramsNV,"GL_NV_vertex_program")
-	n = (GLsizei)NUM2UINT(arg1);
-	programs = ALLOC_N(GLuint, n);
-	fptr_glGenProgramsNV(n,programs);
-	ret = RARRAY(rb_ary_new2(n));
-	for (i = 0; i < n; i++)
-		rb_ary_push((VALUE)ret, INT2NUM(programs[i]));
-	xfree(programs);
-	CHECK_GLERROR
-	return (VALUE)ret;
-}
-
-static void (APIENTRY * fptr_glDeleteProgramsNV)(GLsizei,const GLuint *);
-static VALUE gl_DeleteProgramsNV(VALUE obj,VALUE arg1)
-{
-	LOAD_GL_FUNC(glDeleteProgramsNV,"GL_NV_vertex_program")
-	if (TYPE(arg1)==T_ARRAY) {
-		GLsizei n;
-		GLuint *programs;
-		n = RARRAY(arg1)->len;
-		programs = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,programs,n); 
-		fptr_glDeleteProgramsNV( n, programs);
-		xfree(programs);
-	} else {
-		GLuint program;
-		program = NUM2INT(arg1);
-		fptr_glDeleteProgramsNV( 1, &program);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
 GL_FUNC_LOAD_1(IsProgramNV,GLboolean, GLuint,"GL_NV_vertex_program")
+GL_FUNC_GENOBJECTS_LOAD(GenProgramsNV,"GL_NV_vertex_program")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteProgramsNV,"GL_NV_vertex_program")
 
 static void (APIENTRY * fptr_glExecuteProgramNV)(GLenum,GLuint,const GLfloat *);
 static VALUE gl_ExecuteProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
@@ -467,46 +389,8 @@ static VALUE gl_AreProgramsResidentNV(VALUE obj,VALUE arg1)
 }
 
 /* #261 GL_NV_occlusion_query */
-static void (APIENTRY * fptr_glGenOcclusionQueriesNV)(GLsizei,GLuint *);
-static VALUE gl_GenOcclusionQueriesNV(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	GLuint *occlusionqueries;
-	VALUE ret;
-	int i;
-	LOAD_GL_FUNC(glGenOcclusionQueriesNV,"GL_NV_occlusion_query")
-	n = (GLsizei)NUM2UINT(arg1);
-	occlusionqueries = ALLOC_N(GLuint, n);
-	fptr_glGenOcclusionQueriesNV(n,occlusionqueries);
-	ret = rb_ary_new2(n);
-	for (i = 0; i < n; i++)
-		rb_ary_push(ret, INT2NUM(occlusionqueries[i]));
-	xfree(occlusionqueries);
-	CHECK_GLERROR
-	return ret;
-}
-
-static void (APIENTRY * fptr_glDeleteOcclusionQueriesNV)(GLsizei,const GLuint *);
-static VALUE gl_DeleteOcclusionQueriesNV(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	LOAD_GL_FUNC(glDeleteOcclusionQueriesNV,"GL_NV_occlusion_query")
-	if (TYPE(arg1)==T_ARRAY) {
-		GLuint *occlusionqueries;
-		n = RARRAY(arg1)->len;
-		occlusionqueries = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,occlusionqueries,n); 
-		fptr_glDeleteOcclusionQueriesNV(n,occlusionqueries);
-		xfree(occlusionqueries);
-	} else {
-		GLuint occlusionquery;
-		occlusionquery = NUM2UINT(arg1);
-		fptr_glDeleteOcclusionQueriesNV(1,&occlusionquery);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
+GL_FUNC_GENOBJECTS_LOAD(GenOcclusionQueriesNV,"GL_NV_occlusion_query")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteOcclusionQueriesNV,"GL_NV_occlusion_query")
 GL_FUNC_LOAD_1(IsOcclusionQueryNV,GLboolean, GLuint, "GL_NV_occlusion_query")
 GL_FUNC_LOAD_1(BeginOcclusionQueryNV,GLvoid, GLuint, "GL_NV_occlusion_query")
 GL_FUNC_LOAD_0(EndOcclusionQueryNV,GLvoid, "GL_NV_occlusion_query")

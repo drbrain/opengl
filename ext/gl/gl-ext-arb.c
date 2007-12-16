@@ -146,49 +146,9 @@ static VALUE gl_GetProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2)
 	return ret_buffer;
 }
 
+GL_FUNC_GENOBJECTS_LOAD(GenProgramsARB,"GL_ARB_vertex_program")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteProgramsARB,"GL_ARB_vertex_program")
 GL_FUNC_LOAD_2(BindProgramARB,GLvoid, GLenum,GLuint, "GL_ARB_vertex_program")
-
-static void (APIENTRY * fptr_glGenProgramsARB)(GLsizei, GLuint *);
-static VALUE gl_GenProgramsARB(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	GLuint *programs;
-	RArray *ret;
-	int i;
-
-	LOAD_GL_FUNC(glGenProgramsARB,"GL_ARB_vertex_program")
-	n = (GLsizei)NUM2UINT(arg1);
-	programs = ALLOC_N(GLuint, n);
-	fptr_glGenProgramsARB(n,programs);
-	ret = RARRAY(rb_ary_new2(n));
-	for (i = 0; i < n; i++)
-		rb_ary_push((VALUE)ret, INT2NUM(programs[i]));
-	xfree(programs);
-	CHECK_GLERROR
-	return (VALUE)ret;
-}
-
-static void (APIENTRY * fptr_glDeleteProgramsARB)(GLsizei,const GLuint *);
-static VALUE gl_DeleteProgramsARB(VALUE obj,VALUE arg1)
-{
-	LOAD_GL_FUNC(glDeleteProgramsARB,"GL_ARB_vertex_program")
-	if (TYPE(arg1)==T_ARRAY) {
-		GLsizei n;
-		GLuint *programs;
-		n = RARRAY(arg1)->len;
-		programs = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,programs,n); 
-		fptr_glDeleteProgramsARB( n, programs);
-		xfree(programs);
-	} else {
-		GLuint program;
-		program = NUM2INT(arg1);
-		fptr_glDeleteProgramsARB( 1, &program);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
 GL_FUNC_LOAD_1(IsProgramARB,GLboolean, GLuint, "GL_ARB_vertex_program")
 GL_FUNC_LOAD_1(EnableVertexAttribArrayARB,GLvoid, GLuint, "GL_ARB_vertex_program")
 GL_FUNC_LOAD_1(DisableVertexAttribArrayARB,GLvoid, GLuint, "GL_ARB_vertex_program")
@@ -381,46 +341,8 @@ GETVERTEXATTRIB_FUNC(GetVertexAttribivARB,GLint,INT2NUM,"GL_ARB_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
 
 /* #29 GL_ARB_occlusion_query */
-static void (APIENTRY * fptr_glGenQueriesARB)(GLsizei,GLuint *);
-static VALUE gl_GenQueriesARB(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	GLuint *queries;
-	VALUE ret;
-	int i;
-	LOAD_GL_FUNC(glGenQueriesARB,"GL_ARB_occlusion_query")
-	n = (GLsizei)NUM2UINT(arg1);
-	queries = ALLOC_N(GLuint, n);
-	fptr_glGenQueriesARB(n,queries);
-	ret = rb_ary_new2(n);
-	for (i = 0; i < n; i++)
-		rb_ary_push(ret, INT2NUM(queries[i]));
-	xfree(queries);
-	CHECK_GLERROR
-	return ret;
-}
-
-static void (APIENTRY * fptr_glDeleteQueriesARB)(GLsizei,const GLuint *);
-static VALUE gl_DeleteQueriesARB(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	LOAD_GL_FUNC(glDeleteQueriesARB,"GL_ARB_occlusion_query")
-	if (TYPE(arg1)==T_ARRAY) {
-		GLuint *queries;
-		n = RARRAY(arg1)->len;
-		queries = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,queries,n); 
-		fptr_glDeleteQueriesARB(n,queries);
-		xfree(queries);
-	} else {
-		GLuint query;
-		query = NUM2UINT(arg1);
-		fptr_glDeleteQueriesARB(1,&query);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
+GL_FUNC_GENOBJECTS_LOAD(GenQueriesARB,"GL_ARB_occlusion_query")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteQueriesARB,"GL_ARB_occlusion_query")
 GL_FUNC_LOAD_1(IsQueryARB,GLboolean, GLuint, "GL_ARB_occlusion_query")
 GL_FUNC_LOAD_2(BeginQueryARB,GLvoid, GLuint,GLuint, "GL_ARB_occlusion_query")
 GL_FUNC_LOAD_1(EndQueryARB,GLvoid, GLenum, "GL_ARB_occlusion_query")

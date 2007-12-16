@@ -26,46 +26,8 @@ GL_FUNC_LOAD_4(BlendColorEXT,GLvoid, GLclampf,GLclampf,GLclampf,GLclampf, "GL_EX
 GL_FUNC_LOAD_2(PolygonOffsetEXT,GLvoid, GLfloat,GLfloat, "GL_EXT_polygon_offset")
 
 /* #20 - GL_EXT_texture_object */
-static void (APIENTRY * fptr_glGenTexturesEXT)(GLsizei,GLuint *);
-static VALUE gl_GenTexturesEXT(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	GLuint *textures;
-	VALUE ret;
-	int i;
-	LOAD_GL_FUNC(glGenTexturesEXT,"GL_EXT_texture_object")
-	n = (GLsizei)NUM2UINT(arg1);
-	textures = ALLOC_N(GLuint, n);
-	fptr_glGenTexturesEXT(n,textures);
-	ret = rb_ary_new2(n);
-	for (i = 0; i < n; i++)
-		rb_ary_push(ret, INT2NUM(textures[i]));
-	xfree(textures);
-	CHECK_GLERROR
-	return ret;
-}
-
-static void (APIENTRY * fptr_glDeleteTexturesEXT)(GLsizei,const GLuint *);
-static VALUE gl_DeleteTexturesEXT(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	LOAD_GL_FUNC(glDeleteTexturesEXT,"GL_EXT_texture_object")
-	if (TYPE(arg1)==T_ARRAY) {
-		GLuint *textures;
-		n = RARRAY(arg1)->len;
-		textures = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,textures,n); 
-		fptr_glDeleteTexturesEXT(n,textures);
-		xfree(textures);
-	} else {
-		GLuint texture;
-		texture = NUM2UINT(arg1);
-		fptr_glDeleteTexturesEXT(1,&texture);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
+GL_FUNC_GENOBJECTS_LOAD(GenTexturesEXT,"GL_EXT_texture_object")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteTexturesEXT,"GL_EXT_texture_object")
 GL_FUNC_LOAD_2(BindTextureEXT,GLvoid, GLenum,GLint, "GL_EXT_texture_object")
 
 static void (APIENTRY * fptr_glPrioritizeTexturesEXT)(GLsizei,const GLuint *,const GLclampf *);
@@ -391,48 +353,9 @@ GL_FUNC_LOAD_2(BlendEquationSeparateEXT,GLvoid, GLenum,GLenum, "GL_EXT_blend_equ
 /* #310 - GL_EXT_framebuffer_object */
 GL_FUNC_LOAD_1(IsRenderbufferEXT,GLboolean, GLuint, "GL_EXT_framebuffer_object")
 GL_FUNC_LOAD_2(BindRenderbufferEXT,GLvoid, GLenum,GLuint, "GL_EXT_framebuffer_object")
-
-static void (APIENTRY * fptr_glDeleteRenderbuffersEXT)(GLsizei,const GLuint *);
-static VALUE gl_DeleteRenderbuffersEXT(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	LOAD_GL_FUNC(glDeleteRenderbuffersEXT,"GL_EXT_framebuffer_object")
-	if (TYPE(arg1)==T_ARRAY) {
-		GLuint *renderbuffers;
-		n = RARRAY(arg1)->len;
-		renderbuffers = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,renderbuffers,n); 
-		fptr_glDeleteRenderbuffersEXT(n,renderbuffers);
-		xfree(renderbuffers);
-	} else {
-		GLuint renderbuffer;
-		renderbuffer = NUM2UINT(arg1);
-		fptr_glDeleteRenderbuffersEXT(1,&renderbuffer);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glGenRenderbuffersEXT)(GLsizei,GLuint *);
-static VALUE gl_GenRenderbuffersEXT(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	GLuint *renderbuffers;
-	VALUE ret;
-	int i;
-	LOAD_GL_FUNC(glGenRenderbuffersEXT,"GL_EXT_framebuffer_object")
-	n = (GLsizei)NUM2UINT(arg1);
-	renderbuffers = ALLOC_N(GLuint, n);
-	fptr_glGenRenderbuffersEXT(n,renderbuffers);
-	ret = rb_ary_new2(n);
-	for (i = 0; i < n; i++)
-		rb_ary_push(ret, INT2NUM(renderbuffers[i]));
-	xfree(renderbuffers);
-	CHECK_GLERROR
-	return ret;
-}
-
 GL_FUNC_LOAD_4(RenderbufferStorageEXT,GLvoid, GLenum,GLenum,GLsizei,GLsizei, "GL_EXT_framebuffer_object")
+GL_FUNC_GENOBJECTS_LOAD(GenRenderbuffersEXT,"GL_EXT_framebuffer_object")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteRenderbuffersEXT,"GL_EXT_framebuffer_object")
 
 static void (APIENTRY * fptr_glGetRenderbufferParameterivEXT)(GLenum,GLenum,GLint *);
 static VALUE gl_GetRenderbufferParameterivEXT(VALUE obj,VALUE arg1,VALUE arg2)
@@ -444,49 +367,10 @@ static VALUE gl_GetRenderbufferParameterivEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	return INT2NUM(param);
 }
 
+GL_FUNC_GENOBJECTS_LOAD(GenFramebuffersEXT,"GL_EXT_framebuffer_object")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteFramebuffersEXT,"GL_EXT_framebuffer_object")
 GL_FUNC_LOAD_1(IsFramebufferEXT,GLboolean, GLuint, "GL_EXT_framebuffer_object")
 GL_FUNC_LOAD_2(BindFramebufferEXT,GLvoid, GLenum,GLuint, "GL_EXT_framebuffer_object")
-
-static void (APIENTRY * fptr_glDeleteFramebuffersEXT)(GLsizei,const GLuint *);
-static VALUE gl_DeleteFramebuffersEXT(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	LOAD_GL_FUNC(glDeleteFramebuffersEXT,"GL_EXT_framebuffer_object")
-	if (TYPE(arg1)==T_ARRAY) {
-		GLuint *framebuffers;
-		n = RARRAY(arg1)->len;
-		framebuffers = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,framebuffers,n); 
-		fptr_glDeleteFramebuffersEXT(n,framebuffers);
-		xfree(framebuffers);
-	} else {
-		GLuint framebuffer;
-		framebuffer = NUM2UINT(arg1);
-		fptr_glDeleteFramebuffersEXT(1,&framebuffer);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glGenFramebuffersEXT)(GLsizei,GLuint *);
-static VALUE gl_GenFramebuffersEXT(VALUE obj,VALUE arg1)
-{
-	GLsizei n;
-	GLuint *framebuffers;
-	VALUE ret;
-	int i;
-	LOAD_GL_FUNC(glGenFramebuffersEXT,"GL_EXT_framebuffer_object")
-	n = (GLsizei)NUM2UINT(arg1);
-	framebuffers = ALLOC_N(GLuint, n);
-	fptr_glGenFramebuffersEXT(n,framebuffers);
-	ret = rb_ary_new2(n);
-	for (i = 0; i < n; i++)
-		rb_ary_push(ret, INT2NUM(framebuffers[i]));
-	xfree(framebuffers);
-	CHECK_GLERROR
-	return ret;
-}
-
 GL_FUNC_LOAD_1(CheckFramebufferStatusEXT,GLenum, GLenum, "GL_EXT_framebuffer_object")
 GL_FUNC_LOAD_5(FramebufferTexture1DEXT,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint, "GL_EXT_framebuffer_object")
 GL_FUNC_LOAD_5(FramebufferTexture2DEXT,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint, "GL_EXT_framebuffer_object")

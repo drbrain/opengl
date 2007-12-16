@@ -22,50 +22,10 @@ GL_FUNC_LOAD_1(IsQuery,GLboolean, GLuint, "1.5")
 GL_FUNC_LOAD_2(BeginQuery,GLvoid, GLenum,GLuint, "1.5")
 GL_FUNC_LOAD_2(BindBuffer,GLvoid, GLenum,GLuint, "1.5")
 GL_FUNC_LOAD_1(IsBuffer,GLboolean, GLuint, "1.5")
-
-static void (APIENTRY * fptr_glGenQueries)(GLsizei,GLuint *);
-static VALUE
-gl_GenQueries(obj,arg1)
-VALUE obj,arg1;
-{
-	GLsizei n;
-	GLuint *queries;
-	RArray *ret;
-	int i;
-	LOAD_GL_FUNC(glGenQueries,"1.5")
-	n = (GLsizei)NUM2UINT(arg1);
-	queries = ALLOC_N(GLuint, n);
-	fptr_glGenQueries(n, queries);
-	ret = RARRAY(rb_ary_new2(n));
-	for (i = 0; i < n; i++)
-		rb_ary_push((VALUE)ret, INT2NUM(queries[i]));
-	xfree(queries);
-	CHECK_GLERROR
-	return (VALUE)ret;
-}
-
-static void (APIENTRY * fptr_glDeleteQueries)(GLsizei,GLuint *);
-static VALUE
-gl_DeleteQueries(obj,arg1)
-VALUE obj,arg1;
-{
-	GLsizei n;
-	GLuint *queries;
-	LOAD_GL_FUNC(glDeleteQueries,"1.5")
-	if (TYPE(arg1)==T_ARRAY) {
-		n = RARRAY(arg1)->len;
-		queries = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,queries,n); 
-		fptr_glDeleteQueries( n, queries);
-		xfree(queries);
-	} else {
-		GLuint query;
-		query = NUM2INT(arg1);
-		fptr_glDeleteQueries( 1, &query);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
+GL_FUNC_GENOBJECTS_LOAD(GenQueries,"1.5")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteQueries,"1.5")
+GL_FUNC_GENOBJECTS_LOAD(GenBuffers,"1.5")
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteBuffers,"1.5")
 
 static void (APIENTRY * fptr_glGetQueryiv)(GLenum,GLenum,GLint *);
 static VALUE
@@ -122,50 +82,6 @@ VALUE obj,arg1,arg2;
 	rb_ary_push(retary,INT2NUM(params));
 	CHECK_GLERROR
 	return retary;
-}
-
-static void (APIENTRY * fptr_glDeleteBuffers)(GLsizei,GLuint *);
-static VALUE
-gl_DeleteBuffers(obj,arg1)
-VALUE obj,arg1;
-{
-	GLsizei n;
-	GLuint *buffers;
-	LOAD_GL_FUNC(glDeleteBuffers,"1.5")
-	if (TYPE(arg1)==T_ARRAY) {
-		n = RARRAY(arg1)->len;
-		buffers = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,buffers,n); 
-		fptr_glDeleteBuffers(n, buffers);
-		xfree(buffers);
-	} else {
-		GLuint buffer;
-		buffer = NUM2INT(arg1);
-		fptr_glDeleteBuffers(1, &buffer);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glGenBuffers)(GLsizei,GLuint *);
-static VALUE
-gl_GenBuffers(obj,arg1)
-VALUE obj,arg1;
-{
-	GLsizei n;
-	GLuint *buffers;
-	RArray *ret;
-	int i;
-	LOAD_GL_FUNC(glGenBuffers,"1.5")
-	n = (GLsizei)NUM2UINT(arg1);
-	buffers = ALLOC_N(GLuint, n);
-	fptr_glGenBuffers(n, buffers);
-	ret = RARRAY(rb_ary_new2(n));
-	for (i = 0; i < n; i++)
-		rb_ary_push((VALUE)ret, INT2NUM(buffers[i]));
-	xfree(buffers);
-	CHECK_GLERROR
-	return (VALUE)ret;
 }
 
 static void (APIENTRY * fptr_glBufferData)(GLenum,GLsizeiptr,GLvoid *,GLenum);

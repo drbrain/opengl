@@ -2282,47 +2282,8 @@ VALUE obj,arg1;
 	return retary;
 }
 
-
-static VALUE
-gl_DeleteTextures(obj,arg1)
-VALUE obj,arg1;
-{
-	GLsizei n;
-	GLuint *textures;
-	if (TYPE(arg1)==T_ARRAY) {
-		n = RARRAY(arg1)->len;
-		textures = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,textures,n); 
-		glDeleteTextures( n, textures);
-		xfree(textures);
-	} else {
-		GLuint texture;
-		texture = NUM2INT(arg1);
-		glDeleteTextures( 1, &texture);
-	}
-	CHECK_GLERROR
-	return Qnil;
-}
-
-static VALUE
-gl_GenTextures(obj,arg1)
-VALUE obj,arg1;
-{
-	GLsizei n;
-	GLuint *textures;
-	RArray *ret;
-	int i;
-	n = (GLsizei)NUM2UINT(arg1);
-	textures = ALLOC_N(GLuint, n);
-	glGenTextures(n, textures);
-	ret = RARRAY(rb_ary_new2(n));
-	for (i = 0; i < n; i++)
-		rb_ary_push((VALUE)ret, INT2NUM(textures[i]));
-	xfree(textures);
-	CHECK_GLERROR
-	return (VALUE)ret;
-}
-
+GL_FUNC_GENOBJECTS(GenTextures)
+GL_FUNC_DELETEOBJECTS(DeleteTextures)
 
 static VALUE
 gl_PrioritizeTextures(obj,arg1,arg2)

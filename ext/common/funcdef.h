@@ -108,22 +108,22 @@ if (fptr_##_NAME_==NULL) { \
 #define RETSTAT_GLdouble ret=
 #define RETSTAT_GLclampd ret=
 
-#define RETCONV_GLvoid Qnil
-#define RETCONV_void Qnil
-#define RETCONV_GLenum UINT2NUM(ret)
-#define RETCONV_GLboolean GLBOOL2RUBY(ret)
-#define RETCONV_GLbitfield UINT2NUM(ret)
-#define RETCONV_GLbyte INT2NUM(ret)
-#define RETCONV_GLshort INT2NUM(ret)
-#define RETCONV_GLint INT2NUM(ret)
-#define RETCONV_GLubyte UINT2NUM(ret)
-#define RETCONV_GLushort UINT2NUM(ret)
-#define RETCONV_GLuint UINT2NUM(ret)
-#define RETCONV_GLsizei INT2NUM(ret)
-#define RETCONV_GLfloat rb_float_new(ret)
-#define RETCONV_GLclampf rb_float_new(ret)
-#define RETCONV_GLdouble rb_float_new(ret)
-#define RETCONV_GLclampd rb_float_new(ret)
+#define RETCONV_GLvoid(x) Qnil
+#define RETCONV_void(x) Qnil
+#define RETCONV_GLenum(x) UINT2NUM(x)
+#define RETCONV_GLboolean(x) GLBOOL2RUBY(x)
+#define RETCONV_GLbitfield(x) UINT2NUM(x)
+#define RETCONV_GLbyte(x) INT2NUM(x)
+#define RETCONV_GLshort(x) INT2NUM(x)
+#define RETCONV_GLint(x) INT2NUM(x)
+#define RETCONV_GLubyte(x) UINT2NUM(x)
+#define RETCONV_GLushort(x) UINT2NUM(x)
+#define RETCONV_GLuint(x) UINT2NUM(x)
+#define RETCONV_GLsizei(x) INT2NUM(x)
+#define RETCONV_GLfloat(x) rb_float_new(x)
+#define RETCONV_GLclampf(x) rb_float_new(x)
+#define RETCONV_GLdouble(x) rb_float_new(x)
+#define RETCONV_GLclampd(x) rb_float_new(x)
 
 #define PROTOPARAM0(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) void
 #define PROTOPARAM1(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1
@@ -159,7 +159,7 @@ VALUE obj ARGLIST##_num_; \
 	LOAD_GL_FUNC(gl##_name_,_ver_) \
 	RETSTAT_##_returntype_ fptr_gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
 	CHECK_GLERROR \
-	return RETCONV_##_returntype_ ; \
+	return RETCONV_##_returntype_(ret) ; \
 }
 
 #define GL_FUNC_STATIC(_num_,_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10) \
@@ -170,7 +170,7 @@ VALUE obj ARGLIST##_num_; \
 	RETDECL_##_returntype_ \
 	RETSTAT_##_returntype_ gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
 	CHECK_GLERROR \
-	return RETCONV_##_returntype_ ; \
+	return RETCONV_##_returntype_(ret) ; \
 }
 
 #define GL_FUNC_LOAD_0(_name_,_returntype_,_ver_) GL_FUNC_LOAD(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0,_ver_)
@@ -197,3 +197,84 @@ VALUE obj ARGLIST##_num_; \
 #define GL_FUNC_STATIC_9(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9) GL_FUNC_STATIC(9, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,0)
 #define GL_FUNC_STATIC_10(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10_ver_) GL_FUNC_STATIC(10, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)
 
+/* Templates for glGen* and glDelete* */
+
+#define GL_FUNC_GENOBJECTS_LOAD(_name_,_ver_) \
+static void (APIENTRY * fptr_gl##_name_)(GLsizei,GLuint *); \
+static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+{ \
+	GLsizei n; \
+	GLuint *objects; \
+	VALUE ret; \
+	unsigned int i; \
+	LOAD_GL_FUNC(gl##_name_,_ver_) \
+	n = CONV_GLsizei(arg1); \
+	objects = ALLOC_N(GLuint, n); \
+	fptr_gl##_name_(n,objects); \
+	ret = rb_ary_new2(n); \
+	for (i = 0; i < n; i++) \
+		rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
+	xfree(objects); \
+	CHECK_GLERROR \
+	return ret; \
+}
+
+#define GL_FUNC_GENOBJECTS(_name_) \
+static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+{ \
+	GLsizei n; \
+	GLuint *objects; \
+	VALUE ret; \
+	unsigned int i; \
+	n = CONV_GLsizei(arg1); \
+	objects = ALLOC_N(GLuint, n); \
+	gl##_name_(n,objects); \
+	ret = rb_ary_new2(n); \
+	for (i = 0; i < n; i++) \
+		rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
+	xfree(objects); \
+	CHECK_GLERROR \
+	return ret; \
+}
+
+#define GL_FUNC_DELETEOBJECTS_LOAD(_name_,_ver_) \
+static void (APIENTRY * fptr_gl##_name_)(GLsizei,const GLuint *); \
+static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+{ \
+	GLsizei n; \
+	LOAD_GL_FUNC(gl##_name_,_ver_) \
+	if (TYPE(arg1)==T_ARRAY) { \
+		GLuint *objects; \
+		n = RARRAY(arg1)->len; \
+		objects = ALLOC_N(GLuint,n); \
+		ary2cuint(arg1,objects,n);  \
+		fptr_gl##_name_(n,objects); \
+		xfree(objects); \
+	} else { \
+		GLuint object; \
+		object = CONV_GLsizei(arg1); \
+		fptr_gl##_name_(1,&object);  \
+	} \
+	CHECK_GLERROR \
+	return Qnil; \
+}
+
+#define GL_FUNC_DELETEOBJECTS(_name_) \
+static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+{ \
+	GLsizei n; \
+	if (TYPE(arg1)==T_ARRAY) { \
+		GLuint *objects; \
+		n = RARRAY(arg1)->len; \
+		objects = ALLOC_N(GLuint,n); \
+		ary2cuint(arg1,objects,n);  \
+		gl##_name_(n,objects); \
+		xfree(objects); \
+	} else { \
+		GLuint object; \
+		object = CONV_GLsizei(arg1); \
+		gl##_name_(1,&object);  \
+	} \
+	CHECK_GLERROR \
+	return Qnil; \
+}
