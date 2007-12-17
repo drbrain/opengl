@@ -199,7 +199,7 @@ VALUE obj,arg1;
 	target = (GLenum)NUM2INT(arg1);
 	ret = fptr_glUnmapBuffer(target);
 	CHECK_GLERROR
-	return INT2NUM(ret);
+	return GLBOOL2RUBY(ret);
 }
 
 static void (APIENTRY * fptr_glGetBufferPointerv)(GLenum,GLenum,GLvoid **);

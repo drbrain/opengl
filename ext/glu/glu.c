@@ -585,7 +585,7 @@ t_edgeFlag(flag)
 GLboolean flag;
 {
 	TESS_CALLBACK_COMMON
-	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_FLAG), callId, 1, INT2NUM(flag));
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_FLAG), callId, 1, GLBOOL2RUBY(flag));
 }
 static void CALLBACK
 t_vertex(data)
@@ -621,7 +621,7 @@ GLboolean flag;
 void* user_data;
 {
 	TESS_CALLBACK_COMMON
-	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_FLAG_DATA), callId, 2, INT2NUM(flag), user_data);
+	rb_funcall(rb_ary_entry(tdata->t_ref, TESS_EDGE_FLAG_DATA), callId, 2, GLBOOL2RUBY(flag), user_data);
 }
 static void CALLBACK
 t_vertex_data(data, user_data)

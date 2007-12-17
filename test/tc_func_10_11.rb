@@ -161,11 +161,11 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_gledge
 		glEdgeFlag(GL_FALSE)
-		assert_equal(glGetBooleanv(GL_EDGE_FLAG),GL_FALSE)
+		assert_equal(glGetBooleanv(GL_EDGE_FLAG),false)
 		glEdgeFlag(GL_TRUE)
-		assert_equal(glGetBooleanv(GL_EDGE_FLAG),GL_TRUE)
+		assert_equal(glGetBooleanv(GL_EDGE_FLAG),true)
 		glEdgeFlagv([GL_FALSE])
-		assert_equal(glGetBooleanv(GL_EDGE_FLAG),GL_FALSE)
+		assert_equal(glGetBooleanv(GL_EDGE_FLAG),false)
 	end
 
 	def test_clientstate
@@ -205,12 +205,12 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetIntegerv(GL_STENCIL_BACK_WRITEMASK), 1)
 
 		glColorMask(GL_TRUE,GL_FALSE,GL_TRUE,GL_FALSE)
-		assert_equal(glGetBooleanv(GL_COLOR_WRITEMASK),[GL_TRUE,GL_FALSE,GL_TRUE,GL_FALSE])
+		assert_equal(glGetBooleanv(GL_COLOR_WRITEMASK),[true,false,true,false])
 
 		glDepthMask(GL_TRUE)
-		assert_equal(glGetBooleanv(GL_DEPTH_WRITEMASK),GL_TRUE)
+		assert_equal(glGetBooleanv(GL_DEPTH_WRITEMASK),true)
 		glDepthMask(GL_FALSE)
-		assert_equal(glGetBooleanv(GL_DEPTH_WRITEMASK),GL_FALSE)
+		assert_equal(glGetBooleanv(GL_DEPTH_WRITEMASK),false)
 
 		glIndexMask(2)
 		assert_equal(glGetIntegerv(GL_INDEX_WRITEMASK), 2)

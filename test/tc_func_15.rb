@@ -73,7 +73,7 @@ class Test_15 < Test::Unit::TestCase
 
 		assert_equal(glMapBuffer(GL_ARRAY_BUFFER,GL_READ_ONLY),data2)
 		r = glUnmapBuffer(GL_ARRAY_BUFFER)
-		assert(r == GL_TRUE || r == GL_FALSE)
+		assert(r == true || r == false)
 		glDeleteBuffers(buffers)		
 		assert_equal(glIsBuffer(buffers[0]),false)
 

@@ -1182,7 +1182,7 @@ VALUE obj,arg1; \
 GLGET_FUNC(Double,GLdouble,rb_float_new)
 GLGET_FUNC(Float,GLfloat,rb_float_new)
 GLGET_FUNC(Integer,GLint,INT2NUM)
-GLGET_FUNC(Boolean,GLboolean,INT2NUM)
+GLGET_FUNC(Boolean,GLboolean,GLBOOL2RUBY)
 
 #undef GLGET_FUNC
 
@@ -2271,10 +2271,10 @@ VALUE obj,arg1;
 	retary = rb_ary_new2(size);
 	if (r==GL_TRUE) { /* all are resident */
 		for(i=0;i<size;i++)
-			rb_ary_push(retary, INT2NUM(GL_TRUE));
+			rb_ary_push(retary, GLBOOL2RUBY(GL_TRUE));
 	} else {
 		for(i=0;i<size;i++)
-			rb_ary_push(retary, INT2NUM(residences[i]));
+			rb_ary_push(retary, GLBOOL2RUBY(residences[i]));
 	}
 	xfree(textures);
 	xfree(residences);

@@ -76,10 +76,10 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		return if not supported?("GL_ARB_multisample")
 		glSampleCoverageARB(0.5,GL_FALSE)
 		assert_equal(glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB),0.5)
-		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB),GL_FALSE)
+		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB),false)
 		glSampleCoverageARB(1.0,GL_TRUE)
 		assert_equal(glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB),1.0)
-		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB),GL_TRUE)
+		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB),true)
 	end
 
 	def test_gl_arb_color_buffer_float

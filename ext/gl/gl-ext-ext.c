@@ -76,10 +76,10 @@ VALUE obj,arg1;
 	retary = rb_ary_new2(size);
 	if (r==GL_TRUE) { /* all are resident */
 		for(i=0;i<size;i++)
-			rb_ary_push(retary, INT2NUM(GL_TRUE));
+			rb_ary_push(retary, GLBOOL2RUBY(GL_TRUE));
 	} else {
 		for(i=0;i<size;i++)
-			rb_ary_push(retary, INT2NUM(residences[i]));
+			rb_ary_push(retary, GLBOOL2RUBY(residences[i]));
 	}
 	xfree(textures);
 	xfree(residences);
