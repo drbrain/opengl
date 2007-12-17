@@ -17,16 +17,18 @@ require 'rubygems'
 require 'mkrf'
 require 'rbconfig'
 
+RUBYVER = " -DRUBY_VERSION=" + RUBY_VERSION.split(".").join
+
 Mkrf::Generator.new( 'gl' ) do |g|
-    case RUBY_PLATFORM
-    when /darwin/
-        g.ldshared << ' -framework OpenGL'
-    when /mswin32/
-        g.cflags << ' -DWIN32'
-        g.include_library( 'opengl32.lib', 'glVertex3d')
-    else
-        g.cflags << ' -Wall'
-#        g.cflags << ' -Wall -Wextra -Wredundant-decls -Wfloat-equal -Wmissing-format-attribute -Wmissing-noreturn -Wpacked -Wshadow -Wunused-macros -Wcast-align -Wcast-qual -Wconversion -Wdeprecated-declarations -Wendif-labels -Wformat-extra-args -Winline -Wmissing-field-initializers -Wpointer-arith -Wsign-compare -Wundef -Wwrite-strings -pedantic'
-        g.include_library( 'GL', 'glVertex3d')
-    end
+	case RUBY_PLATFORM
+	when /darwin/
+		g.cflags << RUBYVER
+		g.ldshared << ' -framework OpenGL'
+	when /mswin32/
+		g.cflags << ' -DWIN32' + RUBYVER
+		g.include_library( 'opengl32.lib', 'glVertex3d')
+	else
+		g.cflags << ' -Wall' + RUBYVER
+		g.include_library( 'GL', 'glVertex3d')
+	end
 end

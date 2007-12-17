@@ -41,7 +41,7 @@ static VALUE gl_LoadProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
 	LOAD_GL_FUNC(glLoadProgramNV,"GL_NV_vertex_program")
 	Check_Type(arg3,T_STRING);
-	fptr_glLoadProgramNV(NUM2INT(arg1),NUM2UINT(arg2),RSTRING(arg3)->len,(GLubyte *)RSTRING(arg3)->ptr);
+	fptr_glLoadProgramNV(NUM2INT(arg1),NUM2UINT(arg2),RSTRING_LEN(arg3),(GLubyte *)RSTRING_PTR(arg3));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -123,7 +123,7 @@ static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3
 		Check_Type(arg5, T_STRING);
 		rb_str_freeze(arg5);
 		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)RSTRING(arg5)->ptr);
+		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)RSTRING_PTR(arg5));
 	}
 
 	CHECK_GLERROR
@@ -433,7 +433,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6; \
 { \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	Check_Type(arg2,T_STRING); \
-	fptr_gl##_name_(NUM2UINT(arg1),RSTRING(arg2)->len,(GLubyte *)RSTRING(arg2)->ptr,_conv_(arg3),_conv_(arg4),_conv_(arg5),_conv_(arg6)); \
+	fptr_gl##_name_(NUM2UINT(arg1),RSTRING_LEN(arg2),(GLubyte *)RSTRING_PTR(arg2),_conv_(arg3),_conv_(arg4),_conv_(arg5),_conv_(arg6)); \
 	CHECK_GLERROR \
 	return Qnil; \
 }
@@ -452,7 +452,7 @@ VALUE obj,arg1,arg2,arg3; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	Check_Type(arg2,T_STRING); \
 	_conv_(arg3,cary,4); \
-	fptr_gl##_name_(NUM2UINT(arg1),RSTRING(arg2)->len,(GLubyte *)RSTRING(arg2)->ptr,cary); \
+	fptr_gl##_name_(NUM2UINT(arg1),RSTRING_LEN(arg2),(GLubyte *)RSTRING_PTR(arg2),cary); \
 	CHECK_GLERROR \
 	return Qnil; \
 }
@@ -472,7 +472,7 @@ VALUE obj,arg1,arg2; \
 	int i; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	Check_Type(arg2,T_STRING); \
-	fptr_gl##_name_(NUM2UINT(arg1),RSTRING(arg2)->len,(GLubyte *)RSTRING(arg2)->ptr,cary); \
+	fptr_gl##_name_(NUM2UINT(arg1),RSTRING_LEN(arg2),(GLubyte *)RSTRING_PTR(arg2),cary); \
 	ret = rb_ary_new2(4); \
 	for(i=0;i<4;i++) \
 			rb_ary_push(ret, rb_float_new(cary[i])); \

@@ -167,7 +167,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		Check_Type(arg4, T_STRING);
 		rb_str_freeze(arg4);
 		g_SecondaryColor_ptr = arg4;
-		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)RSTRING(arg4)->ptr);
+		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)RSTRING_PTR(arg4));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -198,7 +198,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, (GLvoid *)NUM2INT(arg6));
 	} else {
 		Check_Type(arg6, T_STRING);
-		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, RSTRING(arg6)->ptr);
+		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, RSTRING_PTR(arg6));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -260,8 +260,8 @@ VALUE obj;
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
-				indices[i] = RSTRING(ary->ptr[i])->ptr;
-				counts[i] = RSTRING(ary->ptr[i])->len;
+				indices[i] = RSTRING_PTR(ary->ptr[i]);
+				counts[i] = RSTRING_LEN(ary->ptr[i]);
 			}
 			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
 			xfree(counts);
@@ -332,7 +332,7 @@ VALUE obj,arg1,arg2,arg3;
 		Check_Type(arg3, T_STRING);
 		rb_str_freeze(arg3);
 		g_FogCoord_ptr = arg3;
-		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)RSTRING_PTR(arg3));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -540,7 +540,7 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 		Check_Type(arg5, T_STRING);
 		rb_str_freeze(arg5);
 		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)RSTRING(arg5)->ptr);
+		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)RSTRING_PTR(arg5));
 	}
 
 	CHECK_GLERROR
@@ -623,7 +623,7 @@ static VALUE gl_BindFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 {
 	LOAD_GL_FUNC(glBindFragDataLocationEXT,"GL_EXT_gpu_shader4")
 	Check_Type(arg3,T_STRING);
-	fptr_glBindFragDataLocationEXT(NUM2UINT(arg1),NUM2UINT(arg2),RSTRING(arg3)->ptr);
+	fptr_glBindFragDataLocationEXT(NUM2UINT(arg1),NUM2UINT(arg2),RSTRING_PTR(arg3));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -634,7 +634,7 @@ static VALUE gl_GetFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	GLint ret;
 	LOAD_GL_FUNC(glGetFragDataLocationEXT,"GL_EXT_gpu_shader4")
 	Check_Type(arg2,T_STRING);
-	ret = fptr_glGetFragDataLocationEXT(NUM2UINT(arg1),RSTRING(arg2)->ptr);
+	ret = fptr_glGetFragDataLocationEXT(NUM2UINT(arg1),RSTRING_PTR(arg2));
 	CHECK_GLERROR
 	return INT2NUM(ret);
 }
@@ -659,7 +659,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)NUM2INT(arg4), primcount);
 	} else {
 		Check_Type(arg4, T_STRING);
-		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)RSTRING(arg4)->ptr, primcount);
+		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)RSTRING_PTR(arg4), primcount);
 	}
 	CHECK_GLERROR
 	return Qnil;

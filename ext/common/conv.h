@@ -26,6 +26,13 @@
 	 Also ruby 'true' and 'false' are converted to GL_TRUE/GL_FALSE for compatibility, and
 	 finally, we fallback to library functions for any other data types (and error handling).
 */
+
+#if RUBY_VERSION <190
+#define	FLOAT_VAL_ACCESS(val) RFLOAT(val)->value
+#else
+#define	FLOAT_VAL_ACCESS(val) RFLOAT(val)->float_value
+#endif
+
 #define FASTCONV(_name_,_type_,_convfix_,_convfallback_) \
 static inline _type_ _name_(val) \
 VALUE val; \
@@ -34,7 +41,7 @@ VALUE val; \
 		return (_type_) _convfix_(val); \
 \
 	if (TYPE(val) == T_FLOAT) \
-		return (_type_)(RFLOAT(val)->value); \
+		return (_type_)FLOAT_VAL_ACCESS(val); \
 \
 	if ((val) == Qtrue) \
 		return (_type_)(GL_TRUE); \

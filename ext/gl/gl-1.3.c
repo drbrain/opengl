@@ -143,9 +143,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,(GLvoid *)NUM2INT(arg9));
 	} else {
 		if (TYPE(arg9) == T_STRING) {
-			if (RSTRING(arg9)->len < imagesize)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
-			pixels = RSTRING(arg9)->ptr;
+			if (RSTRING_LEN(arg9) < imagesize)
+				rb_raise(rb_eArgError, "string length:%li",RSTRING_LEN(arg9));
+			pixels = RSTRING_PTR(arg9);
 		} else if (NIL_P(arg9)) {
 			pixels = NULL;
 		} else {
@@ -183,9 +183,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 		fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,(GLvoid *)NUM2INT(arg8));
 	} else {
 		if (TYPE(arg8) == T_STRING) {
-			if (RSTRING(arg8)->len < imagesize)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg8)->len);
-			pixels = RSTRING(arg8)->ptr;
+			if (RSTRING_LEN(arg8) < imagesize)
+				rb_raise(rb_eArgError, "string length:%li",RSTRING_LEN(arg8));
+			pixels = RSTRING_PTR(arg8);
 		} else if (NIL_P(arg8)) {
 			pixels = NULL;
 		} else {
@@ -221,9 +221,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,(GLvoid *)NUM2INT(arg7));
 	} else {
 		if (TYPE(arg7) == T_STRING) {
-			if (RSTRING(arg7)->len < imagesize)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
-			pixels = RSTRING(arg7)->ptr;
+			if (RSTRING_LEN(arg7) < imagesize)
+				rb_raise(rb_eArgError, "string length:%li",RSTRING_LEN(arg7));
+			pixels = RSTRING_PTR(arg7);
 		} else if (NIL_P(arg7)) {
 			pixels = NULL;
 		} else {
@@ -267,9 +267,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 		fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,(GLvoid *)NUM2INT(arg11));
 	} else {
 		if (TYPE(arg11) == T_STRING) {
-			if (RSTRING(arg11)->len < imagesize)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg11)->len);
-			 pixels = RSTRING(arg11)->ptr;
+			if (RSTRING_LEN(arg11) < imagesize)
+				rb_raise(rb_eArgError, "string length:%li",RSTRING_LEN(arg11));
+			 pixels = RSTRING_PTR(arg11);
 		} else {
 			Check_Type(arg11,T_STRING); /* force exception */
 			return Qnil;
@@ -307,9 +307,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,(GLvoid *)NUM2INT(arg9));
 	} else {
 		if (TYPE(arg9) == T_STRING) {
-			if (RSTRING(arg9)->len < imagesize)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg9)->len);
-			 pixels = RSTRING(arg9)->ptr;
+			if (RSTRING_LEN(arg9) < imagesize)
+				rb_raise(rb_eArgError, "string length:%li",RSTRING_LEN(arg9));
+			 pixels = RSTRING_PTR(arg9);
 		} else {
 			Check_Type(arg9,T_STRING); /* force exception */
 			return Qnil;
@@ -343,9 +343,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,(GLvoid *)NUM2INT(arg7));
 	} else {
 		if (TYPE(arg7) == T_STRING) {
-			if (RSTRING(arg7)->len < imagesize)
-				rb_raise(rb_eArgError, "string length:%d",RSTRING(arg7)->len);
-			 pixels = RSTRING(arg7)->ptr;
+			if (RSTRING_LEN(arg7) < imagesize)
+				rb_raise(rb_eArgError, "string length:%li",RSTRING_LEN(arg7));
+			 pixels = RSTRING_PTR(arg7);
 		} else {
 			Check_Type(arg7,T_STRING); /* force exception */
 			return Qnil;
@@ -381,7 +381,7 @@ VALUE obj;
 			glGetTexLevelParameteriv(target,lod,GL_TEXTURE_COMPRESSED_IMAGE_SIZE,&size); /* 1.0 function */
 			CHECK_GLERROR
 			data = allocate_buffer_with_string(size);
-			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)RSTRING(data)->ptr);
+			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)RSTRING_PTR(data));
 			CHECK_GLERROR
 			return data;
 		case 3:

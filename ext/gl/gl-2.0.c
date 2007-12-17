@@ -84,7 +84,7 @@ VALUE obj,arg1,arg2,arg3;
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
-	fptr_glBindAttribLocation(program,index,RSTRING(arg3)->ptr);
+	fptr_glBindAttribLocation(program,index,RSTRING_PTR(arg3));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -127,7 +127,7 @@ VALUE obj,arg1,arg2;
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum attribute name length");
 	buffer = allocate_buffer_with_string(max_size-1);
-	fptr_glGetActiveAttrib(program,index,max_size,&written,&attrib_size,&attrib_type,RSTRING(buffer)->ptr);
+	fptr_glGetActiveAttrib(program,index,max_size,&written,&attrib_size,&attrib_type,RSTRING_PTR(buffer));
 	retary = rb_ary_new2(3);
 	rb_ary_push(retary, INT2NUM(attrib_size));
 	rb_ary_push(retary, INT2NUM(attrib_type));
@@ -158,7 +158,7 @@ VALUE obj,arg1,arg2;
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum uniform name length");
 	buffer = allocate_buffer_with_string(max_size-1);
-	fptr_glGetActiveUniform(program,index,max_size,&written,&uniform_size,&uniform_type,RSTRING(buffer)->ptr);
+	fptr_glGetActiveUniform(program,index,max_size,&written,&uniform_size,&uniform_type,RSTRING_PTR(buffer));
 	retary = rb_ary_new2(3);
 	rb_ary_push(retary, INT2NUM(uniform_size));
 	rb_ary_push(retary, INT2NUM(uniform_type));
@@ -205,7 +205,7 @@ VALUE obj,arg1,arg2;
 	LOAD_GL_FUNC(glGetAttribLocation,"2.0")
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
-	ret = fptr_glGetAttribLocation(program,RSTRING(arg2)->ptr);
+	ret = fptr_glGetAttribLocation(program,RSTRING_PTR(arg2));
 	CHECK_GLERROR
 	return INT2NUM(ret);
 }
@@ -227,8 +227,7 @@ VALUE obj,arg1;
 	if (max_size<=0)
 		return rb_str_new2("");
 	buffer = allocate_buffer_with_string(max_size);
-	fptr_glGetProgramInfoLog(program,max_size,&ret_length,RSTRING(buffer)->ptr);
-	RSTRING(buffer)->len = ret_length;
+	fptr_glGetProgramInfoLog(program,max_size,&ret_length,RSTRING_PTR(buffer));
 	CHECK_GLERROR
 	return buffer;
 }
@@ -292,7 +291,7 @@ VALUE obj,arg1;
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum shader source length");
 	buffer = allocate_buffer_with_string(max_size-1);
-	fptr_glGetShaderSource(shader,max_size,&ret_length,RSTRING(buffer)->ptr);
+	fptr_glGetShaderSource(shader,max_size,&ret_length,RSTRING_PTR(buffer));
 	CHECK_GLERROR
 	return buffer;
 }
@@ -307,7 +306,7 @@ VALUE obj,arg1,arg2;
 	LOAD_GL_FUNC(glGetUniformLocation,"2.0")
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
-	ret = fptr_glGetUniformLocation(program,RSTRING(arg2)->ptr);
+	ret = fptr_glGetUniformLocation(program,RSTRING_PTR(arg2));
 	CHECK_GLERROR
 	return INT2NUM(ret);
 }
@@ -411,8 +410,8 @@ VALUE obj,arg1,arg2;
 	LOAD_GL_FUNC(glShaderSource,"2.0")
 	shader = (GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
-	str = RSTRING(arg2)->ptr;
-	length = RSTRING(arg2)->len;
+	str = RSTRING_PTR(arg2);
+	length = RSTRING_LEN(arg2);
 	fptr_glShaderSource(shader,1,&str,&length);
 	CHECK_GLERROR
 	return Qnil;
@@ -542,7 +541,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		Check_Type(arg6, T_STRING);
 		rb_str_freeze(arg6);
 		g_VertexAttrib_ptr[index] = arg6;
-		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING(arg6)->ptr);
+		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(arg6));
 	}
 	CHECK_GLERROR
 	return Qnil;

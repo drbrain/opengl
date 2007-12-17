@@ -23,7 +23,7 @@ static VALUE gl_StringMarkerGREMEDY(VALUE obj,VALUE arg1)
 {
 	LOAD_GL_FUNC(glStringMarkerGREMEDY,"GL_GREMEDY_string_marker")
 	Check_Type(arg1,T_STRING);
-	fptr_glStringMarkerGREMEDY(RSTRING(arg1)->len,RSTRING(arg1)->ptr);
+	fptr_glStringMarkerGREMEDY(RSTRING_LEN(arg1),RSTRING_PTR(arg1));
 	CHECK_GLERROR
 	return Qnil;
 }

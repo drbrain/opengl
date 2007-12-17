@@ -145,7 +145,7 @@ VALUE obj,arg1;
 	GLboolean res;
 
 	s = rb_funcall(arg1, rb_intern("to_s"),0);
-	name = RSTRING(s)->ptr;
+	name = RSTRING_PTR(s);
 
 	res = CheckVersionExtension(name);
 

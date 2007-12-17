@@ -85,7 +85,7 @@ VALUE obj,arg1,arg2,arg3;
 		Check_Type(arg3, T_STRING);
 		rb_str_freeze(arg3);
 		g_FogCoord_ptr = arg3;
-		fptr_glFogCoordPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+		fptr_glFogCoordPointer(type, stride, (const GLvoid*)RSTRING_PTR(arg3));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -146,8 +146,8 @@ VALUE obj;
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
-				indices[i] = RSTRING(ary->ptr[i])->ptr;
-				counts[i] = RSTRING(ary->ptr[i])->len;
+				indices[i] = RSTRING_PTR(ary->ptr[i]);
+				counts[i] = RSTRING_LEN(ary->ptr[i]);
 			}
 			fptr_glMultiDrawElements(mode,counts,type,indices,size);
 			xfree(counts);
@@ -265,7 +265,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		Check_Type(arg4, T_STRING);
 		rb_str_freeze(arg4);
 		g_SecondaryColor_ptr = arg4;
-		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)RSTRING(arg4)->ptr);
+		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)RSTRING_PTR(arg4));
 	}
 	CHECK_GLERROR
 	return Qnil;

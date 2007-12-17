@@ -297,7 +297,7 @@ VALUE obj;
 			mary2ary(args[4], ary_ctl1); /* flatten */
 			break;
 		default:
-			rb_raise(rb_eArgError, "gluNurbsCurve needs 5 or 7 arguments",argc);
+			rb_raise(rb_eArgError, "gluNurbsCurve needs 5 or 7 arguments");
 	}
 	ctlarray = ALLOC_N(GLfloat, u_stride*(uknot_count-uorder));
 	ary2cflt((VALUE)ary_ctl1, ctlarray, (uknot_count-uorder)*u_stride);
@@ -406,7 +406,7 @@ VALUE obj;
 			ary2cflt(ary_ctl1, ctlarray, (sknot_count-sorder)*(tknot_count-torder)*type_len);
 			break;
 		default:
-			rb_raise(rb_eArgError, "gluNurbsSurface needs 7 or 11 arguments",argc);
+			rb_raise(rb_eArgError, "gluNurbsSurface needs 7 or 11 arguments");
 			return Qnil; /* not reached */
 	}
 	GetNURBS(args[0], ndata);
@@ -479,7 +479,7 @@ VALUE obj;
 			ary2cflt(ary_ctl1, array, count*stride);
 			break;
 		default:
-			rb_raise(rb_eArgError, "gluPwlCurve needs 3 or 5 arguments",argc);
+			rb_raise(rb_eArgError, "gluPwlCurve needs 3 or 5 arguments");
 			return Qnil; /* not reached */
 	}
 
@@ -1166,7 +1166,7 @@ VALUE obj;
 			ary2cint(args[4], viewport, 4);
 			break;
 		default:
-			rb_raise(rb_eArgError, "gluPickMatrix needs 2,4 or 5 parameters",argc);
+			rb_raise(rb_eArgError, "gluPickMatrix needs 2,4 or 5 parameters");
 	}
 	x = (GLdouble)NUM2DBL(args[0]);
 	y = (GLdouble)NUM2DBL(args[1]);
@@ -1275,7 +1275,7 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6;
 	Check_Type(arg6,T_STRING);
 	CheckDataSize(type,format,width,arg6);
 
-	return INT2NUM(gluBuild1DMipmaps(target, components, width, format, type, RSTRING(arg6)->ptr));
+	return INT2NUM(gluBuild1DMipmaps(target, components, width, format, type, RSTRING_PTR(arg6)));
 }
 
 static VALUE
@@ -1298,7 +1298,7 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
 	Check_Type(arg7,T_STRING);
 	CheckDataSize(type,format,width*height,arg7);
 
-	return INT2NUM(gluBuild2DMipmaps(target, components, width, height, format, type, RSTRING(arg7)->ptr));
+	return INT2NUM(gluBuild2DMipmaps(target, components, width, height, format, type, RSTRING_PTR(arg7)));
 }
 
 static VALUE
@@ -1321,13 +1321,13 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8;
 	typein = (GLenum)NUM2INT(arg4);
 	Check_Type(arg5,T_STRING);
 	CheckDataSize(typein,format,heightin*widthin,arg5);
-	datain = RSTRING(arg5)->ptr;
+	datain = RSTRING_PTR(arg5);
 	widthout = (GLint)NUM2INT(arg6);
 	heightout = (GLint)NUM2INT(arg7);
 	typeout = (GLenum)NUM2INT(arg8);
 	ret = allocate_buffer_with_string(GetDataSize(typeout,format,widthout*heightout));
 	gluScaleImage(format, widthin, heightin, typein, datain,
-		widthout, heightout, typeout, (GLvoid*)RSTRING(ret)->ptr);
+		widthout, heightout, typeout, (GLvoid*)RSTRING_PTR(ret));
 	return ret;
 }
 

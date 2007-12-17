@@ -97,7 +97,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	size = (GLsizeiptr)NUM2INT(arg2);
 	usage = (GLenum)NUM2INT(arg4);
 	if (TYPE(arg3) == T_STRING) {
-		fptr_glBufferData(target,size,(GLvoid *)RSTRING(arg3)->ptr,usage);
+		fptr_glBufferData(target,size,(GLvoid *)RSTRING_PTR(arg3),usage);
 	} else if (NIL_P(arg3)) {
 		fptr_glBufferData(target,size,NULL,usage);
 	} else {
@@ -120,7 +120,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	offset = (GLintptr)NUM2INT(arg2);
 	size = (GLsizeiptr)NUM2INT(arg3);
 	Check_Type(arg4,T_STRING);
-	fptr_glBufferSubData(target,offset,size,(GLvoid *)RSTRING(arg4)->ptr);
+	fptr_glBufferSubData(target,offset,size,(GLvoid *)RSTRING_PTR(arg4));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -139,7 +139,7 @@ VALUE obj,arg1,arg2,arg3;
 	offset = (GLintptr)NUM2INT(arg2);
 	size = (GLsizeiptr)NUM2INT(arg3);
 	data = allocate_buffer_with_string(size);
-	fptr_glGetBufferSubData(target,offset,size,(GLvoid *)RSTRING(data)->ptr);
+	fptr_glGetBufferSubData(target,offset,size,(GLvoid *)RSTRING_PTR(data));
 	CHECK_GLERROR
 	return data;
 }
@@ -184,7 +184,7 @@ VALUE obj,arg1,arg2;
 	if (buffer_ptr==NULL || size<=0)
 		return Qnil;
 	data = allocate_buffer_with_string(size);
-	memcpy(RSTRING(data)->ptr, buffer_ptr, size);
+	memcpy(RSTRING_PTR(data), buffer_ptr, size);
 	return data;
 }
 

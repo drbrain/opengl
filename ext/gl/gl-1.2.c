@@ -53,7 +53,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		fptr_glDrawRangeElements(mode, start, end, count, type, (GLvoid *)NUM2INT(arg6));
 	} else {
 		Check_Type(arg6, T_STRING);
-		fptr_glDrawRangeElements(mode, start, end, count, type, RSTRING(arg6)->ptr);
+		fptr_glDrawRangeElements(mode, start, end, count, type, RSTRING_PTR(arg6));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -80,7 +80,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	} else {
 		Check_Type(arg6,T_STRING);
 		CheckDataSize(type,format,width,arg6);
-		fptr_glColorTable(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
+		fptr_glColorTable(target,internalformat,width,format,type,RSTRING_PTR(arg6));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -204,7 +204,7 @@ VALUE obj,arg1,arg2,arg3;
 	CHECK_GLERROR
 	data = allocate_buffer_with_string(GetDataSize(type,format,width));
 	FORCE_PIXEL_STORE_MODE
-	fptr_glGetColorTable(target,format,type,(GLvoid*)RSTRING(data)->ptr);	
+	fptr_glGetColorTable(target,format,type,(GLvoid*)RSTRING_PTR(data));	
 	RESTORE_PIXEL_STORE_MODE
 	CHECK_GLERROR
 	return data;
@@ -231,7 +231,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	} else {
 		Check_Type(arg6,T_STRING);
 		CheckDataSize(type,format,count,arg6);
-		fptr_glColorSubTable(target,start,count,format,type,RSTRING(arg6)->ptr);
+		fptr_glColorSubTable(target,start,count,format,type,RSTRING_PTR(arg6));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -258,7 +258,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	} else {
 		Check_Type(arg6,T_STRING);
 		CheckDataSize(type,format,width,arg6);
-		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,RSTRING(arg6)->ptr);
+		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,RSTRING_PTR(arg6));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -287,7 +287,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	} else {
 		Check_Type(arg7,T_STRING);
 		CheckDataSize(type,format,width*height,arg7);
-		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr);
+		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,RSTRING_PTR(arg7));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -431,7 +431,7 @@ VALUE obj;
 			CHECK_GLERROR
 			data = allocate_buffer_with_string(GetDataSize(type,format,size));
 			FORCE_PIXEL_STORE_MODE
-			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)RSTRING(data)->ptr);
+			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)RSTRING_PTR(data));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return data;
@@ -483,7 +483,7 @@ VALUE obj;
 			data_row = allocate_buffer_with_string(GetDataSize(type,format,size_row));
 			data_column = allocate_buffer_with_string(GetDataSize(type,format,size_column));
 			FORCE_PIXEL_STORE_MODE
-			fptr_glGetSeparableFilter(target,format,type,(GLvoid*)RSTRING(data_row)->ptr,(GLvoid*)RSTRING(data_column)->ptr,0);
+			fptr_glGetSeparableFilter(target,format,type,(GLvoid*)RSTRING_PTR(data_row),(GLvoid*)RSTRING_PTR(data_column),0);
 			RESTORE_PIXEL_STORE_MODE
 			retary = rb_ary_new2(2);
 			rb_ary_push(retary, data_row);
@@ -527,7 +527,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 		Check_Type(arg8,T_STRING);
 		CheckDataSize(type,format,width,arg7);
 		CheckDataSize(type,format,height,arg8);
-		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,RSTRING(arg7)->ptr,RSTRING(arg8)->ptr);
+		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,RSTRING_PTR(arg7),RSTRING_PTR(arg8));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -604,7 +604,7 @@ VALUE obj;
 			CHECK_GLERROR
 			data = allocate_buffer_with_string(GetDataSize(type,format,size));
 			FORCE_PIXEL_STORE_MODE
-			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
+			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)RSTRING_PTR(data));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return data;
@@ -650,7 +650,7 @@ VALUE obj;
 
 			data = allocate_buffer_with_string(GetDataSize(type,format,2));
 			FORCE_PIXEL_STORE_MODE
-			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)RSTRING(data)->ptr);
+			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)RSTRING_PTR(data));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return data;
@@ -747,7 +747,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	} else {
 		Check_Type(arg10,T_STRING);
 		CheckDataSize(type,format,width*height*depth,arg10);
-		pixels = RSTRING(arg10)->ptr;
+		pixels = RSTRING_PTR(arg10);
 	}
 	fptr_glTexImage3D( target, level, internalFormat, width, height,
 				  depth, border, format, type,pixels);
@@ -790,7 +790,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 		CheckDataSize(type,format,height*width*depth,arg11);
 		fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 			width, height, depth,
-			format, type, RSTRING(arg11)->ptr);
+			format, type, RSTRING_PTR(arg11));
 	}
 	CHECK_GLERROR
 	return Qnil;

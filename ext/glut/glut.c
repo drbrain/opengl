@@ -119,7 +119,7 @@ glut_InitDisplayString(obj,arg1)
 VALUE obj,arg1;
 {
 	Check_Type(arg1,T_STRING);
-	glutInitDisplayString(RSTRING(arg1)->ptr);
+	glutInitDisplayString(RSTRING_PTR(arg1));
 	return Qnil;
 }
 
@@ -200,7 +200,7 @@ VALUE obj,arg1,arg2;
 	int win;
 	int pollinterval;
 	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
-		rb_raise(rb_eTypeError, "glutJoystickFunc", rb_class2name(CLASS_OF(arg1)));
+		rb_raise(rb_eTypeError, "glutJoystickFunc:%s", rb_class2name(CLASS_OF(arg1)));
 	pollinterval=NUM2INT(arg2);
 	win = glutGetWindow();
 	if (win == 0)
@@ -225,7 +225,7 @@ VALUE obj;
 	if (argc == 0)
 		title = rb_eval_string("$0");
 	Check_Type(title,T_STRING);
-	ret = glutCreateWindow(RSTRING(title)->ptr);
+	ret = glutCreateWindow(RSTRING_PTR(title));
 	return INT2NUM(ret);
 }
 
@@ -285,7 +285,7 @@ glut_SetWindowTitle(obj,arg1)
 VALUE obj,arg1;
 {
 	Check_Type(arg1,T_STRING);
-	glutSetWindowTitle(RSTRING(arg1)->ptr);
+	glutSetWindowTitle(RSTRING_PTR(arg1));
 	return Qnil;
 }
 
@@ -295,7 +295,7 @@ glut_SetIconTitle(obj, arg1)
 VALUE obj,arg1;
 {
 	Check_Type(arg1,T_STRING);
-	glutSetIconTitle(RSTRING(arg1)->ptr);
+	glutSetIconTitle(RSTRING_PTR(arg1));
 	return Qnil;
 }
 
@@ -374,7 +374,6 @@ static VALUE g_menucallback = Qnil;
 static void GLUTCALLBACK
 glut_CreateMenuCallback(int value)
 {
-	VALUE arg_pair;
 	VALUE func;
 	int menu;
 	menu = glutGetMenu();
@@ -388,7 +387,6 @@ glut_CreateMenu(obj,arg1)
 VALUE obj,arg1;
 {
 	int menu;
-	VALUE ret;
 	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
 		rb_raise(rb_eTypeError, "glutCreateMenu:%s", rb_class2name(CLASS_OF(arg1)));
 
@@ -439,7 +437,7 @@ glut_AddMenuEntry(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	Check_Type(arg1,T_STRING);
-	glutAddMenuEntry(RSTRING(arg1)->ptr, NUM2INT(arg2));
+	glutAddMenuEntry(RSTRING_PTR(arg1), NUM2INT(arg2));
 	return Qnil;
 }
 
@@ -449,7 +447,7 @@ glut_AddSubMenu(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	Check_Type(arg1,T_STRING);
-	glutAddSubMenu(RSTRING(arg1)->ptr, NUM2INT(arg2));
+	glutAddSubMenu(RSTRING_PTR(arg1), NUM2INT(arg2));
 	return Qnil;
 }
 
@@ -458,7 +456,7 @@ static VALUE glut_ChangeToMenuEntry(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
 	Check_Type(arg2,T_STRING);
-	glutChangeToMenuEntry(NUM2INT(arg1), RSTRING(arg2)->ptr, NUM2INT(arg3));
+	glutChangeToMenuEntry(NUM2INT(arg1), RSTRING_PTR(arg2), NUM2INT(arg3));
 	return Qnil;
 }
 
@@ -467,7 +465,7 @@ static VALUE glut_ChangeToSubMenu(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
 	Check_Type(arg2,T_STRING);
-	glutChangeToSubMenu(NUM2INT(arg1), RSTRING(arg2)->ptr, NUM2INT(arg3));
+	glutChangeToSubMenu(NUM2INT(arg1), RSTRING_PTR(arg2), NUM2INT(arg3));
 	return Qnil;
 }
 
@@ -897,7 +895,7 @@ VALUE obj,arg1;
 {
 	int ret;
 	Check_Type(arg1,T_STRING);
-	ret = glutExtensionSupported(RSTRING(arg1)->ptr);
+	ret = glutExtensionSupported(RSTRING_PTR(arg1));
 	return INT2NUM(ret);
 }
 
@@ -1018,7 +1016,7 @@ VALUE obj,arg1,arg2;
 	int ret;
 	Check_Type(arg2,T_STRING);
 	font = NUM2INT(arg1);
-	ret = glutBitmapLength(bitmap_font_map(font), (const unsigned char*)RSTRING(arg2)->ptr);
+	ret = glutBitmapLength(bitmap_font_map(font), (const unsigned char*)RSTRING_PTR(arg2));
 	return INT2NUM(ret);
 }
 
@@ -1031,7 +1029,7 @@ VALUE obj,arg1,arg2;
 	int ret;
 	Check_Type(arg2,T_STRING);
 	font = NUM2INT(arg1);
-	ret = glutStrokeLength(stroke_font_map(font), (const unsigned char*)RSTRING(arg2)->ptr);
+	ret = glutStrokeLength(stroke_font_map(font), (const unsigned char*)RSTRING_PTR(arg2));
 	return INT2NUM(ret);
 }
 
@@ -1242,7 +1240,7 @@ glut_GameModeString(obj,arg1)
 VALUE obj,arg1;
 {
 	Check_Type(arg1,T_STRING);
-	glutGameModeString((const char*)RSTRING(arg1)->ptr);
+	glutGameModeString((const char*)RSTRING_PTR(arg1));
 	return Qnil;
 }
 

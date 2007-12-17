@@ -235,8 +235,8 @@ VALUE obj,arg1;
 	GLvoid *lists;
 	if (TYPE(arg1) == T_STRING) {
 		type = GL_BYTE;
-		lists = RSTRING(arg1)->ptr;
-		n = RSTRING(arg1)->len;
+		lists = RSTRING_PTR(arg1);
+		n = RSTRING_LEN(arg1);
 	} else if (TYPE(arg1) == T_ARRAY) {
 		type = GL_INT;
 		lists = ALLOC_N(GLint, RARRAY(arg1)->len);
@@ -273,10 +273,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		const GLubyte *bitmap;
 		Check_Type(arg7,T_STRING); 
 
-		if (RSTRING(arg7)->len < (width * height / 8))
-			rb_raise(rb_eArgError, "string length:%d", RSTRING(arg7)->len);
+		if (RSTRING_LEN(arg7) < (width * height / 8))
+			rb_raise(rb_eArgError, "string length:%li", RSTRING_LEN(arg7));
 
-		bitmap = (const GLubyte*)RSTRING(arg7)->ptr;
+		bitmap = (const GLubyte*)RSTRING_PTR(arg7);
 		glBitmap(width, height, xorig, yorig, xmove, ymove, bitmap);
 	}
 	CHECK_GLERROR
@@ -492,9 +492,9 @@ VALUE obj,arg1;
 			ary2cubyte(arg1,mask,128);
 		}
 		else if (TYPE(arg1) == T_STRING) {
-			if (RSTRING(arg1)->len < 128)
-				rb_raise(rb_eArgError, "string length:%d", RSTRING(arg1)->len);
-			memcpy(mask, RSTRING(arg1)->ptr, 128);
+			if (RSTRING_LEN(arg1) < 128)
+				rb_raise(rb_eArgError, "string length:%li", RSTRING_LEN(arg1));
+			memcpy(mask, RSTRING_PTR(arg1), 128);
 		}
 		else
 			Check_Type(arg1,T_STRING); /* force exception */
@@ -568,7 +568,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	} else {
 		Check_Type(arg8,T_STRING);
 		CheckDataSize(type,format,width,arg8);
-		pixels = RSTRING(arg8)->ptr;
+		pixels = RSTRING_PTR(arg8);
 	}
 	glTexImage1D(target,level,components,width,border,format,type,pixels);
 	CHECK_GLERROR
@@ -608,7 +608,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	} else {
 		Check_Type(arg9,T_STRING);
 		CheckDataSize(type,format,width*height,arg9);
-		pixels = RSTRING(arg9)->ptr;
+		pixels = RSTRING_PTR(arg9);
 	}
 	glTexImage2D(target,level,components,width,height,border,format,type,pixels);
 	CHECK_GLERROR
@@ -708,7 +708,7 @@ VALUE obj,arg1,arg2;
 	type = (GLenum)NUM2INT(arg2);
 	g_current_feed_buffer = allocate_buffer_with_string(sizeof(GLfloat)*size);
 	rb_str_freeze(g_current_feed_buffer);
-	glFeedbackBuffer(size, type, (GLfloat*)RSTRING(g_current_feed_buffer)->ptr);
+	glFeedbackBuffer(size, type, (GLfloat*)RSTRING_PTR(g_current_feed_buffer));
 	CHECK_GLERROR
 	return g_current_feed_buffer;
 }
@@ -722,7 +722,7 @@ VALUE obj,arg1;
 	size = (GLsizei)NUM2UINT(arg1);
 	g_current_sel_buffer = allocate_buffer_with_string(sizeof(GLuint)*size);
 	rb_str_freeze(g_current_sel_buffer);
-	glSelectBuffer(size, (GLuint*)RSTRING(g_current_sel_buffer)->ptr);
+	glSelectBuffer(size, (GLuint*)RSTRING_PTR(g_current_sel_buffer));
 	CHECK_GLERROR
 	return g_current_sel_buffer;
 }
@@ -977,7 +977,7 @@ VALUE obj;
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
 			pixels = allocate_buffer_with_string(GetDataSize(type,format,width*height));
 			FORCE_PIXEL_STORE_MODE
-			glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING(pixels)->ptr);
+			glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING_PTR(pixels));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return pixels;
@@ -1012,7 +1012,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	} else {
 		Check_Type(arg5,T_STRING);
 		CheckDataSize(type,format,width*height,arg5);
-		pixels = RSTRING(arg5)->ptr;
+		pixels = RSTRING_PTR(arg5);
 		glDrawPixels(width,height,format,type,pixels);
 	}
 	CHECK_GLERROR
@@ -1853,7 +1853,7 @@ VALUE obj;
 			pixels = allocate_buffer_with_string(GetDataSize(type,format,size));
 		
 			FORCE_PIXEL_STORE_MODE
-			glGetTexImage(tex,lod,format,type,(GLvoid*)RSTRING(pixels)->ptr);
+			glGetTexImage(tex,lod,format,type,(GLvoid*)RSTRING_PTR(pixels));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return pixels;
@@ -2042,7 +2042,7 @@ VALUE obj, arg1, arg2, arg3, arg4; \
 		Check_Type(arg4, T_STRING); \
 		rb_str_freeze(arg4); \
 		g_##_func_##_ptr = arg4; \
-		gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING(arg4)->ptr); \
+		gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING_PTR(arg4)); \
 	} \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -2068,7 +2068,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		glDrawElements(mode, count, type, (const GLvoid*)NUM2INT(arg4));
 	} else {
 		Check_Type(arg4, T_STRING);
-		glDrawElements(mode, count, type, (const GLvoid*)RSTRING(arg4)->ptr);
+		glDrawElements(mode, count, type, (const GLvoid*)RSTRING_PTR(arg4));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -2087,7 +2087,7 @@ VALUE obj,arg1,arg2;
 		Check_Type(arg2, T_STRING);
 		rb_str_freeze(arg2);
 		g_EdgeFlag_ptr = arg2;
-		glEdgeFlagPointer(stride, (const GLboolean*)RSTRING(arg2)->ptr);
+		glEdgeFlagPointer(stride, (const GLboolean*)RSTRING_PTR(arg2));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -2142,7 +2142,7 @@ VALUE obj,arg1,arg2,arg3;
 		Check_Type(arg3, T_STRING);
 		rb_str_freeze(arg3);
 		g_Index_ptr = arg3;
-		glIndexPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+		glIndexPointer(type, stride, (const GLvoid*)RSTRING_PTR(arg3));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -2158,7 +2158,7 @@ VALUE obj,arg1,arg2,arg3;
 	stride = (GLsizei)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	rb_str_freeze(arg3);
-	glInterleavedArrays(format, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+	glInterleavedArrays(format, stride, (const GLvoid*)RSTRING_PTR(arg3));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -2178,7 +2178,7 @@ VALUE obj,arg1,arg2,arg3;
 		Check_Type(arg3, T_STRING);
 		rb_str_freeze(arg3);
 		g_Normal_ptr = arg3;
-		glNormalPointer(type, stride, (const GLvoid*)RSTRING(arg3)->ptr);
+		glNormalPointer(type, stride, (const GLvoid*)RSTRING_PTR(arg3));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -2211,7 +2211,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	Check_Type(arg7,T_STRING);
 	CheckDataSize(type,format,width,arg7);
 
-	glTexSubImage1D(target,level,xoffset,width,format,type,RSTRING(arg7)->ptr);
+	glTexSubImage1D(target,level,xoffset,width,format,type,RSTRING_PTR(arg7));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -2246,7 +2246,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	Check_Type(arg9,T_STRING);
 	CheckDataSize(type,format,width*height,arg9);
 
-	glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,(RSTRING(arg9)->ptr));
+	glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,RSTRING_PTR(arg9));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -2344,7 +2344,7 @@ VALUE obj; \
 			gl_Color4##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
 			break; \
 			default: \
-			rb_raise(rb_eArgError, "array length:%d", ary->len); \
+			rb_raise(rb_eArgError, "array length:%li", ary->len); \
 		} \
 		} \
 		else \
@@ -2391,7 +2391,7 @@ VALUE obj; \
 			gl_Normal3##_type_(obj,ary->ptr[0], ary->ptr[1],ary->ptr[2]); \
 			break; \
 			default: \
-			rb_raise(rb_eArgError, "array length:%d", ary->len); \
+			rb_raise(rb_eArgError, "array length:%li", ary->len); \
 		} \
 		} \
 		else \
@@ -2485,7 +2485,7 @@ VALUE obj; \
 			gl_Rect##_type_(obj,ary->ptr[0],ary->ptr[1],ary2->ptr[0],ary2->ptr[1]); \
 			break; \
 			default: \
-			rb_raise(rb_eArgError, "array length:%d", ary->len); \
+			rb_raise(rb_eArgError, "array length:%li", ary->len); \
 		} \
 		} \
 		else \
@@ -2586,7 +2586,7 @@ VALUE obj; \
 			gl_Vertex4##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
 			break; \
 			default: \
-			rb_raise(rb_eRuntimeError, "glVertex vertex num error!:%d", ary->len); \
+			rb_raise(rb_eRuntimeError, "glVertex vertex num error!:%li", ary->len); \
 		} \
 		} \
 		else \

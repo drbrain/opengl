@@ -16,18 +16,22 @@
 require 'rubygems'
 require 'mkrf'
 
+RUBYVER = " -DRUBY_VERSION=" + RUBY_VERSION.split(".").join
+
 Mkrf::Generator.new( 'glut' ) do |g|
-    case RUBY_PLATFORM
-    when /darwin/
-        g.ldshared << ' -framework GLUT -framework OpenGL -framework Cocoa'
-    when /mswin32/
-        g.cflags << ' -DWIN32'
-        g.include_library( 'glut32.lib', 'glutSolidTeapot' )
-        g.include_library( 'glu32.lib', 'gluLookAt' )
-        g.include_library( 'opengl32.lib', 'glVertex3d' )
-    else
-        g.include_library( 'glut', 'glutSolidTeapot' )
-        g.include_library( 'GLU', 'gluLookAt' )
-        g.include_library( 'GL', 'glVertex3d')
-    end
+	case RUBY_PLATFORM
+	when /darwin/
+		g.cflags << RUBYVER
+		g.ldshared << ' -framework GLUT -framework OpenGL -framework Cocoa'
+	when /mswin32/
+		g.cflags << ' -DWIN32' + RUBYVER
+		g.include_library( 'glut32.lib', 'glutSolidTeapot' )
+		g.include_library( 'glu32.lib', 'gluLookAt' )
+		g.include_library( 'opengl32.lib', 'glVertex3d' )
+	else
+		g.cflags << RUBYVER
+		g.include_library( 'glut', 'glutSolidTeapot' )
+		g.include_library( 'GLU', 'gluLookAt' )
+		g.include_library( 'GL', 'glVertex3d')
+	end
 end

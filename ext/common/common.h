@@ -359,7 +359,7 @@ static inline void CheckDataSize(GLenum type,GLenum format,int num,VALUE data)
 
 	size = GetDataSize(type,format,num);
 	
-	if (RSTRING(data)->len < size)
+	if (RSTRING_LEN(data) < size)
 		rb_raise(rb_eArgError, "Length of specified data doesn't correspond to format and type parameters passed. Calculated length: %i",size);
 }
 
