@@ -75,7 +75,7 @@ FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG)
 #undef FASTCONV
 
 /* For conversion between ruby and GL boolean values */
-#define GLBOOL2RUBY(x) (x)==GL_TRUE? Qtrue : Qfalse
+#define GLBOOL2RUBY(x) (x)==GL_TRUE? Qtrue :( (x)==GL_FALSE? Qfalse : INT2NUM((x)))
 #define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
 
 #define cond_GLBOOL2RUBY_FUNC(_name_,_type_,_conv_) \
@@ -96,6 +96,15 @@ static inline VALUE _name_(GLenum pname,_type_ value) \
 	case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED: \
 	case GL_VERTEX_ATTRIB_ARRAY_ENABLED: \
 	case GL_QUERY_RESULT_AVAILABLE: \
+	case GL_PROGRAM_UNDER_NATIVE_LIMITS_ARB: \
+	case GL_FRAMEBUFFER_ATTACHMENT_LAYERED_EXT: \
+	case GL_FENCE_STATUS_NV: \
+	case GL_TEXTURE_FLOAT_COMPONENTS_NV: \
+	case GL_SHADER_CONSISTENT_NV: \
+	case GL_TEXTURE_COMPARE_SGIX: \
+	case GLU_TESS_BOUNDARY_ONLY: \
+	case GLU_CULLING: \
+	case GLU_AUTO_LOAD_MATRIX: \
 		return GLBOOL2RUBY(value); \
 	default: \
 		return _conv_(value); \
@@ -106,6 +115,8 @@ cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY,GLint,INT2NUM)
 cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_U,GLuint,UINT2NUM)
 cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_LL,GLint64EXT,LL2NUM)
 cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_ULL,GLuint64EXT,ULL2NUM)
+cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_F,GLfloat,rb_float_new)
+cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_D,GLdouble,rb_float_new)
 
 
 /* For conversion between ruby array (or object that can be converted to array) and C array.

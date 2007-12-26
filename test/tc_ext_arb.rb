@@ -88,7 +88,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(glGetIntegerv(GL_CLAMP_VERTEX_COLOR_ARB),GL_FIXED_ONLY_ARB)
 
 		glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB,GL_TRUE)
-		assert_equal(glGetIntegerv(GL_CLAMP_VERTEX_COLOR_ARB),GL_TRUE)
+		assert_equal(glGetBooleanv(GL_CLAMP_VERTEX_COLOR_ARB),GL_TRUE)
 	end
 
 	def test_gl_arb_vertex_program

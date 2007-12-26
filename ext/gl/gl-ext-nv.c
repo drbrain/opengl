@@ -32,7 +32,7 @@ static VALUE gl_GetFenceivNV(VALUE obj,VALUE arg1,VALUE arg2)
 	LOAD_GL_FUNC(glGetFenceivNV,"GL_NV_fence")
 	fptr_glGetFenceivNV(NUM2INT(arg1),NUM2INT(arg2),&ret);
 	CHECK_GLERROR
-	return INT2NUM(ret);
+	return cond_GLBOOL2RUBY(NUM2INT(arg2),ret);
 }
 
 /* #233 GL_NV_vertex_program */
@@ -431,11 +431,11 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 	LOAD_GL_FUNC(gl##_name_,"GL_NV_occlusion_query") \
 	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
 	CHECK_GLERROR \
-	return _conv_(ret); \
+	return _conv_(NUM2INT(arg2),ret); \
 }
 
-GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryivNV,GLint,INT2NUM)
-GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryuivNV,GLuint,INT2NUM)
+GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryivNV,GLint,cond_GLBOOL2RUBY)
+GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryuivNV,GLuint,cond_GLBOOL2RUBY_U)
 #undef GETOCCLUSIONQUERY_FUNC
 
 /* #262 GL_NV_point_sprite */

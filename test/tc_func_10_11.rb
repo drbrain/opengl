@@ -1238,7 +1238,7 @@ class Test_10_11 < Test::Unit::TestCase
 	def test_arrays_2
 		na = [0,1,0].pack("f*")
 		ta = [1,0,1,0].pack("f*")
-		ea = [GL_FALSE].pack("C*")
+		ea = [0].pack("C*")
 		ca = [1,0,1,0].pack("f*")
 		
 		glNormalPointer(GL_FLOAT,0,na)

@@ -225,7 +225,7 @@ VALUE obj, arg1, arg2;
 	GetNURBS(arg1, ndata);
 	property = (GLenum)NUM2INT(arg2);
 	gluGetNurbsProperty(ndata->nobj, property, &value);
-	return rb_float_new(value);
+	return cond_GLBOOL2RUBY_F(property,value);
 }
 static VALUE
 glu_BeginCurve(obj, arg1)
@@ -723,7 +723,7 @@ VALUE obj, arg1, arg2;
 	GetTESS(arg1, tdata);
 	property = (GLenum)NUM2INT(arg2);
 	gluGetTessProperty(tdata->tobj, property, &value);
-	return rb_float_new(value);
+	return cond_GLBOOL2RUBY_F(property,value);
 }
 static VALUE
 glu_TessNormal(obj, arg1, arg2, arg3, arg4)

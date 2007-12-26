@@ -385,7 +385,7 @@ static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VAL
 	LOAD_GL_FUNC(glGetFramebufferAttachmentParameterivEXT,"GL_EXT_framebuffer_object")
 	fptr_glGetFramebufferAttachmentParameterivEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),&ret);
 	CHECK_GLERROR
-	return INT2NUM(ret);
+	return cond_GLBOOL2RUBY(NUM2UINT(arg3),ret);
 }
 
 GL_FUNC_LOAD_1(GenerateMipmapEXT,GLvoid, GLenum, "GL_EXT_framebuffer_object")

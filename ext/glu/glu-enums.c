@@ -5,6 +5,9 @@
 #include "../common/common.h"
 void glu_init_enums(VALUE module)
 {
+	rb_define_const(module, "GLU_FALSE", Qfalse);
+	rb_define_const(module, "GLU_TRUE", Qtrue);
+
 	rb_define_const(module, "GLU_AUTO_LOAD_MATRIX", INT2NUM(GLU_AUTO_LOAD_MATRIX));
 	rb_define_const(module, "GLU_BEGIN", INT2NUM(GLU_BEGIN));
 	rb_define_const(module, "GLU_CCW", INT2NUM(GLU_CCW));
@@ -19,7 +22,6 @@ void glu_init_enums(VALUE module)
 	rb_define_const(module, "GLU_EXTERIOR", INT2NUM(GLU_EXTERIOR));
 	rb_define_const(module, "GLU_EXT_nurbs_tessellator", INT2NUM(GLU_EXT_nurbs_tessellator));
 	rb_define_const(module, "GLU_EXT_object_space_tess", INT2NUM(GLU_EXT_object_space_tess));
-	rb_define_const(module, "GLU_FALSE", INT2NUM(GLU_FALSE));
 	rb_define_const(module, "GLU_FILL", INT2NUM(GLU_FILL));
 	rb_define_const(module, "GLU_FLAT", INT2NUM(GLU_FLAT));
 	rb_define_const(module, "GLU_INSIDE", INT2NUM(GLU_INSIDE));
@@ -151,7 +153,6 @@ void glu_init_enums(VALUE module)
 	rb_define_const(module, "GLU_TESS_WINDING_ODD", INT2NUM(GLU_TESS_WINDING_ODD));
 	rb_define_const(module, "GLU_TESS_WINDING_POSITIVE", INT2NUM(GLU_TESS_WINDING_POSITIVE));
 	rb_define_const(module, "GLU_TESS_WINDING_RULE", INT2NUM(GLU_TESS_WINDING_RULE));
-	rb_define_const(module, "GLU_TRUE", INT2NUM(GLU_TRUE));
 	rb_define_const(module, "GLU_UNKNOWN", INT2NUM(GLU_UNKNOWN));
 	rb_define_const(module, "GLU_U_STEP", INT2NUM(GLU_U_STEP));
 	rb_define_const(module, "GLU_VERSION", INT2NUM(GLU_VERSION));

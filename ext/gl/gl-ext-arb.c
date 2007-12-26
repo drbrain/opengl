@@ -501,11 +501,11 @@ VALUE obj,arg1,arg2; \
 	pname = (GLenum)NUM2INT(arg2); \
 	fptr_gl##_name_(program,pname,&params); \
 	CHECK_GLERROR \
-	return _conv_(params); \
+	return _conv_(pname,params); \
 }
 
-GETOBJECTPARAMETER_FUNC(GetObjectParameterivARB,GLint,INT2NUM)
-GETOBJECTPARAMETER_FUNC(GetObjectParameterfvARB,GLfloat,rb_float_new)
+GETOBJECTPARAMETER_FUNC(GetObjectParameterivARB,GLint,cond_GLBOOL2RUBY)
+GETOBJECTPARAMETER_FUNC(GetObjectParameterfvARB,GLfloat,cond_GLBOOL2RUBY_F)
 
 #undef GETOBJECTPARAMETER_FUNC
 

@@ -1075,6 +1075,7 @@ VALUE obj,arg1; \
 	case GL_CONSTANT_COLOR1_NV: \
 	case GL_TEXTURE_COLOR_WRITEMASK_SGIS: \
 	case GL_FLOAT_CLEAR_COLOR_VALUE_NV: \
+  case GL_RGBA_SIGNED_COMPONENTS_EXT: \
 		nitems = 4; \
 		break; \
 	case GL_CURRENT_NORMAL: \
