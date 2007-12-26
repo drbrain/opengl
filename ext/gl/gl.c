@@ -183,6 +183,12 @@ GLint CheckBufferBinding(GLint buffer)
 DLLEXPORT void Init_gl()
 {
 	module = rb_define_module("Gl");
+
+	VALUE VERSION = rb_str_new2("0.60");
+
+	rb_define_const(module, "BINDINGS_VERSION", VERSION);
+	rb_define_const(module, "RUBY_OPENGL_VERSION", VERSION);
+
 	gl_init_error(module);
 	gl_init_enums(module);
 	gl_init_functions_1_0__1_1(module);
