@@ -587,13 +587,13 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_gllight
 		glLightf(GL_LIGHT0,GL_SPOT_CUTOFF,80.0)
-		assert_equal(glGetLightfv(GL_LIGHT0,GL_SPOT_CUTOFF),[80.0])
+		assert_equal(glGetLightfv(GL_LIGHT0,GL_SPOT_CUTOFF),80.0)
 		glLighti(GL_LIGHT0,GL_SPOT_CUTOFF,75)
-		assert_equal(glGetLightiv(GL_LIGHT0,GL_SPOT_CUTOFF),[75])
+		assert_equal(glGetLightiv(GL_LIGHT0,GL_SPOT_CUTOFF),75)
 		glLightfv(GL_LIGHT0,GL_AMBIENT,[0.5,0.5,0.5,1.0])
 		assert_equal(glGetLightfv(GL_LIGHT0,GL_AMBIENT), [0.5,0.5,0.5,1.0])
 		glLightiv(GL_LIGHT0,GL_CONSTANT_ATTENUATION,[32])
-		assert_equal(glGetLightiv(GL_LIGHT0,GL_CONSTANT_ATTENUATION),[32])
+		assert_equal(glGetLightiv(GL_LIGHT0,GL_CONSTANT_ATTENUATION),32)
 	end
 
 	def test_glmaterial
@@ -601,13 +601,13 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetMaterialfv(GL_FRONT,GL_AMBIENT),[0.0,1.0,0.0,1.0])
 
 		glMaterialiv(GL_FRONT,GL_SHININESS,[50])
-		assert_equal(glGetMaterialiv(GL_FRONT,GL_SHININESS),[50])
+		assert_equal(glGetMaterialiv(GL_FRONT,GL_SHININESS),50)
 
 		glMaterialf(GL_FRONT,GL_SHININESS,49.0)
-		assert_equal(glGetMaterialfv(GL_FRONT,GL_SHININESS),[49.0])
+		assert_equal(glGetMaterialfv(GL_FRONT,GL_SHININESS),49.0)
 
 		glMateriali(GL_FRONT,GL_SHININESS,48)
-		assert_equal(glGetMaterialiv(GL_FRONT,GL_SHININESS),[48])
+		assert_equal(glGetMaterialiv(GL_FRONT,GL_SHININESS),48)
 	
 	end
 
@@ -713,16 +713,16 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_gltexparameter
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP)
-		assert_equal(glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),[GL_CLAMP])
+		assert_equal(glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),GL_CLAMP)
 		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_MIRRORED_REPEAT)
-		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),[GL_MIRRORED_REPEAT])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),GL_MIRRORED_REPEAT)
 		glTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,[GL_CLAMP])
-		assert_equal(glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),[GL_CLAMP])
+		assert_equal(glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),GL_CLAMP)
 		glTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,[GL_MIRRORED_REPEAT])
-		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),[GL_MIRRORED_REPEAT])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),GL_MIRRORED_REPEAT)
 
-		assert_equal(glGetTexLevelParameterfv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH),[0.0])
-		assert_equal(glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH),[0])
+		assert_equal(glGetTexLevelParameterfv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH),0.0)
+		assert_equal(glGetTexLevelParameteriv(GL_TEXTURE_2D,0,GL_TEXTURE_WIDTH),0)
 	end
 
 	def test_glcullface
@@ -878,30 +878,30 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_gltexenv
 		glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_ADD)
-		assert_equal(glGetTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),[GL_ADD])
+		assert_equal(glGetTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),GL_ADD)
 		glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE)
-		assert_equal(glGetTexEnviv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),[GL_MODULATE])
+		assert_equal(glGetTexEnviv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),GL_MODULATE)
 
 		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,[GL_ADD])
-		assert_equal(glGetTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),[GL_ADD])
+		assert_equal(glGetTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),GL_ADD)
 		glTexEnviv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,[GL_MODULATE])
-		assert_equal(glGetTexEnviv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),[GL_MODULATE])
+		assert_equal(glGetTexEnviv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE),GL_MODULATE)
 	end
 
 	def test_gltexgen
 		glTexGend(GL_S,GL_TEXTURE_GEN_MODE,GL_REFLECTION_MAP)
-		assert_equal(glGetTexGendv(GL_S,GL_TEXTURE_GEN_MODE),[GL_REFLECTION_MAP])
+		assert_equal(glGetTexGendv(GL_S,GL_TEXTURE_GEN_MODE),GL_REFLECTION_MAP)
 		glTexGenf(GL_S,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR)
-		assert_equal(glGetTexGenfv(GL_S,GL_TEXTURE_GEN_MODE),[GL_EYE_LINEAR])
+		assert_equal(glGetTexGenfv(GL_S,GL_TEXTURE_GEN_MODE),GL_EYE_LINEAR)
 		glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_SPHERE_MAP)
-		assert_equal(glGetTexGeniv(GL_S,GL_TEXTURE_GEN_MODE),[GL_SPHERE_MAP])
+		assert_equal(glGetTexGeniv(GL_S,GL_TEXTURE_GEN_MODE),GL_SPHERE_MAP)
 
 		glTexGendv(GL_S,GL_TEXTURE_GEN_MODE,[GL_REFLECTION_MAP])
-		assert_equal(glGetTexGendv(GL_S,GL_TEXTURE_GEN_MODE),[GL_REFLECTION_MAP])
+		assert_equal(glGetTexGendv(GL_S,GL_TEXTURE_GEN_MODE),GL_REFLECTION_MAP)
 		glTexGenfv(GL_S,GL_TEXTURE_GEN_MODE,[GL_EYE_LINEAR])
-		assert_equal(glGetTexGenfv(GL_S,GL_TEXTURE_GEN_MODE),[GL_EYE_LINEAR])
+		assert_equal(glGetTexGenfv(GL_S,GL_TEXTURE_GEN_MODE),GL_EYE_LINEAR)
 		glTexGeniv(GL_S,GL_TEXTURE_GEN_MODE,[GL_SPHERE_MAP])
-		assert_equal(glGetTexGeniv(GL_S,GL_TEXTURE_GEN_MODE),[GL_SPHERE_MAP])
+		assert_equal(glGetTexGeniv(GL_S,GL_TEXTURE_GEN_MODE),GL_SPHERE_MAP)
 	end
 
 	def test_textures
@@ -993,8 +993,8 @@ class Test_10_11 < Test::Unit::TestCase
 		glBindTexture(GL_TEXTURE_2D,textures[1])
 		assert_equal(glAreTexturesResident(textures).size,2)
 		glPrioritizeTextures(textures,[0.5,1.0])
-		assert_equal(glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY),[0.5])
-		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY),[1.0])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY),0.5)
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY),1.0)
 
 		tex = ([0,0,0,1,1,1] * 2).pack("f*")
 		tex2 = ([1] * 3 * 4).pack("f*")
@@ -1043,7 +1043,7 @@ class Test_10_11 < Test::Unit::TestCase
 		glMap1d(GL_MAP1_VERTEX_3,0,100,3,2,control_points_2)
 		assert_equal(glGetMapdv(GL_MAP1_VERTEX_3,GL_COEFF),control_points_2)
 
-		assert_equal(glGetMapiv(GL_MAP1_VERTEX_3,GL_ORDER),[2])
+		assert_equal(glGetMapiv(GL_MAP1_VERTEX_3,GL_ORDER),2)
 
 		glMap2f(GL_MAP2_VERTEX_3,0,100,3,1,0,100,3,2,control_points)
 		assert_equal(glGetMapfv(GL_MAP2_VERTEX_3,GL_COEFF),control_points)

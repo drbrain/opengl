@@ -235,15 +235,9 @@ gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
-	VALUE ret; \
-	int i; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
-	ret = rb_ary_new2(4); \
-	for(i=0;i<4;i++) \
-			rb_ary_push(ret, rb_float_new(cary[i])); \
-	CHECK_GLERROR \
-	return ret; \
+	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
 }
 
 GETPROGRAMPARAM_FUNC(GetProgramEnvParameterdvARB,GLdouble,"GL_ARB_vertex_program")
@@ -308,7 +302,7 @@ VERTEXATTRIB_FUNC_V(VertexAttrib1fvARB,GLfloat,ary2cflt,1,"GL_ARB_vertex_program
 VERTEXATTRIB_FUNC_V(VertexAttrib1svARB,GLshort,ary2cshort,1,"GL_ARB_vertex_program")
 #undef VERTEXATTRIB_FUNC_V
 
-#define GETVERTEXATTRIB_FUNC(_name_,_type_,_conv_,_extension_) \
+#define GETVERTEXATTRIB_FUNC(_name_,_type_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
@@ -318,8 +312,6 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
-	GLint i; \
-	VALUE retary; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
@@ -328,15 +320,11 @@ VALUE obj,arg1,arg2; \
 	else \
 		size = 1; \
 	fptr_gl##_name_(index,pname,params); \
-	retary = rb_ary_new2(size); \
-	for(i=0;i<size;i++) \
-		rb_ary_push(retary, _conv_(params[i])); \
-	CHECK_GLERROR \
-	return retary; \
+	RET_ARRAY_OR_SINGLE(size,RETCONV_##_type_,params) \
 }
 
-GETVERTEXATTRIB_FUNC(GetVertexAttribdvARB,GLdouble,rb_float_new,"GL_ARB_vertex_program")
-GETVERTEXATTRIB_FUNC(GetVertexAttribfvARB,GLfloat,rb_float_new,"GL_ARB_vertex_program")
+GETVERTEXATTRIB_FUNC(GetVertexAttribdvARB,GLdouble,"GL_ARB_vertex_program")
+GETVERTEXATTRIB_FUNC(GetVertexAttribfvARB,GLfloat,"GL_ARB_vertex_program")
 //GETVERTEXATTRIB_FUNC(GetVertexAttribivARB,GLint,INT2NUM,"GL_ARB_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
 
@@ -349,8 +337,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	GLint size;
-	GLint i;
-	VALUE retary;
 	LOAD_GL_FUNC(glGetVertexAttribivARB,"GL_ARB_vertex_program")
 	index = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -359,11 +345,7 @@ VALUE obj,arg1,arg2;
 	else
 		size = 1;
 	fptr_glGetVertexAttribivARB(index,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE_BOOL(size,cond_GLBOOL2RUBY,pname,params)
 }
 
 
@@ -584,7 +566,7 @@ VALUE obj,arg1,arg2;
 	return retary;
 }
 
-#define GETUNIFORM_FUNC(_name_,_type_,_conv_) \
+#define GETUNIFORM_FUNC(_name_,_type_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
@@ -593,8 +575,6 @@ VALUE obj,arg1,arg2; \
 	GLuint program; \
 	GLint location; \
 	_type_ params[16]; \
-	VALUE retary; \
-	GLint i; \
 	GLint unused = 0; \
 	GLenum uniform_type = 0; \
 	GLint uniform_size = 0; \
@@ -613,15 +593,11 @@ VALUE obj,arg1,arg2; \
 \
 	memset(params,0,16*sizeof(_type_)); \
 	fptr_gl##_name_(program,location,params); \
-	retary = rb_ary_new2(uniform_size); \
-	for(i=0;i<uniform_size;i++) \
-		rb_ary_push(retary, _conv_(params[i])); \
-	CHECK_GLERROR \
-	return retary; \
+	RET_ARRAY_OR_SINGLE(uniform_size,RETCONV_##_type_,params) \
 }
 
-GETUNIFORM_FUNC(GetUniformfvARB,GLfloat,rb_float_new)
-GETUNIFORM_FUNC(GetUniformivARB,GLint,INT2NUM)
+GETUNIFORM_FUNC(GetUniformfvARB,GLfloat)
+GETUNIFORM_FUNC(GetUniformivARB,GLint)
 #undef GETUNIFORM_FUNC
 
 static GLint (APIENTRY * fptr_glGetUniformLocationARB)(GLuint,const GLchar*);
@@ -647,9 +623,7 @@ VALUE obj,arg1;
 	GLuint program;
 	GLint shaders_num = 0;
 	GLuint *shaders;
-	VALUE retary;
 	GLsizei count = 0;
-	GLint i;
 	LOAD_GL_FUNC(glGetAttachedObjectsARB,"GL_ARB_shader_objects")
 	LOAD_GL_FUNC(glGetObjectParameterivARB,"GL_ARB_shader_objects")
 	program = (GLuint)NUM2UINT(arg1);
@@ -659,12 +633,7 @@ VALUE obj,arg1;
 		return Qnil;
 	shaders = ALLOC_N(GLuint,shaders_num);
 	fptr_glGetAttachedObjectsARB(program,shaders_num,&count,shaders);
-	retary = rb_ary_new2(shaders_num);
-	for(i=0;i<shaders_num;i++)
-		rb_ary_push(retary, INT2NUM(shaders[i]));
-	xfree(shaders);
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE_FREE(count,RETCONV_GLuint,shaders)
 }
 
 /* #31 GL_ARB_vertex_shader */

@@ -493,8 +493,6 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
-	GLint i; \
-	VALUE retary; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
@@ -503,15 +501,11 @@ VALUE obj,arg1,arg2; \
 	else \
 		size = 1; \
 	fptr_gl##_name_(index,pname,params); \
-	retary = rb_ary_new2(size); \
-	for(i=0;i<size;i++) \
-		rb_ary_push(retary, _conv_(pname,params[i])); \
-	CHECK_GLERROR \
-	return retary; \
+	RET_ARRAY_OR_SINGLE_BOOL(size,_conv_,pname,params) \
 }
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribIivEXT,GLint,cond_GLBOOL2RUBY,"GL_EXT_gpu_shader4")
-GETVERTEXATTRIB_FUNC(GetVertexAttribIuivEXT,GLuint,cond_GLBOOL2RUBY,"GL_EXT_gpu_shader4")
+GETVERTEXATTRIB_FUNC(GetVertexAttribIuivEXT,GLuint,cond_GLBOOL2RUBY_U,"GL_EXT_gpu_shader4")
 #undef GETVERTEXATTRIB_FUNC
 
 extern VALUE g_VertexAttrib_ptr[];
@@ -579,7 +573,7 @@ GLUNIFORM_VFUNC(Uniform4uivEXT,GLuint,ary2cuint,4)
 #undef GLUNIFORM_VFUNC
 
 static void (APIENTRY * fptr_glGetActiveUniformARB)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
-#define GETUNIFORM_FUNC(_name_,_type_,_conv_) \
+#define GETUNIFORM_FUNC(_name_,_type_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
@@ -588,8 +582,6 @@ VALUE obj,arg1,arg2; \
 	GLuint program; \
 	GLint location; \
 	_type_ params[16]; \
-	VALUE retary; \
-	GLint i; \
 	GLint unused = 0; \
 	GLenum uniform_type = 0; \
 	GLint uniform_size = 0; \
@@ -608,14 +600,10 @@ VALUE obj,arg1,arg2; \
 \
 	memset(params,0,16*sizeof(_type_)); \
 	fptr_gl##_name_(program,location,params); \
-	retary = rb_ary_new2(uniform_size); \
-	for(i=0;i<uniform_size;i++) \
-		rb_ary_push(retary, _conv_(params[i])); \
-	CHECK_GLERROR \
-	return retary; \
+	RET_ARRAY_OR_SINGLE(uniform_size,RETCONV_##_type_,params) \
 }
 
-GETUNIFORM_FUNC(GetUniformuivEXT,GLuint,INT2NUM)
+GETUNIFORM_FUNC(GetUniformuivEXT,GLuint)
 #undef GETUNIFORM_FUNC
 
 static void (APIENTRY * fptr_glBindFragDataLocationEXT)(GLuint,GLuint,const GLchar *);
@@ -705,8 +693,6 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	int size; \
-	VALUE retary; \
-	int i; \
 	LOAD_GL_FUNC(gl##_name_,"GL_EXT_texture_integer") \
 	target = (GLenum)NUM2INT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
@@ -722,15 +708,11 @@ VALUE obj,arg1,arg2; \
 			break; \
 	} \
 	fptr_gl##_name_(target,pname,params); \
-	retary = rb_ary_new2(size); \
-	for(i=0;i<size;i++) \
-		rb_ary_push(retary, _conv_(params[i])); \
-	CHECK_GLERROR \
-	return retary; \
+	RET_ARRAY_OR_SINGLE_BOOL(size,_conv_,pname,params) \
 }
 
-GETTEXPARAMETER_VFUNC(GetTexParameterIivEXT,GLint,INT2NUM)
-GETTEXPARAMETER_VFUNC(GetTexParameterIuivEXT,GLuint,INT2NUM)
+GETTEXPARAMETER_VFUNC(GetTexParameterIivEXT,GLint,cond_GLBOOL2RUBY)
+GETTEXPARAMETER_VFUNC(GetTexParameterIuivEXT,GLuint,cond_GLBOOL2RUBY_U)
 #undef GETTEXPARAMETER_VFUNC
 
 void gl_init_functions_ext_ext(VALUE module)

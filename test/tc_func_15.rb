@@ -38,14 +38,14 @@ class Test_15 < Test::Unit::TestCase
 		glVertex2i(1,1)
 		glEnd()
 
-		assert_equal(glGetQueryiv(GL_SAMPLES_PASSED,GL_CURRENT_QUERY),[queries[1]])
+		assert_equal(glGetQueryiv(GL_SAMPLES_PASSED,GL_CURRENT_QUERY),queries[1])
 	
 		glEndQuery(GL_SAMPLES_PASSED)
 		
 		r = glGetQueryObjectiv(queries[1],GL_QUERY_RESULT_AVAILABLE)
-		assert((r==[GL_TRUE] || r==[GL_FALSE]))
+		assert((r==GL_TRUE || r==GL_FALSE))
 
-		if (r==[GL_TRUE])
+		if (r==GL_TRUE)
 		assert(glGetQueryObjectiv(queries[1],GL_QUERY_RESULT)[0] > 0)
 		assert(glGetQueryObjectuiv(queries[1],GL_QUERY_RESULT)[0] > 0)
 		end
@@ -66,7 +66,7 @@ class Test_15 < Test::Unit::TestCase
 		glBufferData(GL_ARRAY_BUFFER,4,data,GL_STREAM_READ)
 		assert_equal(glGetBufferSubData(GL_ARRAY_BUFFER,0,4),data)
 
-		assert_equal(glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_USAGE),[GL_STREAM_READ])
+		assert_equal(glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_USAGE),GL_STREAM_READ)
 
 		glBufferSubData(GL_ARRAY_BUFFER,0,4,data2)
 		assert_equal(glGetBufferSubData(GL_ARRAY_BUFFER,0,4),data2)

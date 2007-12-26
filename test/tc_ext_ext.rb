@@ -301,8 +301,8 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		assert_equal(glAreTexturesResidentEXT(textures).size,2)
 
 		glPrioritizeTexturesEXT(textures,[0.5,1.0])
-		assert_equal(glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY),[0.5])
-		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY),[1.0])
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_1D,GL_TEXTURE_PRIORITY),0.5)
+		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY),1.0)
 
 		glDeleteTexturesEXT(textures)
 		assert_equal(glIsTextureEXT(textures[0]),false)
@@ -480,9 +480,9 @@ class Test_EXT_EXT < Test::Unit::TestCase
 		assert((tv4il = glGetUniformLocationARB(program,"testivec4"))>=0)
 
 		glUniform1uiEXT(tv1il,3)
-		assert_equal(glGetUniformuivEXT(program,tv1il),[3])
+		assert_equal(glGetUniformuivEXT(program,tv1il),3)
 		glUniform1uivEXT(tv1il,1,[4])
-		assert_equal(glGetUniformuivEXT(program,tv1il),[4])
+		assert_equal(glGetUniformuivEXT(program,tv1il),4)
 		glUniform2uiEXT(tv2il,1,2)
 		assert_equal(glGetUniformuivEXT(program,tv2il),[1,2])
 		glUniform2uivEXT(tv2il,1,[3,4])

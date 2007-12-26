@@ -132,8 +132,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	GLsizei size;
-	VALUE retary;
-	int i;
 	LOAD_GL_FUNC(glGetColorTableParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -147,11 +145,7 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	fptr_glGetColorTableParameterfv(target,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,RETCONV_GLfloat,params)
 }
 
 static void (APIENTRY * fptr_glGetColorTableParameteriv)(GLenum,GLenum,GLint *);
@@ -163,8 +157,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	GLsizei size;
-	VALUE retary;
-	int i;
 	LOAD_GL_FUNC(glGetColorTableParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -178,11 +170,7 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	fptr_glGetColorTableParameteriv(target,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2NUM(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,RETCONV_GLint,params)
 }
 
 static void (APIENTRY * fptr_glGetColorTable)(GLenum,GLenum,GLenum,GLvoid *);
@@ -338,8 +326,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	GLsizei size;
-	int i;
-	VALUE retary;	
 	LOAD_GL_FUNC(glGetConvolutionParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -354,11 +340,7 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	fptr_glGetConvolutionParameterfv(target,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,RETCONV_GLfloat,params)
 }
 
 static void (APIENTRY * fptr_glGetConvolutionParameteriv)(GLenum,GLenum,GLint *);
@@ -370,8 +352,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	GLsizei size;
-	int i;
-	VALUE retary;	
 	LOAD_GL_FUNC(glGetConvolutionParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -386,11 +366,7 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	fptr_glGetConvolutionParameteriv(target,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2NUM(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,RETCONV_GLint,params)
 }
 
 static void (APIENTRY * fptr_glGetConvolutionFilter)(GLenum,GLenum,GLenum,GLvoid *);
@@ -541,15 +517,12 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum pname;
 	GLfloat params = 0.0;
-	VALUE retary;	
 	LOAD_GL_FUNC(glGetHistogramParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetHistogramParameterfv(target,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary, rb_float_new(params));
 	CHECK_GLERROR
-	return retary;
+	return RETCONV_GLfloat(params);
 }
 
 static void (APIENTRY * fptr_glGetHistogramParameteriv)(GLenum,GLenum,GLint *);
@@ -560,15 +533,12 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum target;
 	GLenum pname;
 	GLint params = 0;
-	VALUE retary;	
 	LOAD_GL_FUNC(glGetHistogramParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetHistogramParameteriv(target,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params));
 	CHECK_GLERROR
-	return retary;
+	return cond_GLBOOL2RUBY(pname,params);
 }
 
 static void (APIENTRY * fptr_glGetHistogram)(GLenum,GLboolean,GLenum,GLenum,GLvoid*);
@@ -675,15 +645,12 @@ VALUE obj,arg1,arg2;
 	GLenum target;
 	GLenum pname;
 	GLfloat params = 0.0;
-	VALUE retary;	
 	LOAD_GL_FUNC(glGetMinmaxParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetMinmaxParameterfv(target,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary, rb_float_new(params));
 	CHECK_GLERROR
-	return retary;
+	return RETCONV_GLfloat(params);
 }
 
 static void (APIENTRY * fptr_glGetMinmaxParameteriv)(GLenum,GLenum,GLint *);
@@ -694,15 +661,12 @@ VALUE obj,arg1,arg2;
 	GLenum target;
 	GLenum pname;
 	GLint params = 0;
-	VALUE retary;	
 	LOAD_GL_FUNC(glGetMinmaxParameteriv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetMinmaxParameteriv(target,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params));
 	CHECK_GLERROR
-	return retary;
+	return cond_GLBOOL2RUBY(pname,params);
 }
 
 static void (APIENTRY * fptr_glTexImage3D)(GLenum,GLint,GLint,GLsizei,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*);

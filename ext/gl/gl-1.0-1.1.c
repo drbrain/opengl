@@ -1196,8 +1196,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLsizei size;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
-	VALUE retary;
-	int i;
 	light = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
@@ -1222,11 +1220,7 @@ VALUE obj,arg1,arg2;
 			break; /* not reached */
 	}
 	glGetLightfv(light,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,rb_float_new,params)
 }
 
 static VALUE
@@ -1237,8 +1231,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLsizei size;
 	GLint params[4] = {0,0,0,0};
-	VALUE retary;
-	int i;
 	light = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
@@ -1263,201 +1255,71 @@ VALUE obj,arg1,arg2;
 			break; /* not reached */
 	}
 	glGetLightiv(light,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2NUM(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,INT2NUM,params)
 }
 
-static VALUE
-gl_GetMapdv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum query;
-	int dims;
-	int pointsize;
-	int size=0;
-	int i;
-	GLdouble *points;
-	VALUE retary;
-	GLint order[2] = {0,0}; /* for GL_COEFF, [order] or [uorder,vorder] (MAP1/MAP2) */
-	target = (GLenum)NUM2INT(arg1);
-	query = (GLenum)NUM2INT(arg2);
-	switch(target) {
-		case GL_MAP1_INDEX:
-		case GL_MAP1_TEXTURE_COORD_1: dims=1; pointsize=1; break;
-		case GL_MAP1_TEXTURE_COORD_2: dims=1; pointsize=2; break;
-		case GL_MAP1_VERTEX_3:
-		case GL_MAP1_NORMAL: 
-		case GL_MAP1_TEXTURE_COORD_3: dims=1; pointsize=3; break;
-		case GL_MAP1_COLOR_4: 
-		case GL_MAP1_TEXTURE_COORD_4:
-		case GL_MAP1_VERTEX_4: dims=1; pointsize=4; break;
-		case GL_MAP2_INDEX:
-		case GL_MAP2_TEXTURE_COORD_1: dims=2; pointsize=1; break;
-		case GL_MAP2_TEXTURE_COORD_2: dims=2; pointsize=2; break;
-		case GL_MAP2_VERTEX_3:
-		case GL_MAP2_NORMAL: 
-		case GL_MAP2_TEXTURE_COORD_3: dims=2; pointsize=3; break;
-		case GL_MAP2_COLOR_4: 
-		case GL_MAP2_TEXTURE_COORD_4:
-		case GL_MAP2_VERTEX_4: dims=2; pointsize=4; break;
-		default:
-			rb_raise(rb_eArgError, "unknown target:%d",target);
-			break; /* not reached */
-	}
-	switch(query) {
-		case GL_ORDER: size = dims;	break;
-		case GL_DOMAIN: size = dims*2; break;
-		case GL_COEFF:
-			glGetMapiv(target,GL_ORDER,order);
-			CHECK_GLERROR
-			if (dims==1)
-				size = order[0] * pointsize;
-			else
-				size = (order[0]*order[1]) * pointsize;
-			break;
-		default:
-			rb_raise(rb_eArgError, "unknown target:%d",target);
-			break; /* not reached */
-	}
-	points = ALLOC_N(GLdouble,size);
-	glGetMapdv(target,query,points);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(points[i]));
-	xfree(points);
-	CHECK_GLERROR
-	return retary;
+#define GETMAP_FUNC(_name_,_type_) \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLenum target; \
+	GLenum query; \
+	int dims; \
+	int pointsize; \
+	int size=0; \
+	_type_ *points; \
+	GLint order[2] = {0,0}; /* for GL_COEFF, [order] or [uorder,vorder] (MAP1/MAP2) */ \
+	target = (GLenum)NUM2INT(arg1); \
+	query = (GLenum)NUM2INT(arg2); \
+	switch(target) { \
+		case GL_MAP1_INDEX: \
+		case GL_MAP1_TEXTURE_COORD_1: dims=1; pointsize=1; break; \
+		case GL_MAP1_TEXTURE_COORD_2: dims=1; pointsize=2; break; \
+		case GL_MAP1_VERTEX_3: \
+		case GL_MAP1_NORMAL: \
+		case GL_MAP1_TEXTURE_COORD_3: dims=1; pointsize=3; break; \
+		case GL_MAP1_COLOR_4: \
+		case GL_MAP1_TEXTURE_COORD_4: \
+		case GL_MAP1_VERTEX_4: dims=1; pointsize=4; break; \
+		case GL_MAP2_INDEX: \
+		case GL_MAP2_TEXTURE_COORD_1: dims=2; pointsize=1; break; \
+		case GL_MAP2_TEXTURE_COORD_2: dims=2; pointsize=2; break; \
+		case GL_MAP2_VERTEX_3: \
+		case GL_MAP2_NORMAL:  \
+		case GL_MAP2_TEXTURE_COORD_3: dims=2; pointsize=3; break; \
+		case GL_MAP2_COLOR_4:  \
+		case GL_MAP2_TEXTURE_COORD_4: \
+		case GL_MAP2_VERTEX_4: dims=2; pointsize=4; break; \
+		default: \
+			rb_raise(rb_eArgError, "unknown target:%d",target); \
+			break; /* not reached */ \
+	} \
+	switch(query) { \
+		case GL_ORDER: size = dims;	break; \
+		case GL_DOMAIN: size = dims*2; break; \
+		case GL_COEFF: \
+			glGetMapiv(target,GL_ORDER,order); \
+			CHECK_GLERROR \
+			if (dims==1) \
+				size = order[0] * pointsize; \
+			else \
+				size = (order[0]*order[1]) * pointsize; \
+			break; \
+		default: \
+			rb_raise(rb_eArgError, "unknown target:%d",target); \
+			break; /* not reached */ \
+	} \
+	points = ALLOC_N(_type_,size); \
+	gl##_name_(target,query,points); \
+\
+	RET_ARRAY_OR_SINGLE_FREE(size,RETCONV_##_type_,points) \
 }
 
-static VALUE
-gl_GetMapfv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum query;
-	int dims;
-	int pointsize;
-	int size=0;
-	int i;
-	GLfloat *points;
-	VALUE retary;
-	GLint order[2] = {0,0}; /* for GL_COEFF, [order] or [uorder,vorder] (MAP1/MAP2) */
-	target = (GLenum)NUM2INT(arg1);
-	query = (GLenum)NUM2INT(arg2);
-	switch(target) {
-		case GL_MAP1_INDEX:
-		case GL_MAP1_TEXTURE_COORD_1: dims=1; pointsize=1; break;
-		case GL_MAP1_TEXTURE_COORD_2: dims=1; pointsize=2; break;
-		case GL_MAP1_VERTEX_3:
-		case GL_MAP1_NORMAL: 
-		case GL_MAP1_TEXTURE_COORD_3: dims=1; pointsize=3; break;
-		case GL_MAP1_COLOR_4: 
-		case GL_MAP1_TEXTURE_COORD_4:
-		case GL_MAP1_VERTEX_4: dims=1; pointsize=4; break;
-		case GL_MAP2_INDEX:
-		case GL_MAP2_TEXTURE_COORD_1: dims=2; pointsize=1; break;
-		case GL_MAP2_TEXTURE_COORD_2: dims=2; pointsize=2; break;
-		case GL_MAP2_VERTEX_3:
-		case GL_MAP2_NORMAL: 
-		case GL_MAP2_TEXTURE_COORD_3: dims=2; pointsize=3; break;
-		case GL_MAP2_COLOR_4: 
-		case GL_MAP2_TEXTURE_COORD_4:
-		case GL_MAP2_VERTEX_4: dims=2; pointsize=4; break;
-		default:
-			rb_raise(rb_eArgError, "unknown target:%d",target);
-			break; /* not reached */
-	}
-	switch(query) {
-		case GL_ORDER: size = dims;	break;
-		case GL_DOMAIN: size = dims*2; break;
-		case GL_COEFF:
-			glGetMapiv(target,GL_ORDER,order);
-			CHECK_GLERROR
-			if (dims==1)
-				size = order[0] * pointsize;
-			else
-				size = (order[0]*order[1]) * pointsize;
-			break;
-		default:
-			rb_raise(rb_eArgError, "unknown target:%d",target);
-			break; /* not reached */
-	}
-	points = ALLOC_N(GLfloat,size);
-	glGetMapfv(target,query,points);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(points[i]));
-	xfree(points);
-	CHECK_GLERROR
-	return retary;
-}
-
-static VALUE
-gl_GetMapiv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum query;
-	int dims;
-	int pointsize;
-	int size=0;
-	int i;
-	GLint *points;
-	VALUE retary;
-	GLint order[2] = {0,0}; /* for GL_COEFF, [order] or [uorder,vorder] (MAP1/MAP2) */
-	target = (GLenum)NUM2INT(arg1);
-	query = (GLenum)NUM2INT(arg2);
-	switch(target) {
-		case GL_MAP1_INDEX:
-		case GL_MAP1_TEXTURE_COORD_1: dims=1; pointsize=1; break;
-		case GL_MAP1_TEXTURE_COORD_2: dims=1; pointsize=2; break;
-		case GL_MAP1_VERTEX_3:
-		case GL_MAP1_NORMAL: 
-		case GL_MAP1_TEXTURE_COORD_3: dims=1; pointsize=3; break;
-		case GL_MAP1_COLOR_4: 
-		case GL_MAP1_TEXTURE_COORD_4:
-		case GL_MAP1_VERTEX_4: dims=1; pointsize=4; break;
-		case GL_MAP2_INDEX:
-		case GL_MAP2_TEXTURE_COORD_1: dims=2; pointsize=1; break;
-		case GL_MAP2_TEXTURE_COORD_2: dims=2; pointsize=2; break;
-		case GL_MAP2_VERTEX_3:
-		case GL_MAP2_NORMAL: 
-		case GL_MAP2_TEXTURE_COORD_3: dims=2; pointsize=3; break;
-		case GL_MAP2_COLOR_4: 
-		case GL_MAP2_TEXTURE_COORD_4:
-		case GL_MAP2_VERTEX_4: dims=2; pointsize=4; break;
-		default:
-			rb_raise(rb_eArgError, "unknown target:%d",target);
-			break; /* not reached */
-	}
-	switch(query) {
-		case GL_ORDER: size = dims;	break;
-		case GL_DOMAIN: size = dims*2; break;
-		case GL_COEFF:
-			glGetMapiv(target,GL_ORDER,order);
-			CHECK_GLERROR
-			if (dims==1)
-				size = order[0] * pointsize;
-			else
-				size = (order[0]*order[1]) * pointsize;
-			break;
-		default:
-			rb_raise(rb_eArgError, "unknown target:%d",target);
-			break; /* not reached */
-	}
-	points = ALLOC_N(GLint,size);
-	glGetMapiv(target,query,points);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2NUM(points[i]));
-	xfree(points);
-	CHECK_GLERROR
-	return retary;
-}
+GETMAP_FUNC(GetMapdv,GLdouble)
+GETMAP_FUNC(GetMapfv,GLfloat)
+GETMAP_FUNC(GetMapiv,GLint)
+#undef GETMAP_FUNC
 
 static VALUE
 gl_GetMaterialfv(obj,arg1,arg2)
@@ -1467,8 +1329,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	int size;
-	VALUE retary;
-	int i;
 	face = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
@@ -1489,11 +1349,7 @@ VALUE obj,arg1,arg2;
 			break; /* not reached */
 	}
 	glGetMaterialfv(face,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,rb_float_new,params)
 }
 
 static VALUE
@@ -1504,8 +1360,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	int size;
-	VALUE retary;
-	int i;
 	face = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
@@ -1526,11 +1380,7 @@ VALUE obj,arg1,arg2;
 			break; /* not reached */
 	}
 	glGetMaterialiv(face,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2NUM(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,INT2NUM,params)
 }
 
 #define GLGETPIXELMAP_FUNC(_type_,_vartype_,_convert_) \
@@ -1544,9 +1394,7 @@ VALUE obj; \
 	GLenum map_size; \
 	GLint size = 0; \
 	_vartype_ *values; \
-	VALUE retary; \
 	VALUE args[2]; \
-	int i; \
 	switch (rb_scan_args(argc, argv, "11", &args[0], &args[1])) { \
 		default: \
 		case 1: \
@@ -1573,12 +1421,8 @@ VALUE obj; \
 			CHECK_GLERROR \
 			values = ALLOC_N(_vartype_,size); \
 			glGetPixelMap##_type_##v(map,values); \
-			retary = rb_ary_new2(size); \
-			for(i=0;i<size;i++) \
-				rb_ary_push(retary, _convert_(values[i])); \
-			xfree(values); \
-			CHECK_GLERROR \
-			return retary; \
+			RET_ARRAY_OR_SINGLE_FREE(size,_convert_,values) \
+			break; \
 		case 2: \
 			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING)) \
 				rb_raise(rb_eArgError, "Pixel pack buffer not bound"); \
@@ -1635,160 +1479,67 @@ VALUE obj,arg1;
 	return rb_str_new2((const char*)ret);
 }
 
-static VALUE
-gl_GetTexEnvfv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum pname;
-	GLfloat params[4] = {0.0,0.0,0.0,0.0};
-	int size;
-	VALUE retary;
-	int i;
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	switch(pname) {
-		case GL_TEXTURE_ENV_COLOR:
-		case GL_TEXTURE_ENV_BIAS_SGIX:
-		case GL_CULL_MODES_NV:
-		case GL_OFFSET_TEXTURE_MATRIX_NV:
-			size = 4;
-			break;
-		case GL_CONST_EYE_NV:
-			size = 3;
-			break;
-		default:
-			size = 1;
-			break;
-	}
-	glGetTexEnvfv(target,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
+#define GETTEXENVFUNC(_name_,_type_) \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLenum target; \
+	GLenum pname; \
+	_type_ params[4] = {0.0,0.0,0.0,0.0}; \
+	int size; \
+	target = (GLenum)NUM2INT(arg1); \
+	pname = (GLenum)NUM2INT(arg2); \
+	switch(pname) { \
+		case GL_TEXTURE_ENV_COLOR: \
+		case GL_TEXTURE_ENV_BIAS_SGIX: \
+		case GL_CULL_MODES_NV: \
+		case GL_OFFSET_TEXTURE_MATRIX_NV: \
+			size = 4; \
+			break; \
+		case GL_CONST_EYE_NV: \
+			size = 3; \
+			break; \
+		default: \
+			size = 1; \
+			break; \
+	} \
+	gl##_name_(target,pname,params); \
+	RET_ARRAY_OR_SINGLE(size,RETCONV_##_type_,params) \
 }
 
-static VALUE
-gl_GetTexEnviv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum pname;
-	GLint params[4] = {0,0,0,0};
-	int size;
-	VALUE retary;
-	int i;
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	switch(pname) {
-		case GL_TEXTURE_ENV_COLOR:
-		case GL_TEXTURE_ENV_BIAS_SGIX:
-		case GL_CULL_MODES_NV:
-		case GL_OFFSET_TEXTURE_MATRIX_NV:
-			size = 4;
-			break;
-		case GL_CONST_EYE_NV:
-			size = 3;
-			break;
-		default:
-			size = 1;
-			break;
-	}
-	glGetTexEnviv(target,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params[i]));
-	CHECK_GLERROR
-	return retary;
+GETTEXENVFUNC(GetTexEnvfv,GLfloat)
+GETTEXENVFUNC(GetTexEnviv,GLint)
+#undef GETTEXENVFUNC
+
+#define GETTEXGENFUNC(_name_,_type_) \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLenum coord; \
+	GLenum pname; \
+	_type_ params[4] = {0.0,0.0,0.0,0.0}; \
+	int size; \
+	coord = (GLenum)NUM2INT(arg1); \
+	pname = (GLenum)NUM2INT(arg2); \
+	switch(pname) { \
+		case GL_OBJECT_PLANE: \
+		case GL_EYE_PLANE: \
+			size = 4; \
+			break; \
+		default: \
+			size = 1; \
+			break; \
+	} \
+	gl##_name_(coord,pname,params); \
+	RET_ARRAY_OR_SINGLE(size,RETCONV_##_type_,params) \
 }
 
-static VALUE
-gl_GetTexGendv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum coord;
-	GLenum pname;
-	GLdouble params[4] = {0.0,0.0,0.0,0.0};
-	int size;
-	VALUE retary;
-	int i;
-	coord = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	switch(pname) {
-		case GL_OBJECT_PLANE:
-		case GL_EYE_PLANE:
-			size = 4;
-			break;
-		default:
-			size = 1;
-			break;
-	}
-	glGetTexGendv(coord,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
-}
-
-static VALUE
-gl_GetTexGenfv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum coord;
-	GLenum pname;
-	GLfloat params[4] = {0.0,0.0,0.0,0.0};
-	int size;
-	VALUE retary;
-	int i;
-	coord = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	switch(pname) {
-		case GL_OBJECT_PLANE:
-		case GL_EYE_PLANE:
-			size = 4;
-			break;
-		default:
-			size = 1;
-			break;
-	}
-	glGetTexGenfv(coord,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
-}
-
-static VALUE
-gl_GetTexGeniv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum coord;
-	GLenum pname;
-	GLint params[4] = {0,0,0,0};
-	int size;
-	VALUE retary;
-	int i;
-	coord = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	switch(pname) {
-		case GL_OBJECT_PLANE:
-		case GL_EYE_PLANE:
-			size = 4;
-			break;
-		default:
-			size = 1;
-			break;
-	}
-	glGetTexGeniv(coord,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, INT2NUM(params[i]));
-	CHECK_GLERROR
-	return retary;
-}
+GETTEXGENFUNC(GetTexGendv,GLdouble)
+GETTEXGENFUNC(GetTexGenfv,GLfloat)
+GETTEXGENFUNC(GetTexGeniv,GLint)
+#undef GETTEXGENFUNC
 
 static VALUE
 gl_GetTexImage(argc,argv,obj)
@@ -1879,8 +1630,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[4] = {0.0,0.0,0.0,0.0};
 	int size;
-	VALUE retary;
-	int i;
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
@@ -1895,11 +1644,7 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	glGetTexParameterfv(target,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, rb_float_new(params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE(size,RETCONV_GLfloat,params)
 }
 
 static VALUE
@@ -1910,8 +1655,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	int size;
-	VALUE retary;
-	int i;
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	switch(pname) {
@@ -1926,11 +1669,7 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	glGetTexParameteriv(target,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE_BOOL(size,cond_GLBOOL2RUBY,pname,params)
 }
 
 static VALUE
@@ -1941,15 +1680,12 @@ VALUE obj,arg1,arg2,arg3;
 	GLint level;
 	GLenum pname;
 	GLfloat params = 0.0; 
-	VALUE retary;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	pname = (GLenum)NUM2INT(arg3);
 	glGetTexLevelParameterfv(target,level,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary, rb_float_new(params));
 	CHECK_GLERROR
-	return retary;
+	return RETCONV_GLfloat(params);
 }
 
 static VALUE
@@ -1960,15 +1696,12 @@ VALUE obj,arg1,arg2,arg3;
 	GLint level;
 	GLenum pname;
 	GLint params = 0; 
-	VALUE retary;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	pname = (GLenum)NUM2INT(arg3);
 	glGetTexLevelParameteriv(target,level,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params));
 	CHECK_GLERROR
-	return retary;
+	return cond_GLBOOL2RUBY(pname,params);
 }
 
 

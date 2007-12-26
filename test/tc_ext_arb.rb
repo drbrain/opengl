@@ -109,9 +109,9 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(glGetProgramivARB(GL_VERTEX_PROGRAM_ARB,GL_PROGRAM_BINDING_ARB),programs[0])
 
 		glEnableVertexAttribArrayARB(1)
-		assert_equal(glGetVertexAttribivARB(1,GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB),[GL_TRUE])
+		assert_equal(glGetVertexAttribivARB(1,GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB),GL_TRUE)
 		glDisableVertexAttribArrayARB(1)
-		assert_equal(glGetVertexAttribivARB(1,GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB),[GL_FALSE])
+		assert_equal(glGetVertexAttribivARB(1,GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB),GL_FALSE)
 
 		glVertexAttribPointerARB(1,2,GL_FLOAT,GL_FALSE,0,[1,1].pack("f*"))
 		assert_equal(glGetVertexAttribPointervARB(1),[1,1].pack("f*"))
@@ -307,7 +307,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(vslog.class,String)
 		
 		glAttachObjectARB(program,vs)
-		assert_equal(glGetAttachedObjectsARB(program),[vs])
+		assert_equal(glGetAttachedObjectsARB(program),vs)
 
 		glValidateProgramARB(program)
 		assert_equal(glGetObjectParameterivARB(program,GL_OBJECT_VALIDATE_STATUS_ARB),GL_TRUE)
@@ -362,7 +362,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 
 		## f
 		glUniform1fARB(tv1l,2.0)
-		assert_equal(glGetUniformfvARB(program,tv1l),[2.0])
+		assert_equal(glGetUniformfvARB(program,tv1l),2.0)
 		glUniform2fARB(tv2l,2.0,2.0)
 		assert_equal(glGetUniformfvARB(program,tv2l),[2.0,2.0])
 		glUniform3fARB(tv3l,2.0,2.0,2.0)
@@ -371,7 +371,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(glGetUniformfvARB(program,tv4l),[2.0,2.0,2.0,2.0])
 		# i 
 		glUniform1iARB(tv1il,3)
-		assert_equal(glGetUniformivARB(program,tv1il),[3])
+		assert_equal(glGetUniformivARB(program,tv1il),3)
 		glUniform2iARB(tv2il,3,3)
 		assert_equal(glGetUniformivARB(program,tv2il),[3,3])
 		glUniform3iARB(tv3il,3,3,3)
@@ -380,7 +380,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(glGetUniformivARB(program,tv4il),[3,3,3,3])
 		# fv
 		glUniform1fvARB(tv1l,1,[3.0])
-		assert_equal(glGetUniformfvARB(program,tv1l),[3.0])
+		assert_equal(glGetUniformfvARB(program,tv1l),3.0)
 		glUniform2fvARB(tv2l,1,[3.0,3.0])
 		assert_equal(glGetUniformfvARB(program,tv2l),[3.0,3.0])
 		glUniform3fvARB(tv3l,1,[3.0,3.0,3.0])
@@ -389,7 +389,7 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert_equal(glGetUniformfvARB(program,tv4l),[3.0,3.0,3.0,3.0])
 		# iv
 		glUniform1ivARB(tv1il,1,[2])
-		assert_equal(glGetUniformivARB(program,tv1il),[2])
+		assert_equal(glGetUniformivARB(program,tv1il),2)
 		glUniform2ivARB(tv2il,1,[2,2])
 		assert_equal(glGetUniformivARB(program,tv2il),[2,2])
 		glUniform3ivARB(tv3il,1,[2,2,2])

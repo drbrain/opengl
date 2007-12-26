@@ -165,26 +165,20 @@ VALUE obj,arg1,arg2,arg3; \
 PROGRAMPARAM_FUNC_V(ProgramParameter4dvNV,GLdouble,ary2cdbl,"GL_NV_vertex_program")
 PROGRAMPARAM_FUNC_V(ProgramParameter4fvNV,GLfloat,ary2cflt,"GL_NV_vertex_program")
 
-#define GETPROGRAMPARAM_FUNC(_name_,_type_,_conv_,_extension_) \
+#define GETPROGRAMPARAM_FUNC(_name_,_type_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
-	VALUE ret; \
-	int i; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),cary); \
-	ret = rb_ary_new2(4); \
-	for(i=0;i<4;i++) \
-			rb_ary_push(ret, _conv_(cary[i])); \
-	CHECK_GLERROR \
-	return ret; \
+	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
 }
 
-GETPROGRAMPARAM_FUNC(GetProgramParameterdvNV,GLdouble,rb_float_new,"GL_NV_vertex_program")
-GETPROGRAMPARAM_FUNC(GetProgramParameterfvNV,GLfloat,rb_float_new,"GL_NV_vertex_program")
+GETPROGRAMPARAM_FUNC(GetProgramParameterdvNV,GLdouble,"GL_NV_vertex_program")
+GETPROGRAMPARAM_FUNC(GetProgramParameterfvNV,GLfloat,"GL_NV_vertex_program")
 #undef GETPROGRAMPARAM_FUNC
 
 #define PROGRAMPARAM_MULTI_FUNC_V(_name_,_type_,_conv_,_extension_) \
@@ -292,7 +286,7 @@ VERTEXATTRIB_MULTI_FUNC_V(VertexAttribs1fvNV,GLfloat,ary2cflt,1,"GL_NV_vertex_pr
 VERTEXATTRIB_MULTI_FUNC_V(VertexAttribs1svNV,GLshort,ary2cshort,1,"GL_NV_vertex_program")
 #undef VERTEXATTRIB_MULTI_FUNC_V
 
-#define GETVERTEXATTRIB_FUNC(_name_,_type_,_conv_,_extension_) \
+#define GETVERTEXATTRIB_FUNC(_name_,_type_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
@@ -302,8 +296,6 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
-	GLint i; \
-	VALUE retary; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
@@ -312,18 +304,12 @@ VALUE obj,arg1,arg2; \
 	else \
 		size = 1; \
 	fptr_gl##_name_(index,pname,params); \
-	retary = rb_ary_new2(size); \
-	for(i=0;i<size;i++) \
-		rb_ary_push(retary, _conv_(params[i])); \
-	CHECK_GLERROR \
-	return retary; \
+	RET_ARRAY_OR_SINGLE(size,RETCONV_##_type_,params) \
 }
 
-GETVERTEXATTRIB_FUNC(GetVertexAttribdvNV,GLdouble,rb_float_new,"GL_NV_vertex_program")
-GETVERTEXATTRIB_FUNC(GetVertexAttribfvNV,GLfloat,rb_float_new,"GL_NV_vertex_program")
-//GETVERTEXATTRIB_FUNC(GetVertexAttribivNV,GLint,INT2NUM,"GL_NV_vertex_program")
+GETVERTEXATTRIB_FUNC(GetVertexAttribdvNV,GLdouble,"GL_NV_vertex_program")
+GETVERTEXATTRIB_FUNC(GetVertexAttribfvNV,GLfloat,"GL_NV_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
-
 
 static void (APIENTRY * fptr_glGetVertexAttribivNV)(GLuint,GLenum,GLint *);
 static VALUE
@@ -334,8 +320,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	GLint size;
-	GLint i;
-	VALUE retary;
 	LOAD_GL_FUNC(glGetVertexAttribivNV,"GL_NV_vertex_program")
 	index = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -344,11 +328,7 @@ VALUE obj,arg1,arg2;
 	else
 		size = 1;
 	fptr_glGetVertexAttribivNV(index,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE_BOOL(size,cond_GLBOOL2RUBY,pname,params) \
 }
 
 
@@ -496,16 +476,10 @@ gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
-	VALUE ret; \
-	int i; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	Check_Type(arg2,T_STRING); \
 	fptr_gl##_name_(NUM2UINT(arg1),RSTRING_LEN(arg2),(GLubyte *)RSTRING_PTR(arg2),cary); \
-	ret = rb_ary_new2(4); \
-	for(i=0;i<4;i++) \
-			rb_ary_push(ret, rb_float_new(cary[i])); \
-	CHECK_GLERROR \
-	return ret; \
+	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
 }
 
 GETPROGRAMNAMEDPARAM_FUNC(GetProgramNamedParameterdvNV,GLdouble,"GL_NV_vertex_program")
@@ -535,28 +509,22 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramEnvParametersI4uivNV,GLuint,ary2cuint,"GL_NV_gp
 #undef PROGRAMPARAM_MULTI_FUNC_V
 #undef PROGRAMPARAM_FUNC_V
 
-#define GETPROGRAMPARAM_FUNC_2(_name_,_type_,_conv_,_extension_) \
+#define GETPROGRAMPARAM_FUNC_2(_name_,_type_,_extension_) \
 static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
-	VALUE ret; \
-	int i; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
-	ret = rb_ary_new2(4); \
-	for(i=0;i<4;i++) \
-			rb_ary_push(ret, _conv_(cary[i])); \
-	CHECK_GLERROR \
-	return ret; \
+	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
 }
 
-GETPROGRAMPARAM_FUNC_2(GetProgramLocalParameterIivNV,GLint,INT2NUM,"GL_NV_gpu_program4")
-GETPROGRAMPARAM_FUNC_2(GetProgramLocalParameterIuivNV,GLuint,UINT2NUM,"GL_NV_gpu_program4")
-GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIivNV,GLint,INT2NUM,"GL_NV_gpu_program4")
-GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIuivNV,GLuint,UINT2NUM,"GL_NV_gpu_program4")
+GETPROGRAMPARAM_FUNC_2(GetProgramLocalParameterIivNV,GLint,"GL_NV_gpu_program4")
+GETPROGRAMPARAM_FUNC_2(GetProgramLocalParameterIuivNV,GLuint,"GL_NV_gpu_program4")
+GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIivNV,GLint,"GL_NV_gpu_program4")
+GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIuivNV,GLuint,"GL_NV_gpu_program4")
 #undef GETPROGRAMPARAM_FUNC_2
 
 /* #323 GL_NV_geometry_program4 */

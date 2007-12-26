@@ -35,15 +35,12 @@ VALUE obj,arg1,arg2;
 	GLenum target;
 	GLenum pname;
 	GLint params = 0;
-	VALUE retary;
 	LOAD_GL_FUNC(glGetQueryiv,"1.5")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryiv(target,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary, INT2NUM(params));
 	CHECK_GLERROR
-	return retary;
+	return RETCONV_GLint(params);
 }
 
 static void (APIENTRY * fptr_glGetQueryObjectiv)(GLuint,GLenum,GLint *);
@@ -54,15 +51,12 @@ VALUE obj,arg1,arg2;
 	GLuint id;
 	GLenum pname;
 	GLint params = 0;
-	VALUE retary;
 	LOAD_GL_FUNC(glGetQueryObjectiv,"1.5")
 	id = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectiv(id,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary,cond_GLBOOL2RUBY(pname,params));
 	CHECK_GLERROR
-	return retary;
+	return cond_GLBOOL2RUBY(pname,params);
 }
 
 static void (APIENTRY * fptr_glGetQueryObjectuiv)(GLuint,GLenum,GLuint *);
@@ -73,15 +67,12 @@ VALUE obj,arg1,arg2;
 	GLuint id;
 	GLenum pname;
 	GLuint params = 0;
-	VALUE retary;
 	LOAD_GL_FUNC(glGetQueryObjectuiv,"1.5")
 	id = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectuiv(id,pname,&params);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary,cond_GLBOOL2RUBY_U(pname,params));
 	CHECK_GLERROR
-	return retary;
+	return cond_GLBOOL2RUBY_U(pname,params);
 }
 
 static void (APIENTRY * fptr_glBufferData)(GLenum,GLsizeiptr,GLvoid *,GLenum);
@@ -152,15 +143,12 @@ VALUE obj,arg1,arg2;
 	GLenum target;
 	GLenum value;
 	GLint data = 0;
-	VALUE retary;
 	LOAD_GL_FUNC(glGetBufferParameteriv,"1.5")
 	target = (GLenum)NUM2INT(arg1);
 	value = (GLenum)NUM2INT(arg2);
 	fptr_glGetBufferParameteriv(target,value,&data);
-	retary = rb_ary_new2(1);
-	rb_ary_push(retary,cond_GLBOOL2RUBY(value,data));
 	CHECK_GLERROR
-	return retary;
+	return cond_GLBOOL2RUBY(value,data);
 }
 
 static GLvoid * (APIENTRY * fptr_glMapBuffer)(GLenum,GLenum);

@@ -175,9 +175,7 @@ VALUE obj,arg1;
 	GLuint program;
 	GLint shaders_num = 0;
 	GLuint *shaders;
-	VALUE retary;
 	GLsizei count = 0;
-	GLint i;
 	LOAD_GL_FUNC(glGetAttachedShaders,"2.0")
 	LOAD_GL_FUNC(glGetProgramiv,"2.0")
 	program = (GLuint)NUM2UINT(arg1);
@@ -187,12 +185,7 @@ VALUE obj,arg1;
 		return Qnil;
 	shaders = ALLOC_N(GLuint,shaders_num);
 	fptr_glGetAttachedShaders(program,shaders_num,&count,shaders);
-	retary = rb_ary_new2(shaders_num);
-	for(i=0;i<shaders_num;i++)
-		rb_ary_push(retary, INT2NUM(shaders[i]));
-	xfree(shaders);
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE_FREE(count,RETCONV_GLuint,shaders)
 }
 
 static GLint (APIENTRY * fptr_glGetAttribLocation)(GLuint, GLchar *);
@@ -311,7 +304,7 @@ VALUE obj,arg1,arg2;
 	return INT2NUM(ret);
 }
 
-#define GETUNIFORM_FUNC(_name_,_type_,_conv_) \
+#define GETUNIFORM_FUNC(_name_,_type_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
@@ -320,8 +313,6 @@ VALUE obj,arg1,arg2; \
 	GLuint program; \
 	GLint location; \
 	_type_ params[16]; \
-	VALUE retary; \
-	GLint i; \
 	GLint unused = 0; \
 	GLenum uniform_type = 0; \
 	GLint uniform_size = 0; \
@@ -340,18 +331,14 @@ VALUE obj,arg1,arg2; \
 \
 	memset(params,0,16*sizeof(_type_)); \
 	fptr_gl##_name_(program,location,params); \
-	retary = rb_ary_new2(uniform_size); \
-	for(i=0;i<uniform_size;i++) \
-		rb_ary_push(retary, _conv_(params[i])); \
-	CHECK_GLERROR \
-	return retary; \
+	RET_ARRAY_OR_SINGLE(uniform_size,RETCONV_##_type_,params) \
 }
 
-GETUNIFORM_FUNC(GetUniformfv,GLfloat,rb_float_new)
-GETUNIFORM_FUNC(GetUniformiv,GLint,INT2NUM)
+GETUNIFORM_FUNC(GetUniformfv,GLfloat)
+GETUNIFORM_FUNC(GetUniformiv,GLint)
 #undef GETUNIFORM_FUNC
 
-#define GETVERTEXATTRIB_FUNC(_name_,_type_,_conv_) \
+#define GETVERTEXATTRIB_FUNC(_name_,_type_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
@@ -361,8 +348,6 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
-	GLint i; \
-	VALUE retary; \
 	LOAD_GL_FUNC(gl##_name_,"2.0") \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
@@ -371,15 +356,11 @@ VALUE obj,arg1,arg2; \
 	else \
 		size = 1; \
 	fptr_gl##_name_(index,pname,params); \
-	retary = rb_ary_new2(size); \
-	for(i=0;i<size;i++) \
-		rb_ary_push(retary, _conv_(params[i])); \
-	CHECK_GLERROR \
-	return retary; \
+	RET_ARRAY_OR_SINGLE(size,RETCONV_##_type_,params) \
 }
 
-GETVERTEXATTRIB_FUNC(GetVertexAttribdv,GLdouble,rb_float_new)
-GETVERTEXATTRIB_FUNC(GetVertexAttribfv,GLfloat,rb_float_new)
+GETVERTEXATTRIB_FUNC(GetVertexAttribdv,GLdouble)
+GETVERTEXATTRIB_FUNC(GetVertexAttribfv,GLfloat)
 //GETVERTEXATTRIB_FUNC(GetVertexAttribiv,GLint,cond_GLBOOL2RUBY)
 #undef GETVERTEXATTRIB_FUNC
 
@@ -392,8 +373,6 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	GLint size;
-	GLint i;
-	VALUE retary;
 	LOAD_GL_FUNC(glGetVertexAttribiv,"2.0")
 	index = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -402,11 +381,7 @@ VALUE obj,arg1,arg2;
 	else
 		size = 1;
 	fptr_glGetVertexAttribiv(index,pname,params);
-	retary = rb_ary_new2(size);
-	for(i=0;i<size;i++)
-		rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params[i]));
-	CHECK_GLERROR
-	return retary;
+	RET_ARRAY_OR_SINGLE_BOOL(size,cond_GLBOOL2RUBY,pname,params)
 }
 
 

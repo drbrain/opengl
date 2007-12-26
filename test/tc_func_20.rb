@@ -188,7 +188,7 @@ class Test_20 < Test::Unit::TestCase
 		assert_equal(vslog.class,String)
 
 		glAttachShader(program,vs)
-		assert_equal(glGetAttachedShaders(program),[vs])
+		assert_equal(glGetAttachedShaders(program),vs)
 		glDetachShader(program,vs)
 		assert_equal(glGetAttachedShaders(program),nil)
 		glAttachShader(program,vs)
@@ -248,7 +248,7 @@ class Test_20 < Test::Unit::TestCase
 
 		# f
 		glUniform1f(tv1l,2.0)
-		assert_equal(glGetUniformfv(program,tv1l),[2.0])
+		assert_equal(glGetUniformfv(program,tv1l),2.0)
 		glUniform2f(tv2l,2.0,2.0)
 		assert_equal(glGetUniformfv(program,tv2l),[2.0,2.0])
 		glUniform3f(tv3l,2.0,2.0,2.0)
@@ -257,7 +257,7 @@ class Test_20 < Test::Unit::TestCase
 		assert_equal(glGetUniformfv(program,tv4l),[2.0,2.0,2.0,2.0])
 		# i 
 		glUniform1i(tv1il,3)
-		assert_equal(glGetUniformiv(program,tv1il),[3])
+		assert_equal(glGetUniformiv(program,tv1il),3)
 		glUniform2i(tv2il,3,3)
 		assert_equal(glGetUniformiv(program,tv2il),[3,3])
 		glUniform3i(tv3il,3,3,3)
@@ -266,7 +266,7 @@ class Test_20 < Test::Unit::TestCase
 		assert_equal(glGetUniformiv(program,tv4il),[3,3,3,3])
 		# fv
 		glUniform1fv(tv1l,1,[3.0])
-		assert_equal(glGetUniformfv(program,tv1l),[3.0])
+		assert_equal(glGetUniformfv(program,tv1l),3.0)
 		glUniform2fv(tv2l,1,[3.0,3.0])
 		assert_equal(glGetUniformfv(program,tv2l),[3.0,3.0])
 		glUniform3fv(tv3l,1,[3.0,3.0,3.0])
@@ -275,7 +275,7 @@ class Test_20 < Test::Unit::TestCase
 		assert_equal(glGetUniformfv(program,tv4l),[3.0,3.0,3.0,3.0])
 		# iv
 		glUniform1iv(tv1il,1,[2])
-		assert_equal(glGetUniformiv(program,tv1il),[2])
+		assert_equal(glGetUniformiv(program,tv1il),2)
 		glUniform2iv(tv2il,1,[2,2])
 		assert_equal(glGetUniformiv(program,tv2il),[2,2])
 		glUniform3iv(tv3il,1,[2,2,2])
