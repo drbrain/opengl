@@ -60,7 +60,7 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectiv(id,pname,&params);
 	retary = rb_ary_new2(1);
-	rb_ary_push(retary,INT2NUM(params));
+	rb_ary_push(retary,cond_GLBOOL2RUBY(pname,params));
 	CHECK_GLERROR
 	return retary;
 }
@@ -79,7 +79,7 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectuiv(id,pname,&params);
 	retary = rb_ary_new2(1);
-	rb_ary_push(retary,INT2NUM(params));
+	rb_ary_push(retary,cond_GLBOOL2RUBY_U(pname,params));
 	CHECK_GLERROR
 	return retary;
 }
@@ -158,7 +158,7 @@ VALUE obj,arg1,arg2;
 	value = (GLenum)NUM2INT(arg2);
 	fptr_glGetBufferParameteriv(target,value,&data);
 	retary = rb_ary_new2(1);
-	rb_ary_push(retary,INT2NUM(data));
+	rb_ary_push(retary,cond_GLBOOL2RUBY(value,data));
 	CHECK_GLERROR
 	return retary;
 }

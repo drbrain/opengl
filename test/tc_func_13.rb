@@ -28,10 +28,10 @@ class Test_13 < Test::Unit::TestCase
 		return if not supported?(1.3)
 		glSampleCoverage(0.0,GL_TRUE)
 		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_VALUE),0.0)
-		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_INVERT),GL_TRUE)
+		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT),GL_TRUE)
 		glSampleCoverage(1.0,GL_FALSE)
 		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_VALUE),1.0)
-		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_INVERT),GL_FALSE)
+		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT),GL_FALSE)
 	end
 
 	def test_multitexture

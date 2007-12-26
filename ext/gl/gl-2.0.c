@@ -102,7 +102,7 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetProgramiv(program,pname,&params);
 	CHECK_GLERROR
-	return INT2NUM(params);
+	return cond_GLBOOL2RUBY(pname,params);
 }
 
 static void (APIENTRY * fptr_glGetActiveAttrib)(GLuint,GLuint,GLsizei,GLsizei *,GLint *,GLenum *,GLchar *);
@@ -245,7 +245,7 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetShaderiv(program,pname,&params);
 	CHECK_GLERROR
-	return INT2NUM(params);
+	return cond_GLBOOL2RUBY(pname,params);
 }
 
 static void (APIENTRY * fptr_glGetShaderInfoLog)(GLuint,GLsizei,GLsizei *,GLchar *);
@@ -380,8 +380,35 @@ VALUE obj,arg1,arg2; \
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribdv,GLdouble,rb_float_new)
 GETVERTEXATTRIB_FUNC(GetVertexAttribfv,GLfloat,rb_float_new)
-GETVERTEXATTRIB_FUNC(GetVertexAttribiv,GLint,INT2NUM)
+//GETVERTEXATTRIB_FUNC(GetVertexAttribiv,GLint,cond_GLBOOL2RUBY)
 #undef GETVERTEXATTRIB_FUNC
+
+static void (APIENTRY * fptr_glGetVertexAttribiv)(GLuint,GLenum,GLint *);
+static VALUE
+gl_GetVertexAttribiv(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint index;
+	GLenum pname;
+	GLint params[4] = {0,0,0,0};
+	GLint size;
+	GLint i;
+	VALUE retary;
+	LOAD_GL_FUNC(glGetVertexAttribiv,"2.0")
+	index = (GLuint)NUM2UINT(arg1);
+	pname = (GLenum)NUM2INT(arg2);
+	if (pname==GL_CURRENT_VERTEX_ATTRIB)
+		size = 4;
+	else
+		size = 1;
+	fptr_glGetVertexAttribiv(index,pname,params);
+	retary = rb_ary_new2(size);
+	for(i=0;i<size;i++)
+		rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params[i]));
+	CHECK_GLERROR
+	return retary;
+}
+
 
 VALUE g_VertexAttrib_ptr[_MAX_VERTEX_ATTRIBS];
 

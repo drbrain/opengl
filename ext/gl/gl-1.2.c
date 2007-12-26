@@ -566,7 +566,7 @@ VALUE obj,arg1,arg2,arg3;
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetHistogramParameteriv(target,pname,&params);
 	retary = rb_ary_new2(1);
-	rb_ary_push(retary, INT2NUM(params));
+	rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params));
 	CHECK_GLERROR
 	return retary;
 }
@@ -700,7 +700,7 @@ VALUE obj,arg1,arg2;
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetMinmaxParameteriv(target,pname,&params);
 	retary = rb_ary_new2(1);
-	rb_ary_push(retary, INT2NUM(params));
+	rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params));
 	CHECK_GLERROR
 	return retary;
 }

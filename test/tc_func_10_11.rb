@@ -623,9 +623,9 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_gllightmodel
 		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE)
-		assert_equal(glGetIntegerv(GL_LIGHT_MODEL_TWO_SIDE),GL_TRUE)
+		assert_equal(glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE),GL_TRUE)
 		glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE)
-		assert_equal(glGetIntegerv(GL_LIGHT_MODEL_TWO_SIDE),GL_FALSE)
+		assert_equal(glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE),GL_FALSE)
 
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT,[0.5,0.5,0.5,1.0])
 		assert_equal(glGetDoublev(GL_LIGHT_MODEL_AMBIENT),[0.5,0.5,0.5,1.0])
@@ -1158,7 +1158,7 @@ class Test_10_11 < Test::Unit::TestCase
 
 	def test_displaylists
 		base = glGenLists(2)
-		assert_equal(base,GL_TRUE)
+		assert(base>0)
 		glListBase(1)
 		assert_equal(glGetIntegerv(GL_LIST_BASE),1)
 		glListBase(0)
@@ -1271,7 +1271,7 @@ class Test_10_11 < Test::Unit::TestCase
 		assert_equal(glGetDoublev(GL_CURRENT_COLOR),[1,0,1,0])
 		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[0,1,0])
 		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,1,0])
-		assert_equal(glGetDoublev(GL_EDGE_FLAG),GL_FALSE)
+		assert_equal(glGetBooleanv(GL_EDGE_FLAG),false)
 
 		glDisable(GL_EDGE_FLAG_ARRAY)
 		glDisable(GL_TEXTURE_COORD_ARRAY)

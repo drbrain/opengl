@@ -150,7 +150,7 @@ class Test_12 < Test::Unit::TestCase
 		glMinmax(GL_MINMAX,GL_RGB8,GL_FALSE)
 		assert_equal(glGetMinmaxParameteriv(GL_MINMAX,GL_MINMAX_FORMAT),[GL_RGB8])
 		assert_equal(glGetMinmaxParameterfv(GL_MINMAX,GL_MINMAX_FORMAT),[GL_RGB8])
-		assert_equal(glGetMinmaxParameterfv(GL_MINMAX,GL_MINMAX_SINK),[GL_FALSE])
+		assert_equal(glGetMinmaxParameteriv(GL_MINMAX,GL_MINMAX_SINK),[GL_FALSE])
 
 		glDrawPixels(2,1,GL_RGB,GL_FLOAT,[0,0,0,1,1,1].pack("f*"))
 		mm = glGetMinmax(GL_MINMAX,GL_FALSE,GL_RGB,GL_FLOAT)

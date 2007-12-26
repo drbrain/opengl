@@ -53,7 +53,7 @@ static VALUE gl_GetProgramivNV(VALUE obj,VALUE arg1,VALUE arg2)
 	LOAD_GL_FUNC(glGetProgramivNV,"GL_NV_vertex_program")
 	fptr_glGetProgramivNV(NUM2INT(arg1),NUM2INT(arg2),&ret);
 	CHECK_GLERROR
-	return INT2NUM(ret);
+	return cond_GLBOOL2RUBY(NUM2INT(arg2),ret);
 }
 
 static void (APIENTRY * fptr_glGetProgramStringNV)(GLuint,GLenum,void *string);
@@ -321,8 +321,36 @@ VALUE obj,arg1,arg2; \
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribdvNV,GLdouble,rb_float_new,"GL_NV_vertex_program")
 GETVERTEXATTRIB_FUNC(GetVertexAttribfvNV,GLfloat,rb_float_new,"GL_NV_vertex_program")
-GETVERTEXATTRIB_FUNC(GetVertexAttribivNV,GLint,INT2NUM,"GL_NV_vertex_program")
+//GETVERTEXATTRIB_FUNC(GetVertexAttribivNV,GLint,INT2NUM,"GL_NV_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
+
+
+static void (APIENTRY * fptr_glGetVertexAttribivNV)(GLuint,GLenum,GLint *);
+static VALUE
+gl_GetVertexAttribivNV(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint index;
+	GLenum pname;
+	GLint params[4] = {0,0,0,0};
+	GLint size;
+	GLint i;
+	VALUE retary;
+	LOAD_GL_FUNC(glGetVertexAttribivNV,"GL_NV_vertex_program")
+	index = (GLuint)NUM2UINT(arg1);
+	pname = (GLenum)NUM2INT(arg2);
+	if (pname==GL_CURRENT_VERTEX_ATTRIB)
+		size = 4;
+	else
+		size = 1;
+	fptr_glGetVertexAttribivNV(index,pname,params);
+	retary = rb_ary_new2(size);
+	for(i=0;i<size;i++)
+		rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params[i]));
+	CHECK_GLERROR
+	return retary;
+}
+
 
 GL_FUNC_LOAD_4(TrackMatrixNV,GLvoid, GLenum,GLuint,GLenum,GLenum, "GL_NV_vertex_program")
 

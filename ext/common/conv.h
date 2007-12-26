@@ -78,6 +78,36 @@ FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG)
 #define GLBOOL2RUBY(x) (x)==GL_TRUE? Qtrue : Qfalse
 #define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
 
+#define cond_GLBOOL2RUBY_FUNC(_name_,_type_,_conv_) \
+static inline VALUE _name_(GLenum pname,_type_ value) \
+{ \
+	switch (pname) { \
+	case GL_DELETE_STATUS: \
+	case GL_LINK_STATUS: \
+	case GL_VALIDATE_STATUS: \
+	case GL_COMPILE_STATUS: \
+	case GL_MINMAX_SINK: \
+	case GL_HISTOGRAM_SINK: \
+	case GL_COORD_REPLACE: \
+	case GL_TEXTURE_COMPRESSED: \
+	case GL_GENERATE_MIPMAP: \
+	case GL_TEXTURE_RESIDENT: \
+	case GL_BUFFER_MAPPED: \
+	case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED: \
+	case GL_VERTEX_ATTRIB_ARRAY_ENABLED: \
+	case GL_QUERY_RESULT_AVAILABLE: \
+		return GLBOOL2RUBY(value); \
+	default: \
+		return _conv_(value); \
+	} \
+}
+
+cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY,GLint,INT2NUM)
+cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_U,GLuint,UINT2NUM)
+cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_LL,GLint64EXT,LL2NUM)
+cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_ULL,GLuint64EXT,ULL2NUM)
+
+
 /* For conversion between ruby array (or object that can be converted to array) and C array.
    The C array has to be preallocated by calling function. */
 #define ARY2CTYPE(_type_,_convert_) \

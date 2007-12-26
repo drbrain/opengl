@@ -6,6 +6,9 @@
 #include "../common/common.h"
 void gl_init_enums(VALUE module)
 {
+	rb_define_const(module, "GL_TRUE", Qtrue);
+	rb_define_const(module, "GL_FALSE", Qfalse);
+
 	rb_define_const(module, "GL_1PASS_EXT", INT2NUM(GL_1PASS_EXT));
 	rb_define_const(module, "GL_1PASS_SGIS", INT2NUM(GL_1PASS_SGIS));
 	rb_define_const(module, "GL_2D", INT2NUM(GL_2D));
@@ -778,7 +781,6 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_EYE_POINT_SGIS", INT2NUM(GL_EYE_POINT_SGIS));
 	rb_define_const(module, "GL_EYE_RADIAL_NV", INT2NUM(GL_EYE_RADIAL_NV));
 	rb_define_const(module, "GL_E_TIMES_F_NV", INT2NUM(GL_E_TIMES_F_NV));
-	rb_define_const(module, "GL_FALSE", INT2NUM(GL_FALSE));
 	rb_define_const(module, "GL_FASTEST", INT2NUM(GL_FASTEST));
 	rb_define_const(module, "GL_FEEDBACK", INT2NUM(GL_FEEDBACK));
 	rb_define_const(module, "GL_FEEDBACK_BUFFER_POINTER", INT2NUM(GL_FEEDBACK_BUFFER_POINTER));
@@ -2822,7 +2824,6 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_TRIANGLE_MESH_SUN", INT2NUM(GL_TRIANGLE_MESH_SUN));
 	rb_define_const(module, "GL_TRIANGLE_STRIP", INT2NUM(GL_TRIANGLE_STRIP));
 	rb_define_const(module, "GL_TRIANGLE_STRIP_ADJACENCY_EXT", INT2NUM(GL_TRIANGLE_STRIP_ADJACENCY_EXT));
-	rb_define_const(module, "GL_TRUE", INT2NUM(GL_TRUE));
 	rb_define_const(module, "GL_TYPE_RGBA_FLOAT_ATI", INT2NUM(GL_TYPE_RGBA_FLOAT_ATI));
 	rb_define_const(module, "GL_UNIFORM_BUFFER_BINDING_EXT", INT2NUM(GL_UNIFORM_BUFFER_BINDING_EXT));
 	rb_define_const(module, "GL_UNIFORM_BUFFER_EXT", INT2NUM(GL_UNIFORM_BUFFER_EXT));

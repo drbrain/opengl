@@ -118,7 +118,7 @@ static VALUE gl_GetProgramivARB(VALUE obj,VALUE arg1,VALUE arg2)
 	LOAD_GL_FUNC(glGetProgramivARB,"GL_ARB_vertex_program")
 	fptr_glGetProgramivARB(NUM2INT(arg1),NUM2INT(arg2),&ret);
 	CHECK_GLERROR
-	return INT2NUM(ret);
+	return cond_GLBOOL2RUBY(NUM2INT(arg2),ret);
 }
 
 static void (APIENTRY * fptr_glGetProgramStringARB)(GLenum,GLenum,void *string);
@@ -337,8 +337,35 @@ VALUE obj,arg1,arg2; \
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribdvARB,GLdouble,rb_float_new,"GL_ARB_vertex_program")
 GETVERTEXATTRIB_FUNC(GetVertexAttribfvARB,GLfloat,rb_float_new,"GL_ARB_vertex_program")
-GETVERTEXATTRIB_FUNC(GetVertexAttribivARB,GLint,INT2NUM,"GL_ARB_vertex_program")
+//GETVERTEXATTRIB_FUNC(GetVertexAttribivARB,GLint,INT2NUM,"GL_ARB_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
+
+static void (APIENTRY * fptr_glGetVertexAttribivARB)(GLuint,GLenum,GLint *);
+static VALUE
+gl_GetVertexAttribivARB(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
+{
+	GLuint index;
+	GLenum pname;
+	GLint params[4] = {0,0,0,0};
+	GLint size;
+	GLint i;
+	VALUE retary;
+	LOAD_GL_FUNC(glGetVertexAttribivARB,"GL_ARB_vertex_program")
+	index = (GLuint)NUM2UINT(arg1);
+	pname = (GLenum)NUM2INT(arg2);
+	if (pname==GL_CURRENT_VERTEX_ATTRIB)
+		size = 4;
+	else
+		size = 1;
+	fptr_glGetVertexAttribivARB(index,pname,params);
+	retary = rb_ary_new2(size);
+	for(i=0;i<size;i++)
+		rb_ary_push(retary, cond_GLBOOL2RUBY(pname,params[i]));
+	CHECK_GLERROR
+	return retary;
+}
+
 
 /* #29 GL_ARB_occlusion_query */
 GL_FUNC_GENOBJECTS_LOAD(GenQueriesARB,"GL_ARB_occlusion_query")
@@ -355,12 +382,12 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_occlusion_query") \
 	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
 	CHECK_GLERROR \
-	return _conv_(ret); \
+	return _conv_(NUM2INT(arg2),ret); \
 }
 
-GETQUERY_FUNC(GetQueryivARB,GLint,INT2NUM)
-GETQUERY_FUNC(GetQueryObjectivARB,GLint,INT2NUM)
-GETQUERY_FUNC(GetQueryObjectuivARB,GLuint,INT2NUM)
+GETQUERY_FUNC(GetQueryivARB,GLint,cond_GLBOOL2RUBY)
+GETQUERY_FUNC(GetQueryObjectivARB,GLint,cond_GLBOOL2RUBY)
+GETQUERY_FUNC(GetQueryObjectuivARB,GLuint,cond_GLBOOL2RUBY_U)
 #undef GETQUERY_FUNC
 
 /* #30 GL_ARB_shader_objects */

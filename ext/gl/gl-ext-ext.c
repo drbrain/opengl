@@ -409,11 +409,11 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 	LOAD_GL_FUNC(gl##_name_,"GL_EXT_timer_query") \
 	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
 	CHECK_GLERROR \
-	return _conv_(ret); \
+	return _conv_(NUM2INT(arg2),ret); \
 }
 
-GETQUERY_FUNC(GetQueryObjecti64vEXT,GLint64EXT,LL2NUM)
-GETQUERY_FUNC(GetQueryObjectui64vEXT,GLuint64EXT,ULL2NUM)
+GETQUERY_FUNC(GetQueryObjecti64vEXT,GLint64EXT,cond_GLBOOL2RUBY_LL)
+GETQUERY_FUNC(GetQueryObjectui64vEXT,GLuint64EXT,cond_GLBOOL2RUBY_ULL)
 #undef GETQUERY_FUNC
 
 
@@ -505,13 +505,13 @@ VALUE obj,arg1,arg2; \
 	fptr_gl##_name_(index,pname,params); \
 	retary = rb_ary_new2(size); \
 	for(i=0;i<size;i++) \
-		rb_ary_push(retary, _conv_(params[i])); \
+		rb_ary_push(retary, _conv_(pname,params[i])); \
 	CHECK_GLERROR \
 	return retary; \
 }
 
-GETVERTEXATTRIB_FUNC(GetVertexAttribIivEXT,GLint,INT2NUM,"GL_EXT_gpu_shader4")
-GETVERTEXATTRIB_FUNC(GetVertexAttribIuivEXT,GLuint,INT2NUM,"GL_EXT_gpu_shader4")
+GETVERTEXATTRIB_FUNC(GetVertexAttribIivEXT,GLint,cond_GLBOOL2RUBY,"GL_EXT_gpu_shader4")
+GETVERTEXATTRIB_FUNC(GetVertexAttribIuivEXT,GLuint,cond_GLBOOL2RUBY,"GL_EXT_gpu_shader4")
 #undef GETVERTEXATTRIB_FUNC
 
 extern VALUE g_VertexAttrib_ptr[];

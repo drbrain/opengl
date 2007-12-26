@@ -191,7 +191,7 @@ class Test_15 < Test::Unit::TestCase
 		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[0,1,0])
 		assert_equal(glGetDoublev(GL_CURRENT_COLOR),[1,0,1,0])
 		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,1,0])
-		assert_equal(glGetDoublev(GL_EDGE_FLAG),GL_FALSE)
+		assert_equal(glGetBooleanv(GL_EDGE_FLAG),GL_FALSE)
 
 		glDisable(GL_EDGE_FLAG_ARRAY)
 		glDisable(GL_TEXTURE_COORD_ARRAY)
