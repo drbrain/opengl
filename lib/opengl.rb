@@ -37,72 +37,48 @@ module GL
 		# due to ruby naming scheme, we can't export constants with leading decimal,
 		# e.g. (Gl::)GL_2D would under old syntax become (GL::)2D which is illegal
 		next if n =~ /^[0-9]/ 
-		begin
-			const_set( n, Gl.const_get( cn ) )
-		rescue
-			puts "=== #{__FILE__} FAILED on Constant: #{cn} --> #{n}"
-		end
+		const_set( n, Gl.const_get( cn ) )
 	end
 	
 	Gl.methods( false ).each do |mn|
 		n = mn.to_s.sub(/^gl/,'')
-		begin
-			alias_method( n, mn )
-			public( n )
-		rescue
-			puts "=== #{__FILE__} FAILED on Method: #{mn} --> #{n}"
-		end
+		alias_method( n, mn )
+		public( n )
 	end
 end
 
 # (Glu.)gluSphere -> GLU.Sphere
 # (Glu::)GLU_INSIDE -> GLU::INSIDE
 module GLU
-    extend self
-    include Glu
-
-    Glu.constants.each do |cn|
-        n = cn.to_s.sub(/^GLU_/,'')
-        begin
-            const_set( n, Glu.const_get( cn ) )
-        rescue
-            puts "=== #{__FILE__} FAILED on Constant: #{cn} --> #{n}"
-        end
-    end
-
-    Glu.methods( false ).each do |mn|
-        n = mn.to_s.sub(/^glu/,'')
-        begin
-            alias_method( n, mn )
-            public( n )
-        rescue
-            puts "=== #{__FILE__} FAILED on Method: #{mn} --> #{n}"
-        end
-    end
+	extend self
+	include Glu
+	
+	Glu.constants.each do |cn|
+		n = cn.to_s.sub(/^GLU_/,'')
+		const_set( n, Glu.const_get( cn ) )
+	end
+	
+	Glu.methods( false ).each do |mn|
+		n = mn.to_s.sub(/^glu/,'')
+		alias_method( n, mn )
+		public( n )
+	end
 end
 
 # (Glut.)glutInit -> GLUT.Init
 # (Glut::)GLUT_RGBA -> GLUT::RGBA
 module GLUT
-    extend self
-    include Glut
-
-    Glut.constants.each do |cn|
-        n = cn.to_s.sub(/^GLUT_/,'')
-        begin
-            const_set( n, Glut.const_get( cn ) )
-        rescue
-            puts "=== #{__FILE__} FAILED on Constant: #{cn} --> #{n}"
-        end
-    end
-
-    Glut.methods( false ).each do |mn|
-        n = mn.to_s.sub(/^glut/,'')
-        begin
-            alias_method( n, mn )
-            public( n )
-        rescue
-            puts "=== #{__FILE__} FAILED on Method: #{mn} --> #{n}"
-        end
-    end
+	extend self
+	include Glut
+	
+	Glut.constants.each do |cn|
+		n = cn.to_s.sub(/^GLUT_/,'')
+		const_set( n, Glut.const_get( cn ) )
+	end
+	
+	Glut.methods( false ).each do |mn|
+		n = mn.to_s.sub(/^glut/,'')
+		alias_method( n, mn )
+		public( n )
+	end
 end
