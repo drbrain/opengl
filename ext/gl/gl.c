@@ -206,4 +206,9 @@ DLLEXPORT void Init_gl()
 	gl_init_functions_ext_nv(module);
 
 	rb_define_module_function(module, "is_available?", IsAvailable, 1);
+	rb_define_module_function(module, "is_supported?", IsAvailable, 1);
+	rb_define_module_function(module, "extension_available?", IsAvailable, 1);
+	rb_define_module_function(module, "extension_supported?", IsAvailable, 1);
+	rb_define_module_function(module, "version_available?", IsAvailable, 1);
+	rb_define_module_function(module, "version_supported?", IsAvailable, 1);
 }

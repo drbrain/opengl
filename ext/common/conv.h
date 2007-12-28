@@ -188,7 +188,7 @@ int cols,rows; \
 	rary = rb_Array(rary); \
 	rary = rb_funcall(rary,rb_intern("flatten"),0); \
 \
-	if (RARRAY_LEN(rary) % (cols*rows) != 0) {\
+	if (RARRAY_LEN(rary)<1 || (RARRAY_LEN(rary) % (cols*rows) != 0)) {\
 		xfree(cary); \
 		rb_raise(rb_eArgError, "passed array/matrix must conatain n x (%i*%i) elements",cols,rows); \
 	} \

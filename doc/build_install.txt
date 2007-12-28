@@ -6,12 +6,12 @@ Pre-requisites
 
 General
 --------------
-* C compiler
-* ruby 1.8.5+
+* C compiler (not needed for binary install on Windows)
+* ruby 1.8.5+ or ruby 1.9.0+
 * rake
-* mkrf 0.2.0+
+* mkrf 0.2.0+ (0.2.3+ for ruby 1.9)
 * rubygems 0.9.1+
-* OpenGL headers for OpenGL version 1.1 or later
+* OpenGL headers for OpenGL version 1.1 or later (not needed for binary install on Windows)
 * GLUT 3.7+ or API-compatible implementation (freeglut,OpenGLUT)
 
 Linux

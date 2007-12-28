@@ -172,9 +172,9 @@ row-major matrices or arrays in ruby.
 <a name="textures"></a>
 Textures and other raw data
 -------------
-There are some data (textures, buffers, ..) that are too large to efficiently contain in ruby arrays -
-these are worked with via ruby strings that contains their direct memory representation (just like C arrays). If
-you need to convert between ruby arrays and these strings, use ruby Array#pack() and String#unpack() functions.
+Data for textures, arrays, buffers etc. can be specified either as ruby arrays or directly as raw packed strings -
+strings that contains their direct memory representation (just like C arrays). If you need to convert between
+ruby arrays and these strings, use ruby Array#pack() and String#unpack() functions.
 Example:
 
 	{{ruby}}
@@ -216,10 +216,13 @@ Reverse works just the same:
 	texture = data.unpack("f*")
 	...
 
+For storage, packed strings are more memory efficient than ruby arrays, but
+cannot be easily changed or manipulated.
+
 <a name="error_checking"></a>
 Error Checking
 --------------
-Starting with version 0.60.0, ruby-opengl performs automatic checking of OpenGL errors.
+Starting with version 0.60.0, ruby-opengl performs automatic checking of OpenGL and GLU errors.
 Functions:
 
 	{{ruby}}
@@ -246,9 +249,11 @@ occur, Gl::Error exception is raised:
 		...
 	end
 
+Some GLU functions may throw Glu::Error but also Gl::Error - the handling is the same as above.
+
 It is usually good idea to leave error checking on for all your code, as OpenGL errors have habit to pop-up in
-unexpected places. For now there is no measurable performance hit for error checking, although this may change
-in future ruby implementations.
+unexpected places. For now there is no measurable performance hit for error checking, although this may depend
+on your graphic drivers implementation.
 
 <a name="examples"></a>
 The Examples
@@ -331,13 +336,11 @@ In current state, vertex arrays are not very efficient in ruby-opengl, as it is 
 the array content once it is specified, and there is overhead for converting between ruby and C representation
 of numbers. Using display lists for static and immediate mode for dynamic objects is recommended instead.
 
-You can specify the data the same way as [texture data](#textures)
-, using Array#pack function. Once the array is specified, the string is frozen and the array cannot
-be manipulated. Example:
+You can specify the data the same way as [texture data](#textures). Example:
 
 	{{ruby}}
 	normals = [0,1,0, 1,0,0, 1,1,1]
-	glNormalPointer(GL_FLOAT,0,normals.pack("f*"))
+	glNormalPointer(GL_FLOAT,0,normals)
 	...
 	glEnable(GL_NORMAL_ARRAY)
 	glDrawArrays(...)
@@ -350,8 +353,8 @@ previously specified.
 Buffer Objects
 -----------
 Once again, in current state buffer objects (VBOs in particular) are not very efficient in ruby-opengl.
-Similiary to vertex arrays, you can specify/read the data as strings using .pack and .unpack functions
-with ruby arrays, but mapping of the buffer afterwards is read-only. 
+Unlike textures and vertex arrays, the data for buffers *must* be prepacked by using .pack() function,
+as buffers does not retain information about the storage type. Mapping of the buffer afterwards is read-only. 
 
 Like in C, buffer binding affects some functions in way that if particular buffer is bound, the related
 functions (for example glTexImage) take integer offset in place of data string argument. This is also true
@@ -379,7 +382,6 @@ VBO example:
 	...
 	glEnableClientState(GL_VERTEX_ARRAY)
 	...
-
 
 <a name="glut_sdl"></a>
 GLUT, SDL, GLFW..
