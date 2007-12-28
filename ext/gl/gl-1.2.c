@@ -52,8 +52,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
 		fptr_glDrawRangeElements(mode, start, end, count, type, (GLvoid *)NUM2INT(arg6));
 	} else {
-		Check_Type(arg6, T_STRING);
-		fptr_glDrawRangeElements(mode, start, end, count, type, RSTRING_PTR(arg6));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg6);
+		fptr_glDrawRangeElements(mode, start, end, count, type, RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -78,9 +79,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glColorTable(target,internalformat,width,format,type,(GLvoid *)NUM2INT(arg6));
 	} else {
-		Check_Type(arg6,T_STRING);
-		CheckDataSize(type,format,width,arg6);
-		fptr_glColorTable(target,internalformat,width,format,type,RSTRING_PTR(arg6));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg6);
+		CheckDataSize(type,format,width,data);
+		fptr_glColorTable(target,internalformat,width,format,type,RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -217,9 +219,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glColorSubTable(target,start,count,format,type,(GLvoid *)NUM2INT(arg6));
 	} else {
-		Check_Type(arg6,T_STRING);
-		CheckDataSize(type,format,count,arg6);
-		fptr_glColorSubTable(target,start,count,format,type,RSTRING_PTR(arg6));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg6);
+		CheckDataSize(type,format,count,data);
+		fptr_glColorSubTable(target,start,count,format,type,RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -244,9 +247,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,(GLvoid *)NUM2INT(arg6));
 	} else {
-		Check_Type(arg6,T_STRING);
-		CheckDataSize(type,format,width,arg6);
-		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,RSTRING_PTR(arg6));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg6);
+		CheckDataSize(type,format,width,data);
+		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -273,9 +277,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2INT(arg7));
 	} else {
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg7);
 		Check_Type(arg7,T_STRING);
-		CheckDataSize(type,format,width*height,arg7);
-		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,RSTRING_PTR(arg7));
+		CheckDataSize(type,format,width*height,data);
+		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -499,11 +505,13 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2INT(arg7),(GLvoid *)NUM2INT(arg8));
 	} else {
-		Check_Type(arg7,T_STRING);
-		Check_Type(arg8,T_STRING);
-		CheckDataSize(type,format,width,arg7);
-		CheckDataSize(type,format,height,arg8);
-		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,RSTRING_PTR(arg7),RSTRING_PTR(arg8));
+		VALUE data_1,data_2;
+		data_1 = pack_array_or_pass_string(type,arg7);
+		data_2 = pack_array_or_pass_string(type,arg8);
+
+		CheckDataSize(type,format,width,data_1);
+		CheckDataSize(type,format,height,data_2);
+		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,RSTRING_PTR(data_1),RSTRING_PTR(data_2));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -709,9 +717,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 			NIL_P(arg10)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
-		Check_Type(arg10,T_STRING);
-		CheckDataSize(type,format,width*height*depth,arg10);
-		pixels = RSTRING_PTR(arg10);
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg10);
+
+		CheckDataSize(type,format,width*height*depth,data);
+		pixels = RSTRING_PTR(data);
 	}
 	fptr_glTexImage3D( target, level, internalFormat, width, height,
 				  depth, border, format, type,pixels);
@@ -750,11 +760,12 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 				width, height, depth,
 				format, type, (GLvoid *)NUM2INT(arg11));
 	} else {
-		Check_Type(arg11, T_STRING);
-		CheckDataSize(type,format,height*width*depth,arg11);
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg11);
+		CheckDataSize(type,format,height*width*depth,data);
 		fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 			width, height, depth,
-			format, type, RSTRING_PTR(arg11));
+			format, type, RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;

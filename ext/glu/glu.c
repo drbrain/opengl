@@ -319,8 +319,7 @@ VALUE obj;
 			uknot = ALLOC_N(GLfloat, uknot_count);
 			ary2cflt(args[1], uknot, uknot_count);
 
-			ary_ctl1 = rb_ary_new();
-			mary2ary(args[2], ary_ctl1); /* flatten */
+			ary_ctl1 = rb_funcall(args[2],rb_intern("flatten"),0);
 			break;
 		case 7:
 			uknot_count = (GLint)NUM2INT(args[1]);
@@ -331,8 +330,7 @@ VALUE obj;
 			uknot = ALLOC_N(GLfloat, uknot_count);
 			ary2cflt(args[2], uknot, uknot_count);
 
-			ary_ctl1 = rb_ary_new();
-			mary2ary(args[4], ary_ctl1); /* flatten */
+			ary_ctl1 = rb_funcall(args[4],rb_intern("flatten"),0);
 			break;
 		default:
 			rb_raise(rb_eArgError, "gluNurbsCurve needs 5 or 7 arguments");
@@ -420,8 +418,7 @@ VALUE obj;
 			s_stride = t_stride * sorder;
 
 			ctlarray = ALLOC_N(GLfloat, (sknot_count-sorder)*(tknot_count-torder)*t_stride);
-			ary_ctl1 = rb_ary_new();
-			mary2ary(args[3], ary_ctl1); /* flatten */
+			ary_ctl1 = rb_funcall(args[3],rb_intern("flatten"),0);
 			ary2cflt(ary_ctl1, ctlarray, (sknot_count-sorder)*(tknot_count-torder)*t_stride);
 			break;
 		case 11:
@@ -441,9 +438,7 @@ VALUE obj;
 			type_len = get_surface_dim(type);
 			
 			ctlarray = ALLOC_N(GLfloat, (sknot_count-sorder)*(tknot_count-torder)*type_len);
-			
-			ary_ctl1 = rb_ary_new();
-			mary2ary(args[7], ary_ctl1); /* flatten */
+			ary_ctl1 = rb_funcall(args[7],rb_intern("flatten"),0);
 			ary2cflt(ary_ctl1, ctlarray, (sknot_count-sorder)*(tknot_count-torder)*type_len);
 			break;
 		default:
@@ -508,8 +503,7 @@ VALUE obj;
 			stride = (type == GLU_MAP1_TRIM_2 ? 2 : 3);
 
 			array = ALLOC_N(GLfloat, count*stride);
-			ary_ctl1 = rb_ary_new();
-			mary2ary(args[1], ary_ctl1); /* flatten */
+			ary_ctl1 = rb_funcall(args[1],rb_intern("flatten"),0);
 			ary2cflt(ary_ctl1, array, count*stride);
 			break;
 		case 5:
@@ -518,8 +512,7 @@ VALUE obj;
 			type = NUM2INT(args[4]);
 
 			array = ALLOC_N(GLfloat, count*stride);
-			ary_ctl1 = rb_ary_new();
-			mary2ary(args[2], ary_ctl1); /* flatten */
+			ary_ctl1 = rb_funcall(args[2],rb_intern("flatten"),0);
 			ary2cflt(ary_ctl1, array, count*stride);
 			break;
 		default:

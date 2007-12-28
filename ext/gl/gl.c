@@ -47,7 +47,7 @@ const int *GetOpenglVersion(void)
 	if (opengl_version[0]==0) { /* not cached, query */
 		const char *vstr = (const char *) glGetString(GL_VERSION);
 		CHECK_GLERROR
-    if (vstr)
+		if (vstr)
 			sscanf( vstr, "%d.%d", &opengl_version[0], &opengl_version[1] );
 	}
 	return opengl_version;
@@ -77,7 +77,7 @@ const char *GetOpenglExtensions(void)
 	if (opengl_extensions == NULL) {
 		const char *estr = (const char *) glGetString(GL_EXTENSIONS);
 		CHECK_GLERROR
-    if (estr) {
+		if (estr) {
 			int len = strlen(estr);
 			opengl_extensions = ALLOC_N(GLchar,len+1+1); /* terminating null and added space */
 			strcpy(opengl_extensions,estr);

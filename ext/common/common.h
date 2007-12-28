@@ -103,24 +103,6 @@ GLboolean CheckVersionExtension(const char *name);
 GLint CheckBufferBinding(GLint buffer);
 
 /* -------------------------------------------------------------------- */
-/* Array.flatten */
-static inline void mary2ary(src, ary)
-VALUE src;
-VALUE ary;
-{
-    struct RArray* tmp_ary;
-    int i;
-    tmp_ary = RARRAY(rb_Array(src));
-    for (i = 0; i < tmp_ary->len; i++)
-    {
-        if (TYPE(tmp_ary->ptr[i]) == T_ARRAY)
-            mary2ary((VALUE)tmp_ary->ptr[i], ary);
-        else
-            rb_ary_push(ary, tmp_ary->ptr[i]);
-    }
-}
-
-/* -------------------------------------------------------------------- */
 
 /* gets number of components for given format */
 static inline int glformat_size(GLenum format)
@@ -408,6 +390,32 @@ static inline void *load_gl_function(const char *name,int raise)
 		rb_raise(rb_eNotImpError,"Function %s is not available on this system",name);
 
 	return func_ptr;
+}
+
+static inline VALUE pack_array_or_pass_string(GLenum type,VALUE ary)
+{
+	char *type_str;
+
+	if (TYPE(ary)==T_STRING)
+		return ary;
+
+	Check_Type(ary,T_ARRAY);
+
+	switch(type) {
+		case GL_FLOAT:          type_str = "f*"; break;
+		case GL_DOUBLE:         type_str = "d*"; break;
+		case GL_BYTE:	          type_str = "c*"; break;
+		case GL_SHORT:          type_str = "s*"; break;
+		case GL_INT:            type_str = "i*"; break;
+		case GL_UNSIGNED_BYTE:  type_str = "C*"; break;
+		case GL_UNSIGNED_SHORT: type_str = "S*"; break;
+		case GL_UNSIGNED_INT:	  type_str = "I*"; break;
+		default:
+			rb_raise(rb_eTypeError,"Unknown type %i",type);
+			return Qnil; /* not reached */
+	}
+
+	return rb_funcall(ary,rb_intern("pack"),1,rb_str_new2(type_str));
 }
 
 /* -------------------------------------------------------------------- */

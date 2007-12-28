@@ -120,10 +120,11 @@ static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3
 		g_VertexAttrib_ptr[index] = arg5;
 		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)NUM2INT(arg5));
 	} else {
-		Check_Type(arg5, T_STRING);
-		rb_str_freeze(arg5);
-		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)RSTRING_PTR(arg5));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg5);
+		rb_str_freeze(data);
+		g_VertexAttrib_ptr[index] = data;
+		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 
 	CHECK_GLERROR

@@ -178,10 +178,11 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
 		g_VertexAttrib_ptr[index] = arg6;
 		fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)NUM2INT(arg6));
 	} else {
-		Check_Type(arg6, T_STRING);
-		rb_str_freeze(arg6);
-		g_VertexAttrib_ptr[index] = arg6;
-		fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(arg6));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg6);
+		rb_str_freeze(data);
+		g_VertexAttrib_ptr[index] = data;
+		fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 
 	CHECK_GLERROR
@@ -414,18 +415,21 @@ GL_FUNC_LOAD_5(Uniform4iARB,GLvoid, GLint,GLint,GLint,GLint,GLint, "GL_ARB_shade
 #define GLUNIFORM_VFUNC(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,const _type_ *); \
 static VALUE \
-gl_##_name_(obj,arg1,arg2,arg3) \
-VALUE obj,arg1,arg2,arg3; \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
 { \
 	GLint location; \
 	GLsizei count; \
 	_type_ *value; \
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	Check_Type(arg2,T_ARRAY); \
+	count = RARRAY_LEN(arg2); \
+	if (count<=0 || (count % _size_) != 0) \
+		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
-	count = (GLsizei)NUM2UINT(arg2); \
 	value = ALLOC_N(_type_,_size_*count); \
-	_conv_(arg3,value,_size_*count); \
-	fptr_gl##_name_(location,count,value); \
+	_conv_(arg2,value,_size_*count); \
+	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -832,14 +836,14 @@ void gl_init_functions_ext_arb(VALUE module)
 	rb_define_module_function(module, "glUniform2iARB", gl_Uniform2iARB, 3);
 	rb_define_module_function(module, "glUniform3iARB", gl_Uniform3iARB, 4);
 	rb_define_module_function(module, "glUniform4iARB", gl_Uniform4iARB, 5);
-	rb_define_module_function(module, "glUniform1fvARB", gl_Uniform1fvARB, 3);
-	rb_define_module_function(module, "glUniform2fvARB", gl_Uniform2fvARB, 3);
-	rb_define_module_function(module, "glUniform3fvARB", gl_Uniform3fvARB, 3);
-	rb_define_module_function(module, "glUniform4fvARB", gl_Uniform4fvARB, 3);
-	rb_define_module_function(module, "glUniform1ivARB", gl_Uniform1ivARB, 3);
-	rb_define_module_function(module, "glUniform2ivARB", gl_Uniform2ivARB, 3);
-	rb_define_module_function(module, "glUniform3ivARB", gl_Uniform3ivARB, 3);
-	rb_define_module_function(module, "glUniform4ivARB", gl_Uniform4ivARB, 3);
+	rb_define_module_function(module, "glUniform1fvARB", gl_Uniform1fvARB, 2);
+	rb_define_module_function(module, "glUniform2fvARB", gl_Uniform2fvARB, 2);
+	rb_define_module_function(module, "glUniform3fvARB", gl_Uniform3fvARB, 2);
+	rb_define_module_function(module, "glUniform4fvARB", gl_Uniform4fvARB, 2);
+	rb_define_module_function(module, "glUniform1ivARB", gl_Uniform1ivARB, 2);
+	rb_define_module_function(module, "glUniform2ivARB", gl_Uniform2ivARB, 2);
+	rb_define_module_function(module, "glUniform3ivARB", gl_Uniform3ivARB, 2);
+	rb_define_module_function(module, "glUniform4ivARB", gl_Uniform4ivARB, 2);
 	rb_define_module_function(module, "glUniformMatrix2fvARB", gl_UniformMatrix2fvARB, 4);
 	rb_define_module_function(module, "glUniformMatrix3fvARB", gl_UniformMatrix3fvARB, 4);
 	rb_define_module_function(module, "glUniformMatrix4fvARB", gl_UniformMatrix4fvARB, 4);

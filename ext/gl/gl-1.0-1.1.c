@@ -227,26 +227,16 @@ VALUE obj;
 }
 
 static VALUE
-gl_CallLists(obj,arg1)
-VALUE obj,arg1;
+gl_CallLists(obj,arg1,arg2)
+VALUE obj,arg1,arg2;
 {
 	GLsizei n;
 	GLenum type;
-	GLvoid *lists;
-	if (TYPE(arg1) == T_STRING) {
-		type = GL_BYTE;
-		lists = RSTRING_PTR(arg1);
-		n = RSTRING_LEN(arg1);
-	} else if (TYPE(arg1) == T_ARRAY) {
-		type = GL_INT;
-		lists = ALLOC_N(GLint, RARRAY(arg1)->len);
-		n = ary2cint(arg1,lists,0);
-	} else {
-		Check_Type(arg1,T_ARRAY); /* force exception */
-		return Qnil; /* not reached */
-	}
-	glCallLists(n, type, lists);
-	if (type == GL_INT) xfree(lists);
+	VALUE lists;
+	type = CONV_GLenum(arg1);
+	lists = pack_array_or_pass_string(type,arg2);
+	n = RSTRING_LEN(lists) / gltype_glformat_unit_size(type,1);
+	glCallLists(n, type, RSTRING_PTR(lists));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -270,14 +260,13 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		glBitmap(width, height, xorig, yorig, xmove, ymove, (GLvoid *)NUM2INT(arg7));
 	} else {
-		const GLubyte *bitmap;
-		Check_Type(arg7,T_STRING); 
+		VALUE data;
+		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg7);
 
-		if (RSTRING_LEN(arg7) < (width * height / 8))
-			rb_raise(rb_eArgError, "string length:%li", RSTRING_LEN(arg7));
+		if ((RSTRING_LEN(data)*8) < (width * height))
+			rb_raise(rb_eArgError, "string length:%li", RSTRING_LEN(data));
 
-		bitmap = (const GLubyte*)RSTRING_PTR(arg7);
-		glBitmap(width, height, xorig, yorig, xmove, ymove, bitmap);
+		glBitmap(width, height, xorig, yorig, xmove, ymove, (const GLubyte *)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -482,23 +471,15 @@ static VALUE
 gl_PolygonStipple(obj,arg1)
 VALUE obj,arg1;
 {
-	GLubyte mask[128];
-
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		glPolygonStipple((GLvoid *)NUM2INT(arg1));
 	} else {
-		memset(mask, 0x0, sizeof(GLubyte)*128);
-		if (TYPE(arg1) == T_ARRAY) {
-			ary2cubyte(arg1,mask,128);
-		}
-		else if (TYPE(arg1) == T_STRING) {
-			if (RSTRING_LEN(arg1) < 128)
-				rb_raise(rb_eArgError, "string length:%li", RSTRING_LEN(arg1));
-			memcpy(mask, RSTRING_PTR(arg1), 128);
-		}
-		else
-			Check_Type(arg1,T_STRING); /* force exception */
-		glPolygonStipple(mask);
+		VALUE data;
+		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg1);
+		if (RSTRING_LEN(data) < 128)
+			rb_raise(rb_eArgError, "string length:%li", RSTRING_LEN(data));
+		
+		glPolygonStipple((GLubyte *)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -566,9 +547,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	if (target == GL_PROXY_TEXTURE_1D || NIL_P(arg8)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
-		Check_Type(arg8,T_STRING);
-		CheckDataSize(type,format,width,arg8);
-		pixels = RSTRING_PTR(arg8);
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg8);
+		CheckDataSize(type,format,width,data);
+		pixels = RSTRING_PTR(data);
 	}
 	glTexImage1D(target,level,components,width,border,format,type,pixels);
 	CHECK_GLERROR
@@ -606,9 +588,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	if (target == GL_PROXY_TEXTURE_2D || target == GL_PROXY_TEXTURE_1D_ARRAY_EXT || target == GL_PROXY_TEXTURE_CUBE_MAP || NIL_P(arg9)) { /* proxy texture, no data read */
 		pixels = NULL;
 	} else {
-		Check_Type(arg9,T_STRING);
-		CheckDataSize(type,format,width*height,arg9);
-		pixels = RSTRING_PTR(arg9);
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg9);
+		CheckDataSize(type,format,width*height,data);
+		pixels = RSTRING_PTR(data);
 	}
 	glTexImage2D(target,level,components,width,height,border,format,type,pixels);
 	CHECK_GLERROR
@@ -747,8 +730,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	stride = (GLint)NUM2INT(arg4);
 	order = (GLint)NUM2INT(arg5);
 	points = ALLOC_N(GLdouble, order*stride);
-	work_ary = rb_ary_new();
-	mary2ary(arg6, work_ary);
+	work_ary = rb_funcall(arg6,rb_intern("flatten"),0);
 	ary2cdbl(work_ary, points, order*stride);
 	glMap1d(target, u1, u2, stride, order, points);
 	xfree(points);
@@ -775,8 +757,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	stride = (GLint)NUM2INT(arg4);
 	order = (GLint)NUM2INT(arg5);
 	points = ALLOC_N(GLfloat, order*stride);
-	work_ary = rb_ary_new();
-	mary2ary(arg6, work_ary);
+	work_ary = rb_funcall(arg6,rb_intern("flatten"),0);
 	ary2cflt(work_ary, points, order*stride);
 	glMap1f(target, u1, u2, stride, order, points);
 	xfree(points);
@@ -811,9 +792,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	vstride = (GLint)NUM2INT(arg8);
 	vorder = (GLint)NUM2INT(arg9);
 	points = ALLOC_N(GLdouble, MAX(ustride*uorder, vstride*vorder));
-	work_ary = rb_ary_new();
-	mary2ary(arg10, work_ary);
-	ary2cdbl(arg10, points, MAX(ustride*uorder, vstride*vorder));
+	work_ary = rb_funcall(arg10,rb_intern("flatten"),0);
+	ary2cdbl(work_ary, points, MAX(ustride*uorder, vstride*vorder));
 	glMap2d(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, points);
 	xfree(points);
 	CHECK_GLERROR
@@ -847,9 +827,8 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	vstride = (GLint)NUM2INT(arg8);
 	vorder = (GLint)NUM2INT(arg9);
 	points = ALLOC_N(GLfloat, MAX(ustride*uorder, vstride*vorder));
-	work_ary = rb_ary_new();
-	mary2ary(arg10, work_ary);
-	ary2cflt(arg10, points, MAX(ustride*uorder, vstride*vorder));
+	work_ary = rb_funcall(arg10,rb_intern("flatten"),0);
+	ary2cflt(work_ary, points, MAX(ustride*uorder, vstride*vorder));
 	glMap2f(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, points);
 	xfree(points);
 	CHECK_GLERROR
@@ -1010,9 +989,10 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		glDrawPixels(width,height,format,type,(GLvoid *)NUM2INT(arg5));
 	} else {
-		Check_Type(arg5,T_STRING);
-		CheckDataSize(type,format,width*height,arg5);
-		pixels = RSTRING_PTR(arg5);
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg5);
+		CheckDataSize(type,format,width*height,data);
+		pixels = RSTRING_PTR(data);
 		glDrawPixels(width,height,format,type,pixels);
 	}
 	CHECK_GLERROR
@@ -1773,10 +1753,11 @@ VALUE obj, arg1, arg2, arg3, arg4; \
 		g_##_func_##_ptr = arg4; \
 		gl##_func_##Pointer(size, type, stride, (const GLvoid*)NUM2INT(arg4)); \
 	} else { \
-		Check_Type(arg4, T_STRING); \
-		rb_str_freeze(arg4); \
-		g_##_func_##_ptr = arg4; \
-		gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING_PTR(arg4)); \
+		VALUE data; \
+		data = pack_array_or_pass_string(type,arg4); \
+		rb_str_freeze(data); \
+		g_##_func_##_ptr = data; \
+		gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING_PTR(data)); \
 	} \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -1801,8 +1782,9 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
 		glDrawElements(mode, count, type, (const GLvoid*)NUM2INT(arg4));
 	} else {
-		Check_Type(arg4, T_STRING);
-		glDrawElements(mode, count, type, (const GLvoid*)RSTRING_PTR(arg4));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg4);
+		glDrawElements(mode, count, type, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -1818,10 +1800,11 @@ VALUE obj,arg1,arg2;
 		g_EdgeFlag_ptr = arg2;
 		glEdgeFlagPointer(stride, (const GLboolean*) NUM2INT(arg2));
 	} else {
-		Check_Type(arg2, T_STRING);
-		rb_str_freeze(arg2);
-		g_EdgeFlag_ptr = arg2;
-		glEdgeFlagPointer(stride, (const GLboolean*)RSTRING_PTR(arg2));
+		VALUE data;
+		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg2);
+		rb_str_freeze(data);
+		g_EdgeFlag_ptr = data;
+		glEdgeFlagPointer(stride, (const GLboolean*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -1873,10 +1856,10 @@ VALUE obj,arg1,arg2,arg3;
 		g_Index_ptr = arg3;
 		glIndexPointer(type, stride, (const GLvoid*)NUM2INT(arg3));
 	} else {
-		Check_Type(arg3, T_STRING);
-		rb_str_freeze(arg3);
-		g_Index_ptr = arg3;
-		glIndexPointer(type, stride, (const GLvoid*)RSTRING_PTR(arg3));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg3);
+		g_Index_ptr = data;
+		glIndexPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -1888,11 +1871,13 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLenum format;
 	GLsizei stride;
+	VALUE data;
 	format = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
-	Check_Type(arg3, T_STRING);
-	rb_str_freeze(arg3);
-	glInterleavedArrays(format, stride, (const GLvoid*)RSTRING_PTR(arg3));
+	/* FIXME: add support for GL_C4UB_V2F,GL_C4UB_V3F, GL_T2F_C4UB_V3 */
+	data = pack_array_or_pass_string(GL_FLOAT,arg3);
+	rb_str_freeze(data);
+	glInterleavedArrays(format, stride, (const GLvoid*)RSTRING_PTR(data));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -1909,10 +1894,11 @@ VALUE obj,arg1,arg2,arg3;
 		g_Normal_ptr = arg3;
 		glNormalPointer(type, stride, (const GLvoid*)NUM2INT(arg3));
 	} else {
-		Check_Type(arg3, T_STRING);
-		rb_str_freeze(arg3);
-		g_Normal_ptr = arg3;
-		glNormalPointer(type, stride, (const GLvoid*)RSTRING_PTR(arg3));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg3);
+		rb_str_freeze(data);
+		g_Normal_ptr = data;
+		glNormalPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -1929,6 +1915,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLsizei width;
 	GLenum format;
 	GLenum type;
+	VALUE data;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -1941,11 +1928,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		CHECK_GLERROR
 		return Qnil;
 	}
-	
-	Check_Type(arg7,T_STRING);
-	CheckDataSize(type,format,width,arg7);
 
-	glTexSubImage1D(target,level,xoffset,width,format,type,RSTRING_PTR(arg7));
+	data = pack_array_or_pass_string(type,arg7);
+	CheckDataSize(type,format,width,data);
+
+	glTexSubImage1D(target,level,xoffset,width,format,type,RSTRING_PTR(data));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -1962,6 +1949,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLsizei height;
 	GLenum format;
 	GLenum type;
+	VALUE data;
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -1976,11 +1964,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		CHECK_GLERROR
 		return Qnil;
 	}
-	
-	Check_Type(arg9,T_STRING);
-	CheckDataSize(type,format,width*height,arg9);
 
-	glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,RSTRING_PTR(arg9));
+	data = pack_array_or_pass_string(type,arg9);
+	CheckDataSize(type,format,width*height,data);
+
+	glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,RSTRING_PTR(data));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -2444,7 +2432,7 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glNewList", gl_NewList, 2);
 	rb_define_module_function(module, "glEndList", gl_EndList, 0);
 	rb_define_module_function(module, "glCallList", gl_CallList, 1);
-	rb_define_module_function(module, "glCallLists", gl_CallLists, 1);
+	rb_define_module_function(module, "glCallLists", gl_CallLists, 2);
 	rb_define_module_function(module, "glDeleteLists", gl_DeleteLists, 2);
 	rb_define_module_function(module, "glGenLists", gl_GenLists, 1);
 	rb_define_module_function(module, "glListBase", gl_ListBase, 1);

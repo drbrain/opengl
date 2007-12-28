@@ -79,7 +79,7 @@ end
 def common_teardown
 	glPopAttrib()
 	glPopClientAttrib()
-	
+	glRenderMode(GL_RENDER)
 	# in case there is an GL error that escaped error checking routines ...
 	error = glGetError()
 	p gluErrorString(error)	if (error!=0)

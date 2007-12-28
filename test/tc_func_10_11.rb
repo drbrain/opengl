@@ -1189,7 +1189,7 @@ class Test_10_11 < Test::Unit::TestCase
 		glRenderMode(GL_FEEDBACK)
 
 		glCallList(base+0)
-		glCallLists([base+0,base+1])
+		glCallLists(GL_INT,[base+0,base+1])
 
 		count = glRenderMode(GL_RENDER)
 		assert_equal(count,(3*3+2) * 3) # 3 triangles

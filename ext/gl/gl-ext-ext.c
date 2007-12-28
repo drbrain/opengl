@@ -164,10 +164,11 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		g_SecondaryColor_ptr = arg4;
 		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)NUM2INT(arg4));
 	} else {
-		Check_Type(arg4, T_STRING);
-		rb_str_freeze(arg4);
-		g_SecondaryColor_ptr = arg4;
-		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)RSTRING_PTR(arg4));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg4);
+		rb_str_freeze(data);
+		g_SecondaryColor_ptr = data;
+		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -197,8 +198,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
 		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, (GLvoid *)NUM2INT(arg6));
 	} else {
-		Check_Type(arg6, T_STRING);
-		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, RSTRING_PTR(arg6));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg6);
+		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -260,8 +262,11 @@ VALUE obj;
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
-				indices[i] = RSTRING_PTR(ary->ptr[i]);
-				counts[i] = RSTRING_LEN(ary->ptr[i]);
+				VALUE data;
+				data = pack_array_or_pass_string(type,ary->ptr[i]);
+
+				indices[i] = RSTRING_PTR(data);
+				counts[i] = RSTRING_LEN(data);
 			}
 			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
 			xfree(counts);
@@ -329,10 +334,11 @@ VALUE obj,arg1,arg2,arg3;
 		g_FogCoord_ptr = arg3;
 		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)NUM2INT(arg3));
 	} else {
-		Check_Type(arg3, T_STRING);
-		rb_str_freeze(arg3);
-		g_FogCoord_ptr = arg3;
-		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)RSTRING_PTR(arg3));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg3);
+		rb_str_freeze(data);
+		g_FogCoord_ptr = data;
+		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -531,10 +537,11 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 		g_VertexAttrib_ptr[index] = arg5;
 		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)NUM2INT(arg5));
 	} else {
-		Check_Type(arg5, T_STRING);
-		rb_str_freeze(arg5);
-		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)RSTRING_PTR(arg5));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg5);
+		rb_str_freeze(data);
+		g_VertexAttrib_ptr[index] = data;
+		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 
 	CHECK_GLERROR
@@ -549,18 +556,21 @@ GL_FUNC_LOAD_5(Uniform4uiEXT,GLvoid, GLint,GLuint,GLuint,GLuint,GLuint, "GL_EXT_
 #define GLUNIFORM_VFUNC(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,const _type_ *); \
 static VALUE \
-gl_##_name_(obj,arg1,arg2,arg3) \
-VALUE obj,arg1,arg2,arg3; \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
 { \
 	GLint location; \
 	GLsizei count; \
 	_type_ *value; \
 	LOAD_GL_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
+	Check_Type(arg2,T_ARRAY); \
+	count = RARRAY_LEN(arg2); \
+	if (count<=0 || (count % _size_) != 0) \
+		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
-	count = (GLsizei)NUM2UINT(arg2); \
 	value = ALLOC_N(_type_,_size_*count); \
-	_conv_(arg3,value,_size_*count); \
-	fptr_gl##_name_(location,count,value); \
+	_conv_(arg2,value,_size_*count); \
+	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -646,8 +656,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
 		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)NUM2INT(arg4), primcount);
 	} else {
-		Check_Type(arg4, T_STRING);
-		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)RSTRING_PTR(arg4), primcount);
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg4);
+		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)RSTRING_PTR(data), primcount);
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -854,10 +865,10 @@ void gl_init_functions_ext_ext(VALUE module)
 	rb_define_module_function(module, "glUniform2uiEXT", gl_Uniform2uiEXT, 3);
 	rb_define_module_function(module, "glUniform3uiEXT", gl_Uniform3uiEXT, 4);
 	rb_define_module_function(module, "glUniform4uiEXT", gl_Uniform4uiEXT, 5);
-	rb_define_module_function(module, "glUniform1uivEXT", gl_Uniform1uivEXT, 3);
-	rb_define_module_function(module, "glUniform2uivEXT", gl_Uniform2uivEXT, 3);
-	rb_define_module_function(module, "glUniform3uivEXT", gl_Uniform3uivEXT, 3);
-	rb_define_module_function(module, "glUniform4uivEXT", gl_Uniform4uivEXT, 3);
+	rb_define_module_function(module, "glUniform1uivEXT", gl_Uniform1uivEXT, 2);
+	rb_define_module_function(module, "glUniform2uivEXT", gl_Uniform2uivEXT, 2);
+	rb_define_module_function(module, "glUniform3uivEXT", gl_Uniform3uivEXT, 2);
+	rb_define_module_function(module, "glUniform4uivEXT", gl_Uniform4uivEXT, 2);
 	rb_define_module_function(module, "glGetUniformuivEXT", gl_GetUniformuivEXT, 2);
 	rb_define_module_function(module, "glBindFragDataLocationEXT", gl_BindFragDataLocationEXT, 3);
 	rb_define_module_function(module, "glGetFragDataLocationEXT", gl_GetFragDataLocationEXT, 2);

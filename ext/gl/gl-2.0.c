@@ -422,18 +422,21 @@ VALUE obj,arg1,arg2;
 #define UNIFORM_FUNC_V(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,_type_ *); \
 static VALUE \
-gl_##_name_(obj,arg1,arg2,arg3) \
-VALUE obj,arg1,arg2,arg3; \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
 { \
 	GLint location; \
 	GLsizei count; \
 	_type_ *value; \
 	LOAD_GL_FUNC(gl##_name_,"2.0") \
+	Check_Type(arg2,T_ARRAY); \
+	count = RARRAY_LEN(arg2); \
+	if (count<=0 || (count % _size_) != 0) \
+		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
-	count = (GLsizei)NUM2UINT(arg2); \
 	value = ALLOC_N(_type_,_size_*count); \
-	_conv_(arg3,value,_size_*count); \
-	fptr_gl##_name_(location,count,value); \
+	_conv_(arg2,value,_size_*count); \
+	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -540,10 +543,11 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		g_VertexAttrib_ptr[index] = arg6;
 		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)NUM2INT(arg6));
 	} else {
-		Check_Type(arg6, T_STRING);
-		rb_str_freeze(arg6);
-		g_VertexAttrib_ptr[index] = arg6;
-		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(arg6));
+		VALUE data;
+		data = pack_array_or_pass_string(type,arg6);
+		rb_str_freeze(data);
+		g_VertexAttrib_ptr[index] = data;
+		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -595,14 +599,14 @@ void gl_init_functions_2_0(VALUE module)
 	rb_define_module_function(module, "glUniform2i", gl_Uniform2i, 3);
 	rb_define_module_function(module, "glUniform3i", gl_Uniform3i, 4);
 	rb_define_module_function(module, "glUniform4i", gl_Uniform4i, 5);
-	rb_define_module_function(module, "glUniform1fv", gl_Uniform1fv, 3);
-	rb_define_module_function(module, "glUniform2fv", gl_Uniform2fv, 3);
-	rb_define_module_function(module, "glUniform3fv", gl_Uniform3fv, 3);
-	rb_define_module_function(module, "glUniform4fv", gl_Uniform4fv, 3);
-	rb_define_module_function(module, "glUniform1iv", gl_Uniform1iv, 3);
-	rb_define_module_function(module, "glUniform2iv", gl_Uniform2iv, 3);
-	rb_define_module_function(module, "glUniform3iv", gl_Uniform3iv, 3);
-	rb_define_module_function(module, "glUniform4iv", gl_Uniform4iv, 3);
+	rb_define_module_function(module, "glUniform1fv", gl_Uniform1fv, 2);
+	rb_define_module_function(module, "glUniform2fv", gl_Uniform2fv, 2);
+	rb_define_module_function(module, "glUniform3fv", gl_Uniform3fv, 2);
+	rb_define_module_function(module, "glUniform4fv", gl_Uniform4fv, 2);
+	rb_define_module_function(module, "glUniform1iv", gl_Uniform1iv, 2);
+	rb_define_module_function(module, "glUniform2iv", gl_Uniform2iv, 2);
+	rb_define_module_function(module, "glUniform3iv", gl_Uniform3iv, 2);
+	rb_define_module_function(module, "glUniform4iv", gl_Uniform4iv, 2);
 	rb_define_module_function(module, "glUniformMatrix2fv", gl_UniformMatrix2fv, 4);
 	rb_define_module_function(module, "glUniformMatrix3fv", gl_UniformMatrix3fv, 4);
 	rb_define_module_function(module, "glUniformMatrix4fv", gl_UniformMatrix4fv, 4);
