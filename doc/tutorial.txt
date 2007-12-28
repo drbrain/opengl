@@ -249,7 +249,7 @@ occur, Gl::Error exception is raised:
 		...
 	end
 
-Some GLU functions may throw Glu::Error but also Gl::Error - the handling is the same as above.
+Some GLU functions may also throw Glu::Error - the handling is the same as above.
 
 It is usually good idea to leave error checking on for all your code, as OpenGL errors have habit to pop-up in
 unexpected places. For now there is no measurable performance hit for error checking, although this may depend

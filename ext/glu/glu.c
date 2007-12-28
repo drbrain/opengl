@@ -209,7 +209,6 @@ VALUE obj, arg1, arg2, arg3;
 	else
 		gluNurbsCallback(ndata->nobj, type, n_error);
 
-	CHECK_GLERROR	
 	return Qnil;
 }
 
@@ -223,7 +222,7 @@ VALUE obj;
 	ret = Data_Make_Struct(cNurbs, struct nurbsdata, mark_nurbs, free_nurbs, ndata);
 	ndata->nobj = gluNewNurbsRenderer();
 	ndata->n_ref = rb_ary_new2(REF_LAST);
-	CHECK_GLERROR	
+		
 	return ret;
 }
 static VALUE
@@ -233,7 +232,7 @@ VALUE obj, arg1;
 	struct nurbsdata *ndata;
 	GetNURBS(arg1, ndata);
 	free_nurbs(ndata);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -247,7 +246,7 @@ VALUE obj, arg1, arg2, arg3;
 	property = (GLenum)NUM2INT(arg2);
 	value = (GLfloat)NUM2DBL(arg3);
 	gluNurbsProperty(ndata->nobj, property, value);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -260,7 +259,7 @@ VALUE obj, arg1, arg2;
 	GetNURBS(arg1, ndata);
 	property = (GLenum)NUM2INT(arg2);
 	gluGetNurbsProperty(ndata->nobj, property, &value);
-	CHECK_GLERROR	
+		
 	return cond_GLBOOL2RUBY_F(property,value);
 }
 static VALUE
@@ -271,7 +270,7 @@ VALUE obj, arg1;
 	GetNURBS(arg1, ndata);
 	rb_ary_push(n_current, arg1);
 	gluBeginCurve(ndata->nobj);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -289,7 +288,7 @@ VALUE obj, arg1;
 
 	rb_ary_pop(n_current);
 
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -345,7 +344,7 @@ VALUE obj;
 	gms.ptr = REALLOC_N(gms.ptr, GLfloat*, gms.len+=2);
 	gms.ptr[gms.len - 2] = uknot;
 	gms.ptr[gms.len - 1] = ctlarray;
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -356,7 +355,7 @@ VALUE obj, arg1;
 	GetNURBS(arg1, ndata);
 	rb_ary_push(n_current, arg1);
 	gluBeginSurface(ndata->nobj);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -374,7 +373,7 @@ VALUE obj, arg1;
 
 	rb_ary_pop(n_current);
 	
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -456,7 +455,7 @@ VALUE obj;
 	gms.ptr[gms.len-2] = tknot;
 	gms.ptr[gms.len-1] = ctlarray;
 	
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -467,7 +466,7 @@ VALUE obj, arg1;
 	GetNURBS(arg1, ndata);
 	rb_ary_push(n_current, arg1);
 	gluBeginTrim(ndata->nobj);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -478,7 +477,7 @@ VALUE obj, arg1;
 	GetNURBS(arg1, ndata);
 	gluEndTrim(ndata->nobj);
 	rb_ary_pop(n_current);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -523,7 +522,7 @@ VALUE obj;
 	GetNURBS(args[0], ndata);
 	gluPwlCurve(ndata->nobj, count, array, stride, type);
 	free(array);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -542,7 +541,7 @@ VALUE obj, arg1,arg2,arg3,arg4;
 
 	gluLoadSamplingMatrices(ndata->nobj,mdl_mtx,persp_mtx,viewport);
 
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -591,7 +590,7 @@ VALUE obj;
 	ret = Data_Make_Struct(cTess, struct tessdata, mark_tess, free_tess, tdata);
 	tdata->tobj = gluNewTess();
 	tdata->t_ref = rb_ary_new2(REF_LAST);
-	CHECK_GLERROR	
+		
 	return ret;
 }
 static VALUE
@@ -601,7 +600,7 @@ VALUE obj, arg1;
 	struct tessdata *tdata;
 	GetTESS(arg1, tdata);
 	free_tess(tdata);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -752,7 +751,7 @@ VALUE obj, arg1, arg2;
 	property = (GLenum)NUM2INT(arg2);
 	value = (GLdouble)NUM2DBL(arg3);
 	gluTessProperty(tdata->tobj, property, value);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -765,7 +764,7 @@ VALUE obj, arg1, arg2;
 	GetTESS(arg1, tdata);
 	property = (GLenum)NUM2INT(arg2);
 	gluGetTessProperty(tdata->tobj, property, &value);
-	CHECK_GLERROR	
+		
 	return cond_GLBOOL2RUBY_F(property,value);
 }
 static VALUE
@@ -779,7 +778,7 @@ VALUE obj, arg1, arg2, arg3, arg4;
 	y = (GLdouble)NUM2DBL(arg3);
 	z = (GLdouble)NUM2DBL(arg4);
 	gluTessNormal(tdata->tobj, x, y, z);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -793,7 +792,7 @@ VALUE obj, arg1, arg2;
 	rb_ary_store(tdata->t_ref, TESS_DATA, rb_ary_new());
 	rb_ary_push(t_current, arg1);
 	gluTessBeginPolygon(tdata->tobj, (void*)arg2);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -807,7 +806,7 @@ VALUE obj, arg1;
 	rb_ary_store(tdata->t_ref, TESS_OUTDATA, Qnil);
 	rb_ary_store(tdata->t_ref, TESS_DATA, Qnil);
 	rb_ary_pop(t_current);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -817,7 +816,7 @@ VALUE obj, arg1;
 	struct tessdata* tdata;
 	GetTESS(arg1, tdata);
 	gluTessBeginContour(tdata->tobj);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -827,7 +826,7 @@ VALUE obj, arg1;
 	struct tessdata* tdata;
 	GetTESS(arg1, tdata);
 	gluTessEndContour(tdata->tobj);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -865,7 +864,7 @@ VALUE obj, arg1, arg2, arg3;
 		TESS_CALLBACK_CASE(TESS_COMBINE,t_combine)
 		TESS_CALLBACK_CASE(TESS_COMBINE_DATA,t_combine_data)
 	}
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 #undef TESS_CALLBACK_CASE
@@ -879,7 +878,7 @@ VALUE obj, arg1;
 	rb_ary_store(tdata->t_ref, TESS_DATA, rb_ary_new());
 	rb_ary_push(t_current, arg1);
 	gluBeginPolygon(tdata->tobj);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -893,7 +892,7 @@ VALUE obj, arg1, arg2, arg3;
 	Check_Type(arg2,T_ARRAY);
 	ary2cdbl(arg2, v, 3);
 	gluTessVertex(tdata->tobj, v,(void *)arg3);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -905,7 +904,7 @@ VALUE obj, arg1, arg2;
 	GetTESS(arg1, tdata);
 	type = (GLenum)NUM2INT(arg2);
 	gluNextContour(tdata->tobj, type);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -917,7 +916,7 @@ VALUE obj, arg1;
 	gluEndPolygon(tdata->tobj);
 	rb_ary_store(tdata->t_ref, TESS_DATA, Qnil);
 	rb_ary_pop(t_current);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -950,7 +949,7 @@ VALUE obj, arg1, arg2, arg3;
 	if (!rb_obj_is_kind_of(arg3,rb_cProc) && !NIL_P(arg3))
 		rb_raise(rb_eTypeError, "gluQuadricCallback needs Proc Object:%s",rb_class2name(CLASS_OF(arg3)));
 
-	CHECK_GLERROR	
+		
 	if (type!=GLU_ERROR)
 		return Qnil;
 
@@ -960,7 +959,7 @@ VALUE obj, arg1, arg2, arg3;
 	else
 		gluQuadricCallback(qdata->qobj, type, q_error);
 	
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -988,7 +987,7 @@ VALUE obj;
 	ret = Data_Make_Struct(cQuad, struct quaddata, mark_quad, free_quad, qdata);
 	qdata->qobj = gluNewQuadric();
 	qdata->q_ref = rb_ary_new2(REF_LAST);
-	CHECK_GLERROR	
+		
 	return ret;
 }
 static VALUE
@@ -998,7 +997,7 @@ VALUE obj, arg1;
 	struct quaddata *qdata;
 	GetQUAD(arg1, qdata);
 	free_quad(qdata);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1010,7 +1009,7 @@ VALUE obj, arg1, arg2;
 	GetQUAD(arg1, qdata);
 	normals = (GLenum)NUM2INT(arg2);
 	gluQuadricNormals(qdata->qobj, normals);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1022,7 +1021,7 @@ VALUE obj, arg1, arg2;
 	GetQUAD(arg1, qdata);
 	textureCoords = (GLboolean)NUM2INT(arg2);
 	gluQuadricTexture(qdata->qobj, textureCoords);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1034,7 +1033,7 @@ VALUE obj, arg1, arg2;
 	GetQUAD(arg1, qdata);
 	orientation = (GLenum)NUM2INT(arg2);
 	gluQuadricOrientation(qdata->qobj, orientation);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1046,7 +1045,7 @@ VALUE obj, arg1, arg2;
 	GetQUAD(arg1, qdata);
 	drawStyle = (GLenum)NUM2INT(arg2);
 	gluQuadricDrawStyle(qdata->qobj, drawStyle);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1070,7 +1069,7 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6;
 	rb_ary_push(q_current, arg1);
 	gluCylinder(qdata->qobj, baseRadius, topRadius, height, slices, stacks);
 	rb_ary_pop(q_current);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1093,7 +1092,7 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5;
 
 	gluDisk(qdata->qobj, innerRadius, outerRadius, slices, loops);
 	rb_ary_pop(q_current);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1119,7 +1118,7 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
 	rb_ary_push(q_current, arg1);
 	gluPartialDisk(qdata->qobj, innerRadius, outerRadius, slices, loops, startAngle, sweepAngle);
 	rb_ary_pop(q_current);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1139,7 +1138,7 @@ VALUE obj, arg1, arg2, arg3, arg4;
 	rb_ary_push(q_current, arg1);
 	gluSphere(qdata->qobj, radius, slices, stacks);
 	rb_ary_pop(q_current);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -1168,7 +1167,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	upy = (GLdouble)NUM2DBL(arg8);
 	upz = (GLdouble)NUM2DBL(arg9);
 	gluLookAt( eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz );
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1184,7 +1183,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	bottom = (GLdouble)NUM2DBL(arg3);
 	top = (GLdouble)NUM2DBL(arg4);
 	gluOrtho2D(left,right,bottom,top);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1200,7 +1199,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	zNear = (GLdouble)NUM2DBL(arg3);
 	zFar = (GLdouble)NUM2DBL(arg4);
 	gluPerspective(fovy,aspect,zNear,zFar);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 static VALUE
@@ -1239,7 +1238,7 @@ VALUE obj;
 	x = (GLdouble)NUM2DBL(args[0]);
 	y = (GLdouble)NUM2DBL(args[1]);
 	gluPickMatrix(x, y, width, height, viewport);
-	CHECK_GLERROR	
+		
 	return Qnil;
 }
 
@@ -1280,10 +1279,10 @@ VALUE obj;
 	oz = (GLdouble)NUM2DBL(args[2]);
 	
 	if (gluProject(ox, oy, oz, mdl_mtx, prj_mtx, vport, &wx, &wy, &wz) == GL_TRUE) {
-		CHECK_GLERROR	
+			
 		return rb_ary_new3(3, rb_float_new(wx), rb_float_new(wy), rb_float_new(wz));
 	} else {
-		CHECK_GLERROR	
+			
 		check_for_gluerror(GLU_INVALID_VALUE);
 		return Qnil; /* not reached */
 	}
@@ -1325,10 +1324,10 @@ VALUE obj;
 	wz = (GLdouble)NUM2DBL(args[2]);
 	
 	if (gluUnProject(wx, wy, wz, mdl_mtx, prj_mtx, vport, &ox, &oy, &oz) == GL_TRUE) {
-		CHECK_GLERROR	
+			
 		return rb_ary_new3(3, rb_float_new(ox), rb_float_new(oy), rb_float_new(oz));
 	} else {
-		CHECK_GLERROR	
+			
 		check_for_gluerror(GLU_INVALID_VALUE);
 		return Qnil; /* not reached */
 	}
@@ -1355,7 +1354,7 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6;
 
 	ret = gluBuild1DMipmaps(target, components, width, format, type, RSTRING_PTR(arg6));
 	check_for_gluerror(ret);
-	CHECK_GLERROR	
+		
 	return INT2NUM(ret);
 }
 
@@ -1382,7 +1381,7 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7;
 
 	ret = gluBuild2DMipmaps(target, components, width, height, format, type, RSTRING_PTR(arg7));
 	check_for_gluerror(ret);
-	CHECK_GLERROR	
+		
 	return INT2NUM(ret);
 }
 
@@ -1416,7 +1415,7 @@ VALUE obj, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8;
 		widthout, heightout, typeout, (GLvoid*)RSTRING_PTR(ret));
 
 	check_for_gluerror(retcode);
-	CHECK_GLERROR	
+		
 	return ret;
 }
 
@@ -1428,7 +1427,7 @@ VALUE obj, arg1;
 	GLubyte* error;
 	errorCode = (GLenum)NUM2INT(arg1);
 	error = (GLubyte*)gluErrorString(errorCode);
-	CHECK_GLERROR	
+		
 	if (error)
 		return rb_str_new2((char *)error);
 	else
@@ -1442,7 +1441,7 @@ VALUE obj, arg1;
 	GLubyte* str;
 	name = (GLenum)NUM2INT(arg1);
 	str = (GLubyte*)gluGetString(name);
-	CHECK_GLERROR	
+		
 	if (str)
 		return rb_str_new2((char *)str);
 	else
