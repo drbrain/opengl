@@ -434,8 +434,8 @@ VALUE obj,arg1,arg2; \
 	if (count<=0 || (count % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
-	value = ALLOC_N(_type_,_size_*count); \
-	_conv_(arg2,value,_size_*count); \
+	value = ALLOC_N(_type_,count); \
+	_conv_(arg2,value,count); \
 	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
 	CHECK_GLERROR \
@@ -455,8 +455,8 @@ UNIFORM_FUNC_V(Uniform4iv,GLint,ary2cint,4)
 #define UNIFORMMATRIX_FUNC(_name_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,GLboolean,GLfloat *); \
 static VALUE \
-gl_##_name_(obj,arg1,arg2,arg3,arg4) \
-VALUE obj,arg1,arg2,arg3,arg4; \
+gl_##_name_(obj,arg1,arg2,arg3) \
+VALUE obj,arg1,arg2,arg3; \
 { \
 	GLint location; \
 	GLsizei count; \
@@ -464,11 +464,11 @@ VALUE obj,arg1,arg2,arg3,arg4; \
 	GLfloat *value;	\
 	LOAD_GL_FUNC(gl##_name_,"2.0") \
 	location = (GLint)NUM2INT(arg1); \
-	count = (GLint)NUM2INT(arg2); \
-	transpose = (GLboolean)NUM2INT(arg3); \
-	value = ALLOC_N(GLfloat, _size_*_size_*count); \
-	ary2cmatfloat(arg4,value,_size_,_size_*count); \
-	fptr_gl##_name_(location,count,transpose,value); \
+	count = RARRAY_LEN(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
+	transpose = (GLboolean)NUM2INT(arg2); \
+	value = ALLOC_N(GLfloat, count); \
+	ary2cmatfloatcount(arg3,value,_size_,_size_); \
+	fptr_gl##_name_(location,count / (_size_*_size_),transpose,value); \
 	xfree(value); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -607,9 +607,9 @@ void gl_init_functions_2_0(VALUE module)
 	rb_define_module_function(module, "glUniform2iv", gl_Uniform2iv, 2);
 	rb_define_module_function(module, "glUniform3iv", gl_Uniform3iv, 2);
 	rb_define_module_function(module, "glUniform4iv", gl_Uniform4iv, 2);
-	rb_define_module_function(module, "glUniformMatrix2fv", gl_UniformMatrix2fv, 4);
-	rb_define_module_function(module, "glUniformMatrix3fv", gl_UniformMatrix3fv, 4);
-	rb_define_module_function(module, "glUniformMatrix4fv", gl_UniformMatrix4fv, 4);
+	rb_define_module_function(module, "glUniformMatrix2fv", gl_UniformMatrix2fv, 3);
+	rb_define_module_function(module, "glUniformMatrix3fv", gl_UniformMatrix3fv, 3);
+	rb_define_module_function(module, "glUniformMatrix4fv", gl_UniformMatrix4fv, 3);
 	rb_define_module_function(module, "glValidateProgram", gl_ValidateProgram, 1);
 	rb_define_module_function(module, "glVertexAttrib1d", gl_VertexAttrib1d, 2);
 	rb_define_module_function(module, "glVertexAttrib1f", gl_VertexAttrib1f, 2);

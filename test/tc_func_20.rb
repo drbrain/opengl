@@ -309,13 +309,13 @@ class Test_20 < Test::Unit::TestCase
 		assert((tm3l = glGetUniformLocation(program,"testmat3"))>=0)
 		assert((tm4l = glGetUniformLocation(program,"testmat4"))>=0)
 
-		glUniformMatrix2fv(tm2l, 1, GL_TRUE, [0,1, 1,0])
+		glUniformMatrix2fv(tm2l, GL_TRUE, [0,1, 1,0])
 		assert_equal(glGetUniformfv(program,tm2l),[0,1,1,0])
 
-		glUniformMatrix3fv(tm3l, 1, GL_TRUE, [0,1,0, 1,0,1, 0,1,0])
+		glUniformMatrix3fv(tm3l, GL_TRUE, [0,1,0, 1,0,1, 0,1,0])
 		assert_equal(glGetUniformfv(program,tm3l),[0,1,0, 1,0,1, 0,1,0])
 
-		glUniformMatrix4fv(tm4l, 1, GL_TRUE, [0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
+		glUniformMatrix4fv(tm4l, GL_TRUE, [0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
 		assert_equal(glGetUniformfv(program,tm4l),[0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
 	end
 

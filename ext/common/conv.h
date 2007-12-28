@@ -156,7 +156,7 @@ ARY2CTYPE(double,NUM2DBL)
 
 /* Converts either array or object responding to #to_a to C-style array */
 #define ARY2CMAT(_type_) \
-static inline void ary2cmat##_type_(rary, cary, cols, rows) \
+static inline void ary2cmat##_type_(rary, cary, cols, rows, count) \
 VALUE rary; \
 _type_ cary[]; \
 int cols,rows; \
@@ -176,6 +176,30 @@ int cols,rows; \
 ARY2CMAT(double)
 ARY2CMAT(float)
 #undef ARY2CMAT
+
+#define ARY2CMATCNT(_type_) \
+static inline void ary2cmat##_type_##count(rary, cary, cols, rows) \
+VALUE rary; \
+_type_ cary[]; \
+int cols,rows; \
+{ \
+	int i; \
+\
+	rary = rb_Array(rary); \
+	rary = rb_funcall(rary,rb_intern("flatten"),0); \
+\
+	if (RARRAY_LEN(rary) % (cols*rows) != 0) {\
+		xfree(cary); \
+		rb_raise(rb_eArgError, "passed array/matrix must conatain n x (%i*%i) elements",cols,rows); \
+	} \
+\
+	for (i=0; i < RARRAY_LEN(rary); i++) \
+		cary[i] = (_type_) NUM2DBL(rb_ary_entry(rary,i)); \
+}
+
+ARY2CMATCNT(double)
+ARY2CMATCNT(float)
+#undef ARY2CMATCNT
 
 
 #define EMPTY

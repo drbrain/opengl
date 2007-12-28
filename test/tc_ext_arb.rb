@@ -424,13 +424,13 @@ class Test_EXT_ARB < Test::Unit::TestCase
 		assert((tm3l = glGetUniformLocationARB(program,"testmat3"))>=0)
 		assert((tm4l = glGetUniformLocationARB(program,"testmat4"))>=0)
 
-		glUniformMatrix2fvARB(tm2l, 1, GL_TRUE, [0,1, 1,0])
+		glUniformMatrix2fvARB(tm2l, GL_TRUE, [0,1, 1,0])
 		assert_equal(glGetUniformfvARB(program,tm2l),[0,1,1,0])
 		
-		glUniformMatrix3fvARB(tm3l, 1, GL_TRUE, [0,1,0, 1,0,1, 0,1,0])
+		glUniformMatrix3fvARB(tm3l, GL_TRUE, [0,1,0, 1,0,1, 0,1,0])
 		assert_equal(glGetUniformfvARB(program,tm3l),[0,1,0, 1,0,1, 0,1,0])
 		
-		glUniformMatrix4fvARB(tm4l, 1, GL_TRUE, [0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
+		glUniformMatrix4fvARB(tm4l, GL_TRUE, [0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
 		assert_equal(glGetUniformfvARB(program,tm4l),[0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
 
 		glDeleteObjectARB(vs)

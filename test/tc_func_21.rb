@@ -49,51 +49,51 @@ class Test_21 < Test::Unit::TestCase
 		assert((tm34l = glGetUniformLocation(program,"testmat34"))>=0)
 		assert((tm43l = glGetUniformLocation(program,"testmat43"))>=0)
 
-		glUniformMatrix2x3fv(tm23l, 1, GL_FALSE, [0,1, 1,0, 0,1])
+		glUniformMatrix2x3fv(tm23l, GL_FALSE, [0,1, 1,0, 0,1])
 		assert_equal(glGetUniformfv(program,tm23l),[0,1, 1,0, 0,1])
-		glUniformMatrix3x2fv(tm32l, 1, GL_FALSE, [1,0, 0,1, 1,0])
+		glUniformMatrix3x2fv(tm32l, GL_FALSE, [1,0, 0,1, 1,0])
 		assert_equal(glGetUniformfv(program,tm32l),[1,0, 0,1, 1,0])
 
-		glUniformMatrix2x4fv(tm24l, 1, GL_FALSE, [0,1, 1,0, 0,1, 1,0])
+		glUniformMatrix2x4fv(tm24l, GL_FALSE, [0,1, 1,0, 0,1, 1,0])
 		assert_equal(glGetUniformfv(program,tm24l),[0,1, 1,0, 0,1, 1,0])
-		glUniformMatrix4x2fv(tm42l, 1, GL_FALSE, [1,0, 0,1, 1,0, 0,1])
+		glUniformMatrix4x2fv(tm42l, GL_FALSE, [1,0, 0,1, 1,0, 0,1])
 		assert_equal(glGetUniformfv(program,tm42l),[1,0, 0,1, 1,0, 0,1])
 
-		glUniformMatrix3x4fv(tm34l, 1, GL_FALSE, [0,1,1, 1,0,1, 0,1,1, 1,0,1])
+		glUniformMatrix3x4fv(tm34l, GL_FALSE, [0,1,1, 1,0,1, 0,1,1, 1,0,1])
 		assert_equal(glGetUniformfv(program,tm34l),[0,1,1, 1,0,1, 0,1,1, 1,0,1])
-		glUniformMatrix4x3fv(tm43l, 1, GL_FALSE, [1,0,0, 0,1,0, 1,0,0, 0,1,0])
+		glUniformMatrix4x3fv(tm43l, GL_FALSE, [1,0,0, 0,1,0, 1,0,0, 0,1,0])
 		assert_equal(glGetUniformfv(program,tm43l),[1,0,0, 0,1,0, 1,0,0, 0,1,0])
 
 		# 2
 		m = Matrix.rows([[0,1],[1,0],[0,1]])
-		glUniformMatrix2x3fv(tm23l, 1, GL_FALSE, m)
+		glUniformMatrix2x3fv(tm23l, GL_FALSE, m)
 		assert_equal(glGetUniformfv(program,tm23l),[0,1, 1,0, 0,1])
 		m = Matrix.rows([[0,1,1],[0,0,1]])
-		glUniformMatrix3x2fv(tm32l, 1, GL_FALSE, m)
+		glUniformMatrix3x2fv(tm32l, GL_FALSE, m)
 		assert_equal(glGetUniformfv(program,tm32l),[0,1,1, 0,0,1])
 
 		m = Matrix.rows([[0,1],[1,0],[0,1],[1,0]])
-		glUniformMatrix2x4fv(tm24l, 1, GL_FALSE, m)
+		glUniformMatrix2x4fv(tm24l, GL_FALSE, m)
 		assert_equal(glGetUniformfv(program,tm24l),[0,1, 1,0, 0,1, 1,0])
 		m = Matrix.rows([[0,1,1,1],[0,0,1,1]])
-		glUniformMatrix4x2fv(tm42l, 1, GL_FALSE, m)
+		glUniformMatrix4x2fv(tm42l, GL_FALSE, m)
 		assert_equal(glGetUniformfv(program,tm42l),[0,1,1,1, 0,0,1,1])
 
 		m = Matrix.rows([[0,1,0],[1,0,1],[0,1,0],[1,0,1]])
-		glUniformMatrix3x4fv(tm34l, 1, GL_FALSE, m)
+		glUniformMatrix3x4fv(tm34l, GL_FALSE, m)
 		assert_equal(glGetUniformfv(program,tm34l),[0,1,0, 1,0,1, 0,1,0, 1,0,1])
 
 		m = Matrix.rows([[0,1,1,1],[0,0,1,1],[1,1,0,0]])
-		glUniformMatrix4x3fv(tm43l, 1, GL_FALSE, m)
+		glUniformMatrix4x3fv(tm43l, GL_FALSE, m)
 		assert_equal(glGetUniformfv(program,tm43l),[0,1,1,1, 0,0,1,1, 1,1,0,0])
 
 		# 3
-		assert_raise ArgumentError do glUniformMatrix2x3fv(tm23l, 1, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix3x2fv(tm32l, 1, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix2x4fv(tm24l, 1, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix4x2fv(tm42l, 1, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix3x4fv(tm34l, 1, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix4x3fv(tm43l, 1, GL_FALSE, [1,2,3,4]) end
+		assert_raise ArgumentError do glUniformMatrix2x3fv(tm23l, GL_FALSE, [1,2,3,4]) end
+		assert_raise ArgumentError do glUniformMatrix3x2fv(tm32l, GL_FALSE, [1,2,3,4]) end
+		assert_raise ArgumentError do glUniformMatrix2x4fv(tm24l, GL_FALSE, [1,2,3,4]) end
+		assert_raise ArgumentError do glUniformMatrix4x2fv(tm42l, GL_FALSE, [1,2,3,4]) end
+		assert_raise ArgumentError do glUniformMatrix3x4fv(tm34l, GL_FALSE, [1,2,3,4]) end
+		assert_raise ArgumentError do glUniformMatrix4x3fv(tm43l, GL_FALSE, [1,2,3,4]) end
 	end
 
 	def test_pixelunpack_bitmap

@@ -568,8 +568,8 @@ VALUE obj,arg1,arg2; \
 	if (count<=0 || (count % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
-	value = ALLOC_N(_type_,_size_*count); \
-	_conv_(arg2,value,_size_*count); \
+	value = ALLOC_N(_type_,count); \
+	_conv_(arg2,value,count); \
 	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
 	CHECK_GLERROR \

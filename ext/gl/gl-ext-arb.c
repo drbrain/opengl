@@ -427,8 +427,8 @@ VALUE obj,arg1,arg2; \
 	if (count<=0 || (count % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
-	value = ALLOC_N(_type_,_size_*count); \
-	_conv_(arg2,value,_size_*count); \
+	value = ALLOC_N(_type_,count); \
+	_conv_(arg2,value,count); \
 	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
 	CHECK_GLERROR \
@@ -445,12 +445,11 @@ GLUNIFORM_VFUNC(Uniform3ivARB,GLint,ary2cint,3)
 GLUNIFORM_VFUNC(Uniform4ivARB,GLint,ary2cint,4)
 #undef GLUNIFORM_VFUNC
 
-
 #define UNIFORMMATRIX_FUNC(_name_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,GLboolean,GLfloat *); \
 static VALUE \
-gl_##_name_(obj,arg1,arg2,arg3,arg4) \
-VALUE obj,arg1,arg2,arg3,arg4; \
+gl_##_name_(obj,arg1,arg2,arg3) \
+VALUE obj,arg1,arg2,arg3; \
 { \
 	GLint location; \
 	GLsizei count; \
@@ -458,11 +457,11 @@ VALUE obj,arg1,arg2,arg3,arg4; \
 	GLfloat *value;	\
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
 	location = (GLint)NUM2INT(arg1); \
-	count = (GLint)NUM2INT(arg2); \
-	transpose = (GLboolean)NUM2INT(arg3); \
-	value = ALLOC_N(GLfloat, _size_*_size_*count); \
-	ary2cmatfloat(arg4,value,_size_,_size_*count); \
-	fptr_gl##_name_(location,count,transpose,value); \
+	count = RARRAY_LEN(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
+	transpose = (GLboolean)NUM2INT(arg2); \
+	value = ALLOC_N(GLfloat, count); \
+	ary2cmatfloatcount(arg3,value,_size_,_size_); \
+	fptr_gl##_name_(location,count / (_size_*_size_),transpose,value); \
 	xfree(value); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -844,9 +843,9 @@ void gl_init_functions_ext_arb(VALUE module)
 	rb_define_module_function(module, "glUniform2ivARB", gl_Uniform2ivARB, 2);
 	rb_define_module_function(module, "glUniform3ivARB", gl_Uniform3ivARB, 2);
 	rb_define_module_function(module, "glUniform4ivARB", gl_Uniform4ivARB, 2);
-	rb_define_module_function(module, "glUniformMatrix2fvARB", gl_UniformMatrix2fvARB, 4);
-	rb_define_module_function(module, "glUniformMatrix3fvARB", gl_UniformMatrix3fvARB, 4);
-	rb_define_module_function(module, "glUniformMatrix4fvARB", gl_UniformMatrix4fvARB, 4);
+	rb_define_module_function(module, "glUniformMatrix2fvARB", gl_UniformMatrix2fvARB, 3);
+	rb_define_module_function(module, "glUniformMatrix3fvARB", gl_UniformMatrix3fvARB, 3);
+	rb_define_module_function(module, "glUniformMatrix4fvARB", gl_UniformMatrix4fvARB, 3);
 	rb_define_module_function(module, "glGetObjectParameterfvARB", gl_GetObjectParameterfvARB, 2);
 	rb_define_module_function(module, "glGetObjectParameterivARB", gl_GetObjectParameterivARB, 2);
 	rb_define_module_function(module, "glGetInfoLogARB", gl_GetInfoLogARB, 1);
