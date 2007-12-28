@@ -524,7 +524,11 @@ int x,y;
 	VALUE func;
 	func = rb_ary_entry(KeyboardFunc, glutGetWindow());
 	if (!NIL_P(func))
+#if RUBY_VERSION <190
 		rb_funcall(func, callId, 3, INT2FIX(key), INT2FIX(x), INT2FIX(y));
+#else
+		rb_funcall(func, callId, 3, rb_funcall(INT2FIX(key),rb_intern("chr"),0), INT2FIX(x), INT2FIX(y));
+#endif
 }
 
 

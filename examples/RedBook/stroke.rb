@@ -117,7 +117,7 @@ $test1 = "A SPARE SERAPE APPEARS AS"
 $test2 = "APES PREPARE RARE PEPPERS"
 
 def printStrokedString(s)
-	glCallLists( s)
+	glCallLists(GL_BYTE,s)
 end
 
 display = Proc.new do
@@ -147,7 +147,7 @@ end
 
 keyboard = Proc.new do |key, x, y|
 	case (key)
-		when 27
+		when ?\e
 		exit(0);
 	end
 end

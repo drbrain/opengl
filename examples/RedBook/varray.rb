@@ -141,7 +141,7 @@ end
 
 keyboard = proc do |key, x, y|
 	case (key)
-		when 27
+		when ?\e
 			exit(0)
 	end
 end

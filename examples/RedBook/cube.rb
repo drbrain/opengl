@@ -53,7 +53,7 @@ end
 
 keyboard = Proc.new do |key, x, y|
 	case (key)
-		when 27
+		when ?\e
 		exit(0);
 	end
 end

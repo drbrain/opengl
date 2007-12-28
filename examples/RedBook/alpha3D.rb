@@ -141,7 +141,7 @@ keyboard = proc do |key, x, y|
 			$solidZ = MAXZ
 			$transparentZ = MINZ
 			glutPostRedisplay()
-		when 27
+		when ?\e
 			exit(0)
 	end
 end

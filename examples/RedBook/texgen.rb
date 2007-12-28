@@ -131,27 +131,27 @@ end
 
 keyboard = Proc.new do |key, x, y|
 	case (key)
-		when 'e'[0],'E'[0]
+		when ?e,?E
 			$currentGenMode = GL_EYE_LINEAR
 			$currentPlane = GL_EYE_PLANE
 			glTexGen(GL_S, GL_TEXTURE_GEN_MODE, $currentGenMode)
 			glTexGen(GL_S, $currentPlane, $currentCoeff)
 			glutPostRedisplay()
-		when 'o'[0], 'O'[0]
+		when ?o, ?O
 			$currentGenMode = GL_OBJECT_LINEAR
 			$currentPlane = GL_OBJECT_PLANE
 			glTexGen(GL_S, GL_TEXTURE_GEN_MODE, $currentGenMode)
 			glTexGen(GL_S, $currentPlane, $currentCoeff)
 			glutPostRedisplay()
-		when 's'[0],'S'[0]
+		when ?s,?S
 			$currentCoeff = $slanted
 			glTexGen(GL_S, $currentPlane, $currentCoeff)
 			glutPostRedisplay()
-		when 'x'[0],'X'[0]
+		when ?x,?X
 			$currentCoeff = $xequalzero
 			glTexGen(GL_S, $currentPlane, $currentCoeff)
 			glutPostRedisplay()
-		when 27
+		when ?\e
 			exit(0)
 	end
 end

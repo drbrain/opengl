@@ -139,7 +139,7 @@ myReshape = Proc.new {|w, h|
 # Keyboard handler to exit when ESC is typed
 keyboard = lambda do |key, x, y|
   case(key)
-  when 27
+  when ?\e
     exit(0)
   end
 end

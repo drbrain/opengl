@@ -780,7 +780,7 @@ end
 
 # Keyboard handler
 def cbKeyPressed(key,x,y)
-  if (key == 27 or key == ?q)
+  if (key == ?\e or key == ?q)
 		glutDestroyWindow($app)
 		exit(0)
 	end

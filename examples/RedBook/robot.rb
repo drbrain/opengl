@@ -86,19 +86,19 @@ end
 
 keyboard = Proc.new do|key, x, y|
 	case  (key)
-		when 's'[0]
+		when ?s
 			$shoulder = ($shoulder + 5) % 360
 			glutPostRedisplay()
-		when 'S'[0]
+		when ?S
 			$shoulder = ($shoulder - 5) % 360
 			glutPostRedisplay()
-		when 'e'[0]
+		when ?e
 			$elbow = ($elbow + 5) % 360
 			glutPostRedisplay()
-		when 'E'[0]
+		when ?E
 			$elbow = ($elbow - 5) % 360
 			glutPostRedisplay()
-		when 27
+		when ?\e
 			exit(0)
 	end
 end

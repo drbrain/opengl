@@ -100,10 +100,10 @@ end
 
 keyboard = Proc.new do|key, x, y|
 	case (key)
-		when 't'[0],'T'[0]
+		when ?t,?T
 			$leftFirst = !$leftFirst
 			glutPostRedisplay()	
-		when 27  # Escape key
+		when ?\e  # Escape key
 			exit(0)
 	end
 end

@@ -95,11 +95,11 @@ end
 
 keyboard = Proc.new do |key, x, y|
 	case (key)
-		when 'r'[0],'R'[0]
+		when ?r,?R
 			$rotAngle = $rotAngle + 20.0
 			$rotAngle = 0.0 if ($rotAngle >= 360.0) 
 			glutPostRedisplay()
-		when 27  # Escape Key
+		when ?\e  # Escape Key
 			exit(0)
 	end
 end

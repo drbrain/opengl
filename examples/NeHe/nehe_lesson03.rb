@@ -99,7 +99,7 @@ end
 # Keyboard handler to exit when ESC is typed
 keyboard = lambda do |key, x, y|
     case(key)
-      when 27
+      when ?\e
           glutDestroyWindow(window)
           exit(0)
       end

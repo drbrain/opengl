@@ -100,7 +100,7 @@ end
 def printString(s)
 	glPushAttrib(GL_LIST_BIT)
 	glListBase($fontOffset)
-	glCallLists(s)
+	glCallLists(GL_BYTE,s)
 	glPopAttrib()
 end
 
@@ -131,7 +131,7 @@ end
 
 keyboard = proc do |key, x, y|
 	case (key)
-		when 27
+		when ?\e
 			exit(0)
 	end
 end

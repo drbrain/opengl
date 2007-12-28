@@ -79,19 +79,19 @@ end
 
 keyboard = Proc.new do |key, x, y|
 	case (key)
-		when 'd'[0]
+		when ?d
 			$day = ($day + 10) % 360
 			glutPostRedisplay()
-		when 'D'[0]
+		when ?D
 			$day = ($day - 10) % 360
 			glutPostRedisplay()
-		when 'y'[0]
+		when ?y
 			$year = ($year + 5) % 360
 			glutPostRedisplay()
-		when 'Y'[0]
+		when ?Y
 			$year = ($year - 5) % 360
 			glutPostRedisplay()
-		when 27
+		when ?\e
 			exit(0)
 	end
 end

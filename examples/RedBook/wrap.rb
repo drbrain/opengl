@@ -119,19 +119,19 @@ end
 
 keyboard = Proc.new do |key, x, y|
 	case (key)
-		when 's'[0]
+		when ?s
 			glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP)
 			glutPostRedisplay()
-		when 'S'[0]
+		when ?S
 			glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
 			glutPostRedisplay()
-		when 't'[0]
+		when ?t
 			glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP)
 			glutPostRedisplay()
-		when 'T'[0]
+		when ?T
 			glTexParameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
 			glutPostRedisplay()
-		when 27
+		when ?\e
 			exit(0)
 	end
 end

@@ -172,7 +172,7 @@ class App
 			begin	@@anisotropy.rotate! end until @@anisotropy[0]<=max_anisotropy
 		when ?c
 			@@color_tint.rotate!
-		when 27 # Escape
+		when ?\e # Escape
 			exit(0)
 		end
 		glutPostRedisplay()

@@ -123,7 +123,7 @@ keyboard = proc do |key, x, y|
 		when ?t ,?T
 			$polySmooth = !$polySmooth
 			glutPostRedisplay()
-		when 27
+		when ?\e
 			exit(0)  # Escape key
 	end
 end

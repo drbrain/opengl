@@ -103,23 +103,23 @@ end
 
 keyboard = Proc.new do |key, x, y|
 	case (key)
-		when 'r'[0],'R'[0]
+		when ?r,?R
 			$zoomFactor = 1.0
 			glutPostRedisplay()
 			printf("zoomFactor reset to 1.0\n")
-		when 'z'[0]
+		when ?z
 			$zoomFactor = $zoomFactor + 0.5
 			if ($zoomFactor >= 3.0) 
 				$zoomFactor = 3.0
 			end
 			printf("zoomFactor is now %4.1f\n", $zoomFactor)
-		when 'Z'[0]
+		when ?Z
 			$zoomFactor = $zoomFactor - 0.5
 			if ($zoomFactor <= 0.5) 
 				$zoomFactor = 0.5
 			end
 			printf("zoomFactor is now %4.1f\n", $zoomFactor)
-		when 27
+		when ?\e
 			exit(0)
 	end
 end

@@ -156,11 +156,11 @@ key = lambda do |key,x,y|
 	case(key)
 	when ?b
 		nextClearColor()
-	when ?q, 27 # esc
+	when ?q, ?\e # esc
 		exit(0)
 	when ?t
 		$gleModel << $gleModel.shift # rotate the array
-	when 32 # spacebar
+	when ?\s # space
 		$rotate = !$rotate
 
 		if ($rotate==false)
