@@ -17,7 +17,23 @@ file for the terms of the license.
 [Yoshi's ruby-opengl]: http://www2.giganet.net/~yoshi/
 
 
-Latest release: 0.50.0 (October 23, 2007)
+Current release: 0.60.0 (December 29, 2007)
+-----------------
+Changes in this release:
+* Automatic error checking for GL/GLU calls, enabled by default (see doc/tutorial)
+* Added support for many more OpenGL extensions
+* Support for Ruby 1.9.0+ (requires mkrf 0.2.3)
+* Ton of bugfixes.<br><br>
+<b>API Changes:</b>
+* Boolean functions/parameters was changed to ruby true/false instead of GL\_TRUE / GL\_FALSE, which remains for compatibility
+* glGet\* functions now returns x instead of [x] when returning only one value
+* Functions operating on packed strings (glTexture, gl\*Pointer etc.) now also accepts ruby arrays directly
+* Matrix handling functions now also accepts instances of Matrix class, or any class that can be converted to array
+* glUniform\*v and glUniformmatrix\*v now does not require 'count' parameter, they will calculate it from length of passed array
+* glCallLists needs type specifier (previously was forced to GL_BYTE)
+* On ruby 1.9, glut keyboard callback returns char ("x") instead of integer so using 'if key == ?x' works on both 1.8 and 1.9
+
+Previous release: 0.50.0 (October 23, 2007)
 -----------------
 Changes in this release:
 
@@ -29,19 +45,3 @@ Changes in this release:
 * Some code refactoring to remove duplicity
 * Documentation update (still no API doc though)
 * Lots of bugfixes.
-
-
-Previous release: 0.40.1 (July 19, 2007)
------------------
-Changes in this release:
-
-* Fixed build problems on Mac OS X
-
-
-Current project status (SVN):
------------------
-
-* Supports OpenGL 2.0 and 2.1
-* Compiles and runs on GNU/Linux, Mac OS X and Windows
-* Some extensions are supported
-* No useful documentation yet

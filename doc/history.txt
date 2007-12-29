@@ -60,3 +60,7 @@ of unit tests, creating near-complete support for OpenGL 2.1.
 Support for MS Windows was also added during this time.
 
 Version 0.40 was released in July 2007.
+
+Version 0.50 was released in October 2007.
+
+Version 0.60 was released in December 2007.
