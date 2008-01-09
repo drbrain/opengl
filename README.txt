@@ -17,7 +17,7 @@ file for the terms of the license.
 [Yoshi's ruby-opengl]: http://www2.giganet.net/~yoshi/
 
 
-Current release: 0.60.0 (December 29, 2007)
+Current release: 0.60.0 (January 6, 2008)
 -----------------
 Changes in this release:
 * Automatic error checking for GL/GLU calls, enabled by default (see doc/tutorial)
