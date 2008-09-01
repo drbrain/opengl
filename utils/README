@@ -4,6 +4,7 @@ The utils directory
 * For generating website html
     * `mkdn2html.rb` -- for converting the .txt files to html.
     * `post-mkdn2html.rb` -- for the html syntax highlighting.
+		* `extlistgen.rb` -- generates supported extension table from extensions.txt.in
 
 * For generating code
 		* `enumgen.rb` -- fetches opengl enum .spec files from web and generates

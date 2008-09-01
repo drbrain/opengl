@@ -1,4 +1,4 @@
-/* This file was genereated on Mon Jul 23 15:17:36 +0200 2007
+/* This file was genereated on Mon Sep 01 17:08:38 +0200 2008
    source: http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec
 */
 
@@ -43,9 +43,6 @@
 #endif
 #ifndef GLU_EXT_object_space_tess
 #define GLU_EXT_object_space_tess 1
-#endif
-#ifndef GLU_FALSE
-#define GLU_FALSE 0
 #endif
 #ifndef GLU_FILL
 #define GLU_FILL 100012
@@ -439,9 +436,6 @@
 #endif
 #ifndef GLU_TESS_WINDING_RULE
 #define GLU_TESS_WINDING_RULE 100140
-#endif
-#ifndef GLU_TRUE
-#define GLU_TRUE 1
 #endif
 #ifndef GLU_UNKNOWN
 #define GLU_UNKNOWN 100124

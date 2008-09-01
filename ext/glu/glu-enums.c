@@ -1,12 +1,12 @@
-/* This file was genereated on Mon Jul 23 15:17:36 +0200 2007
+/* This file was genereated on Mon Sep 01 17:08:38 +0200 2008
    source: http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec
 */
 
 #include "../common/common.h"
 void glu_init_enums(VALUE module)
 {
-	rb_define_const(module, "GLU_FALSE", Qfalse);
 	rb_define_const(module, "GLU_TRUE", Qtrue);
+	rb_define_const(module, "GLU_FALSE", Qfalse);
 
 	rb_define_const(module, "GLU_AUTO_LOAD_MATRIX", INT2NUM(GLU_AUTO_LOAD_MATRIX));
 	rb_define_const(module, "GLU_BEGIN", INT2NUM(GLU_BEGIN));

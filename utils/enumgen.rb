@@ -29,7 +29,11 @@ def parse_enum_spec(infilename)
 			when /^\t/ # enum
 			# remove trailing comment (if any) and split
 			name,equals,value,*rest = line.split("#")[0].split(" ")
-			enum_list[name] = value
+
+			# true/false are special constants
+			unless (name=="TRUE" or name=="FALSE")
+				enum_list[name] = value
+			end
 		end
 	end
 	f.close
@@ -60,6 +64,11 @@ def write_enums(enum_list, task)
 		f << '#include "../common/common.h"' << "\n"
 		f << "void #{task[:prefix].downcase}init_enums(VALUE module)" << "\n"
 		f << "{" << "\n"
+
+		# true/false are special constants
+		f << "\trb_define_const(module, \"#{task[:prefix]}TRUE\", Qtrue);" << "\n"
+		f << "\trb_define_const(module, \"#{task[:prefix]}FALSE\", Qfalse);" << "\n"
+		f << "\n"
 
 		enum_list.each do |name,value|
 			gl_name = task[:prefix] + name
