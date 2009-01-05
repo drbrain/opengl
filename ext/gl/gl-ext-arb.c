@@ -81,7 +81,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 	_type_ cary[_size_]; \
 	LOAD_GL_FUNC(gl##_name_,_ext_) \
 	Check_Type(arg1,T_ARRAY); \
-	if (RARRAY(arg1)->len != _size_) \
+	if (RARRAY_LEN(arg1) != _size_) \
 		rb_raise(rb_eArgError, "Incorrect array length - must have '%i' elements.",_size_); \
 	_conv_(arg1,cary,_size_); \
 	fptr_gl##_name_(cary); \

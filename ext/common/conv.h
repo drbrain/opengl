@@ -131,9 +131,9 @@ int maxlen; \
     struct RArray* ary; \
     ary = RARRAY(rb_Array(arg)); \
     if (maxlen < 1) \
-        maxlen = ary->len; \
+        maxlen = RARRAY_LEN(ary); \
     else \
-        maxlen = maxlen < ary->len ? maxlen : ary->len; \
+        maxlen = maxlen < RARRAY_LEN(ary) ? maxlen : RARRAY_LEN(ary); \
     for (i=0; i < maxlen; i++) \
         cary[i] = (GL##_type_)_convert_(rb_ary_entry((VALUE)ary,i)); \
     return i; \
@@ -166,7 +166,7 @@ int cols,rows; \
 	rary = rb_Array(rary); \
 	rary = rb_funcall(rary,rb_intern("flatten"),0); \
 \
-	if (RARRAY(rary)->len != cols*rows) \
+	if (RARRAY_LEN(rary) != cols*rows) \
 		rb_raise(rb_eArgError, "passed array/matrix must have %i*%i elements",cols,rows); \
 \
 	for (i=0; i < cols*rows; i++) \

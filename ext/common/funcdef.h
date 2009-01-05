@@ -245,7 +245,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 	LOAD_GL_FUNC(gl##_name_,_ver_) \
 	if (TYPE(arg1)==T_ARRAY) { \
 		GLuint *objects; \
-		n = RARRAY(arg1)->len; \
+		n = RARRAY_LEN(arg1); \
 		objects = ALLOC_N(GLuint,n); \
 		ary2cuint(arg1,objects,n);  \
 		fptr_gl##_name_(n,objects); \
@@ -265,7 +265,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 	GLsizei n; \
 	if (TYPE(arg1)==T_ARRAY) { \
 		GLuint *objects; \
-		n = RARRAY(arg1)->len; \
+		n = RARRAY_LEN(arg1); \
 		objects = ALLOC_N(GLuint,n); \
 		ary2cuint(arg1,objects,n);  \
 		gl##_name_(n,objects); \

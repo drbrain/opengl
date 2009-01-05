@@ -310,7 +310,7 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "52", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6])) {
 		case 5:
-			uknot_count = RARRAY(args[1])->len;
+			uknot_count = RARRAY_LEN(args[1]);
 			uorder = (GLenum)NUM2INT(args[3]);
 			type = (GLenum)NUM2INT(args[4]);
 			u_stride = get_curve_dim(type);
@@ -401,11 +401,11 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "74", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6], &args[7], &args[8], &args[9], &args[10])) {
 		case 7:
-			sknot_count = RARRAY(args[1])->len;
+			sknot_count = RARRAY_LEN(args[1]);
 			sknot = ALLOC_N(GLfloat, sknot_count);
 			ary2cflt(args[1], sknot, sknot_count);
 
-			tknot_count = RARRAY(args[2])->len;
+			tknot_count = RARRAY_LEN(args[2]);
 			tknot = ALLOC_N(GLfloat, tknot_count);
 			ary2cflt(args[2], tknot, tknot_count);
 
@@ -497,7 +497,7 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "32", &args[0], &args[1], &args[2], &args[3], &args[4])) {
 		case 3:
-			count = RARRAY(args[1])->len;
+			count = RARRAY_LEN(args[1]);
 			type = NUM2INT(args[2]);
 			stride = (type == GLU_MAP1_TRIM_2 ? 2 : 3);
 

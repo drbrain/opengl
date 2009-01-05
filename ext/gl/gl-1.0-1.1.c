@@ -902,7 +902,7 @@ VALUE obj; \
 				rb_raise(rb_eArgError, "Pixel unpack buffer bound, but offset argument missing"); \
 			map = (GLenum)NUM2INT(args[0]); \
 			Check_Type(args[1],T_ARRAY); \
-			size = RARRAY(args[1])->len; \
+			size = RARRAY_LEN(args[1]); \
 			values = ALLOC_N(_vartype_,size); \
 			_convert_(args[1],values,size); \
 			glPixelMap##_type_##v(map,size,values); \
@@ -1985,7 +1985,7 @@ VALUE obj,arg1;
 	VALUE ary;
 	int i;
 	ary = rb_Array(arg1);
-	size = RARRAY(ary)->len;
+	size = RARRAY_LEN(ary);
 	textures = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
 	ary2cuint(ary,textures,size);	
@@ -2016,7 +2016,7 @@ VALUE obj,arg1,arg2;
 	GLsizei size;
 	Check_Type(arg1,T_ARRAY);
 	Check_Type(arg2,T_ARRAY);
-	if ((size = RARRAY(arg1)->len) != RARRAY(arg2)->len)
+	if ((size = RARRAY_LEN(arg1)) != RARRAY_LEN(arg2))
 		rb_raise(rb_eArgError, "passed arrays must have the same length");
 	textures = ALLOC_N(GLuint,size);
 	priorities = ALLOC_N(GLclampf,size);
@@ -2058,15 +2058,15 @@ VALUE obj; \
 	case 1: \
 		if (TYPE(args[0]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \
-		switch (ary->len) { \
+		switch (RARRAY_LEN(ary)) { \
 			case 3: \
-			gl_Color3##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
+			gl_Color3##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
 			break; \
 			case 4: \
-			gl_Color4##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
+			gl_Color4##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2],RARRAY_PTR(ary)[3]); \
 			break; \
 			default: \
-			rb_raise(rb_eArgError, "array length:%li", ary->len); \
+			rb_raise(rb_eArgError, "array length:%li", RARRAY_LEN(ary)); \
 		} \
 		} \
 		else \
@@ -2108,12 +2108,12 @@ VALUE obj; \
 	case 1: \
 		if (TYPE(args[0]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \
-		switch (ary->len) { \
+		switch (RARRAY_LEN(ary)) { \
 			case 3: \
-			gl_Normal3##_type_(obj,ary->ptr[0], ary->ptr[1],ary->ptr[2]); \
+			gl_Normal3##_type_(obj,RARRAY_PTR(ary)[0], RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
 			break; \
 			default: \
-			rb_raise(rb_eArgError, "array length:%li", ary->len); \
+			rb_raise(rb_eArgError, "array length:%li", RARRAY_LEN(ary)); \
 		} \
 		} \
 		else \
@@ -2149,15 +2149,15 @@ VALUE obj; \
 	case 1: \
 		if (TYPE(args[0]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \
-		switch (ary->len) { \
+		switch (RARRAY_LEN(ary)) { \
 			case 2: \
-			gl_RasterPos2##_type_(obj,ary->ptr[0],ary->ptr[1]); \
+			gl_RasterPos2##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1]); \
 			break; \
 			case 3: \
-			gl_RasterPos3##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
+			gl_RasterPos3##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
 			break; \
 			case 4: \
-			gl_RasterPos4##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
+			gl_RasterPos4##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2],RARRAY_PTR(ary)[3]); \
 			break; \
 			default: \
 			rb_raise(rb_eArgError, "array length:%d", num); \
@@ -2202,12 +2202,12 @@ VALUE obj; \
 		if (TYPE(args[0]) == T_ARRAY && TYPE(args[1]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \
 		ary2 = RARRAY(args[1]); \
-		switch (ary->len) { \
+		switch (RARRAY_LEN(ary)) { \
 			case 2: \
-			gl_Rect##_type_(obj,ary->ptr[0],ary->ptr[1],ary2->ptr[0],ary2->ptr[1]); \
+			gl_Rect##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary2)[0],RARRAY_PTR(ary2)[1]); \
 			break; \
 			default: \
-			rb_raise(rb_eArgError, "array length:%li", ary->len); \
+			rb_raise(rb_eArgError, "array length:%li", RARRAY_LEN(ary)); \
 		} \
 		} \
 		else \
@@ -2242,18 +2242,18 @@ VALUE obj; \
 	case 1: \
 		if (TYPE(args[0]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \
-		switch (ary->len) { \
+		switch (RARRAY_LEN(ary)) { \
 			case 1: \
-			gl_TexCoord1##_type_(obj,ary->ptr[0]); \
+			gl_TexCoord1##_type_(obj,RARRAY_PTR(ary)[0]); \
 			break; \
 			case 2: \
-			gl_TexCoord2##_type_(obj,ary->ptr[0],ary->ptr[1]); \
+			gl_TexCoord2##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1]); \
 			break; \
 			case 3: \
-			gl_TexCoord3##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
+			gl_TexCoord3##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
 			break; \
 			case 4: \
-			gl_TexCoord4##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
+			gl_TexCoord4##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2],RARRAY_PTR(ary)[3]); \
 			break; \
 			default: \
 			rb_raise(rb_eArgError, "array length:%d", num); \
@@ -2297,18 +2297,18 @@ VALUE obj; \
 	case 1: \
 		if (TYPE(args[0]) == T_ARRAY) { \
 		ary = RARRAY(args[0]); \
-		switch (ary->len) { \
+		switch (RARRAY_LEN(ary)) { \
 			case 2: \
-			gl_Vertex2##_type_(obj,ary->ptr[0],ary->ptr[1]); \
+			gl_Vertex2##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1]); \
 			break; \
 			case 3: \
-			gl_Vertex3##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
+			gl_Vertex3##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
 			break; \
 			case 4: \
-			gl_Vertex4##_type_(obj,ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
+			gl_Vertex4##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2],RARRAY_PTR(ary)[3]); \
 			break; \
 			default: \
-			rb_raise(rb_eRuntimeError, "glVertex vertex num error!:%li", ary->len); \
+			rb_raise(rb_eRuntimeError, "glVertex vertex num error!:%li", RARRAY_LEN(ary)); \
 		} \
 		} \
 		else \

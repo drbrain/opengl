@@ -191,7 +191,7 @@ VALUE obj,arg1,arg2,arg3; \
 	_type_ *cary; \
 	int len; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
-	len = RARRAY(rb_Array(arg3))->len; \
+	len = RARRAY_LEN(rb_Array(arg3)); \
 	if (len<=0 || (len % 4) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of 4"); \
 	cary = ALLOC_N(_type_,len); \
@@ -260,7 +260,7 @@ VALUE obj,arg1,arg2; \
 	_type_ *cary; \
 	int len; \
 	LOAD_GL_FUNC(gl##_name_,_extension_)  \
-	len = RARRAY(rb_Array(arg2))->len; \
+	len = RARRAY_LEN(rb_Array(arg2)); \
 	if (len<=0 || (len % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	cary = ALLOC_N(_type_,len); \
@@ -352,7 +352,7 @@ static VALUE gl_RequestResidentProgramsNV(VALUE obj,VALUE arg1)
 	if (TYPE(arg1)==T_ARRAY) {
 		GLsizei n;
 		GLuint *programs;
-		n = RARRAY(arg1)->len;
+		n = RARRAY_LEN(arg1);
 		programs = ALLOC_N(GLuint,n);
 		ary2cuint(arg1,programs,n); 
 		fptr_glRequestResidentProgramsNV( n, programs);
@@ -378,7 +378,7 @@ static VALUE gl_AreProgramsResidentNV(VALUE obj,VALUE arg1)
 	int i;
 	LOAD_GL_FUNC(glAreProgramsResidentNV,"GL_NV_vertex_program")
 	ary = rb_Array(arg1);
-	size = RARRAY(ary)->len;
+	size = RARRAY_LEN(ary);
 	programs = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
 	ary2cuint(ary,programs,size);	

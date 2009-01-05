@@ -127,9 +127,9 @@ class Test_12 < Test::Unit::TestCase
 
 		glEnable(GL_HISTOGRAM)
 
-		glHistogram(GL_HISTOGRAM,1,GL_RGB8,GL_FALSE)
+		glHistogram(GL_HISTOGRAM,1,GL_RGB,GL_FALSE)
 		assert_equal(glGetHistogramParameterfv(GL_HISTOGRAM,GL_HISTOGRAM_WIDTH),1)
-		assert_equal(glGetHistogramParameteriv(GL_HISTOGRAM,GL_HISTOGRAM_FORMAT),GL_RGB8)
+		assert_equal(glGetHistogramParameteriv(GL_HISTOGRAM,GL_HISTOGRAM_FORMAT),GL_RGB)
 		assert_equal(glGetHistogramParameteriv(GL_HISTOGRAM,GL_HISTOGRAM_SINK),GL_FALSE)
 
 		glDrawPixels(2,1,GL_RGB,GL_FLOAT,[1,1,1,1,1,1].pack("f*"))
@@ -147,9 +147,9 @@ class Test_12 < Test::Unit::TestCase
 
 		glEnable(GL_MINMAX)		
 
-		glMinmax(GL_MINMAX,GL_RGB8,GL_FALSE)
-		assert_equal(glGetMinmaxParameteriv(GL_MINMAX,GL_MINMAX_FORMAT),GL_RGB8)
-		assert_equal(glGetMinmaxParameterfv(GL_MINMAX,GL_MINMAX_FORMAT),GL_RGB8)
+		glMinmax(GL_MINMAX,GL_RGB,GL_FALSE)
+		assert_equal(glGetMinmaxParameteriv(GL_MINMAX,GL_MINMAX_FORMAT),GL_RGB)
+		assert_equal(glGetMinmaxParameterfv(GL_MINMAX,GL_MINMAX_FORMAT),GL_RGB)
 		assert_equal(glGetMinmaxParameteriv(GL_MINMAX,GL_MINMAX_SINK),GL_FALSE)
 
 		glDrawPixels(2,1,GL_RGB,GL_FLOAT,[0,0,0,1,1,1].pack("f*"))

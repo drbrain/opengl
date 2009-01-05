@@ -64,7 +64,7 @@ VALUE obj,arg1;
 	GLenum *buffers;
 	LOAD_GL_FUNC(glDrawBuffers,"2.0")
 	Check_Type(arg1,T_ARRAY); 
-	size = RARRAY(arg1)->len;
+	size = RARRAY_LEN(arg1);
 	buffers = ALLOC_N(GLenum,size);
 	ary2cuint(arg1,buffers,size);
 	fptr_glDrawBuffers(size,buffers);

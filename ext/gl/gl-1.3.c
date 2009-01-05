@@ -51,18 +51,18 @@ VALUE obj; \
 	case 2: \
 		if (TYPE(args[1]) == T_ARRAY) { \
 		ary = RARRAY(args[1]); \
-		switch (ary->len) { \
+		switch (RARRAY_LEN(ary)) { \
 			case 1: \
-			gl_MultiTexCoord1##_type_(obj,args[0],ary->ptr[0]); \
+			gl_MultiTexCoord1##_type_(obj,args[0],RARRAY_PTR(ary)[0]); \
 			break; \
 			case 2: \
-			gl_MultiTexCoord2##_type_(obj,args[0],ary->ptr[0],ary->ptr[1]); \
+			gl_MultiTexCoord2##_type_(obj,args[0],RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1]); \
 			break; \
 			case 3: \
-			gl_MultiTexCoord3##_type_(obj,args[0],ary->ptr[0],ary->ptr[1],ary->ptr[2]); \
+			gl_MultiTexCoord3##_type_(obj,args[0],RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
 			break; \
 			case 4: \
-			gl_MultiTexCoord4##_type_(obj,args[0],ary->ptr[0],ary->ptr[1],ary->ptr[2],ary->ptr[3]); \
+			gl_MultiTexCoord4##_type_(obj,args[0],RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2],RARRAY_PTR(ary)[3]); \
 			break; \
 			default: \
 			rb_raise(rb_eArgError, "array length:%d", num); \

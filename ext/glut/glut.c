@@ -90,10 +90,10 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 	/* converts commandline parameters from ruby to C, passes them
 	to glutInit and returns the parameters stripped of glut-specific
 	commands ("-display","-geometry" etc.) */
-	largc = RARRAY(orig_arg)->len;
+	largc = RARRAY_LEN(orig_arg);
 	largv = ALLOCA_N(char*, largc);
 	for (i = 0; i < largc; i++)
-		largv[0] = STR2CSTR(RARRAY(orig_arg)->ptr[i]);
+		largv[0] = STR2CSTR(RARRAY_PTR(orig_arg)[i]);
 	
 	glutInit(&largc, largv);
 	
