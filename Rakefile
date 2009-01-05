@@ -65,9 +65,15 @@ when /(:?mswin|mingw)/
 	end
 else
 	desc 'Does a full compile'
-	task :default => [:gl, :glu, :glut]
+	task :default => [:gl, :glu, :glut, :fixpermissions]
 end
 
+task :fixpermissions do
+	# fix wrong lib permissions (mkrf bug ?)
+	Dir["lib/*.so","lib/*.bundle"].each do |fname|
+		File.chmod(0755,fname)
+	end
+end
 
 task :extension => :default
 
