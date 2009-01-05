@@ -405,7 +405,7 @@ glut_DestroyMenu(obj,arg1)
 VALUE obj,arg1;
 {
 	int menu;
-	menu = INT2FIX(arg1);
+	menu = NUM2INT(arg1);
 	glutDestroyMenu(menu);
 	//rb_hash_aset(g_menucallback, menu, Qnil);
 	//rb_hash_aset(g_menuargs, menu, Qnil);
