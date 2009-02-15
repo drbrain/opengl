@@ -1,4 +1,4 @@
-/* This file was genereated on Mon Sep 01 17:08:37 +0200 2008
+/* This file was genereated on Sun Feb 15 21:32:53 +0100 2009
    source: http://www.opengl.org/registry/api/enum.spec
    source: http://www.opengl.org/registry/api/enumext.spec
 */
@@ -1171,6 +1171,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_INT_SAMPLER_BUFFER_EXT", INT2NUM(GL_INT_SAMPLER_BUFFER_EXT));
 	rb_define_const(module, "GL_INT_SAMPLER_CUBE", INT2NUM(GL_INT_SAMPLER_CUBE));
 	rb_define_const(module, "GL_INT_SAMPLER_CUBE_EXT", INT2NUM(GL_INT_SAMPLER_CUBE_EXT));
+	rb_define_const(module, "GL_INT_SAMPLER_RENDERBUFFER_NV", INT2NUM(GL_INT_SAMPLER_RENDERBUFFER_NV));
 	rb_define_const(module, "GL_INT_VEC2", INT2NUM(GL_INT_VEC2));
 	rb_define_const(module, "GL_INT_VEC2_ARB", INT2NUM(GL_INT_VEC2_ARB));
 	rb_define_const(module, "GL_INT_VEC3", INT2NUM(GL_INT_VEC3));
@@ -1555,6 +1556,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_MAX_RENDERBUFFER_SIZE_EXT", INT2NUM(GL_MAX_RENDERBUFFER_SIZE_EXT));
 	rb_define_const(module, "GL_MAX_SAMPLES", INT2NUM(GL_MAX_SAMPLES));
 	rb_define_const(module, "GL_MAX_SAMPLES_EXT", INT2NUM(GL_MAX_SAMPLES_EXT));
+	rb_define_const(module, "GL_MAX_SAMPLE_MASK_WORDS_NV", INT2NUM(GL_MAX_SAMPLE_MASK_WORDS_NV));
 	rb_define_const(module, "GL_MAX_SHININESS_NV", INT2NUM(GL_MAX_SHININESS_NV));
 	rb_define_const(module, "GL_MAX_SPOT_EXPONENT_NV", INT2NUM(GL_MAX_SPOT_EXPONENT_NV));
 	rb_define_const(module, "GL_MAX_TEXTURE_BUFFER_SIZE_ARB", INT2NUM(GL_MAX_TEXTURE_BUFFER_SIZE_ARB));
@@ -2435,6 +2437,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_SAMPLER_CUBE_ARB", INT2NUM(GL_SAMPLER_CUBE_ARB));
 	rb_define_const(module, "GL_SAMPLER_CUBE_SHADOW", INT2NUM(GL_SAMPLER_CUBE_SHADOW));
 	rb_define_const(module, "GL_SAMPLER_CUBE_SHADOW_EXT", INT2NUM(GL_SAMPLER_CUBE_SHADOW_EXT));
+	rb_define_const(module, "GL_SAMPLER_RENDERBUFFER_NV", INT2NUM(GL_SAMPLER_RENDERBUFFER_NV));
 	rb_define_const(module, "GL_SAMPLES", INT2NUM(GL_SAMPLES));
 	rb_define_const(module, "GL_SAMPLES_3DFX", INT2NUM(GL_SAMPLES_3DFX));
 	rb_define_const(module, "GL_SAMPLES_ARB", INT2NUM(GL_SAMPLES_ARB));
@@ -2464,11 +2467,14 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_SAMPLE_MASK_EXT", INT2NUM(GL_SAMPLE_MASK_EXT));
 	rb_define_const(module, "GL_SAMPLE_MASK_INVERT_EXT", INT2NUM(GL_SAMPLE_MASK_INVERT_EXT));
 	rb_define_const(module, "GL_SAMPLE_MASK_INVERT_SGIS", INT2NUM(GL_SAMPLE_MASK_INVERT_SGIS));
+	rb_define_const(module, "GL_SAMPLE_MASK_NV", INT2NUM(GL_SAMPLE_MASK_NV));
 	rb_define_const(module, "GL_SAMPLE_MASK_SGIS", INT2NUM(GL_SAMPLE_MASK_SGIS));
 	rb_define_const(module, "GL_SAMPLE_MASK_VALUE_EXT", INT2NUM(GL_SAMPLE_MASK_VALUE_EXT));
+	rb_define_const(module, "GL_SAMPLE_MASK_VALUE_NV", INT2NUM(GL_SAMPLE_MASK_VALUE_NV));
 	rb_define_const(module, "GL_SAMPLE_MASK_VALUE_SGIS", INT2NUM(GL_SAMPLE_MASK_VALUE_SGIS));
 	rb_define_const(module, "GL_SAMPLE_PATTERN_EXT", INT2NUM(GL_SAMPLE_PATTERN_EXT));
 	rb_define_const(module, "GL_SAMPLE_PATTERN_SGIS", INT2NUM(GL_SAMPLE_PATTERN_SGIS));
+	rb_define_const(module, "GL_SAMPLE_POSITION_NV", INT2NUM(GL_SAMPLE_POSITION_NV));
 	rb_define_const(module, "GL_SATURATE_BIT_ATI", INT2NUM(GL_SATURATE_BIT_ATI));
 	rb_define_const(module, "GL_SCALAR_EXT", INT2NUM(GL_SCALAR_EXT));
 	rb_define_const(module, "GL_SCALEBIAS_HINT_SGIX", INT2NUM(GL_SCALEBIAS_HINT_SGIX));
@@ -2854,6 +2860,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_TEXTURE_BINDING_CUBE_MAP_EXT", INT2NUM(GL_TEXTURE_BINDING_CUBE_MAP_EXT));
 	rb_define_const(module, "GL_TEXTURE_BINDING_RECTANGLE_ARB", INT2NUM(GL_TEXTURE_BINDING_RECTANGLE_ARB));
 	rb_define_const(module, "GL_TEXTURE_BINDING_RECTANGLE_NV", INT2NUM(GL_TEXTURE_BINDING_RECTANGLE_NV));
+	rb_define_const(module, "GL_TEXTURE_BINDING_RENDERBUFFER_NV", INT2NUM(GL_TEXTURE_BINDING_RENDERBUFFER_NV));
 	rb_define_const(module, "GL_TEXTURE_BIT", INT2NUM(GL_TEXTURE_BIT));
 	rb_define_const(module, "GL_TEXTURE_BLUE_SIZE", INT2NUM(GL_TEXTURE_BLUE_SIZE));
 	rb_define_const(module, "GL_TEXTURE_BLUE_SIZE_EXT", INT2NUM(GL_TEXTURE_BLUE_SIZE_EXT));
@@ -3004,6 +3011,8 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_TEXTURE_RED_SIZE_EXT", INT2NUM(GL_TEXTURE_RED_SIZE_EXT));
 	rb_define_const(module, "GL_TEXTURE_RED_TYPE", INT2NUM(GL_TEXTURE_RED_TYPE));
 	rb_define_const(module, "GL_TEXTURE_RED_TYPE_ARB", INT2NUM(GL_TEXTURE_RED_TYPE_ARB));
+	rb_define_const(module, "GL_TEXTURE_RENDERBUFFER_DATA_STORE_BINDING_NV", INT2NUM(GL_TEXTURE_RENDERBUFFER_DATA_STORE_BINDING_NV));
+	rb_define_const(module, "GL_TEXTURE_RENDERBUFFER_NV", INT2NUM(GL_TEXTURE_RENDERBUFFER_NV));
 	rb_define_const(module, "GL_TEXTURE_RESIDENT", INT2NUM(GL_TEXTURE_RESIDENT));
 	rb_define_const(module, "GL_TEXTURE_RESIDENT_EXT", INT2NUM(GL_TEXTURE_RESIDENT_EXT));
 	rb_define_const(module, "GL_TEXTURE_SHADER_NV", INT2NUM(GL_TEXTURE_SHADER_NV));
@@ -3012,6 +3021,11 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_TEXTURE_STACK_DEPTH", INT2NUM(GL_TEXTURE_STACK_DEPTH));
 	rb_define_const(module, "GL_TEXTURE_STENCIL_SIZE", INT2NUM(GL_TEXTURE_STENCIL_SIZE));
 	rb_define_const(module, "GL_TEXTURE_STENCIL_SIZE_EXT", INT2NUM(GL_TEXTURE_STENCIL_SIZE_EXT));
+	rb_define_const(module, "GL_TEXTURE_SWIZZLE_A_EXT", INT2NUM(GL_TEXTURE_SWIZZLE_A_EXT));
+	rb_define_const(module, "GL_TEXTURE_SWIZZLE_B_EXT", INT2NUM(GL_TEXTURE_SWIZZLE_B_EXT));
+	rb_define_const(module, "GL_TEXTURE_SWIZZLE_G_EXT", INT2NUM(GL_TEXTURE_SWIZZLE_G_EXT));
+	rb_define_const(module, "GL_TEXTURE_SWIZZLE_RGBA_EXT", INT2NUM(GL_TEXTURE_SWIZZLE_RGBA_EXT));
+	rb_define_const(module, "GL_TEXTURE_SWIZZLE_R_EXT", INT2NUM(GL_TEXTURE_SWIZZLE_R_EXT));
 	rb_define_const(module, "GL_TEXTURE_TOO_LARGE_EXT", INT2NUM(GL_TEXTURE_TOO_LARGE_EXT));
 	rb_define_const(module, "GL_TEXTURE_UNSIGNED_REMAP_MODE_NV", INT2NUM(GL_TEXTURE_UNSIGNED_REMAP_MODE_NV));
 	rb_define_const(module, "GL_TEXTURE_WIDTH", INT2NUM(GL_TEXTURE_WIDTH));
@@ -3122,6 +3136,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT", INT2NUM(GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT));
 	rb_define_const(module, "GL_UNSIGNED_INT_SAMPLER_CUBE", INT2NUM(GL_UNSIGNED_INT_SAMPLER_CUBE));
 	rb_define_const(module, "GL_UNSIGNED_INT_SAMPLER_CUBE_EXT", INT2NUM(GL_UNSIGNED_INT_SAMPLER_CUBE_EXT));
+	rb_define_const(module, "GL_UNSIGNED_INT_SAMPLER_RENDERBUFFER_NV", INT2NUM(GL_UNSIGNED_INT_SAMPLER_RENDERBUFFER_NV));
 	rb_define_const(module, "GL_UNSIGNED_INT_VEC2", INT2NUM(GL_UNSIGNED_INT_VEC2));
 	rb_define_const(module, "GL_UNSIGNED_INT_VEC2_EXT", INT2NUM(GL_UNSIGNED_INT_VEC2_EXT));
 	rb_define_const(module, "GL_UNSIGNED_INT_VEC3", INT2NUM(GL_UNSIGNED_INT_VEC3));

@@ -1,4 +1,4 @@
-/* This file was genereated on Mon Sep 01 17:08:38 +0200 2008
+/* This file was genereated on Sun Feb 15 21:32:55 +0100 2009
    source: http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec
 */
 
