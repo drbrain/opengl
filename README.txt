@@ -17,7 +17,16 @@ file for the terms of the license.
 [Yoshi's ruby-opengl]: http://www2.giganet.net/~yoshi/
 
 
-Current release: 0.60.0 (January 6, 2008)
+Current release: 0.60.1 (February 16, 2009)
+-----------------
+This is maintenance release.
+
+Changes in this release:
+* Bugfixes
+* Proper support for ruby 1.9/1.9.1+
+* Updated OpenGL enumerators in preparation for OpenGL 3.0
+
+Previous release: 0.60.0 (January 6, 2008)
 -----------------
 Changes in this release:
 * Automatic error checking for GL/GLU calls, enabled by default (see doc/tutorial)
@@ -32,16 +41,3 @@ Changes in this release:
 * glUniform\*v and glUniformmatrix\*v now does not require 'count' parameter, they will calculate it from length of passed array
 * glCallLists needs type specifier (previously was forced to GL_BYTE)
 * On ruby 1.9, glut keyboard callback returns char ("x") instead of integer so using 'if key == ?x' works on both 1.8 and 1.9
-
-Previous release: 0.50.0 (October 23, 2007)
------------------
-Changes in this release:
-
-* GLU and GLUT cleanup, bugfixes, some missing functions added - version 3.7
-  of GLUT API is now requirement (previously 3.0)
-* We added support for number of OpenGL extensions
-* Some new examples and code cleanup
-* Support for OpenGL 2.1 (that includes pixelpack/unpack buffer)
-* Some code refactoring to remove duplicity
-* Documentation update (still no API doc though)
-* Lots of bugfixes.
