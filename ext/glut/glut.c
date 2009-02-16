@@ -83,7 +83,7 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 	int i;
 
 	if (rb_scan_args(argc, argv, "01", &orig_arg) == 0)
-		orig_arg = rb_eval_string("ARGV");
+		orig_arg = rb_eval_string("[$0] + ARGV");
 	else 
 		Check_Type(orig_arg, T_ARRAY);
 	
@@ -100,6 +100,8 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 	new_argv = rb_ary_new2(largc);
 	for (i = 0; i < largc; i++)
 		rb_ary_push(new_argv,rb_str_new2(largv[i]));
+
+	rb_ary_shift(new_argv);
 
 	return new_argv;
 }
