@@ -22,18 +22,19 @@ def parse_enum_spec(infilename)
 	f = open(infilename,"r")
 	f.each do |line|
 		case line
-			when /^#|:|^$/ # skip comment, directive or empty line
-			next 
-			when /^\tuse/ # enum alias for organization purpose, we don't need that
-			next
-			when /^\t/ # enum
+		when /^#|:|^$/ # skip comment, directive or empty line
+  		next 
+		when /^\tuse/ # enum alias for organization purpose, we don't need that
+  		next
+		when /^\t|^ / # enum
 			# remove trailing comment (if any) and split
 			name,equals,value,*rest = line.split("#")[0].split(" ")
-
 			# true/false are special constants
 			unless (name=="TRUE" or name=="FALSE")
 				enum_list[name] = value
 			end
+    else
+      puts "Unexpected line: #{line}"
 		end
 	end
 	f.close
