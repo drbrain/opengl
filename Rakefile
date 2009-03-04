@@ -139,10 +139,12 @@ end
 desc 'Runs unit tests.'
 task :test_all => [:test]
 
-# Define the files that will go into the gem
-gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
-gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*/Rakefile")
 
+
+
+############# gems #############
+
+# common specification for source and binary gems
 spec = Gem::Specification.new do |s|
     s.name              = "ruby-opengl"
     s.version           = "0.60.1"
@@ -152,17 +154,48 @@ spec = Gem::Specification.new do |s|
     s.rubyforge_project = 'ruby-opengl'
     s.platform          = Gem::Platform::RUBY
     s.summary           = "OpenGL Interface for Ruby"
-    s.files             = gem_files
-    s.extensions        << 'Rakefile'
     s.require_path      = "lib"
     s.autorequire       = "gl"
     s.has_rdoc          = false
-    s.add_dependency("mkrf", ">=0.2.0")
-    s.add_dependency("rake")
+    s.extensions     = []
 end
 
-# Create a task for creating a ruby gem
+desc "builds binary gem on any platform"
+task :binary_gem => [:default] do
+
+  binary_gem_files = FileList["{lib,examples}/**/*"] + FileList["doc/*.txt"] + ["MIT-LICENSE","README.txt"]
+  binary_spec = spec.dup
+  binary_spec.files = binary_gem_files
+  binary_spec.platform = Config::CONFIG['arch']
+
+  gem_fname_ext = ".gem"
+  if (RUBY_VERSION.split(".").join < "190")
+    binary_spec.required_ruby_version = '~> 1.8.0'
+  else
+    binary_spec.required_ruby_version = '>= 1.9.0'
+    gem_fname_ext = "-ruby19.gem"
+  end
+
+  Gem::Builder.new( binary_spec ).build
+
+  Dir.mkdir("pkg") rescue {}
+  unless (fname = Dir["ruby-opengl*.gem"]).empty?
+    fname = fname.first
+    newfname = fname[0..-5] + gem_fname_ext
+    mv fname, "pkg/#{newfname}"
+  end
+end
+
+# Create a task for creating a ruby source gem
 Rake::GemPackageTask.new(spec) do |pkg|
-    pkg.gem_spec = spec
-    pkg.need_tar = true
+  # Define the files that will go into the source gem
+  gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
+  gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*/Rakefile")
+
+  spec.files = gem_files
+  spec.extensions << 'Rakefile'
+  spec.add_dependency("rake")
+  spec.add_dependency("mkrf", ">=0.2.0")
+  pkg.gem_spec = spec
+  pkg.need_tar = true
 end
