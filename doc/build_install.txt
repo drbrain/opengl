@@ -96,11 +96,8 @@ Installing manually built extensions
 
 Building binary gem (useful only for binary distribution of the project)
 ------------------
-1. Run 'gem install gembuilder' to install the gembuilder package
-2. Run 'rake clean' to clean out the project
-3. Run 'rake gem' to build source gem
-4. Run 'gembuilder pkg/ruby-opengl-(version).gem' to compile the binary gem
-
+1. Run 'rake binary_gem'
+2. Binary gem will be generated in pkg/ directory
 
 Testing
 -----------------
