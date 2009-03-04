@@ -19,8 +19,10 @@
 #if defined(_WIN32) && defined(__GNUC__)
 #include <stdint.h>
 #elif defined(_WIN32)
+#  if RUBY_VERSION<190
 typedef __int64 int64_t;
 typedef unsigned __int64 uint64_t;
+#  endif
 #else
 #include <inttypes.h> 
 #endif
