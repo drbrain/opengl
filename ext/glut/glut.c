@@ -811,7 +811,11 @@ int x,y;
 	VALUE func;
 	func = rb_ary_entry(KeyboardUpFunc, glutGetWindow());
 	if (!NIL_P(func))
-		rb_funcall(func, callId, 3, INT2NUM(key),INT2NUM(x),INT2NUM(y));
+#if RUBY_VERSION <190
+		rb_funcall(func, callId, 3, INT2FIX(key), INT2FIX(x), INT2FIX(y));
+#else
+		rb_funcall(func, callId, 3, rb_funcall(INT2FIX(key),rb_intern("chr"),0), INT2FIX(x), INT2FIX(y));
+#endif
 }
 
 static void GLUTCALLBACK
