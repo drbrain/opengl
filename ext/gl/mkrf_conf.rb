@@ -27,6 +27,9 @@ Mkrf::Generator.new( 'gl' ) do |g|
 	when /mswin32/
 		g.cflags << ' -DWIN32' + RUBYVER
 		g.include_library( 'opengl32.lib', 'glVertex3d')
+	when /mingw/
+		g.cflags << ' -DWIN32' + RUBYVER
+		g.include_library( 'opengl32', 'glVertex3d')
 	else
 		g.cflags << ' -Wall' + RUBYVER
 		g.include_library( 'GL', 'glVertex3d')
