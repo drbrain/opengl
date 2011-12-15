@@ -27,7 +27,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLfloat *value;	\
 	LOAD_GL_FUNC(glUniformMatrix##_x_##x##_y_##fv,"2.1") \
 	location = (GLint)NUM2INT(arg1); \
-	count = RARRAY_LEN(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
+	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
 	transpose = (GLboolean)NUM2INT(arg2); \
 	value = ALLOC_N(GLfloat, count); \
 	ary2cmatfloatcount(arg3,value, _x_, _y_); \

@@ -129,7 +129,7 @@ VALUE obj,arg1,arg2,arg3;
 	target = (GLenum)NUM2INT(arg1);
 	offset = (GLintptr)NUM2INT(arg2);
 	size = (GLsizeiptr)NUM2INT(arg3);
-	data = allocate_buffer_with_string(size);
+	data = allocate_buffer_with_string((long)size);
 	fptr_glGetBufferSubData(target,offset,size,(GLvoid *)RSTRING_PTR(data));
 	CHECK_GLERROR
 	return data;

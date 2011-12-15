@@ -41,7 +41,7 @@ VALUE obj,arg1,arg2;
 	LOAD_GL_FUNC(glPrioritizeTexturesEXT,"GL_EXT_texture_object")
 	Check_Type(arg1,T_ARRAY);
 	Check_Type(arg2,T_ARRAY);
-	if ((size = RARRAY_LEN(arg1)) != RARRAY_LEN(arg2))
+	if ((size = (GLsizei)RARRAY_LENINT(arg1)) != (GLsizei)RARRAY_LENINT(arg2))
 		rb_raise(rb_eArgError, "passed arrays must have the same length");
 	textures = ALLOC_N(GLuint,size);
 	priorities = ALLOC_N(GLclampf,size);
@@ -68,7 +68,7 @@ VALUE obj,arg1;
 	int i;
 	LOAD_GL_FUNC(glAreTexturesResidentEXT,"GL_EXT_texture_object")
 	ary = rb_Array(arg1);
-	size = RARRAY_LEN(ary);
+	size = (GLsizei)RARRAY_LENINT(ary);
 	textures = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
 	ary2cuint(ary,textures,size);	
@@ -98,7 +98,7 @@ GL_FUNC_LOAD_2(PointParameterfEXT,GLvoid, GLenum,GLfloat, "GL_EXT_point_paramete
 static void (APIENTRY * fptr_glPointParameterfvEXT)(GLenum,GLfloat *);
 static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
 {
-	GLfloat params[3] = {0.0,0.0,0.0};
+	GLfloat params[3] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLenum pname;
 	GLint size;
 	LOAD_GL_FUNC(glPointParameterfvEXT,"GL_EXT_point_parameters")
@@ -162,7 +162,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	stride = (GLsizei)NUM2UINT(arg3);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_SecondaryColor_ptr = arg4;
-		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)NUM2INT(arg4));
+		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)NUM2LONG(arg4));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg4);
@@ -196,7 +196,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	count = (GLsizei)NUM2UINT(arg4);
 	type = (GLenum)NUM2INT(arg5);
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
-		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, (GLvoid *)NUM2INT(arg6));
+		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, (GLvoid *)NUM2LONG(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);
@@ -217,8 +217,8 @@ VALUE obj,arg1,arg2,arg3;
 	GLsizei *ary2;
   int len1,len2;
 	LOAD_GL_FUNC(glMultiDrawArraysEXT,"GL_EXT_multi_draw_arrays")
-  len1 = RARRAY_LEN(arg2);
-  len2 = RARRAY_LEN(arg3);
+  len1 = (int)RARRAY_LENINT(arg2);
+  len2 = (int)RARRAY_LENINT(arg3);
 	if (len1!=len2)
 			rb_raise(rb_eArgError, "Passed arrays must have same length");
 	mode = (GLenum)NUM2INT(arg1);
@@ -258,7 +258,7 @@ VALUE obj;
 			type = (GLenum)NUM2INT(args[1]);
 			Check_Type(args[2],T_ARRAY);
 			ary = RARRAY(args[2]);
-			size = RARRAY_LEN(ary);
+			size = (GLsizei)RARRAY_LENINT(ary);
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
@@ -266,7 +266,7 @@ VALUE obj;
 				data = pack_array_or_pass_string(type,RARRAY_PTR(ary)[i]);
 
 				indices[i] = RSTRING_PTR(data);
-				counts[i] = RSTRING_LEN(data);
+				counts[i] = (GLsizei)RSTRING_LENINT(data);
 			}
 			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
 			xfree(counts);
@@ -282,13 +282,13 @@ VALUE obj;
 			if (RARRAY_LEN(args[2]) != RARRAY_LEN(args[3]))
 				rb_raise(rb_eArgError, "Count and indices offset array must have same length");
 
-			size = RARRAY_LEN(args[2]);
+			size = (GLsizei)RARRAY_LENINT(args[2]);
 
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
 				counts[i] = NUM2INT(rb_ary_entry(args[2],i));
-				indices[i] = (GLvoid *) NUM2INT(rb_ary_entry(args[3],i));
+				indices[i] = (GLvoid *)NUM2LONG(rb_ary_entry(args[3],i));
 			}
 			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
 			xfree(counts);
@@ -332,7 +332,7 @@ VALUE obj,arg1,arg2,arg3;
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_FogCoord_ptr = arg3;
-		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)NUM2INT(arg3));
+		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)NUM2LONG(arg3));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg3);
@@ -431,14 +431,14 @@ gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ *cary; \
-	int len; \
+	GLsizei len; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
-	len = RARRAY_LEN(rb_Array(arg3)); \
+	len = (GLsizei)RARRAY_LENINT(rb_Array(arg3)); \
 	if (len<=0 || (len % 4) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of 4"); \
 	cary = ALLOC_N(_type_,len); \
 	_conv_(arg3,cary,len); \
-	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),len / 4, cary); \
+	fptr_gl##_name_((GLenum)NUM2UINT(arg1),(GLuint)NUM2UINT(arg2),len / 4, cary); \
 	xfree(cary); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -535,7 +535,7 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)NUM2INT(arg5));
+		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)NUM2LONG(arg5));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg5);
@@ -564,7 +564,7 @@ VALUE obj,arg1,arg2; \
 	_type_ *value; \
 	LOAD_GL_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
 	Check_Type(arg2,T_ARRAY); \
-	count = RARRAY_LEN(arg2); \
+	count = (GLsizei)RARRAY_LENINT(arg2); \
 	if (count<=0 || (count % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
@@ -654,7 +654,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	type = (GLenum)NUM2INT(arg3);
 	primcount = (GLsizei)NUM2INT(arg5);
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
-		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)NUM2INT(arg4), primcount);
+		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)NUM2LONG(arg4), primcount);
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg4);

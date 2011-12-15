@@ -80,7 +80,7 @@ VALUE obj,arg1,arg2,arg3;
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_FogCoord_ptr = arg3;
-		fptr_glFogCoordPointer(type, stride, (const GLvoid*)NUM2INT(arg3));
+		fptr_glFogCoordPointer(type, stride, (const GLvoid*)NUM2LONG(arg3));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg3);
@@ -102,8 +102,8 @@ VALUE obj,arg1,arg2,arg3;
 	GLsizei *ary2;
   int len1,len2;
 	LOAD_GL_FUNC(glMultiDrawArrays,"1.4")
-  len1 = RARRAY_LEN(arg2);
-  len2 = RARRAY_LEN(arg3);
+  len1 = (int)RARRAY_LENINT(arg2);
+  len2 = (int)RARRAY_LENINT(arg3);
 	if (len1!=len2)
 			rb_raise(rb_eArgError, "Passed arrays must have same length");
 	mode = (GLenum)NUM2INT(arg1);
@@ -143,14 +143,14 @@ VALUE obj;
 			type = (GLenum)NUM2INT(args[1]);
 			Check_Type(args[2],T_ARRAY);
 			ary = RARRAY(args[2]);
-			size = RARRAY_LEN(ary);
+			size = (GLint)RARRAY_LENINT(ary);
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
 				VALUE data;
 				data = pack_array_or_pass_string(type,RARRAY_PTR(ary)[i]);
 				indices[i] = RSTRING_PTR(data);
-				counts[i] = RSTRING_LEN(data);
+				counts[i] = (GLsizei)RSTRING_LENINT(data);
 			}
 			fptr_glMultiDrawElements(mode,counts,type,indices,size);
 			xfree(counts);
@@ -166,13 +166,13 @@ VALUE obj;
 			if (RARRAY_LEN(args[2]) != RARRAY_LEN(args[3]))
 				rb_raise(rb_eArgError, "Count and indices offset array must have same length");
 
-			size = RARRAY_LEN(args[2]);
+			size = (GLint)RARRAY_LENINT(args[2]);
 
 			counts = ALLOC_N(GLsizei,size);
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
-				counts[i] = NUM2INT(rb_ary_entry(args[2],i));
-				indices[i] = (GLvoid *) NUM2INT(rb_ary_entry(args[3],i));
+				counts[i] = (GLsizei)NUM2INT(rb_ary_entry(args[2],i));
+				indices[i] = (GLvoid *)NUM2LONG(rb_ary_entry(args[3],i));
 			}
 			fptr_glMultiDrawElements(mode,counts,type,indices,size);
 			xfree(counts);
@@ -189,7 +189,7 @@ gl_PointParameterfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	GLenum pname;
-	GLfloat params[3] = {0.0,0.0,0.0};
+	GLfloat params[3] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLint size;
 	LOAD_GL_FUNC(glPointParameterfv,"1.4")
 	pname = (GLenum)NUM2INT(arg1);
@@ -210,7 +210,7 @@ gl_PointParameteriv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
 	GLenum pname;
-	GLint params[3] = {0.0,0.0,0.0};
+	GLint params[3] = {0,0,0};
 	GLint size;
 	LOAD_GL_FUNC(glPointParameteriv,"1.4")
 	pname = (GLenum)NUM2INT(arg1);
@@ -263,7 +263,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	stride = (GLsizei)NUM2UINT(arg3);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_SecondaryColor_ptr = arg4;
-		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)NUM2INT(arg4));
+		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)NUM2LONG(arg4));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg4);

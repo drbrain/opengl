@@ -22,7 +22,7 @@
 
 #include "../common/common.h"
 
-static int callId; /* 'call' method id */
+static ID callId; /* 'call' method id */
 
 /*
   macros for registering callbacks -
@@ -90,10 +90,10 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 	/* converts commandline parameters from ruby to C, passes them
 	to glutInit and returns the parameters stripped of glut-specific
 	commands ("-display","-geometry" etc.) */
-	largc = RARRAY_LEN(orig_arg);
+	largc = (int)RARRAY_LENINT(orig_arg);
 	largv = ALLOCA_N(char*, largc);
 	for (i = 0; i < largc; i++)
-		largv[i] = STR2CSTR(RARRAY_PTR(orig_arg)[i]);
+		largv[i] = StringValueCStr(RARRAY_PTR(orig_arg)[i]);
 	
 	glutInit(&largc, largv);
 	
@@ -364,6 +364,7 @@ GLUT_SIMPLE_FUNCTION(HideOverlay)
 
 static VALUE
 glut_UseLayer(obj,arg1)
+VALUE obj, arg1;
 {
 	GLenum layer;
 	layer = (GLenum)NUM2INT(arg1);
@@ -519,9 +520,7 @@ int width, height;
 
 
 static void GLUTCALLBACK
-glut_KeyboardFuncCallback(key, x, y)
-unsigned char key;
-int x,y;
+glut_KeyboardFuncCallback(unsigned char key, int x, int y)
 {
 	VALUE func;
 	func = rb_ary_entry(KeyboardFunc, glutGetWindow());
@@ -767,7 +766,7 @@ int button, state, x, y;
 	VALUE func;
 	func = rb_ary_entry(TabletButtonFunc, glutGetWindow());
 	if (!NIL_P(func))
-		rb_funcall(func, 4, INT2NUM(button), INT2NUM(state), INT2NUM(x), INT2NUM(y));
+		rb_funcall(func, callId, 4, INT2FIX(button), INT2NUM(state), INT2NUM(x), INT2NUM(y));
 }
 
 
@@ -804,17 +803,15 @@ int x,y,z;
 }
 
 static void GLUTCALLBACK
-glut_KeyboardUpFuncCallback(key,x,y)
-unsigned char key;
-int x,y;
+glut_KeyboardUpFuncCallback(unsigned char key, int x, int y)
 {
 	VALUE func;
 	func = rb_ary_entry(KeyboardUpFunc, glutGetWindow());
 	if (!NIL_P(func))
-#if RUBY_VERSION <190
-		rb_funcall(func, callId, 3, INT2FIX(key), INT2FIX(x), INT2FIX(y));
-#else
+#if HAVE_SINGLE_BYTE_STRINGS
 		rb_funcall(func, callId, 3, rb_funcall(INT2FIX(key),rb_intern("chr"),0), INT2FIX(x), INT2FIX(y));
+#else
+		rb_funcall(func, callId, 3, INT2FIX(key), INT2FIX(x), INT2FIX(y));
 #endif
 }
 

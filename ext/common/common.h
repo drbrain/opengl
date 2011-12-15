@@ -23,26 +23,48 @@
 #define _COMMON_H_
 
 #include <ruby.h>
+#include "extconf.h"
 
 #include <ctype.h>
 
-#ifdef __APPLE__
+#ifdef HAVE_OPENGL_GL_H
 #include <OpenGL/gl.h>
+#endif
+
+#ifdef HAVE_OPENGL_GLU_H
 #include <OpenGL/glu.h>
+#endif
+
+#ifdef HAVE_GLUT_GLUT_H
 #include <GLUT/glut.h>
-#include <mach-o/dyld.h>
+#endif
+
+#ifdef HAVE_DLFCN_H
+#include <dlfcn.h>
+#endif
+#if false
 #include <stdlib.h>
 #include <string.h>
-#elif defined WIN32
+#endif
+
+#ifdef HAVE_WINDOWS_H
 #include <windows.h>
+#endif
+
+#ifdef HAVE_GL_GL_H
 #include <GL/gl.h>
+#endif
+
+#ifdef HAVE_GL_GLU_H
 #include <GL/glu.h>
+#endif
+
+#ifdef HAVE_GL_GLUT_H
 #include <GL/glut.h>
-#else
-#include <GL/gl.h>
+#endif
+
+#ifdef HAVE_GL_GLX_H
 #include <GL/glx.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
 #endif
 
 #include "gl-types.h"
@@ -65,10 +87,19 @@
 #define GLUTCALLBACK
 #endif
 
-#ifdef WIN32
+#ifdef HAVE_WINDOWS_H
 #define DLLEXPORT __declspec(dllexport)
 #else
 #define DLLEXPORT
+#endif
+
+/* these two macros are cast to a 32 bit type in the places they are used */
+#ifndef RARRAY_LENINT
+#define RARRAY_LENINT RARRAY_LEN
+#endif
+
+#ifndef RSTRING_LENINT
+#define RSTRING_LENINT RSTRING_LEN
 #endif
 
 /* */
@@ -346,7 +377,7 @@ static inline void CheckDataSize(GLenum type,GLenum format,int num,VALUE data)
 }
 
 /* -------------------------------------------------------------------- */
-static inline VALUE allocate_buffer_with_string( int size )
+static inline VALUE allocate_buffer_with_string( long size )
 {
     return rb_str_new(NULL, size);
 }
@@ -357,11 +388,9 @@ static inline void *load_gl_function(const char *name,int raise)
 	void *func_ptr = NULL;
 
 #if defined(__APPLE__)
-	static const struct mach_header* library = NULL;
+	void *library = NULL;
 	char* symbolName;
-	NSSymbol symbol;
-	if (library == NULL)
-		library = NSAddImage("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL",NSADDIMAGE_OPTION_RETURN_ON_ERROR);
+  library = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
 
 	if (library == NULL)
 		rb_raise(rb_eRuntimeError,"Can't load OpenGL library for dynamic loading");
@@ -371,14 +400,10 @@ static inline void *load_gl_function(const char *name,int raise)
 	symbolName[0] = '_';
 	strcpy(symbolName+1, name);
 
-	symbol = NSLookupSymbolInImage(library,symbolName,NSLOOKUPSYMBOLINIMAGE_OPTION_BIND | NSLOOKUPSYMBOLINIMAGE_OPTION_RETURN_ON_ERROR);
+  func_ptr = dlsym(library, symbolName);
 	xfree(symbolName);
-
-	if (symbol == NULL)
-		func_ptr = NULL;
-	else
-		func_ptr = NSAddressOfSymbol(symbol);
-#elif defined(WIN32) || defined(_WIN32)
+  dlclose(library);
+#elif HAVE_WGLGETPROCADDRESS
 	func_ptr = wglGetProcAddress((LPCSTR)name);
 #elif defined(GLX_VERSION_1_4)
 	func_ptr = glXGetProcAddress((const GLubyte *)name);
@@ -394,7 +419,7 @@ static inline void *load_gl_function(const char *name,int raise)
 
 static inline VALUE pack_array_or_pass_string(GLenum type,VALUE ary)
 {
-	char *type_str;
+	const char *type_str;
 
 	if (TYPE(ary)==T_STRING)
 		return ary;

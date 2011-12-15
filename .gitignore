@@ -1,0 +1,6 @@
+*.swp
+/TAGS
+/lib/gl.bundle
+/lib/glu.bundle
+/lib/glut.bundle
+/tmp

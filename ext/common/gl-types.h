@@ -16,15 +16,19 @@
 /* GL types - define if system GLheaders are not recent
    Note: must be included before gl-enums.h */
 
-#if defined(_WIN32) && defined(__GNUC__)
+#if HAVE_STDINT_H
 #include <stdint.h>
-#elif defined(_WIN32)
-#  if RUBY_VERSION<190
+#endif
+
+#ifndef HAVE_TYPE_INT64_T
 typedef __int64 int64_t;
+#endif
+#ifndef HAVE_TYPE_UINT64_T
 typedef unsigned __int64 uint64_t;
-#  endif
-#else
-#include <inttypes.h> 
+#endif
+
+#if HAVE_INTTYPES_H
+#include <inttypes.h>
 #endif
 
 /* GL base */

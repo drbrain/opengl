@@ -136,7 +136,7 @@ VALUE GLUError_initialize(VALUE obj,VALUE message, VALUE error_id)
 
 void check_for_gluerror(GLenum error)
 {
-	char *error_string = "";
+	const char *error_string;
 	VALUE exc;
 	
 	/* no error */
@@ -310,7 +310,7 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "52", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6])) {
 		case 5:
-			uknot_count = RARRAY_LEN(args[1]);
+			uknot_count = (GLint)RARRAY_LENINT(args[1]);
 			uorder = (GLenum)NUM2INT(args[3]);
 			type = (GLenum)NUM2INT(args[4]);
 			u_stride = get_curve_dim(type);
@@ -401,11 +401,11 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "74", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6], &args[7], &args[8], &args[9], &args[10])) {
 		case 7:
-			sknot_count = RARRAY_LEN(args[1]);
+			sknot_count = (GLint)RARRAY_LENINT(args[1]);
 			sknot = ALLOC_N(GLfloat, sknot_count);
 			ary2cflt(args[1], sknot, sknot_count);
 
-			tknot_count = RARRAY_LEN(args[2]);
+			tknot_count = (GLint)RARRAY_LENINT(args[2]);
 			tknot = ALLOC_N(GLfloat, tknot_count);
 			ary2cflt(args[2], tknot, tknot_count);
 
@@ -497,7 +497,7 @@ VALUE obj;
 	
 	switch (rb_scan_args(argc, argv, "32", &args[0], &args[1], &args[2], &args[3], &args[4])) {
 		case 3:
-			count = RARRAY_LEN(args[1]);
+			count = (GLint)RARRAY_LENINT(args[1]);
 			type = NUM2INT(args[2]);
 			stride = (type == GLU_MAP1_TRIM_2 ? 2 : 3);
 
@@ -742,7 +742,7 @@ void* user_data;
 
 static VALUE
 glu_TessProperty(obj, arg1, arg2, arg3)
-VALUE obj, arg1, arg2;
+VALUE obj, arg1, arg2, arg3;
 {
 	struct tessdata* tdata;
 	GLenum property;
@@ -765,7 +765,7 @@ VALUE obj, arg1, arg2;
 	property = (GLenum)NUM2INT(arg2);
 	gluGetTessProperty(tdata->tobj, property, &value);
 		
-	return cond_GLBOOL2RUBY_F(property,value);
+	return cond_GLBOOL2RUBY_D(property,value);
 }
 static VALUE
 glu_TessNormal(obj, arg1, arg2, arg3, arg4)

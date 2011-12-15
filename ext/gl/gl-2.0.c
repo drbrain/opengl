@@ -64,7 +64,7 @@ VALUE obj,arg1;
 	GLenum *buffers;
 	LOAD_GL_FUNC(glDrawBuffers,"2.0")
 	Check_Type(arg1,T_ARRAY); 
-	size = RARRAY_LEN(arg1);
+	size = (GLsizei)RARRAY_LENINT(arg1);
 	buffers = ALLOC_N(GLenum,size);
 	ary2cuint(arg1,buffers,size);
 	fptr_glDrawBuffers(size,buffers);
@@ -413,7 +413,7 @@ VALUE obj,arg1,arg2;
 	shader = (GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	str = RSTRING_PTR(arg2);
-	length = RSTRING_LEN(arg2);
+	length = (GLint)RSTRING_LENINT(arg2);
 	fptr_glShaderSource(shader,1,&str,&length);
 	CHECK_GLERROR
 	return Qnil;
@@ -430,7 +430,7 @@ VALUE obj,arg1,arg2; \
 	_type_ *value; \
 	LOAD_GL_FUNC(gl##_name_,"2.0") \
 	Check_Type(arg2,T_ARRAY); \
-	count = RARRAY_LEN(arg2); \
+	count = (GLsizei)RARRAY_LENINT(arg2); \
 	if (count<=0 || (count % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
@@ -464,7 +464,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLfloat *value;	\
 	LOAD_GL_FUNC(gl##_name_,"2.0") \
 	location = (GLint)NUM2INT(arg1); \
-	count = RARRAY_LEN(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
+	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
 	transpose = (GLboolean)NUM2INT(arg2); \
 	value = ALLOC_N(GLfloat, count); \
 	ary2cmatfloatcount(arg3,value,_size_,_size_); \
@@ -541,7 +541,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_VertexAttrib_ptr[index] = arg6;
-		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)NUM2INT(arg6));
+		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)NUM2LONG(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);

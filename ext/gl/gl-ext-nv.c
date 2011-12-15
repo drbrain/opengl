@@ -41,7 +41,7 @@ static VALUE gl_LoadProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
 	LOAD_GL_FUNC(glLoadProgramNV,"GL_NV_vertex_program")
 	Check_Type(arg3,T_STRING);
-	fptr_glLoadProgramNV(NUM2INT(arg1),NUM2UINT(arg2),RSTRING_LEN(arg3),(GLubyte *)RSTRING_PTR(arg3));
+	fptr_glLoadProgramNV((GLenum)NUM2INT(arg1),(GLuint)NUM2UINT(arg2),(GLsizei)RSTRING_LENINT(arg3),(GLubyte *)RSTRING_PTR(arg3));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -118,7 +118,7 @@ static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)NUM2INT(arg5));
+		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)NUM2LONG(arg5));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg5);
@@ -172,7 +172,7 @@ static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
-	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
+	_type_ cary[4] = {(_type_)0.0, (_type_)0.0, (_type_)0.0, (_type_)0.0}; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),cary); \
 	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
@@ -189,14 +189,14 @@ gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ *cary; \
-	int len; \
+	GLuint len; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
-	len = RARRAY_LEN(rb_Array(arg3)); \
+	len = (GLuint)RARRAY_LENINT(rb_Array(arg3)); \
 	if (len<=0 || (len % 4) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of 4"); \
 	cary = ALLOC_N(_type_,len); \
 	_conv_(arg3,cary,len); \
-	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),len / 4, cary); \
+	fptr_gl##_name_((GLenum)NUM2UINT(arg1),(GLuint)NUM2UINT(arg2),len / 4, cary); \
 	xfree(cary); \
 	CHECK_GLERROR \
 	return Qnil; \
@@ -258,9 +258,9 @@ VALUE obj,arg1,arg2; \
 { \
 	GLuint index; \
 	_type_ *cary; \
-	int len; \
+	GLsizei len; \
 	LOAD_GL_FUNC(gl##_name_,_extension_)  \
-	len = RARRAY_LEN(rb_Array(arg2)); \
+	len = (GLsizei)RARRAY_LENINT(rb_Array(arg2)); \
 	if (len<=0 || (len % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	cary = ALLOC_N(_type_,len); \
@@ -352,7 +352,7 @@ static VALUE gl_RequestResidentProgramsNV(VALUE obj,VALUE arg1)
 	if (TYPE(arg1)==T_ARRAY) {
 		GLsizei n;
 		GLuint *programs;
-		n = RARRAY_LEN(arg1);
+		n = (GLsizei)RARRAY_LENINT(arg1);
 		programs = ALLOC_N(GLuint,n);
 		ary2cuint(arg1,programs,n); 
 		fptr_glRequestResidentProgramsNV( n, programs);
@@ -378,7 +378,7 @@ static VALUE gl_AreProgramsResidentNV(VALUE obj,VALUE arg1)
 	int i;
 	LOAD_GL_FUNC(glAreProgramsResidentNV,"GL_NV_vertex_program")
 	ary = rb_Array(arg1);
-	size = RARRAY_LEN(ary);
+	size = (GLsizei)RARRAY_LENINT(ary);
 	programs = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
 	ary2cuint(ary,programs,size);	
@@ -442,7 +442,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6; \
 { \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	Check_Type(arg2,T_STRING); \
-	fptr_gl##_name_(NUM2UINT(arg1),RSTRING_LEN(arg2),(GLubyte *)RSTRING_PTR(arg2),_conv_(arg3),_conv_(arg4),_conv_(arg5),_conv_(arg6)); \
+	fptr_gl##_name_((GLuint)NUM2UINT(arg1),(GLsizei)RSTRING_LENINT(arg2),(GLubyte *)RSTRING_PTR(arg2),(_type_)_conv_(arg3),(_type_)_conv_(arg4),(_type_)_conv_(arg5),(_type_)_conv_(arg6)); \
 	CHECK_GLERROR \
 	return Qnil; \
 }
@@ -461,7 +461,7 @@ VALUE obj,arg1,arg2,arg3; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	Check_Type(arg2,T_STRING); \
 	_conv_(arg3,cary,4); \
-	fptr_gl##_name_(NUM2UINT(arg1),RSTRING_LEN(arg2),(GLubyte *)RSTRING_PTR(arg2),cary); \
+	fptr_gl##_name_(NUM2UINT(arg1),(GLsizei)RSTRING_LENINT(arg2),(GLubyte *)RSTRING_PTR(arg2),cary); \
 	CHECK_GLERROR \
 	return Qnil; \
 }
@@ -476,10 +476,10 @@ static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
-	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
+	_type_ cary[4] = {(_type_)0.0, (_type_)0.0, (_type_)0.0, (_type_)0.0}; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	Check_Type(arg2,T_STRING); \
-	fptr_gl##_name_(NUM2UINT(arg1),RSTRING_LEN(arg2),(GLubyte *)RSTRING_PTR(arg2),cary); \
+	fptr_gl##_name_((GLuint)NUM2UINT(arg1),(GLsizei)RSTRING_LENINT(arg2),(GLubyte *)RSTRING_PTR(arg2),cary); \
 	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
 }
 
@@ -516,7 +516,7 @@ static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
-	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
+	_type_ cary[4] = {(_type_)0.0, (_type_)0.0, (_type_)0.0, (_type_)0.0}; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
 	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \

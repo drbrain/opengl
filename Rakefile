@@ -13,18 +13,13 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-begin
-    require 'rubygems'
-rescue LoadError
-    nil
-end
+require 'rubygems'
 
 require 'rake'
+require 'rake/extensiontask'
 require 'rake/clean'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 require 'rake/testtask'
-
-require 'mkrf/rakehelper'
 
 # Generate html docs from the markdown source and upload to the site.
 # All doc files that are destined for the website have filenames that
@@ -46,27 +41,8 @@ CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
 CLOBBER.exclude("website/images/tab_bottom.gif")
 CLOBBER.exclude("website/images/*.jpg")
 
-setup_extension('gl', 'gl')
-setup_extension('glu', 'glu')
-setup_extension('glut', 'glut')
-
-case RUBY_PLATFORM
-when /(:?mswin|mingw)/
-	desc 'Does a full win32 compile'
-	task :default do
-		exts = ["gl","glu","glut"]
-		exts.each do |ext|
-			Dir.chdir("ext\\#{ext}") do
-				sh "ruby mkrf_conf.rb"
-				sh "call rake --nosearch"
-				sh "copy #{ext}.so ..\\..\\lib"
-			end
-		end
-	end
-else
-	desc 'Does a full compile'
-	task :default => [:gl, :glu, :glut, :fixpermissions]
-end
+desc 'Does a full compile'
+task :default => [:compile, :fixpermissions]
 
 task :fixpermissions do
 	# fix wrong lib permissions (mkrf bug ?)
@@ -160,6 +136,10 @@ spec = Gem::Specification.new do |s|
     s.extensions     = []
 end
 
+Rake::ExtensionTask.new 'gl', spec
+Rake::ExtensionTask.new 'glu', spec
+Rake::ExtensionTask.new 'glut', spec
+
 desc "builds binary gem on any platform"
 task :binary_gem => [:default] do
 
@@ -187,15 +167,17 @@ task :binary_gem => [:default] do
 end
 
 # Create a task for creating a ruby source gem
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   # Define the files that will go into the source gem
   gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
-  gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*/Rakefile")
+  gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*/Rakefile", "lib/*.bundle")
 
   spec.files = gem_files
-  spec.extensions << 'Rakefile'
-  spec.add_dependency("rake")
-  spec.add_dependency("mkrf", ">=0.2.0")
+  spec.extensions << 'ext/gl/extconf.rb'
+  spec.extensions << 'ext/glu/extconf.rb'
+  spec.extensions << 'ext/glut/extconf.rb'
+  spec.add_development_dependency("rake")
+  spec.add_development_dependency("rake-compiler", "~> 0.7", ">= 0.7.9")
   pkg.gem_spec = spec
   pkg.need_tar = true
 end

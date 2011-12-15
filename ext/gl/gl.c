@@ -78,7 +78,7 @@ const char *GetOpenglExtensions(void)
 		const char *estr = (const char *) glGetString(GL_EXTENSIONS);
 		CHECK_GLERROR
 		if (estr) {
-			int len = strlen(estr);
+			long len = strlen(estr);
 			opengl_extensions = ALLOC_N(GLchar,len+1+1); /* terminating null and added space */
 			strcpy(opengl_extensions,estr);
 			opengl_extensions[len] = ' '; /* add space char for easy searchs */
@@ -94,7 +94,7 @@ GLboolean CheckExtension(const char *name)
 {
 	const char *extensions;
 	char *name_tmp;
-	int name_len;
+	long name_len;
 	GLboolean res;
 	
 	extensions = GetOpenglExtensions();

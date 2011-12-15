@@ -140,7 +140,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	border = (GLint)NUM2INT(arg7);
 	imagesize = (GLsizei)NUM2UINT(arg8);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,(GLvoid *)NUM2INT(arg9));
+		fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,(GLvoid *)NUM2LONG(arg9));
 	} else {
 		if (TYPE(arg9) == T_STRING || TYPE(arg9) == T_ARRAY) {
 			VALUE data;
@@ -182,7 +182,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	border = (GLint)NUM2INT(arg6);
 	imagesize = (GLsizei)NUM2UINT(arg7);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,(GLvoid *)NUM2INT(arg8));
+		fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,(GLvoid *)NUM2LONG(arg8));
 	} else {
 		if (TYPE(arg8) == T_STRING || TYPE(arg8) == T_ARRAY) {
 			VALUE data;
@@ -222,7 +222,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	border = (GLint)NUM2INT(arg5);
 	imagesize = (GLsizei)NUM2UINT(arg6);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,(GLvoid *)NUM2INT(arg7));
+		fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,(GLvoid *)NUM2LONG(arg7));
 	} else {
 		if (TYPE(arg7) == T_STRING || TYPE(arg7) == T_ARRAY) {
 			VALUE data;
@@ -270,7 +270,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	format = (GLenum)NUM2INT(arg9);
 	imagesize = (GLsizei)NUM2UINT(arg10);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,(GLvoid *)NUM2INT(arg11));
+		fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,(GLvoid *)NUM2LONG(arg11));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg11);
@@ -308,7 +308,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	format = (GLenum)NUM2INT(arg7);
 	imagesize = (GLsizei)NUM2UINT(arg8);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,(GLvoid *)NUM2INT(arg9));
+		fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,(GLvoid *)NUM2LONG(arg9));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg9);
@@ -341,7 +341,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	format = (GLenum)NUM2INT(arg5);
 	imagesize = (GLsizei)NUM2UINT(arg6);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,(GLvoid *)NUM2INT(arg7));
+		fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,(GLvoid *)NUM2LONG(arg7));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg7);
@@ -383,7 +383,7 @@ VALUE obj;
 			CHECK_GLERROR
 			return data;
 		case 3:
-			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)NUM2INT(args[2]));
+			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)NUM2LONG(args[2]));
 			CHECK_GLERROR
 			return Qnil;	
 	}

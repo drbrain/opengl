@@ -27,10 +27,10 @@
 	 finally, we fallback to library functions for any other data types (and error handling).
 */
 
-#if RUBY_VERSION <190
-#define	FLOAT_VAL_ACCESS(val) RFLOAT(val)->value
-#else
+#if HAVE_STRUCT_RFLOAT_FLOAT_VALUE
 #define	FLOAT_VAL_ACCESS(val) RFLOAT(val)->float_value
+#else
+#define	FLOAT_VAL_ACCESS(val) RFLOAT(val)->value
 #endif
 
 #define FASTCONV(_name_,_type_,_convfix_,_convfallback_) \
@@ -62,15 +62,6 @@ FASTCONV(num2uint,unsigned long,FIX2ULONG,rb_num2uint)
 FASTCONV(num2int,long,FIX2LONG,(int)NUM2LONG)
 FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG)
 #endif
-
-#undef NUM2DBL
-#define NUM2DBL num2double
-
-#undef NUM2INT
-#define NUM2INT num2int
-
-#undef NUM2UINT
-#define NUM2UINT num2uint
 
 #undef FASTCONV
 
@@ -122,12 +113,12 @@ cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_D,GLdouble,rb_float_new)
 /* For conversion between ruby array (or object that can be converted to array) and C array.
    The C array has to be preallocated by calling function. */
 #define ARY2CTYPE(_type_,_convert_) \
-static inline int ary2c##_type_( arg, cary, maxlen ) \
+static inline long ary2c##_type_( arg, cary, maxlen ) \
 VALUE arg; \
 GL##_type_ cary[]; \
-int maxlen; \
+long maxlen; \
 { \
-    int i; \
+    long i; \
     struct RArray* ary; \
     ary = RARRAY(rb_Array(arg)); \
     if (maxlen < 1) \
@@ -156,7 +147,7 @@ ARY2CTYPE(double,NUM2DBL)
 
 /* Converts either array or object responding to #to_a to C-style array */
 #define ARY2CMAT(_type_) \
-static inline void ary2cmat##_type_(rary, cary, cols, rows, count) \
+static inline void ary2cmat##_type_(rary, cary, cols, rows) \
 VALUE rary; \
 _type_ cary[]; \
 int cols,rows; \

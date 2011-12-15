@@ -48,7 +48,7 @@ GL_FUNC_LOAD_2(PointParameterfARB,GLvoid, GLenum,GLfloat, "GL_ARB_point_paramete
 static void (APIENTRY * fptr_glPointParameterfvARB)(GLenum,GLfloat *);
 static VALUE gl_PointParameterfvARB(VALUE obj,VALUE arg1,VALUE arg2)
 {
-	GLfloat params[3] = {0.0,0.0,0.0};
+	GLfloat params[3] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLenum pname;
 	GLint size;
 	LOAD_GL_FUNC(glPointParameterfvARB,"GL_ARB_point_parameters")
@@ -106,7 +106,7 @@ static VALUE gl_ProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
 	LOAD_GL_FUNC(glProgramStringARB,"GL_ARB_vertex_program")
 	Check_Type(arg3,T_STRING);
-	fptr_glProgramStringARB(NUM2INT(arg1),NUM2INT(arg2),RSTRING_LEN(arg3),RSTRING_PTR(arg3));
+	fptr_glProgramStringARB((GLenum)NUM2INT(arg1),(GLenum)NUM2INT(arg2),(GLsizei)RSTRING_LENINT(arg3),RSTRING_PTR(arg3));
 	CHECK_GLERROR
 	return Qnil;
 }
@@ -176,7 +176,7 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_VertexAttrib_ptr[index] = arg6;
-		fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)NUM2INT(arg6));
+		fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)NUM2LONG(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);
@@ -235,7 +235,7 @@ static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
-	_type_ cary[4] = {0.0,0.0,0.0,0.0}; \
+	_type_ cary[4] = {(_type_)0.0,(_type_)0.0,(_type_)0.0,(_type_)0.0}; \
 	LOAD_GL_FUNC(gl##_name_,_extension_) \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
 	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
@@ -397,7 +397,7 @@ VALUE obj,arg1,arg2;
 	shader = (GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	str = RSTRING_PTR(arg2);
-	length = RSTRING_LEN(arg2);
+	length = (GLint)RSTRING_LENINT(arg2);
 	fptr_glShaderSourceARB(shader,1,&str,&length);
 	CHECK_GLERROR
 	return Qnil;
@@ -423,7 +423,7 @@ VALUE obj,arg1,arg2; \
 	_type_ *value; \
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
 	Check_Type(arg2,T_ARRAY); \
-	count = RARRAY_LEN(arg2); \
+	count = (GLsizei)RARRAY_LENINT(arg2); \
 	if (count<=0 || (count % _size_) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of %i",_size_); \
 	location = (GLint)NUM2INT(arg1); \
@@ -457,7 +457,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLfloat *value;	\
 	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
 	location = (GLint)NUM2INT(arg1); \
-	count = RARRAY_LEN(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
+	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
 	transpose = (GLboolean)NUM2INT(arg2); \
 	value = ALLOC_N(GLfloat, count); \
 	ary2cmatfloatcount(arg3,value,_size_,_size_); \

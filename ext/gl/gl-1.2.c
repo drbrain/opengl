@@ -50,7 +50,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	count = (GLsizei)NUM2UINT(arg4);
 	type = (GLenum)NUM2INT(arg5);
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
-		fptr_glDrawRangeElements(mode, start, end, count, type, (GLvoid *)NUM2INT(arg6));
+		fptr_glDrawRangeElements(mode, start, end, count, type, (GLvoid *)NUM2LONG(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);
@@ -77,12 +77,12 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	format = (GLenum)NUM2INT(arg4);
 	type = (GLenum)NUM2INT(arg5);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glColorTable(target,internalformat,width,format,type,(GLvoid *)NUM2INT(arg6));
+		fptr_glColorTable(target,internalformat,width,format,type,(GLvoid *)NUM2LONG(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);
 		CheckDataSize(type,format,width,data);
-		fptr_glColorTable(target,internalformat,width,format,type,RSTRING_PTR(data));
+		fptr_glColorTable(target,internalformat,width,format,type,(GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR
 	return Qnil;
@@ -95,7 +95,7 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLenum target;
 	GLenum pname;
-	GLfloat params[4] = {0.0,0.0,0.0,0.0};
+	GLfloat params[4] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	LOAD_GL_FUNC(glColorTableParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -132,7 +132,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLenum pname;
-	GLfloat params[4] = {0.0,0.0,0.0,0.0};
+	GLfloat params[4] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLsizei size;
 	LOAD_GL_FUNC(glGetColorTableParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
@@ -217,7 +217,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	format = (GLenum)NUM2INT(arg4);	
 	type = (GLenum)NUM2INT(arg5);	
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glColorSubTable(target,start,count,format,type,(GLvoid *)NUM2INT(arg6));
+		fptr_glColorSubTable(target,start,count,format,type,(GLvoid *)NUM2LONG(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);
@@ -245,7 +245,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	format = (GLenum)NUM2INT(arg4);
 	type = (GLenum)NUM2INT(arg5);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,(GLvoid *)NUM2INT(arg6));
+		fptr_glConvolutionFilter1D(target,internalformat,width,format,type,(GLvoid *)NUM2LONG(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);
@@ -275,7 +275,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2INT(arg7));
+		fptr_glConvolutionFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2LONG(arg7));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg7);
@@ -294,7 +294,7 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLenum target;
 	GLenum pname;
-	GLfloat params[4] = {0.0,0.0,0.0,0.0};
+	GLfloat params[4] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	LOAD_GL_FUNC(glConvolutionParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -330,7 +330,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLenum pname;
-	GLfloat params[4] = {0.0,0.0,0.0,0.0};
+	GLfloat params[4] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLsizei size;
 	LOAD_GL_FUNC(glGetConvolutionParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
@@ -422,7 +422,7 @@ VALUE obj;
 				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
 
 			FORCE_PIXEL_STORE_MODE
-			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)NUM2INT(args[3]));
+			fptr_glGetConvolutionFilter(target,format,type,(GLvoid*)NUM2LONG(args[3]));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return Qnil;
@@ -477,7 +477,7 @@ VALUE obj;
 			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
 			FORCE_PIXEL_STORE_MODE
-			fptr_glGetSeparableFilter(target,format,type,(GLvoid*)NUM2INT(args[3]),(GLvoid*)NUM2INT(args[4]),(GLvoid*)NUM2INT(args[5]));
+			fptr_glGetSeparableFilter(target,format,type,(GLvoid*)NUM2LONG(args[3]),(GLvoid*)NUM2LONG(args[4]),(GLvoid*)NUM2LONG(args[5]));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return Qnil;		
@@ -503,7 +503,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	format = (GLenum)NUM2INT(arg5);
 	type = (GLenum)NUM2INT(arg6);
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2INT(arg7),(GLvoid *)NUM2INT(arg8));
+		fptr_glSeparableFilter2D(target,internalformat,width,height,format,type,(GLvoid *)NUM2LONG(arg7),(GLvoid *)NUM2LONG(arg8));
 	} else {
 		VALUE data_1,data_2;
 		data_1 = pack_array_or_pass_string(type,arg7);
@@ -524,7 +524,7 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLenum target;
 	GLenum pname;
-	GLfloat params = 0.0;
+	GLfloat params = (GLfloat)0.0;
 	LOAD_GL_FUNC(glGetHistogramParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -592,7 +592,7 @@ VALUE obj;
 				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
 
 			FORCE_PIXEL_STORE_MODE
-			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)NUM2INT(args[4]));
+			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)NUM2LONG(args[4]));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return Qnil;
@@ -638,7 +638,7 @@ VALUE obj;
 				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
 
 			FORCE_PIXEL_STORE_MODE
-			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)NUM2INT(args[4]));
+			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)NUM2LONG(args[4]));
 			RESTORE_PIXEL_STORE_MODE
 			CHECK_GLERROR
 			return Qnil;
@@ -652,7 +652,7 @@ VALUE obj,arg1,arg2;
 {
 	GLenum target;
 	GLenum pname;
-	GLfloat params = 0.0;
+	GLfloat params = (GLfloat)0.0;
 	LOAD_GL_FUNC(glGetMinmaxParameterfv,"1.2")
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -705,7 +705,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glTexImage3D( target, level, internalFormat, width, height,
-					  depth, border, format, type,(GLvoid *)NUM2INT(arg10));
+					  depth, border, format, type,(GLvoid *)NUM2LONG(arg10));
 		CHECK_GLERROR
 		return Qnil;
 	}
@@ -758,7 +758,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 				width, height, depth,
-				format, type, (GLvoid *)NUM2INT(arg11));
+				format, type, (GLvoid *)NUM2LONG(arg11));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg11);
