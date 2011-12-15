@@ -389,19 +389,12 @@ static inline void *load_gl_function(const char *name,int raise)
 
 #if defined(__APPLE__)
 	void *library = NULL;
-	char* symbolName;
   library = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
 
 	if (library == NULL)
 		rb_raise(rb_eRuntimeError,"Can't load OpenGL library for dynamic loading");
 		
-	/*  prepend a '_' for the Unix C symbol mangling convention  */
-	symbolName = ALLOC_N(char,strlen(name) + 2);
-	symbolName[0] = '_';
-	strcpy(symbolName+1, name);
-
-  func_ptr = dlsym(library, symbolName);
-	xfree(symbolName);
+  func_ptr = dlsym(library, name);
   dlclose(library);
 #elif HAVE_WGLGETPROCADDRESS
 	func_ptr = wglGetProcAddress((LPCSTR)name);
