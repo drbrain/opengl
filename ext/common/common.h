@@ -389,7 +389,7 @@ static inline void *load_gl_function(const char *name,int raise)
 
 #if defined(__APPLE__)
 	void *library = NULL;
-  library = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY);
+  library = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY | RTLD_LOCAL | RTLD_FIRST);
 
 	if (library == NULL)
 		rb_raise(rb_eRuntimeError,"Can't load OpenGL library for dynamic loading");
