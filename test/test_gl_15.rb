@@ -13,9 +13,9 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/unit'
+require 'test/common'
 
-class Test_15 < Test::Unit::TestCase
+class TestGl15 < Test::Unit::TestCase
 	def setup
 		common_setup()
 	end

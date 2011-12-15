@@ -1,5 +1,5 @@
-#--
-# Copyright (C) 2006 Peter McLain <peter.mclain@gmail.com>
+#
+# Copyright (C) 2007 Jan Dvorak <jan.dvorak@kraxnet.cz>
 #
 # This program is distributed under the terms of the MIT license.
 # See the included MIT-LICENSE file for the terms of this license.
@@ -11,25 +11,23 @@
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#++
+#
 
-if __FILE__ == $0
-    # If we are being called from the command line, e.g., ruby foo.rb, then
-    # fixup the load path so we can find the OpenGL extension libs
-    $: << File.join(File.dirname(__FILE__), '..', 'lib')
-end
+require 'test/common'
 
-require 'test/unit'
-require 'gl'
-include Gl
+class TestGlExtAti < Test::Unit::TestCase
+	def setup
+		common_setup()
+	end
 
-# Test that an include of Gl forces makes the OpenGL namespace available in
-# the current module.
-#   include Gl
-#   ...
-#   Gl::VERSION exists
-class GlIncludeTest < Test::Unit::TestCase
-    def test_require_of_gl
-        assert Gl::GL_VERSION
-    end
+	def teardown
+		common_teardown()
+	end
+
+	def test_gl_ati_draw_buffers
+		return if not supported?("GL_ATI_draw_buffers")
+		glDrawBuffersATI([GL_BACK_LEFT,GL_FRONT_LEFT])
+		assert_equal(glGetIntegerv(GL_DRAW_BUFFER0),GL_BACK_LEFT)
+		assert_equal(glGetIntegerv(GL_DRAW_BUFFER1),GL_FRONT_LEFT)
+	end
 end

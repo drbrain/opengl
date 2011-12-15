@@ -1,0 +1,30 @@
+require 'autotest/restart'
+
+Autotest.add_hook :initialize do |at|
+  at.add_exception /\.git/
+  at.add_exception /doc/
+  at.add_exception /examples/
+  at.add_exception /ext/
+  at.add_exception /utils/
+  at.add_exception /website/
+
+  at.add_mapping(/^lib\/.*(\.bundle|so|dll)$/) do |filename, match|
+    possible = File.basename(filename, match[1])
+    at.files_matching %r%^test/test_#{possible}%
+  end
+
+  def at.path_to_classname s
+    sep = File::SEPARATOR
+    n = s.sub(/^test#{sep}test_(.*)\.rb/, '\1')
+    c = if n =~ /^(glu?)_?(.*)/ then
+          "#{$1.capitalize}#{$2}"
+        end
+
+    "Test#{c}"
+  end
+end
+
+Autotest.add_hook :run_command do |at|
+  at.unit_diff = 'cat'
+  system Gem.ruby, Gem.bin_path('rake', 'rake'), 'compile'
+end

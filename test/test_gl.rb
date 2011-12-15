@@ -13,24 +13,36 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/unit'
+require 'test/common'
+require 'gl'
+require 'glut'
+include Gl
+include Glut
 
-class Test_EXT_GREMEDY < Test::Unit::TestCase
+class TestGl < Test::Unit::TestCase
 	def setup
-		common_setup()
+		return if $glut_initialized
+		glut_init()
+		$glut_initialized = true
 	end
 
-	def teardown
-		common_teardown()
+	def test_isavailable
+		assert_equal(is_available?(1.1),true)
+		assert_equal(is_available?("GL_ARB_multitexture"),true)
+		assert_equal(is_available?("GL_NON_EXISTENT"),false)
 	end
 
-	def test_gl_gremedy_string_marker
-		return if not supported?("GL_GREMEDY_string_marker")
-		glStringMarkerGREMEDY("test")
-	end
-
-	def test_gl_gremedy_frame_terminator
-		return if not supported?("GL_GREMEDY_frame_terminator")
-		glFrameTerminatorGREMEDY()
+	def test_errorchecking
+		Gl.disable_error_checking
+		assert_equal(Gl.is_error_checking_enabled?,false)
+		Gl.enable_error_checking
+		assert_equal(Gl.is_error_checking_enabled?,true)
+		begin
+			glEnable(0)	
+		rescue Gl::Error => err
+		  assert_equal(err.id,GL_INVALID_ENUM)
+		else
+			assert(false) # error not detected
+		end
 	end
 end

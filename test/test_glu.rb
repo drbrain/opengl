@@ -13,11 +13,11 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/unit'
+require 'test/common'
 require 'glu'
 include Glu
 
-class Test_GLU < Test::Unit::TestCase
+class TestGlu < Test::Unit::TestCase
 	def setup
 		common_setup()
 	end

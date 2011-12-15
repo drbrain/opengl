@@ -13,9 +13,9 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/unit'
+require 'test/common'
 
-class Test_EXT_ATI < Test::Unit::TestCase
+class TestGlExtGremedy < Test::Unit::TestCase
 	def setup
 		common_setup()
 	end
@@ -24,10 +24,13 @@ class Test_EXT_ATI < Test::Unit::TestCase
 		common_teardown()
 	end
 
-	def test_gl_ati_draw_buffers
-		return if not supported?("GL_ATI_draw_buffers")
-		glDrawBuffersATI([GL_BACK_LEFT,GL_FRONT_LEFT])
-		assert_equal(glGetIntegerv(GL_DRAW_BUFFER0),GL_BACK_LEFT)
-		assert_equal(glGetIntegerv(GL_DRAW_BUFFER1),GL_FRONT_LEFT)
+	def test_gl_gremedy_string_marker
+		return if not supported?("GL_GREMEDY_string_marker")
+		glStringMarkerGREMEDY("test")
+	end
+
+	def test_gl_gremedy_frame_terminator
+		return if not supported?("GL_GREMEDY_frame_terminator")
+		glFrameTerminatorGREMEDY()
 	end
 end
