@@ -110,8 +110,10 @@ cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_F,GLfloat,rb_float_new)
 cond_GLBOOL2RUBY_FUNC(cond_GLBOOL2RUBY_D,GLdouble,rb_float_new)
 
 
-/* For conversion between ruby array (or object that can be converted to array) and C array.
-   The C array has to be preallocated by calling function. */
+/* For conversion between ruby array (or object that can be converted to
+ * array) and C array.
+ *
+ * The C array has to be preallocated by calling function. */
 #define ARY2CTYPE(_type_,_convert_) \
 static inline long ary2c##_type_( arg, cary, maxlen ) \
 VALUE arg; \
@@ -136,7 +138,7 @@ ARY2CTYPE(byte,NUM2INT)
 ARY2CTYPE(ubyte,NUM2INT)
 ARY2CTYPE(short,NUM2INT)
 ARY2CTYPE(ushort,NUM2INT)
-ARY2CTYPE(boolean,NUM2INT)
+ARY2CTYPE(boolean,GLBOOL2RUBY)
 ARY2CTYPE(float,NUM2DBL)
 ARY2CTYPE(double,NUM2DBL)
 

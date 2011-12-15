@@ -59,7 +59,7 @@ if (fptr_##_NAME_==NULL) { \
 #define ARGLIST10 ,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10
 
 #define CONV_GLenum (GLenum)NUM2UINT
-#define CONV_GLboolean (GLboolean)NUM2UINT
+#define CONV_GLboolean (GLboolean)GLBOOL2RUBY
 #define CONV_GLbitfield (GLbitfield)NUM2UINT
 #define CONV_GLbyte (GLbyte)NUM2INT
 #define CONV_GLshort (GLshort)NUM2INT
