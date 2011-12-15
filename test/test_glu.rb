@@ -13,28 +13,28 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 require 'glu'
 include Glu
 
-class TestGlu < Test::Unit::TestCase
+class TestGlu < OpenGL::TestCase
 	def setup
-		common_setup()
+		super()
 	end
 
 	def teardown
-		common_teardown()
+		super()
 	end
 
 	def test_gluortho
-		res = [ [2.0/$window_size, 0, 0, 0],
-					  [0, 2.0/$window_size, 0, 0],
+		res = [ [2.0/WINDOW_SIZE, 0, 0, 0],
+					  [0, 2.0/WINDOW_SIZE, 0, 0],
 					  [0, 0, -1, 0],
 						[-1,-1,0,1] ]
 
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
-		gluOrtho2D(0,$window_size,0,$window_size)
+		gluOrtho2D(0,WINDOW_SIZE,0,WINDOW_SIZE)
 		assert_equal(glGetDoublev(GL_PROJECTION_MATRIX),res)
 	end
 
@@ -94,42 +94,42 @@ class TestGlu < Test::Unit::TestCase
 
 	def test_gluproject
 		pos = gluProject(1,1,1)
-		assert_equal(pos,[$window_size,$window_size,1])
+		assert_equal(pos,[WINDOW_SIZE,WINDOW_SIZE,1])
 
 		mp = glGetDoublev(GL_PROJECTION_MATRIX)
 		mm = Matrix.rows(glGetDoublev(GL_MODELVIEW_MATRIX))
 		view = glGetDoublev(GL_VIEWPORT)
 		pos = gluProject(1,1,1,mp,mm,view)
-		assert_equal(pos,[$window_size,$window_size,1])
+		assert_equal(pos,[WINDOW_SIZE,WINDOW_SIZE,1])
 
-		assert_raise ArgumentError do pos = gluProject(1,1,1,mp,[1,2,3,4],view) end
+		assert_raises ArgumentError do pos = gluProject(1,1,1,mp,[1,2,3,4],view) end
 	end
 
 	def test_gluunproject
-		pos = gluUnProject($window_size,$window_size,1)
+		pos = gluUnProject(WINDOW_SIZE,WINDOW_SIZE,1)
 		assert_equal(pos,[1,1,1])
 		
 		mp = glGetDoublev(GL_PROJECTION_MATRIX)
 		mm = Matrix.rows(glGetDoublev(GL_MODELVIEW_MATRIX))
 		view = glGetDoublev(GL_VIEWPORT)
-		pos = gluUnProject($window_size,$window_size,1,mp,mm,view)
+		pos = gluUnProject(WINDOW_SIZE,WINDOW_SIZE,1,mp,mm,view)
 		assert_equal(pos,[1,1,1])
-		assert_raise ArgumentError do	pos = gluUnProject($window_size,$window_size,1,mp,[1,2,3,4],view) end
+		assert_raises ArgumentError do	pos = gluUnProject(WINDOW_SIZE,WINDOW_SIZE,1,mp,[1,2,3,4],view) end
 	end
 
 	def test_glupickmatrix
-		t = $window_size / 5.0
+		t = WINDOW_SIZE / 5.0
 		m = [[t, 0.0, 0.0, 0.0], [0.0, t, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [t,t, 0.0, 1.0]]
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
 		gluPickMatrix(0,0)
-		assert(approx_equal(glGetDoublev(GL_PROJECTION_MATRIX).flatten,m.flatten))
+		assert(assert_in_delta(glGetDoublev(GL_PROJECTION_MATRIX).flatten,m.flatten))
 		glLoadIdentity()
 		gluPickMatrix(0,0,5,5)
-		assert(approx_equal(glGetDoublev(GL_PROJECTION_MATRIX).flatten,m.flatten))
+		assert(assert_in_delta(glGetDoublev(GL_PROJECTION_MATRIX).flatten,m.flatten))
 		glLoadIdentity()
 		gluPickMatrix(0,0,5,5,glGetDoublev(GL_VIEWPORT))
-		assert(approx_equal(glGetDoublev(GL_PROJECTION_MATRIX).flatten,m.flatten))
+		assert(assert_in_delta(glGetDoublev(GL_PROJECTION_MATRIX).flatten,m.flatten))
 	end
 
 	def test_gluperspective
@@ -186,9 +186,9 @@ class TestGlu < Test::Unit::TestCase
 	def test_glunurbs
 		ecount = 0
 
-	  glViewport(0, 0, $window_size, $window_size)
+	  glViewport(0, 0, WINDOW_SIZE, WINDOW_SIZE)
 		glMatrixMode(GL_PROJECTION)
-    glOrtho(0, $window_size, 0, $window_size, -1, 1)
+    glOrtho(0, WINDOW_SIZE, 0, WINDOW_SIZE, -1, 1)
 
 		n_error = lambda do |error|
 			ecount += 1
@@ -203,7 +203,7 @@ class TestGlu < Test::Unit::TestCase
 		assert_equal(gluGetNurbsProperty(n,GLU_SAMPLING_TOLERANCE),40)
 		
 		gluLoadSamplingMatrices(n,m,m2,glGetIntegerv(GL_VIEWPORT))
-		assert_raise ArgumentError do gluLoadSamplingMatrices(n,m,[1,2,3,4],glGetIntegerv(GL_VIEWPORT)) end
+		assert_raises ArgumentError do gluLoadSamplingMatrices(n,m,[1,2,3,4],glGetIntegerv(GL_VIEWPORT)) end
 
 		knots = [0,0,0,0,1,1,1,1]
 		ctlpoints_curve = [[50,50,0],[400,50,0],[400,400,0],[50,400,0]]
@@ -244,9 +244,9 @@ class TestGlu < Test::Unit::TestCase
 	end
 	
 	def test_glutess
-	  glViewport(0, 0, $window_size, $window_size)
+	  glViewport(0, 0, WINDOW_SIZE, WINDOW_SIZE)
 		glMatrixMode(GL_PROJECTION)
-    glOrtho(0, $window_size, 0, $window_size, -1, 1)
+    glOrtho(0, WINDOW_SIZE, 0, WINDOW_SIZE, -1, 1)
 		vcount,bcount,ecount = 0,0,0
 
 		cb_begin = lambda do |type|

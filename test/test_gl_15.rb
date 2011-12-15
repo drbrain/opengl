@@ -13,19 +13,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGl15 < Test::Unit::TestCase
+class TestGl15 < OpenGL::TestCase
 	def setup
-		common_setup()
+		super()
 	end
 
 	def teardown
-		common_teardown()
+		super()
 	end
 
 	def test_query
-		return if not supported?(1.5)
+		supported?(1.5)
 		queries = glGenQueries(2)
 		assert_equal(queries.size,2)
 
@@ -55,7 +55,7 @@ class TestGl15 < Test::Unit::TestCase
 	end
 	
 	def test_buffers
-		return if not supported?(1.5)
+		supported?(1.5)
 		buffers = glGenBuffers(2)
 		glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
 		assert_equal(glIsBuffer(buffers[0]),true)		
@@ -81,7 +81,7 @@ class TestGl15 < Test::Unit::TestCase
 	end
 
 	def test_buffer_binding_element_array
-		return if not supported?(1.5)
+		supported?(1.5)
 
 		glEnableClientState(GL_VERTEX_ARRAY)
 		va = [0,0, 0,1, 1,1].pack("f*")
@@ -108,7 +108,7 @@ class TestGl15 < Test::Unit::TestCase
 	end
 
 	def test_buffer_binding_array_1
-		return if not supported?(1.5)
+		supported?(1.5)
 
 		glEnableClientState(GL_VERTEX_ARRAY)
 		va = [0,0, 0,1, 1,1].pack("f*")
@@ -134,7 +134,7 @@ class TestGl15 < Test::Unit::TestCase
 	end
 
 	def test_buffer_binding_array_2
-		return if not supported?(1.5)
+		supported?(1.5)
 
 		efa = [0].pack("C*")
 		na = [0,1,0].pack("f*")
@@ -202,7 +202,7 @@ class TestGl15 < Test::Unit::TestCase
 	end
 
 	def test_buffer_binding_array_3
-		return if not supported?(1.5)
+		supported?(1.5)
 
 		sc = [0,1,0].pack("f*")
 		fc = [1].pack("f*")
@@ -244,7 +244,7 @@ class TestGl15 < Test::Unit::TestCase
 	end
 
 	def test_buffer_binding_array_4
-		return if not supported?(1.5)
+		supported?(1.5)
 		va = [0,0, 1,0, 1,1, 0,0, 1,0, 0,1].pack("f*")
 		glVertexPointer(2,GL_FLOAT,0,va)
 		

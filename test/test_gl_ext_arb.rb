@@ -13,19 +13,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGlExtArb < Test::Unit::TestCase
+class TestGlExtArb < OpenGL::TestCase
 	def setup
-		common_setup()
+		super()
 	end
 
 	def teardown
-		common_teardown()
+		super()
 	end
 
 	def test_gl_arb_transpose_matrix
-		return if not supported?("GL_ARB_transpose_matrix")
+		supported?("GL_ARB_transpose_matrix")
 		m_a = [[1.0,2.0,3.0,4.0],
 					 [0.0,2.0,0.0,0.0],
 					 [0.0,0.0,2.0,0.0],
@@ -66,14 +66,14 @@ class TestGlExtArb < Test::Unit::TestCase
 		glMultTransposeMatrixdARB(m)
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
 
-		assert_raise ArgumentError do glLoadTransposeMatrixfARB([1,2,3,4]) end
-		assert_raise ArgumentError do glLoadTransposeMatrixdARB([1,2,3,4]) end
-		assert_raise ArgumentError do glMultTransposeMatrixfARB([1,2,3,4]) end
-		assert_raise ArgumentError do glMultTransposeMatrixdARB([1,2,3,4]) end
+		assert_raises ArgumentError do glLoadTransposeMatrixfARB([1,2,3,4]) end
+		assert_raises ArgumentError do glLoadTransposeMatrixdARB([1,2,3,4]) end
+		assert_raises ArgumentError do glMultTransposeMatrixfARB([1,2,3,4]) end
+		assert_raises ArgumentError do glMultTransposeMatrixdARB([1,2,3,4]) end
 	end
 
 	def test_gl_arb_multisample
-		return if not supported?("GL_ARB_multisample")
+		supported?("GL_ARB_multisample")
 		glSampleCoverageARB(0.5,GL_FALSE)
 		assert_equal(glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB),0.5)
 		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB),false)
@@ -83,7 +83,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_color_buffer_float
-		return if not supported?("GL_ARB_color_buffer_float")
+		supported?("GL_ARB_color_buffer_float")
 		glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB,GL_FIXED_ONLY_ARB)
 		assert_equal(glGetIntegerv(GL_CLAMP_VERTEX_COLOR_ARB),GL_FIXED_ONLY_ARB)
 
@@ -92,7 +92,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_vertex_program
-		return if not supported?("GL_ARB_vertex_program")
+		supported?("GL_ARB_vertex_program")
 
 		assert_equal(glIsProgramARB(0),false)
 		programs = glGenProgramsARB(1)
@@ -220,7 +220,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_windowpos
-		return if not supported?("GL_ARB_window_pos")
+		supported?("GL_ARB_window_pos")
 		# 2
 		glWindowPos2dARB(1.0,2.0)
 		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
@@ -259,7 +259,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_pointparameter
-		return if not supported?("GL_ARB_point_parameters")
+		supported?("GL_ARB_point_parameters")
 		glPointParameterfARB(GL_POINT_SIZE_MIN,1.0)
 		assert_equal(glGetDoublev(GL_POINT_SIZE_MIN),1.0)
 
@@ -268,7 +268,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_occlusion_query
-		return if not supported?("GL_ARB_occlusion_query")
+		supported?("GL_ARB_occlusion_query")
 
 		queries = glGenQueriesARB(2)
 		assert_equal(queries.size,2)
@@ -286,7 +286,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_shader_objects
-		return if not supported?("GL_ARB_shader_objects")
+		supported?("GL_ARB_shader_objects")
 
 		vertex_shader_source = "void main() { gl_Position = ftransform();}"
 		
@@ -329,7 +329,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_shader_objects_2
-		return if not supported?("GL_ARB_shader_objects")
+		supported?("GL_ARB_shader_objects")
 
 		vertex_shader_source = "attribute vec4 test; uniform float testvec1; uniform vec2 testvec2; uniform vec3 testvec3; uniform vec4 testvec4; uniform int testivec1; uniform ivec2 testivec2; uniform ivec3 testivec3; uniform ivec4 testivec4; void main() { gl_Position = testvec1 * test * testvec2.x * testvec3.x * testivec1 * testivec2.x * testivec3.x * testivec4.x + testvec4;}"
 
@@ -402,7 +402,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_shader_objects_3
-		return if not supported?("GL_ARB_shader_objects")
+		supported?("GL_ARB_shader_objects")
 
 		vertex_shader_source = "uniform mat2 testmat2; uniform mat3 testmat3; uniform mat4 testmat4; void main() { gl_Position = gl_Vertex * testmat4[0].x * testmat3[0].x * testmat2[0].x;}"
 
@@ -438,7 +438,7 @@ class TestGlExtArb < Test::Unit::TestCase
 	end
 
 	def test_gl_arb_vertex_shader
-		return if not supported?("GL_ARB_vertex_shader")
+		supported?("GL_ARB_vertex_shader")
 
 		vertex_shader_source = "attribute vec4 test; uniform float testvec1; uniform vec2 testvec2; uniform vec3 testvec3; uniform vec4 testvec4; uniform int testivec1; uniform ivec2 testivec2; uniform ivec3 testivec3; uniform ivec4 testivec4; void main() { gl_Position = testvec1 * test * testvec2.x * testvec3.x * testivec1 * testivec2.x * testivec3.x * testivec4.x + testvec4;}"
 

@@ -13,17 +13,9 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGl10_11 < Test::Unit::TestCase
-	def setup
-		common_setup()
-	end
-
-	def teardown
-		common_teardown()
-	end
-
+class TestGl10_11 < OpenGL::TestCase
 	def test_glhint
 		glHint(GL_FOG_HINT,GL_NICEST)
 		assert_equal(glGetIntegerv(GL_FOG_HINT), GL_NICEST)
@@ -153,17 +145,19 @@ class TestGl10_11 < Test::Unit::TestCase
 		glMultMatrixd(m)
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a)
 
-		assert_raise ArgumentError do glLoadMatrixf([1,2,3,4]) end
-		assert_raise ArgumentError do glLoadMatrixd([1,2,3,4]) end
-		assert_raise ArgumentError do glMultMatrixf([1,2,3,4]) end
-		assert_raise ArgumentError do glMultMatrixd([1,2,3,4]) end
+		assert_raises ArgumentError do glLoadMatrixf([1,2,3,4]) end
+		assert_raises ArgumentError do glLoadMatrixd([1,2,3,4]) end
+		assert_raises ArgumentError do glMultMatrixf([1,2,3,4]) end
+		assert_raises ArgumentError do glMultMatrixd([1,2,3,4]) end
 	end
 
 	def test_gledge
 		glEdgeFlag(GL_FALSE)
 		assert_equal(glGetBooleanv(GL_EDGE_FLAG),false)
+
 		glEdgeFlag(GL_TRUE)
 		assert_equal(glGetBooleanv(GL_EDGE_FLAG),true)
+
 		glEdgeFlagv([GL_FALSE])
 		assert_equal(glGetBooleanv(GL_EDGE_FLAG),false)
 	end
@@ -385,7 +379,7 @@ class TestGl10_11 < Test::Unit::TestCase
 	end
 
 	def test_glrasterpos
-		glOrtho(0,$window_size,0,$window_size,0,-1)
+		glOrtho(0,WINDOW_SIZE,0,WINDOW_SIZE,0,-1)
 
 		# 2		
 		glRasterPos2d(1.0,2.0)
@@ -452,7 +446,7 @@ class TestGl10_11 < Test::Unit::TestCase
 	end
 
 	def test_glbitmap
-		glOrtho(0,$window_size,0,$window_size,0,-1)
+		glOrtho(0,WINDOW_SIZE,0,WINDOW_SIZE,0,-1)
 
 		bitmap = [ 0x55 ] * 8 # 64 bits (8x8 bitmap), stipple pattern
 
@@ -480,110 +474,109 @@ class TestGl10_11 < Test::Unit::TestCase
 	def test_glcolor
 		# 3
 		glColor3b(2**7-1,0,2**7-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		assert_each_in_delta [1.0,0.0,1.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3bv([0,2**7-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3d(1.0,0.0,1.0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		assert_each_in_delta [1.0,0.0,1.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3dv([0.0,1.0,0.0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3f(1.0,0.0,1.0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		assert_each_in_delta [1.0,0.0,1.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3fv([0.0,1.0,0.0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3i(2**31-1,0,2**31-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		assert_each_in_delta [1.0,0.0,1.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3iv([0,2**31-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3s(2**15-1,0,2**15-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		assert_each_in_delta [1.0,0.0,1.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3sv([0,2**15-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3ub(2**8-1,0,2**8-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		assert_each_in_delta [1.0,0.0,1.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3ubv([0,2**8-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3ui(2**32-1,0,2**32-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		assert_each_in_delta [1.0,0.0,1.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3uiv([0,2**32-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3us(2**16-1,0,2**16-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,1.0]))
+		assert_each_in_delta [1.0,0.0,1.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor3usv([0,2**16-1,0])
 		# 4
 		glColor4b(2**7-1,0,2**7-1,0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		assert_each_in_delta [1.0,0.0,1.0,0.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4bv([0,2**7-1,0,2**7-1])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4d(1.0,0.0,1.0,0.0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		assert_each_in_delta [1.0,0.0,1.0,0.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4dv([0.0,1.0,0.0,1.0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4f(1.0,0.0,1.0,0.0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		assert_each_in_delta [1.0,0.0,1.0,0.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4fv([0.0,1.0,0.0,1.0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4i(2**31-1,0,2**31-1,0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		assert_each_in_delta [1.0,0.0,1.0,0.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4iv([0,2**31-1,0,2**31-1])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4s(2**15-1,0,2**15-1,0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		assert_each_in_delta [1.0,0.0,1.0,0.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4sv([0,2**15-1,0,2**15-1])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4ub(2**8-1,0,2**8-1,0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		assert_each_in_delta [1.0,0.0,1.0,0.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4ubv([0,2**8-1,0,2**8-1])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4ui(2**32-1,0,2**32-1,0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		assert_each_in_delta [1.0,0.0,1.0,0.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4uiv([0,2**32-1,0,2**32-1])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4us(2**16-1,0,2**16-1,0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[1.0,0.0,1.0,0.0]))
+		assert_each_in_delta [1.0,0.0,1.0,0.0], glGetDoublev(GL_CURRENT_COLOR)
 		glColor4usv([0,2**16-1,0,2**16-1])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_COLOR),[0.0,1.0,0.0,1.0]))
+		assert_each_in_delta [0.0,1.0,0.0,1.0], glGetDoublev(GL_CURRENT_COLOR)
 	end
 
 	def test_glortho
-		res = [ [2.0/$window_size, 0, 0, 0],
-					  [0, 2.0/$window_size, 0, 0],
+		res = [ [2.0/WINDOW_SIZE, 0, 0, 0],
+					  [0, 2.0/WINDOW_SIZE, 0, 0],
 					  [0, 0, 2, 0],
 						[-1,-1,-1,1] ]
 
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
-		glOrtho(0,$window_size,0,$window_size,0,-1)
+		glOrtho(0,WINDOW_SIZE,0,WINDOW_SIZE,0,-1)
 		assert_equal(glGetDoublev(GL_PROJECTION_MATRIX),res)
 	end
 
 	def test_glnormal
 		glNormal3d(1.0,2.0,3.0)
-		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[1.0,2.0,3.0])
+		assert_equal([1.0,2.0,3.0], glGetDoublev(GL_CURRENT_NORMAL))
 		glNormal3dv([4.0,5.0,6.0])
-		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[4.0,5.0,6.0])
+		assert_equal([4.0,5.0,6.0], glGetDoublev(GL_CURRENT_NORMAL))
 
 		glNormal3f(1.0,2.0,3.0)
-		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[1.0,2.0,3.0])
+		assert_equal([1.0,2.0,3.0], glGetDoublev(GL_CURRENT_NORMAL))
 		glNormal3fv([4.0,5.0,6.0])
-		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[4.0,5.0,6.0])
+		assert_equal([4.0,5.0,6.0], glGetDoublev(GL_CURRENT_NORMAL))
 
 		glNormal3i(1,2,3)
-		assert_equal(glGetIntegerv(GL_CURRENT_NORMAL),[1,2,3])
+		assert_equal([1,2,3], glGetIntegerv(GL_CURRENT_NORMAL))
 		glNormal3iv([4,5,6])
-		assert_equal(glGetIntegerv(GL_CURRENT_NORMAL),[4,5,6])
+		assert_equal([4,5,6], glGetIntegerv(GL_CURRENT_NORMAL))
 
 		glNormal3b(2**7-1,0,2**7-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_NORMAL),[1.0,0.0,1.0]))
+		assert(assert_in_delta([1.0,0.0,1.0], glGetDoublev(GL_CURRENT_NORMAL)))
 		glNormal3bv(0,2**7-1,0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_NORMAL),[0.0,1.0,0.0]))
+		assert(assert_in_delta([0.0,1.0,0.0], glGetDoublev(GL_CURRENT_NORMAL)))
 
 		glNormal3s(2**15-1,0,2**15-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_NORMAL),[1.0,0.0,1.0]))
+		assert(assert_in_delta([1.0,0.0,1.0], glGetDoublev(GL_CURRENT_NORMAL)))
 		glNormal3sv(0,2**15-1,0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_NORMAL),[0.0,1.0,0.0]))
+		assert(assert_in_delta([0.0,1.0,0.0], glGetDoublev(GL_CURRENT_NORMAL)))
 	end
-
 
 	def test_gllight
 		glLightf(GL_LIGHT0,GL_SPOT_CUTOFF,80.0)
@@ -598,7 +591,7 @@ class TestGl10_11 < Test::Unit::TestCase
 
 	def test_glmaterial
 		glMaterialfv(GL_FRONT,GL_AMBIENT,[0.0,1.0,0.0,1.0])
-		assert_equal(glGetMaterialfv(GL_FRONT,GL_AMBIENT),[0.0,1.0,0.0,1.0])
+		assert_equal([0.0,1.0,0.0,1.0], glGetMaterialfv(GL_FRONT,GL_AMBIENT))
 
 		glMaterialiv(GL_FRONT,GL_SHININESS,[50])
 		assert_equal(glGetMaterialiv(GL_FRONT,GL_SHININESS),50)
@@ -622,86 +615,88 @@ class TestGl10_11 < Test::Unit::TestCase
 	end
 
 	def test_gllightmodel
-		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE)
-		assert_equal(glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE),GL_TRUE)
-		glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE)
-		assert_equal(glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE),GL_FALSE)
+		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1)
+		assert_equal(GL_TRUE, glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE))
+
+		glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 0)
+		assert_equal(GL_FALSE, glGetBooleanv(GL_LIGHT_MODEL_TWO_SIDE))
 
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT,[0.5,0.5,0.5,1.0])
-		assert_equal(glGetDoublev(GL_LIGHT_MODEL_AMBIENT),[0.5,0.5,0.5,1.0])
+		assert_equal([0.5,0.5,0.5,1.0], glGetDoublev(GL_LIGHT_MODEL_AMBIENT))
+
 		glLightModeliv(GL_LIGHT_MODEL_AMBIENT,[1,0,1,0])
-		assert_equal(glGetIntegerv(GL_LIGHT_MODEL_AMBIENT),[1,0,1,0])
+		assert_equal([1,0,1,0], glGetIntegerv(GL_LIGHT_MODEL_AMBIENT))
 	end
 
 	def test_gltexcoord
 		# 1
 		glTexCoord1d(1.5)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,0,0,1])
+		assert_equal([1.5,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord1dv([0.5])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0,0,1])
+		assert_equal([0.5,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord1f(1.5)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,0,0,1])
+		assert_equal([1.5,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord1fv([0.5])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0,0,1])
+		assert_equal([0.5,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord1i(1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,0,1])
+		assert_equal([1,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord1iv([0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord1s(1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,0,1])
+		assert_equal([1,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord1sv([0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		# 2
 		glTexCoord2d(1.5,1.5)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,0,1])
+		assert_equal([1.5,1.5,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord2dv([0.5,0.5])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0,1])
+		assert_equal([0.5,0.5,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord2f(1.5,1.5)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,0,1])
+		assert_equal([1.5,1.5,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord2fv([0.5,0.5])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0,1])
+		assert_equal([0.5,0.5,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord2i(1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,0,1])
+		assert_equal([1,1,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord2iv([0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord2s(1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,0,1])
+		assert_equal([1,1,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord2sv([0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		# 3
 		glTexCoord3d(1.5,1.5,1.5)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,1.5,1])
+		assert_equal([1.5,1.5,1.5,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord3dv([0.5,0.5,0.5])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0.5,1])
+		assert_equal([0.5,0.5,0.5,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord3f(1.5,1.5,1.5)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,1.5,1])
+		assert_equal([1.5,1.5,1.5,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord3fv([0.5,0.5,0.5])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0.5,1])
+		assert_equal([0.5,0.5,0.5,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord3i(1,1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord3iv([0,0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord3s(1,1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord3sv([0,0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		# 4
 		glTexCoord4d(1.5,1.5,1.5,1.5)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,1.5,1.5])
+		assert_equal([1.5,1.5,1.5,1.5], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord4dv([0.5,0.5,0.5,0.5])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0.5,0.5])
+		assert_equal([0.5,0.5,0.5,0.5], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord4f(1.5,1.5,1.5,1.5)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1.5,1.5,1.5,1.5])
+		assert_equal([1.5,1.5,1.5,1.5], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord4fv([0.5,0.5,0.5,0.5])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0.5,0.5,0.5,0.5])
+		assert_equal([0.5,0.5,0.5,0.5], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord4i(1,1,1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord4iv([0,0,0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,0])
+		assert_equal([0,0,0,0], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord4s(1,1,1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glTexCoord4sv([0,0,0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[0,0,0,0])
+		assert_equal([0,0,0,0], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 	end
 
 	def test_glenable_disable
@@ -714,10 +709,13 @@ class TestGl10_11 < Test::Unit::TestCase
 	def test_gltexparameter
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP)
 		assert_equal(glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),GL_CLAMP)
+
 		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_MIRRORED_REPEAT)
 		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),GL_MIRRORED_REPEAT)
+
 		glTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,[GL_CLAMP])
 		assert_equal(glGetTexParameteriv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),GL_CLAMP)
+
 		glTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,[GL_MIRRORED_REPEAT])
 		assert_equal(glGetTexParameterfv(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S),GL_MIRRORED_REPEAT)
 
@@ -790,7 +788,7 @@ class TestGl10_11 < Test::Unit::TestCase
 
 	def test_glvertex
 		glMatrixMode(GL_PROJECTION)
-		glOrtho(0,$window_size,0,$window_size,0,-1)
+		glOrtho(0,WINDOW_SIZE,0,WINDOW_SIZE,0,-1)
 
 		buf = glFeedbackBuffer(256,GL_3D)
 
@@ -841,7 +839,7 @@ class TestGl10_11 < Test::Unit::TestCase
 	
 	def test_glrect
 		glMatrixMode(GL_PROJECTION)
-		glOrtho(0,$window_size,0,$window_size,0,-1)
+		glOrtho(0,WINDOW_SIZE,0,WINDOW_SIZE,0,-1)
 		
 		buf = glFeedbackBuffer(256,GL_3D)
 		
@@ -859,7 +857,7 @@ class TestGl10_11 < Test::Unit::TestCase
 		count = glRenderMode(GL_RENDER)
 		data = buf.unpack("f*")
 
-		assert_equal(count, (3*3+2)*2*8)
+		assert_equal (3*3+2)*2*8, count
 	end
 
 	def test_glclear
@@ -982,9 +980,12 @@ class TestGl10_11 < Test::Unit::TestCase
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
 		glRotated(90,0,1,0)
-		assert(approx_equal(glGetDoublev(GL_MODELVIEW_MATRIX).flatten,m1.flatten))
+
+		assert_each_in_delta m1, glGetDoublev(GL_MODELVIEW_MATRIX)
+
 		glRotated(-90,0,1,0)
-		assert(approx_equal(glGetDoublev(GL_MODELVIEW_MATRIX).flatten,m2.flatten))
+
+		assert_each_in_delta m1, glGetDoublev(GL_MODELVIEW_MATRIX)
 	end
 
 	def test_textures_2
@@ -1153,7 +1154,7 @@ class TestGl10_11 < Test::Unit::TestCase
 		glAccum(GL_RETURN,1.0)
 
 		data = glReadPixels(0,0,2,1,GL_RGB,GL_FLOAT)
-		assert_equal(data.unpack("f*"),[1.0] * 2 * 3)
+		assert_each_in_delta [1.0] * 2 * 3, data.unpack("f*"), 0.01
 	end
 
 	def test_displaylists
@@ -1242,22 +1243,22 @@ class TestGl10_11 < Test::Unit::TestCase
 		ca = [1,0,1,0].pack("f*")
 		
 		glNormalPointer(GL_FLOAT,0,na)
-		assert_equal(glGetIntegerv(GL_NORMAL_ARRAY_TYPE),GL_FLOAT)
-		assert_equal(glGetIntegerv(GL_NORMAL_ARRAY_STRIDE),0)
-		assert_equal(glGetPointerv(GL_NORMAL_ARRAY_POINTER),na)
+		assert_equal(GL_FLOAT, glGetIntegerv(GL_NORMAL_ARRAY_TYPE))
+		assert_equal(0, glGetIntegerv(GL_NORMAL_ARRAY_STRIDE))
+		assert_equal(na, glGetPointerv(GL_NORMAL_ARRAY_POINTER))
 		glTexCoordPointer(4,GL_FLOAT,0,ta)
-		assert_equal(glGetIntegerv(GL_TEXTURE_COORD_ARRAY_SIZE),4)
-		assert_equal(glGetIntegerv(GL_TEXTURE_COORD_ARRAY_TYPE),GL_FLOAT)
-		assert_equal(glGetIntegerv(GL_TEXTURE_COORD_ARRAY_STRIDE),0)
-		assert_equal(glGetPointerv(GL_TEXTURE_COORD_ARRAY_POINTER),ta)
+		assert_equal(4, glGetIntegerv(GL_TEXTURE_COORD_ARRAY_SIZE))
+		assert_equal(GL_FLOAT, glGetIntegerv(GL_TEXTURE_COORD_ARRAY_TYPE))
+		assert_equal(0, glGetIntegerv(GL_TEXTURE_COORD_ARRAY_STRIDE))
+		assert_equal(ta, glGetPointerv(GL_TEXTURE_COORD_ARRAY_POINTER))
 		glEdgeFlagPointer(0,ea)
-		assert_equal(glGetIntegerv(GL_EDGE_FLAG_ARRAY_STRIDE),0)
-		assert_equal(glGetPointerv(GL_EDGE_FLAG_ARRAY_POINTER),ea)
+		assert_equal(0, glGetIntegerv(GL_EDGE_FLAG_ARRAY_STRIDE))
+		assert_equal(ea, glGetPointerv(GL_EDGE_FLAG_ARRAY_POINTER))
 		glColorPointer(4,GL_FLOAT,0,ca)
-		assert_equal(glGetIntegerv(GL_COLOR_ARRAY_SIZE),4)
-		assert_equal(glGetIntegerv(GL_COLOR_ARRAY_TYPE),GL_FLOAT)
-		assert_equal(glGetIntegerv(GL_COLOR_ARRAY_STRIDE),0)
-		assert_equal(glGetPointerv(GL_COLOR_ARRAY_POINTER),ca)
+		assert_equal(4, glGetIntegerv(GL_COLOR_ARRAY_SIZE))
+		assert_equal(GL_FLOAT, glGetIntegerv(GL_COLOR_ARRAY_TYPE))
+		assert_equal(0, glGetIntegerv(GL_COLOR_ARRAY_STRIDE))
+		assert_equal(ca, glGetPointerv(GL_COLOR_ARRAY_POINTER))
 		#
 		glEnable(GL_COLOR_ARRAY)
 		glEnable(GL_NORMAL_ARRAY)
@@ -1268,10 +1269,10 @@ class TestGl10_11 < Test::Unit::TestCase
 		glArrayElement(0)
 		glEnd()
 
-		assert_equal(glGetDoublev(GL_CURRENT_COLOR),[1,0,1,0])
-		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[0,1,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,1,0])
-		assert_equal(glGetBooleanv(GL_EDGE_FLAG),false)
+		assert_equal([1,0,1,0], glGetDoublev(GL_CURRENT_COLOR))
+		assert_equal([0,1,0], glGetDoublev(GL_CURRENT_NORMAL))
+		assert_equal([1,0,1,0], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
+		assert_equal(false, glGetBooleanv(GL_EDGE_FLAG))
 
 		glDisable(GL_EDGE_FLAG_ARRAY)
 		glDisable(GL_TEXTURE_COORD_ARRAY)

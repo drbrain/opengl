@@ -13,19 +13,11 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGl21 < Test::Unit::TestCase
-	def setup
-		common_setup()
-	end
-
-	def teardown
-		common_teardown()
-	end
-
+class TestGl21 < OpenGL::TestCase
 	def test_gluniformmatrix21
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		vertex_shader_source = "#version 120\n uniform mat2x3 testmat23; uniform mat3x2 testmat32; uniform mat2x4 testmat24; uniform mat4x2 testmat42; uniform mat3x4 testmat34; uniform mat4x3 testmat43; void main() { gl_Position = gl_Vertex * testmat23[0].x * testmat32[0].x * testmat24[0].x * testmat42[0].x * testmat34[0].x * testmat43[0].x;}"
 
@@ -88,17 +80,17 @@ class TestGl21 < Test::Unit::TestCase
 		assert_equal(glGetUniformfv(program,tm43l),[0,1,1,1, 0,0,1,1, 1,1,0,0])
 
 		# 3
-		assert_raise ArgumentError do glUniformMatrix2x3fv(tm23l, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix3x2fv(tm32l, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix2x4fv(tm24l, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix4x2fv(tm42l, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix3x4fv(tm34l, GL_FALSE, [1,2,3,4]) end
-		assert_raise ArgumentError do glUniformMatrix4x3fv(tm43l, GL_FALSE, [1,2,3,4]) end
+		assert_raises ArgumentError do glUniformMatrix2x3fv(tm23l, GL_FALSE, [1,2,3,4]) end
+		assert_raises ArgumentError do glUniformMatrix3x2fv(tm32l, GL_FALSE, [1,2,3,4]) end
+		assert_raises ArgumentError do glUniformMatrix2x4fv(tm24l, GL_FALSE, [1,2,3,4]) end
+		assert_raises ArgumentError do glUniformMatrix4x2fv(tm42l, GL_FALSE, [1,2,3,4]) end
+		assert_raises ArgumentError do glUniformMatrix3x4fv(tm34l, GL_FALSE, [1,2,3,4]) end
+		assert_raises ArgumentError do glUniformMatrix4x3fv(tm43l, GL_FALSE, [1,2,3,4]) end
 	end
 
 	def test_pixelunpack_bitmap
-		return if not supported?(2.1)
-		glOrtho(0,$window_size,0,$window_size,0,-1)
+		supported?(2.1)
+		glOrtho(0,WINDOW_SIZE,0,WINDOW_SIZE,0,-1)
 
 		bitmap = [ 0x55 ] * 8 # 64 bits (8x8 bitmap), stipple pattern
 		glPixelStorei(GL_PACK_ALIGNMENT,1)
@@ -116,7 +108,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelunpack_color_convolution
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		ct = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
 		ct2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
@@ -144,7 +136,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelunpack_separable
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		sf_a = ([0]*3+[1]*3).pack("f*")
 		sf_b = ([1]*3+[0]*3).pack("f*")
@@ -160,7 +152,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelunpack_drawpixels
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		glClearColor(0,0,0,0)
 		glClear(GL_COLOR_BUFFER_BIT)
@@ -180,7 +172,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelunpack_polygonstipple
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		stipple = ([0x12] * 128).pack("c*")
 		buffers = glGenBuffers(1)
@@ -192,10 +184,9 @@ class TestGl21 < Test::Unit::TestCase
 		glDeleteBuffers(buffers)
 	end
 
-
 	def test_pixelunpack_texturecompression
-		return if not supported?(2.1)
-		return if not supported?("GL_EXT_texture_compression_s3tc")
+		supported?(2.1)
+		supported?("GL_EXT_texture_compression_s3tc")
 
 		# S3TC/DXT5 compressed 2x2 pixels stipple patterns [w,b,b,w] and [b,w,w,b]
 		image_1 = [0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x01,0x54,0x5C,0x5C].pack("C*")
@@ -263,7 +254,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelunpack_texture
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		textures = glGenTextures(3)
 		image_1 = ([0,0,0,1,1,1] * 8).pack("f*") # 16 RGB pixels
@@ -314,7 +305,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelunpack_pixelmap
-		return if not supported?(2.1)
+		supported?(2.1)
 		data_1 = [1,2,3,4].pack("f*")
 		data_2 = [5,6,7,8].pack("I*")
 		data_3 = [9,10,11,12].pack("S*")
@@ -336,7 +327,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelpack_readpixels
-		return if not supported?(2.1)
+		supported?(2.1)
 		glClearColor(0,0,0,0)
 		glClear(GL_COLOR_BUFFER_BIT)
 
@@ -356,7 +347,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelpack_pixelmap
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		buffers = glGenBuffers(1)
 		glBindBuffer(GL_PIXEL_PACK_BUFFER,buffers[0])
@@ -392,7 +383,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelpack_polygonstipple
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		stipple = [0x12] * 128
 
@@ -411,7 +402,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 	
 	def test_pixelpack_separablefilter
-		return if not supported?(2.1)
+		supported?(2.1)
 		sf_a = ([0]*3+[1]*3).pack("f*")
 		sf_b = ([1]*3+[0]*3).pack("f*")
 	
@@ -430,7 +421,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelpack_convolutionfilter
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		cf = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
 
@@ -449,7 +440,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelpack_histogram
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		glEnable(GL_HISTOGRAM)
 
@@ -471,7 +462,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelpack_minmax
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		glEnable(GL_MINMAX)		
 
@@ -492,7 +483,7 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelpack_teximage
-		return if not supported?(2.1)
+		supported?(2.1)
 
 		textures = glGenTextures(1)
 		glBindTexture(GL_TEXTURE_2D,textures[0])
@@ -515,8 +506,8 @@ class TestGl21 < Test::Unit::TestCase
 	end
 
 	def test_pixelpack_compressedteximage
-		return if not supported?(2.1)
-		return if not supported?("GL_EXT_texture_compression_s3tc")
+		supported?(2.1)
+		supported?("GL_EXT_texture_compression_s3tc")
 
 		# S3TC/DXT5 compressed 2x2 pixels stipple pattern [w,b,b,w]
 		image = [0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x01,0x54,0x5C,0x5C].pack("C*")

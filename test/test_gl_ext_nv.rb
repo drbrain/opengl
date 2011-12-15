@@ -13,19 +13,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGlExtNv < Test::Unit::TestCase
+class TestGlExtNv < OpenGL::TestCase
 	def setup
-		common_setup()
+		super()
 	end
 
 	def teardown
-		common_teardown()
+		super()
 	end
 
 	def test_gl_nv_vertex_program
-		return if not supported?("GL_NV_vertex_program")
+		supported?("GL_NV_vertex_program")
 	
 		assert_equal(glIsProgramNV(0),false)
 		programs = glGenProgramsNV(2)
@@ -174,7 +174,7 @@ class TestGlExtNv < Test::Unit::TestCase
 	end
 
 	def test_gl_nv_fragment_program
-		return if not supported?("GL_NV_fragment_program")
+		supported?("GL_NV_fragment_program")
 		programs = glGenProgramsNV(1)
 		program = "!!FP1.0\nDECLARE test = {0,0,0,0};\nEND"
 	  glBindProgramNV(GL_FRAGMENT_PROGRAM_NV, programs[0])
@@ -193,7 +193,7 @@ class TestGlExtNv < Test::Unit::TestCase
 	end
 
 	def test_gl_nv_framebuffer_multisample_coverage
-		return if not supported?("GL_NV_framebuffer_multisample_coverage")
+		supported?("GL_NV_framebuffer_multisample_coverage")
 		rb = glGenRenderbuffersEXT(1)[0]
 
 		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,rb)
@@ -207,7 +207,7 @@ class TestGlExtNv < Test::Unit::TestCase
 	end
 
 	def test_gl_nv_fence
-		return if not supported?("GL_NV_fence")
+		supported?("GL_NV_fence")
 			fences = glGenFencesNV(2)
 			assert_equal(fences.size,2)
 			
@@ -222,17 +222,17 @@ class TestGlExtNv < Test::Unit::TestCase
 	end
 
 	def test_gl_nv_depth_buffer_float
-		return if not supported?("GL_NV_depth_buffer_float")
+		supported?("GL_NV_depth_buffer_float")
 		glDepthRangedNV(0.1,0.2)
-		assert(approx_equal(glGetFloatv(GL_DEPTH_RANGE),[0.1,0.2]))
+		assert(assert_in_delta(glGetFloatv(GL_DEPTH_RANGE),[0.1,0.2]))
 		glDepthBoundsdNV(0.1,0.2)
-		assert(approx_equal(glGetFloatv(GL_DEPTH_BOUNDS_EXT),[0.1,0.2]))
+		assert(assert_in_delta(glGetFloatv(GL_DEPTH_BOUNDS_EXT),[0.1,0.2]))
 		glClearDepthdNV(0.3)
-		assert(approx_equal([glGetDoublev(GL_DEPTH_CLEAR_VALUE)],[0.3]))
+		assert(assert_in_delta([glGetDoublev(GL_DEPTH_CLEAR_VALUE)],[0.3]))
 	end
 
 	def test_gl_nv_occlusion_query
-		return if not supported?("GL_NV_occlusion_query")
+		supported?("GL_NV_occlusion_query")
 
 		queries = glGenOcclusionQueriesNV(2)
 		assert_equal(queries.size,2)
@@ -250,7 +250,7 @@ class TestGlExtNv < Test::Unit::TestCase
 	end
 
 	def test_gl_nv_gpu_program4
-		return if not supported?(["GL_NV_gpu_program4","GL_ARB_vertex_program"])
+		supported?(["GL_NV_gpu_program4","GL_ARB_vertex_program"])
 
 		programs = glGenProgramsARB(1)
 		program = "!!ARBvp1.0\nTEMP vv;\nEND"
@@ -288,7 +288,7 @@ class TestGlExtNv < Test::Unit::TestCase
 	end
 
 	def test_gl_nv_gpu_program4
-		return if not supported?(["GL_NV_gpu_program4","GL_EXT_framebuffer_object"])
+		supported?(["GL_NV_gpu_program4","GL_EXT_framebuffer_object"])
 		geometry_program = <<-EOP
 !!NVgp4.0
 PRIMITIVE_IN TRIANGLES;
@@ -334,7 +334,7 @@ END
 	end
 
 	def test_gl_nv_primitive_restart
-		return if not supported?("GL_NV_primitive_restart")
+		supported?("GL_NV_primitive_restart")
 		glBegin(GL_TRIANGLES)
 	  glPrimitiveRestartNV()
 		glEnd
@@ -343,7 +343,7 @@ END
 	end
 
 	def test_gl_nv_point_sprite
-		return if not supported?("GL_NV_point_sprite")
+		supported?("GL_NV_point_sprite")
 		glPointParameteriNV(GL_POINT_SPRITE_R_MODE_NV, GL_ZERO)
 		assert_equal(glGetIntegerv(GL_POINT_SPRITE_R_MODE_NV),GL_ZERO)
 		glPointParameteriNV(GL_POINT_SPRITE_R_MODE_NV, GL_S)

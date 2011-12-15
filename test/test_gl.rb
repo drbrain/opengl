@@ -13,19 +13,13 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 require 'gl'
 require 'glut'
 include Gl
 include Glut
 
-class TestGl < Test::Unit::TestCase
-	def setup
-		return if $glut_initialized
-		glut_init()
-		$glut_initialized = true
-	end
-
+class TestGl < OpenGL::TestCase
 	def test_isavailable
 		assert_equal(is_available?(1.1),true)
 		assert_equal(is_available?("GL_ARB_multitexture"),true)

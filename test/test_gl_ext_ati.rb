@@ -13,19 +13,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGlExtAti < Test::Unit::TestCase
+class TestGlExtAti < OpenGL::TestCase
 	def setup
-		common_setup()
+		super()
 	end
 
 	def teardown
-		common_teardown()
+		super()
 	end
 
 	def test_gl_ati_draw_buffers
-		return if not supported?("GL_ATI_draw_buffers")
+		supported?("GL_ATI_draw_buffers")
 		glDrawBuffersATI([GL_BACK_LEFT,GL_FRONT_LEFT])
 		assert_equal(glGetIntegerv(GL_DRAW_BUFFER0),GL_BACK_LEFT)
 		assert_equal(glGetIntegerv(GL_DRAW_BUFFER1),GL_FRONT_LEFT)

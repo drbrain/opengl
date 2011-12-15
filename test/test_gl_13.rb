@@ -13,19 +13,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGl13 < Test::Unit::TestCase
+class TestGl13 < OpenGL::TestCase
 	def setup
-		common_setup()
+		super()
 	end
 
 	def teardown
-		common_teardown()
+		super()
 	end
 
 	def test_glsamplecoverage
-		return if not supported?(1.3)
+		supported?(1.3)
 		glSampleCoverage(0.0,GL_TRUE)
 		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_VALUE),0.0)
 		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT),GL_TRUE)
@@ -35,7 +35,7 @@ class TestGl13 < Test::Unit::TestCase
 	end
 
 	def test_multitexture
-		return if not supported?(1.3)
+		supported?(1.3)
 		glActiveTexture(GL_TEXTURE1)
 		glClientActiveTexture(GL_TEXTURE2)
 		assert_equal(glGetIntegerv(GL_ACTIVE_TEXTURE),GL_TEXTURE1)
@@ -43,7 +43,7 @@ class TestGl13 < Test::Unit::TestCase
 	end
 
 	def test_transposematrix
-		return if not supported?(1.3)
+		supported?(1.3)
 		m_a = [[1.0,2.0,3.0,4.0],
 					 [0.0,2.0,0.0,0.0],
 					 [0.0,0.0,2.0,0.0],
@@ -84,15 +84,15 @@ class TestGl13 < Test::Unit::TestCase
 		glMultTransposeMatrixd(m)
 		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
 
-		assert_raise ArgumentError do glLoadTransposeMatrixf([1,2,3,4]) end
-		assert_raise ArgumentError do glLoadTransposeMatrixd([1,2,3,4]) end
-		assert_raise ArgumentError do glMultTransposeMatrixf([1,2,3,4]) end
-		assert_raise ArgumentError do glMultTransposeMatrixd([1,2,3,4]) end
+		assert_raises ArgumentError do glLoadTransposeMatrixf([1,2,3,4]) end
+		assert_raises ArgumentError do glLoadTransposeMatrixd([1,2,3,4]) end
+		assert_raises ArgumentError do glMultTransposeMatrixf([1,2,3,4]) end
+		assert_raises ArgumentError do glMultTransposeMatrixd([1,2,3,4]) end
 	end
 	
 	def test_texturecompression
-		return if not supported?(1.3)
-		return if not supported?("GL_EXT_texture_compression_s3tc")
+		supported?(1.3)
+		supported?("GL_EXT_texture_compression_s3tc")
 
 		# S3TC/DXT5 compressed 2x2 pixels stipple patterns [w,b,b,w] and [b,w,w,b]
 		image_1 = [0xFF,0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0xFF,0x00,0x00,0x01,0x54,0x5C,0x5C].pack("C*")
@@ -151,7 +151,7 @@ class TestGl13 < Test::Unit::TestCase
 	end
 	
 	def test_glmultitexcoord
-		return if not supported?(1.3)
+		supported?(1.3)
 	
 		glActiveTexture(GL_TEXTURE1)
 

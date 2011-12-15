@@ -13,24 +13,24 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGlExtGremedy < Test::Unit::TestCase
+class TestGlExtGremedy < OpenGL::TestCase
 	def setup
-		common_setup()
+		super()
 	end
 
 	def teardown
-		common_teardown()
+		super()
 	end
 
 	def test_gl_gremedy_string_marker
-		return if not supported?("GL_GREMEDY_string_marker")
+		supported?("GL_GREMEDY_string_marker")
 		glStringMarkerGREMEDY("test")
 	end
 
 	def test_gl_gremedy_frame_terminator
-		return if not supported?("GL_GREMEDY_frame_terminator")
+		supported?("GL_GREMEDY_frame_terminator")
 		glFrameTerminatorGREMEDY()
 	end
 end

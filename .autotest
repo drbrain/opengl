@@ -4,7 +4,6 @@ Autotest.add_hook :initialize do |at|
   at.add_exception /\.git/
   at.add_exception /doc/
   at.add_exception /examples/
-  at.add_exception /ext/
   at.add_exception /utils/
   at.add_exception /website/
 

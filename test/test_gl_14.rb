@@ -13,19 +13,19 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGl14 < Test::Unit::TestCase
+class TestGl14 < OpenGL::TestCase
 	def setup
-		common_setup()
+		super()
 	end
 
 	def teardown
-		common_teardown()
+		super()
 	end
 
 	def test_arrays_2
-		return if not supported?(1.4)
+		supported?(1.4)
 		sc = [0,1,0, 1,0,1].pack("f*")
 		fc = [1, 0].pack("f*")
 
@@ -61,7 +61,7 @@ class TestGl14 < Test::Unit::TestCase
 	end
 
 	def test_arrays_3
-		return if not supported?(1.4)
+		supported?(1.4)
 		va = [0,0, 1,0, 1,1, 0,0, 1,0, 0,1].pack("f*")
 		glVertexPointer(2,GL_FLOAT,0,va)
 		
@@ -82,7 +82,7 @@ class TestGl14 < Test::Unit::TestCase
 	end
 
 	def test_glblendfuncseparate
-		return if not supported?(1.4)
+		supported?(1.4)
 		glBlendFuncSeparate(GL_SRC_COLOR,GL_SRC_COLOR,GL_SRC_COLOR,GL_SRC_COLOR)
 		assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB),GL_SRC_COLOR)
 		assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA),GL_SRC_COLOR)
@@ -91,7 +91,7 @@ class TestGl14 < Test::Unit::TestCase
 	end
 
 	def test_glpointparameter
-		return if not supported?(1.4)
+		supported?(1.4)
 		glPointParameterf(GL_POINT_SIZE_MIN,2.0)
 		assert_equal(glGetDoublev(GL_POINT_SIZE_MIN),2.0)
 
@@ -106,7 +106,7 @@ class TestGl14 < Test::Unit::TestCase
 	end
 
 	def test_glfogcoord
-		return if not supported?(1.4)
+		supported?(1.4)
 
 		glFogCoordf(2.0)
 		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),2.0)
@@ -120,44 +120,44 @@ class TestGl14 < Test::Unit::TestCase
 	end
 
 	def test_glsecondarycolor
-		return if not supported?(1.4)
+		supported?(1.4)
 
 		glSecondaryColor3b(2**7-1,0,2**7-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
 		glSecondaryColor3bv([0,2**7-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
 		glSecondaryColor3d(1.0,0.0,1.0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
 		glSecondaryColor3dv([0.0,1.0,0.0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
 		glSecondaryColor3f(1.0,0.0,1.0)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
 		glSecondaryColor3fv([0.0,1.0,0.0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
 		glSecondaryColor3i(2**31-1,0,2**31-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
 		glSecondaryColor3iv([0,2**31-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
 		glSecondaryColor3s(2**15-1,0,2**15-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
 		glSecondaryColor3sv([0,2**15-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
 		glSecondaryColor3ub(2**8-1,0,2**8-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
 		glSecondaryColor3ubv([0,2**8-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
 		glSecondaryColor3ui(2**32-1,0,2**32-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
 		glSecondaryColor3uiv([0,2**32-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
 		glSecondaryColor3us(2**16-1,0,2**16-1)
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
 		glSecondaryColor3usv([0,2**16-1,0])
-		assert(approx_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
+		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
 	end
 
 	def test_glwindowpos
-		return if not supported?(1.4)
+		supported?(1.4)
 		# 2
 		glWindowPos2d(1.0,2.0)
 		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])

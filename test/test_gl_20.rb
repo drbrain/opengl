@@ -13,19 +13,12 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-require 'test/common'
+require 'opengl/test_case'
 
-class TestGl20 < Test::Unit::TestCase
-	def setup
-		common_setup()
-	end
-
-	def teardown
-		common_teardown()
-	end
+class TestGl20 < OpenGL::TestCase
 
 	def test_glblendequationseparate
-		return if not supported?(2.0)
+		supported?(2.0)
 		glBlendEquationSeparate(GL_MIN,GL_MAX)
 		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB),GL_MIN)
 		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA),GL_MAX)
@@ -35,7 +28,7 @@ class TestGl20 < Test::Unit::TestCase
 	end
 
 	def test_stencilops
-		return if not supported?(2.0)
+		supported?(2.0)
 
 		glStencilOpSeparate(GL_FRONT, GL_ZERO, GL_INCR, GL_DECR)
 		assert_equal(glGetIntegerv(GL_STENCIL_FAIL), GL_ZERO)
@@ -62,14 +55,14 @@ class TestGl20 < Test::Unit::TestCase
 	end
 
 	def test_gldrawbuf
-		return if not supported?(2.0)
+		supported?(2.0)
 		glDrawBuffers([GL_FRONT_LEFT,GL_BACK_LEFT])
 		assert_equal(glGetIntegerv(GL_DRAW_BUFFER0),GL_FRONT_LEFT)
 		assert_equal(glGetIntegerv(GL_DRAW_BUFFER1),GL_BACK_LEFT)
 	end
 
 	def test_glvertexattrib
-		return if not supported?(2.0)
+		supported?(2.0)
 		# 1
 		glVertexAttrib1d(1,2.0)
 		assert_equal(glGetVertexAttribdv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,0.0,0.0,1.0])
@@ -111,46 +104,46 @@ class TestGl20 < Test::Unit::TestCase
 		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,3.0,3.0,1.0])
 		# 4N
 		glVertexAttrib4Nbv(1,[2**7-1,2**7-1,2**7-1,2**7-1])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		glVertexAttrib4Niv(1,[0,0,0,0])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 		glVertexAttrib4Nsv(1,[2**15-1,2**15-1,2**15-1,2**15-1])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		glVertexAttrib4Nub(1,0,0,0,0)
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 		glVertexAttrib4Nubv(1,[2**8-1,2**8-1,2**8-1,2**8-1])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		glVertexAttrib4Nuiv(1,[0,0,0,0])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 		glVertexAttrib4Nusv(1,[2**16-1,2**16-1,2**16-1,2**16-1])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		# 4
 		glVertexAttrib4bv(1,[0,0,0,0])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 		glVertexAttrib4d(1,1,1,1,1)
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		glVertexAttrib4dv(1,[0,0,0,0])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 		glVertexAttrib4f(1,1,1,1,1)
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		glVertexAttrib4fv(1,[0,0,0,0])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 		glVertexAttrib4iv(1,[1,1,1,1])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		glVertexAttrib4s(1,0,0,0,0)
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 		glVertexAttrib4sv(1,[1,1,1,1])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		glVertexAttrib4ubv(1,[0,0,0,0])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 		glVertexAttrib4uiv(1,[1,1,1,1])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
 		glVertexAttrib4usv(1,[0,0,0,0])
-		assert(approx_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
+		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
 	end
 
 	def test_vertexattribpointer
-		return if not supported?(2.0)
+		supported?(2.0)
 		
 		vaa = [1,1,1,1, 2,2,2,2].pack("f*")
 		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,vaa)
@@ -167,7 +160,7 @@ class TestGl20 < Test::Unit::TestCase
 	end
 
 	def test_shaders
-		return if not supported?(2.0)
+		supported?(2.0)
 
 		vertex_shader_source = "void main() { gl_Position = ftransform();}"
 	
@@ -215,7 +208,7 @@ class TestGl20 < Test::Unit::TestCase
 	end
 
 	def test_shaders_2
-		return if not supported?(2.0)
+		supported?(2.0)
 
 		vertex_shader_source = "attribute vec4 test; uniform float testvec1; uniform vec2 testvec2; uniform vec3 testvec3; uniform vec4 testvec4; uniform int testivec1; uniform ivec2 testivec2; uniform ivec3 testivec3; uniform ivec4 testivec4; void main() { gl_Position = testvec1 * test * testvec2.x * testvec3.x * testivec1 * testivec2.x * testivec3.x * testivec4.x + testvec4;}"
 		program = glCreateProgram()
@@ -288,7 +281,7 @@ class TestGl20 < Test::Unit::TestCase
 	end
 
 	def test_shaders_3
-		return if not supported?(2.0)
+		supported?(2.0)
 
 		vertex_shader_source = "uniform mat2 testmat2; uniform mat3 testmat3; uniform mat4 testmat4; void main() { gl_Position = gl_Vertex * testmat4[0].x * testmat3[0].x * testmat2[0].x;}"
 
@@ -319,9 +312,8 @@ class TestGl20 < Test::Unit::TestCase
 		assert_equal(glGetUniformfv(program,tm4l),[0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
 	end
 
-
 	def test_buffered_vertexattribpointer
-		return if not supported?(2.0)
+		supported?(2.0)
 
 		vaa = [1,1,1,1, 2,2,2,2].pack("f*")
 
@@ -343,4 +335,6 @@ class TestGl20 < Test::Unit::TestCase
 		glDisableVertexAttribArray(1)
 		glDeleteBuffers(buffers)
 	end
+
 end
+
