@@ -158,7 +158,7 @@ VALUE obj ARGLIST##_num_; \
 	RETDECL_##_returntype_ \
 	LOAD_GL_FUNC(gl##_name_,_ver_) \
 	RETSTAT_##_returntype_ fptr_gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_) \
 	return RETCONV_##_returntype_(ret) ; \
 }
 
@@ -169,7 +169,7 @@ VALUE obj ARGLIST##_num_; \
 { \
 	RETDECL_##_returntype_ \
 	RETSTAT_##_returntype_ gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_) \
 	return RETCONV_##_returntype_(ret) ; \
 }
 
@@ -215,7 +215,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 	for (i = 0; i < n; i++) \
 		rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
 	xfree(objects); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_) \
 	return ret; \
 }
 
@@ -233,7 +233,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 	for (i = 0; i < n; i++) \
 		rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
 	xfree(objects); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_) \
 	return ret; \
 }
 
@@ -255,7 +255,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 		object = CONV_GLsizei(arg1); \
 		fptr_gl##_name_(1,&object);  \
 	} \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_) \
 	return Qnil; \
 }
 
@@ -275,6 +275,6 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 		object = CONV_GLsizei(arg1); \
 		gl##_name_(1,&object);  \
 	} \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_) \
 	return Qnil; \
 }
