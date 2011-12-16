@@ -16,182 +16,197 @@
 require 'opengl/test_case'
 
 class TestGl14 < OpenGL::TestCase
-	def setup
-		super()
-	end
 
-	def teardown
-		super()
-	end
+  def setup
+    super
 
-	def test_arrays_2
-		supported?(1.4)
-		sc = [0,1,0, 1,0,1].pack("f*")
-		fc = [1, 0].pack("f*")
+    supported? 1.4
+  end
 
-		glSecondaryColorPointer(3,GL_FLOAT,0,sc)
-		assert_equal(glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_SIZE),3)
-		assert_equal(glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_TYPE),GL_FLOAT)
-		assert_equal(glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_STRIDE),0)
-		assert_equal(glGetPointerv(GL_SECONDARY_COLOR_ARRAY_POINTER),sc)
-		glFogCoordPointer(GL_FLOAT,0,fc)
-		assert_equal(glGetIntegerv(GL_FOG_COORD_ARRAY_TYPE),GL_FLOAT)
-		assert_equal(glGetIntegerv(GL_FOG_COORD_ARRAY_STRIDE),0)
-		assert_equal(glGetPointerv(GL_FOG_COORD_ARRAY_POINTER),fc)
+  def test_arrays_2
+    sc = [0, 1, 0, 1, 0, 1].pack("f*")
+    fc = [1, 0].pack("f*")
 
-		glEnableClientState(GL_SECONDARY_COLOR_ARRAY)
-		glEnableClientState(GL_FOG_COORD_ARRAY)
+    glSecondaryColorPointer(3, GL_FLOAT, 0, sc)
+    assert_equal 3,        glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_SIZE)
+    assert_equal GL_FLOAT, glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_TYPE)
+    assert_equal 12,       glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_STRIDE)
+    assert_equal sc,       glGetPointerv(GL_SECONDARY_COLOR_ARRAY_POINTER)
 
-		glBegin(GL_TRIANGLES)
-		glArrayElement(0)
-		glEnd()
+    glFogCoordPointer(GL_FLOAT, 0, fc)
+    assert_equal GL_FLOAT, glGetIntegerv(GL_FOG_COORD_ARRAY_TYPE)
+    assert_equal 4,        glGetIntegerv(GL_FOG_COORD_ARRAY_STRIDE)
+    assert_equal fc,       glGetPointerv(GL_FOG_COORD_ARRAY_POINTER)
 
-		assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0,1,0,1])
-		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),1)
+    glEnableClientState(GL_SECONDARY_COLOR_ARRAY)
+    glEnableClientState(GL_FOG_COORD_ARRAY)
 
-		glBegin(GL_TRIANGLES)
-		glArrayElement(1)
-		glEnd()
+    glBegin(GL_TRIANGLES)
+    glArrayElement(0)
+    glEnd()
 
-		assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1,0,1,1])
-		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),0)
+    assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR), [0, 1, 0, 1])
+    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 1)
 
-		glDisableClientState(GL_SECONDARY_COLOR_ARRAY)
-		glDisableClientState(GL_FOG_COORD_ARRAY)
-	end
+    glBegin(GL_TRIANGLES)
+    glArrayElement(1)
+    glEnd()
 
-	def test_arrays_3
-		supported?(1.4)
-		va = [0,0, 1,0, 1,1, 0,0, 1,0, 0,1].pack("f*")
-		glVertexPointer(2,GL_FLOAT,0,va)
-		
-		glEnable(GL_VERTEX_ARRAY)
+    assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR), [1, 0, 1, 1])
+    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 0)
 
-		buf = glFeedbackBuffer(256,GL_3D)
-		glRenderMode(GL_FEEDBACK)
+    glDisableClientState(GL_SECONDARY_COLOR_ARRAY)
+    glDisableClientState(GL_FOG_COORD_ARRAY)
+  end
 
-		glMultiDrawArrays(GL_POLYGON, [0,3], [3,3])
+  def test_arrays_3
+    va = [0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1].pack("f*")
+    glVertexPointer(2, GL_FLOAT, 0, va)
 
-		i1 = [0,1,2].pack("C*")
-		i2 = [3,4,5].pack("C*")
-		glMultiDrawElements(GL_TRIANGLES,GL_UNSIGNED_BYTE,[i1,i2])
+    glEnableClientState(GL_VERTEX_ARRAY)
 
-		count = glRenderMode(GL_RENDER)
-		assert_equal(count,(3*3+2)*4)
-		glDisable(GL_VERTEX_ARRAY)
-	end
+    buf = glFeedbackBuffer(256, GL_3D)
+    glRenderMode(GL_FEEDBACK)
 
-	def test_glblendfuncseparate
-		supported?(1.4)
-		glBlendFuncSeparate(GL_SRC_COLOR,GL_SRC_COLOR,GL_SRC_COLOR,GL_SRC_COLOR)
-		assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB),GL_SRC_COLOR)
-		assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA),GL_SRC_COLOR)
-		assert_equal(glGetIntegerv(GL_BLEND_DST_RGB),GL_SRC_COLOR)
-		assert_equal(glGetIntegerv(GL_BLEND_DST_ALPHA),GL_SRC_COLOR)
-	end
+    glMultiDrawArrays(GL_POLYGON, [0, 3], [3, 3])
 
-	def test_glpointparameter
-		supported?(1.4)
-		glPointParameterf(GL_POINT_SIZE_MIN,2.0)
-		assert_equal(glGetDoublev(GL_POINT_SIZE_MIN),2.0)
+    i1 = [0, 1, 2].pack("C*")
+    i2 = [3, 4, 5].pack("C*")
+    glMultiDrawElements(GL_TRIANGLES, GL_UNSIGNED_BYTE, [i1, i2])
 
-		glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION,[0,1,0])
-		assert_equal(glGetDoublev(GL_POINT_DISTANCE_ATTENUATION),[0,1,0])
+    count = glRenderMode(GL_RENDER)
+    assert_equal(count, (3*3+2)*4)
+    glDisableClientState(GL_VERTEX_ARRAY)
+  end
 
-		glPointParameteri(GL_POINT_SIZE_MAX,4)
-		assert_equal(glGetDoublev(GL_POINT_SIZE_MAX),4)
+  def test_glblendfuncseparate
+    glBlendFuncSeparate(GL_SRC_COLOR, GL_SRC_COLOR, GL_SRC_COLOR, GL_SRC_COLOR)
+    assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB), GL_SRC_COLOR)
+    assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA), GL_SRC_COLOR)
+    assert_equal(glGetIntegerv(GL_BLEND_DST_RGB), GL_SRC_COLOR)
+    assert_equal(glGetIntegerv(GL_BLEND_DST_ALPHA), GL_SRC_COLOR)
+  end
 
-		glPointParameteriv(GL_POINT_DISTANCE_ATTENUATION,[1,0,1])
-		assert_equal(glGetDoublev(GL_POINT_DISTANCE_ATTENUATION),[1,0,1])
-	end
+  def test_glpointparameter
+    glPointParameterf(GL_POINT_SIZE_MIN, 2.0)
+    assert_equal(glGetDoublev(GL_POINT_SIZE_MIN), 2.0)
 
-	def test_glfogcoord
-		supported?(1.4)
+    glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, [0, 1, 0])
+    assert_equal([0, 1, 0], glGetDoublev(GL_POINT_DISTANCE_ATTENUATION))
 
-		glFogCoordf(2.0)
-		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),2.0)
-		glFogCoordfv([3.0])
-		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),3.0)
+    glPointParameteri(GL_POINT_SIZE_MAX, 4)
+    assert_equal(glGetDoublev(GL_POINT_SIZE_MAX), 4)
 
-		glFogCoordd(2.0)
-		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),2.0)
-		glFogCoorddv([3.0])
-		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),3.0)
-	end
+    glPointParameteriv(GL_POINT_DISTANCE_ATTENUATION, [1, 0, 1])
+    assert_equal([1, 0, 1], glGetDoublev(GL_POINT_DISTANCE_ATTENUATION))
+  end
 
-	def test_glsecondarycolor
-		supported?(1.4)
+  def test_glfogcoord
+    glFogCoordf(2.0)
+    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 2.0)
+    glFogCoordfv([3.0])
+    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 3.0)
 
-		glSecondaryColor3b(2**7-1,0,2**7-1)
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
-		glSecondaryColor3bv([0,2**7-1,0])
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
-		glSecondaryColor3d(1.0,0.0,1.0)
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
-		glSecondaryColor3dv([0.0,1.0,0.0])
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
-		glSecondaryColor3f(1.0,0.0,1.0)
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
-		glSecondaryColor3fv([0.0,1.0,0.0])
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
-		glSecondaryColor3i(2**31-1,0,2**31-1)
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
-		glSecondaryColor3iv([0,2**31-1,0])
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
-		glSecondaryColor3s(2**15-1,0,2**15-1)
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
-		glSecondaryColor3sv([0,2**15-1,0])
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
-		glSecondaryColor3ub(2**8-1,0,2**8-1)
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
-		glSecondaryColor3ubv([0,2**8-1,0])
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
-		glSecondaryColor3ui(2**32-1,0,2**32-1)
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
-		glSecondaryColor3uiv([0,2**32-1,0])
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
-		glSecondaryColor3us(2**16-1,0,2**16-1)
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[1.0,0.0,1.0,1.0]))
-		glSecondaryColor3usv([0,2**16-1,0])
-		assert(assert_in_delta(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0.0,1.0,0.0,1.0]))
-	end
+    glFogCoordd(2.0)
+    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 2.0)
+    glFogCoorddv([3.0])
+    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 3.0)
+  end
 
-	def test_glwindowpos
-		supported?(1.4)
-		# 2
-		glWindowPos2d(1.0,2.0)
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
-		glWindowPos2dv([2.0,1.0])
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[2,1,0,1])
-		glWindowPos2f(1.0,2.0)
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
-		glWindowPos2fv([2.0,1.0])
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[2,1,0,1])
-		glWindowPos2i(1,2)
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
-		glWindowPos2iv([2,1])
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[2,1,0,1])
-		glWindowPos2s(1,2)
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
-		glWindowPos2sv([2,1])
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[2,1,0,1])
+  def test_glsecondarycolor
+    glSecondaryColor3b(2**7-1, 0, 2**7-1)
+    assert_each_in_delta [1.0, 0.0, 1.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR)
 
-		# 3
-		glWindowPos3d(1.0,2.0,0.5)
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0.5,1])
-		glWindowPos3dv([3.0,2.0,1.0])
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
-		glWindowPos3f(1.0,2.0,0.5)
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0.5,1])
-		glWindowPos3fv([3.0,2.0,1.0])
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
-		glWindowPos3i(1,2,0)
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
-		glWindowPos3iv([3,2,1])
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
-		glWindowPos3s(1,2,0)
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1,2,0,1])
-		glWindowPos3sv([3,2,1])
-		assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3,2,1,1])
-	end
+    glSecondaryColor3bv([0, 2**7-1, 0])
+    assert_each_in_delta([0.0, 1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3d(1.0, 0.0, 1.0)
+    assert_each_in_delta([1.0, 0.0, 1.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3dv([0.0, 1.0, 0.0])
+    assert_each_in_delta([0.0, 1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3f(1.0, 0.0, 1.0)
+    assert_each_in_delta([1.0, 0.0, 1.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3fv([0.0, 1.0, 0.0])
+    assert_each_in_delta([0.0, 1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3i(2**31-1, 0, 2**31-1)
+    assert_each_in_delta([1.0, 0.0, 1.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3iv([0, 2**31-1, 0])
+    assert_each_in_delta([0.0, 1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3s(2**15-1, 0, 2**15-1)
+    assert_each_in_delta([1.0, 0.0, 1.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3sv([0, 2**15-1, 0])
+    assert_each_in_delta([0.0, 1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3ub(2**8-1, 0, 2**8-1)
+    assert_each_in_delta([1.0, 0.0, 1.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3ubv([0, 2**8-1, 0])
+    assert_each_in_delta([0.0, 1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3ui(2**32-1, 0, 2**32-1)
+    assert_each_in_delta([1.0, 0.0, 1.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3uiv([0, 2**32-1, 0])
+    assert_each_in_delta([0.0, 1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3us(2**16-1, 0, 2**16-1)
+    assert_each_in_delta([1.0, 0.0, 1.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+
+    glSecondaryColor3usv([0, 2**16-1, 0])
+    assert_each_in_delta([0.0, 1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+  end
+
+  def test_glwindowpos_2
+    glWindowPos2d(1.0, 2.0)
+    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+
+    glWindowPos2dv([2.0, 1.0])
+    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+
+    glWindowPos2f(1.0, 2.0)
+    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+
+    glWindowPos2fv([2.0, 1.0])
+    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+
+    glWindowPos2i(1, 2)
+    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+
+    glWindowPos2iv([2, 1])
+    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+
+    glWindowPos2s(1, 2)
+    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+
+    glWindowPos2sv([2, 1])
+    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+  end
+
+  def test_glwindowspos_3
+    glWindowPos3d(1.0, 2.0, 0.5)
+    assert_equal([1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos3dv([3.0, 2.0, 1.0])
+    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos3f(1.0, 2.0, 0.5)
+    assert_equal([1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos3fv([3.0, 2.0, 1.0])
+    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos3i(1, 2, 0)
+    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos3iv([3, 2, 1])
+    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos3s(1, 2, 0)
+    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos3sv([3, 2, 1])
+    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+  end
+
 end
+
