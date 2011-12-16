@@ -749,7 +749,11 @@ VALUE obj, arg1, arg2, arg3;
 	GLdouble value;
 	GetTESS(arg1, tdata);
 	property = (GLenum)NUM2INT(arg2);
-	value = (GLdouble)NUM2DBL(arg3);
+  if (property == GLU_TESS_BOUNDARY_ONLY) {
+    value = (GLdouble)RUBYBOOL2GL(arg3);
+  } else {
+    value = (GLdouble)NUM2DBL(arg3);
+  }
 	gluTessProperty(tdata->tobj, property, value);
 		
 	return Qnil;
@@ -1019,7 +1023,7 @@ VALUE obj, arg1, arg2;
 	struct quaddata* qdata;
 	GLboolean textureCoords;
 	GetQUAD(arg1, qdata);
-	textureCoords = (GLboolean)NUM2INT(arg2);
+	textureCoords = (GLboolean)RUBYBOOL2GL(arg2);
 	gluQuadricTexture(qdata->qobj, textureCoords);
 		
 	return Qnil;
