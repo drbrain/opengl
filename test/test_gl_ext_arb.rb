@@ -31,33 +31,33 @@ class TestGlExtArb < OpenGL::TestCase
 
     glMatrixMode(GL_MODELVIEW)
     glLoadTransposeMatrixfARB(m_a)
-    assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_a)
+    assert_equal m_a, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
 
     glLoadTransposeMatrixdARB(m_b)
-    assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_b)
+    assert_equal m_b, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
 
     glLoadIdentity()
     glMultTransposeMatrixfARB(m_a)
-    assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_a)
+    assert_equal m_a, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
 
     glLoadIdentity()
     glMultTransposeMatrixdARB(m_b)
-    assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB), m_b)
+    assert_equal m_b, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
 
     # 2
     m = Matrix.rows([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
     glMatrixMode(GL_MODELVIEW)
     glLoadTransposeMatrixfARB(m)
-    assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+    assert_equal m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
     glLoadIdentity()
     glLoadTransposeMatrixdARB(m)
-    assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+    assert_equal m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
     glLoadIdentity()
     glMultTransposeMatrixfARB(m)
-    assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+    assert_equal m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
     glLoadIdentity()
     glMultTransposeMatrixdARB(m)
-    assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+    assert_equal m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
 
     assert_raises ArgumentError do glLoadTransposeMatrixfARB([1, 2, 3, 4]) end
     assert_raises ArgumentError do glLoadTransposeMatrixdARB([1, 2, 3, 4]) end
@@ -68,20 +68,20 @@ class TestGlExtArb < OpenGL::TestCase
   def test_gl_arb_multisample
     supported? "GL_ARB_multisample"
     glSampleCoverageARB(0.5, GL_FALSE)
-    assert_equal(glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB), 0.5)
-    assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB), false)
+    assert_equal 0.5, glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB)
+    assert_equal false, glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB)
     glSampleCoverageARB(1.0, GL_TRUE)
-    assert_equal(glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB), 1.0)
-    assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB), true)
+    assert_equal 1.0, glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB)
+    assert_equal true, glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB)
   end
 
   def test_gl_arb_color_buffer_float
     supported? "GL_ARB_color_buffer_float"
     glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB, GL_FIXED_ONLY_ARB)
-    assert_equal(glGetIntegerv(GL_CLAMP_VERTEX_COLOR_ARB), GL_FIXED_ONLY_ARB)
+    assert_equal GL_FIXED_ONLY_ARB, glGetIntegerv(GL_CLAMP_VERTEX_COLOR_ARB)
 
     glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB, GL_TRUE)
-    assert_equal(glGetBooleanv(GL_CLAMP_VERTEX_COLOR_ARB), GL_TRUE)
+    assert_equal GL_TRUE, glGetBooleanv(GL_CLAMP_VERTEX_COLOR_ARB)
   end
 
   def test_gl_arb_vertex_program
@@ -95,16 +95,16 @@ class TestGlExtArb < OpenGL::TestCase
 
     glBindProgramARB(GL_VERTEX_PROGRAM_ARB, programs[0])
     glProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, program)
-    assert_equal(glGetProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_STRING_ARB), program)
+    assert_equal program, glGetProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_STRING_ARB)
     assert_equal(glIsProgramARB(programs[0]), true)	
 
-    assert_equal(glGetProgramivARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_LENGTH_ARB), program.size)
-    assert_equal(glGetProgramivARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_BINDING_ARB), programs[0])
+    assert_equal program.size, glGetProgramivARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_LENGTH_ARB)
+    assert_equal programs[0], glGetProgramivARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_BINDING_ARB)
 
     glEnableVertexAttribArrayARB(1)
-    assert_equal(glGetVertexAttribivARB(1, GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB), GL_TRUE)
+    assert_equal GL_TRUE, glGetVertexAttribivARB(1, GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB)
     glDisableVertexAttribArrayARB(1)
-    assert_equal(glGetVertexAttribivARB(1, GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB), GL_FALSE)
+    assert_equal GL_FALSE, glGetVertexAttribivARB(1, GL_VERTEX_ATTRIB_ARRAY_ENABLED_ARB)
 
     glVertexAttribPointerARB(1, 2, GL_FLOAT, GL_FALSE, 0, [1, 1].pack("f*"))
     assert_each_in_delta([1, 1], glGetVertexAttribPointervARB(1).unpack("f*"))
@@ -253,7 +253,7 @@ class TestGlExtArb < OpenGL::TestCase
   def test_gl_arb_pointparameter
     supported? "GL_ARB_point_parameters"
     glPointParameterfARB(GL_POINT_SIZE_MIN, 1.0)
-    assert_equal(glGetDoublev(GL_POINT_SIZE_MIN), 1.0)
+    assert_equal 1.0, glGetDoublev(GL_POINT_SIZE_MIN)
 
     glPointParameterfvARB(GL_POINT_DISTANCE_ATTENUATION, [1, 0, 1])
     assert_equal([1, 0, 1], glGetDoublev(GL_POINT_DISTANCE_ATTENUATION))
@@ -287,19 +287,19 @@ class TestGlExtArb < OpenGL::TestCase
     vs = glCreateShaderObjectARB(GL_VERTEX_SHADER)
 
     glShaderSourceARB(vs, vertex_shader_source)
-    assert_equal(glGetShaderSourceARB(vs), vertex_shader_source)
+    assert_equal vertex_shader_source, glGetShaderSourceARB(vs)
 
-    assert_equal(glGetObjectParameterivARB(vs, GL_OBJECT_TYPE_ARB), GL_SHADER_OBJECT_ARB)
-    assert_equal(glGetObjectParameterfvARB(vs, GL_OBJECT_TYPE_ARB), GL_SHADER_OBJECT_ARB)
-    assert_equal(glGetObjectParameterfvARB(vs, GL_OBJECT_SUBTYPE_ARB), GL_VERTEX_SHADER)
+    assert_equal GL_SHADER_OBJECT_ARB, glGetObjectParameterivARB(vs, GL_OBJECT_TYPE_ARB)
+    assert_equal GL_SHADER_OBJECT_ARB, glGetObjectParameterfvARB(vs, GL_OBJECT_TYPE_ARB)
+    assert_equal GL_VERTEX_SHADER, glGetObjectParameterfvARB(vs, GL_OBJECT_SUBTYPE_ARB)
     glCompileShaderARB(vs)
-    assert_equal(glGetObjectParameterivARB(vs, GL_OBJECT_COMPILE_STATUS_ARB), GL_TRUE)
+    assert_equal GL_TRUE, glGetObjectParameterivARB(vs, GL_OBJECT_COMPILE_STATUS_ARB)
 
     vslog = glGetInfoLogARB(vs)
     assert_equal(vslog.class, String)
 
     glAttachObjectARB(program, vs)
-    assert_equal(glGetAttachedObjectsARB(program), vs)
+    assert_equal vs, glGetAttachedObjectsARB(program)
 
     glLinkProgramARB(program)
     assert glGetObjectParameterivARB(program, GL_OBJECT_LINK_STATUS_ARB)
@@ -308,9 +308,9 @@ class TestGlExtArb < OpenGL::TestCase
     assert glGetObjectParameterivARB(program, GL_OBJECT_VALIDATE_STATUS_ARB)
 
     glUseProgramObjectARB(program)
-    assert_equal(glGetIntegerv(GL_CURRENT_PROGRAM), program)
+    assert_equal program, glGetIntegerv(GL_CURRENT_PROGRAM)
 
-    assert_equal(glGetHandleARB(GL_PROGRAM_OBJECT_ARB), program)
+    assert_equal program, glGetHandleARB(GL_PROGRAM_OBJECT_ARB)
 
     glUseProgramObjectARB(0)
 
@@ -353,12 +353,12 @@ void main() {
     glShaderSourceARB(vs, vertex_shader_source)
 
     glCompileShaderARB(vs)
-    assert_equal(glGetObjectParameterivARB(vs, GL_OBJECT_COMPILE_STATUS_ARB), GL_TRUE)
+    assert_equal GL_TRUE, glGetObjectParameterivARB(vs, GL_OBJECT_COMPILE_STATUS_ARB)
 
     glAttachObjectARB(program, vs)
 
     glLinkProgramARB(program)
-    assert_equal(glGetObjectParameterivARB(program, GL_OBJECT_LINK_STATUS_ARB), GL_TRUE)
+    assert_equal GL_TRUE, glGetObjectParameterivARB(program, GL_OBJECT_LINK_STATUS_ARB)
 
     glUseProgramObjectARB(program)
 
@@ -377,7 +377,7 @@ void main() {
 
     ## f
     glUniform1fARB(tv1l, 2.0)
-    assert_equal(glGetUniformfvARB(program, tv1l), 2.0)
+    assert_equal 2.0, glGetUniformfvARB(program, tv1l)
     glUniform2fARB(tv2l, 2.0, 2.0)
     assert_equal([2.0, 2.0], glGetUniformfvARB(program, tv2l))
     glUniform3fARB(tv3l, 2.0, 2.0, 2.0)
@@ -386,7 +386,7 @@ void main() {
     assert_equal([2.0, 2.0, 2.0, 2.0], glGetUniformfvARB(program, tv4l))
     # i 
     glUniform1iARB(tv1il, 3)
-    assert_equal(glGetUniformivARB(program, tv1il), 3)
+    assert_equal 3, glGetUniformivARB(program, tv1il)
     glUniform2iARB(tv2il, 3, 3)
     assert_equal([3, 3], glGetUniformivARB(program, tv2il))
     glUniform3iARB(tv3il, 3, 3, 3)
@@ -395,7 +395,7 @@ void main() {
     assert_equal([3, 3, 3, 3], glGetUniformivARB(program, tv4il))
     # fv
     glUniform1fvARB(tv1l, [3.0])
-    assert_equal(glGetUniformfvARB(program, tv1l), 3.0)
+    assert_equal 3.0, glGetUniformfvARB(program, tv1l)
     glUniform2fvARB(tv2l, [3.0, 3.0])
     assert_equal([3.0, 3.0], glGetUniformfvARB(program, tv2l))
     glUniform3fvARB(tv3l, [3.0, 3.0, 3.0])
@@ -404,7 +404,7 @@ void main() {
     assert_equal([3.0, 3.0, 3.0, 3.0], glGetUniformfvARB(program, tv4l))
     # iv
     glUniform1ivARB(tv1il, [2])
-    assert_equal(glGetUniformivARB(program, tv1il), 2)
+    assert_equal 2, glGetUniformivARB(program, tv1il)
     glUniform2ivARB(tv2il, [2, 2])
     assert_equal([2, 2], glGetUniformivARB(program, tv2il))
     glUniform3ivARB(tv3il, [2, 2, 2])
@@ -426,12 +426,12 @@ void main() {
     glShaderSourceARB(vs, vertex_shader_source)
 
     glCompileShaderARB(vs)
-    assert_equal(glGetObjectParameterivARB(vs, GL_OBJECT_COMPILE_STATUS_ARB), GL_TRUE)
+    assert_equal GL_TRUE, glGetObjectParameterivARB(vs, GL_OBJECT_COMPILE_STATUS_ARB)
 
     glAttachObjectARB(program, vs)
 
     glLinkProgramARB(program)
-    assert_equal(glGetObjectParameterivARB(program, GL_OBJECT_LINK_STATUS_ARB), GL_TRUE)
+    assert_equal GL_TRUE, glGetObjectParameterivARB(program, GL_OBJECT_LINK_STATUS_ARB)
 
     glUseProgramObjectARB(program)
 
@@ -510,7 +510,7 @@ void main() {
     glBindAttribLocationARB(program, 2, "test")
 
     glLinkProgramARB(program)
-    assert_equal(glGetObjectParameterivARB(program, GL_OBJECT_LINK_STATUS_ARB), GL_TRUE)
+    assert_equal GL_TRUE, glGetObjectParameterivARB(program, GL_OBJECT_LINK_STATUS_ARB)
 
     glUseProgramObjectARB(program)
 
