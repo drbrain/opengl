@@ -16,7 +16,7 @@ Autotest.add_hook :initialize do |at|
     sep = File::SEPARATOR
     n = s.sub(/^test#{sep}test_(.*)\.rb/, '\1')
     c = if n =~ /^(glu?)_?(.*)/ then
-          "#{$1.capitalize}#{$2}"
+          "#{$1.capitalize}#{$2.split(/_|(\d+)/).map { |seg| seg.capitalize }.join}"
         end
 
     "Test#{c}"
