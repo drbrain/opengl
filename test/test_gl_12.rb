@@ -16,171 +16,167 @@
 require 'opengl/test_case'
 
 class TestGl12 < OpenGL::TestCase
-	def setup
-		super()
-	end
 
-	def teardown
-		super()
-	end
-	
-	def test_glblend
-		supported?(1.2)
-		glBlendColor(0.0,1.0,0.0,1.0)
-		assert_equal(glGetDoublev(GL_BLEND_COLOR),[0,1,0,1])
+  def test_glblend
+    supported?(1.2)
+    glBlendColor(0.0, 1.0, 0.0, 1.0)
+    assert_equal(glGetDoublev(GL_BLEND_COLOR), [0, 1, 0, 1])
 
-		glBlendEquation(GL_MIN)
-		assert_equal(glGetIntegerv(GL_BLEND_EQUATION),GL_MIN)
-		glBlendEquation(GL_MAX)
-		assert_equal(glGetIntegerv(GL_BLEND_EQUATION),GL_MAX)
-	end
-	
-	def test_gldrawrangeelements
-		supported?(1.2)
-		va = [0,0, 0,1, 1,1].pack("f*")
-		glVertexPointer(2,GL_FLOAT,0,va)
+    glBlendEquation(GL_MIN)
+    assert_equal(glGetIntegerv(GL_BLEND_EQUATION), GL_MIN)
+    glBlendEquation(GL_MAX)
+    assert_equal(glGetIntegerv(GL_BLEND_EQUATION), GL_MAX)
+  end
 
-		buf = glFeedbackBuffer(256,GL_3D)
-		glRenderMode(GL_FEEDBACK)
+  def test_gldrawrangeelements
+    supported?(1.2)
+    va = [0, 0, 0, 1, 1, 1].pack("f*")
+    glVertexPointer(2, GL_FLOAT, 0, va)
 
-		glEnable(GL_VERTEX_ARRAY)
+    buf = glFeedbackBuffer(256, GL_3D)
+    glRenderMode(GL_FEEDBACK)
 
-		glDrawRangeElements(GL_POINTS,0,2,3,GL_UNSIGNED_BYTE,[0,1,2].pack("C*"))
-		count = glRenderMode(GL_RENDER)
-		assert_equal(count,12)
+    glEnableClientState(GL_VERTEX_ARRAY)
 
-		glDisable(GL_VERTEX_ARRAY)
-	end
-	
-	def test_colortable
-		supported?(1.2)
+    glDrawRangeElements(GL_POINTS, 0, 2, 3, GL_UNSIGNED_BYTE, [0, 1, 2].pack("C*"))
+    count = glRenderMode(GL_RENDER)
+    assert_equal(count, 12)
 
-		ct = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
-		ct2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
-		glColorTable(GL_COLOR_TABLE,GL_RGB8,4,GL_RGB,GL_FLOAT,ct)
-		assert_equal(glGetColorTable(GL_COLOR_TABLE,GL_RGB,GL_FLOAT),ct)
+    glDisableClientState(GL_VERTEX_ARRAY)
+  end
 
-		glColorSubTable(GL_COLOR_TABLE,0,4,GL_RGB,GL_FLOAT,ct2)
-		assert_equal(glGetColorTable(GL_COLOR_TABLE,GL_RGB,GL_FLOAT),ct2)
+  def test_colortable
+    supported?(1.2)
 
-		glDrawPixels(4,1,GL_RGB,GL_FLOAT,ct)
-		glCopyColorTable(GL_COLOR_TABLE,GL_RGB8,0,0,4)
-		assert_equal(glGetColorTable(GL_COLOR_TABLE,GL_RGB,GL_FLOAT),ct)
+    ct = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
+    ct2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
+    glColorTable(GL_COLOR_TABLE, GL_RGB8, 4, GL_RGB, GL_FLOAT, ct)
+    assert_equal(glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT), ct)
 
-		glDrawPixels(4,1,GL_RGB,GL_FLOAT,ct2)
-		glCopyColorSubTable(GL_COLOR_TABLE,0,0,0,4)
-		assert_equal(glGetColorTable(GL_COLOR_TABLE,GL_RGB,GL_FLOAT),ct2)
+    glColorSubTable(GL_COLOR_TABLE, 0, 4, GL_RGB, GL_FLOAT, ct2)
+    assert_equal(glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT), ct2)
 
-		glColorTableParameterfv(GL_COLOR_TABLE,GL_COLOR_TABLE_BIAS,[0,1,0,1])
-		assert_equal(glGetColorTableParameterfv(GL_COLOR_TABLE,GL_COLOR_TABLE_BIAS),[0,1,0,1])
+    glDrawPixels(4, 1, GL_RGB, GL_FLOAT, ct)
+    glCopyColorTable(GL_COLOR_TABLE, GL_RGB8, 0, 0, 4)
+    assert_equal(glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT), ct)
 
-		glColorTableParameteriv(GL_COLOR_TABLE,GL_COLOR_TABLE_BIAS,[1,0,1,0])
-		assert_equal(glGetColorTableParameteriv(GL_COLOR_TABLE,GL_COLOR_TABLE_BIAS),[1,0,1,0])
-	end
+    glDrawPixels(4, 1, GL_RGB, GL_FLOAT, ct2)
+    glCopyColorSubTable(GL_COLOR_TABLE, 0, 0, 0, 4)
+    assert_equal(glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT), ct2)
 
-	def test_convolutionfilter
-		supported?(1.2)
+    glColorTableParameterfv(GL_COLOR_TABLE, GL_COLOR_TABLE_BIAS, [0, 1, 0, 1])
+    assert_equal(glGetColorTableParameterfv(GL_COLOR_TABLE, GL_COLOR_TABLE_BIAS), [0, 1, 0, 1])
 
-		cf = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
-		cf2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
-		glConvolutionFilter1D(GL_CONVOLUTION_1D, GL_RGB8, 4, GL_RGB, GL_FLOAT,cf)
-		assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT),cf)
+    glColorTableParameteriv(GL_COLOR_TABLE, GL_COLOR_TABLE_BIAS, [1, 0, 1, 0])
+    assert_equal(glGetColorTableParameteriv(GL_COLOR_TABLE, GL_COLOR_TABLE_BIAS), [1, 0, 1, 0])
+  end
 
-		glConvolutionFilter2D(GL_CONVOLUTION_2D, GL_RGB8, 2,2, GL_RGB, GL_FLOAT,cf2)
-		assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_2D, GL_RGB, GL_FLOAT),cf2)
+  def test_convolutionfilter
+    supported?(1.2)
 
-		glDrawPixels(4,1,GL_RGB,GL_FLOAT,cf2)
-		glCopyConvolutionFilter1D(GL_CONVOLUTION_1D,GL_RGB8,0,0,4)
-		assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT),cf2)
+    cf = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
+    cf2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
+    glConvolutionFilter1D(GL_CONVOLUTION_1D, GL_RGB8, 4, GL_RGB, GL_FLOAT,cf)
+    assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT),cf)
 
-		glDrawPixels(2,2,GL_RGB,GL_FLOAT,cf)
-		glCopyConvolutionFilter2D(GL_CONVOLUTION_2D,GL_RGB8,0,0,2,2)
-		assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_2D, GL_RGB, GL_FLOAT),cf)
+    glConvolutionFilter2D(GL_CONVOLUTION_2D, GL_RGB8, 2,2, GL_RGB, GL_FLOAT,cf2)
+    assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_2D, GL_RGB, GL_FLOAT),cf2)
 
-		glConvolutionParameterf(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,GL_CONSTANT_BORDER)
-		assert_equal(glGetConvolutionParameterfv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_CONSTANT_BORDER)
+    glDrawPixels(4,1,GL_RGB,GL_FLOAT,cf2)
+    glCopyConvolutionFilter1D(GL_CONVOLUTION_1D,GL_RGB8,0,0,4)
+    assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT),cf2)
 
-		glConvolutionParameterf(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,GL_REPLICATE_BORDER)
-		assert_equal(glGetConvolutionParameterfv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_REPLICATE_BORDER)
+    glDrawPixels(2,2,GL_RGB,GL_FLOAT,cf)
+    glCopyConvolutionFilter2D(GL_CONVOLUTION_2D,GL_RGB8,0,0,2,2)
+    assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_2D, GL_RGB, GL_FLOAT),cf)
 
-		glConvolutionParameterfv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,[GL_CONSTANT_BORDER])
-		assert_equal(glGetConvolutionParameterfv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_CONSTANT_BORDER)
+    glConvolutionParameterf(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,GL_CONSTANT_BORDER)
+    assert_equal(glGetConvolutionParameterfv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_CONSTANT_BORDER)
 
-		glConvolutionParameteri(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,GL_REPLICATE_BORDER)
-		assert_equal(glGetConvolutionParameteriv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_REPLICATE_BORDER)
+    glConvolutionParameterf(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,GL_REPLICATE_BORDER)
+    assert_equal(glGetConvolutionParameterfv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_REPLICATE_BORDER)
 
-		glConvolutionParameteriv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,[GL_CONSTANT_BORDER])
-		assert_equal(glGetConvolutionParameteriv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_CONSTANT_BORDER)
-	end
+    glConvolutionParameterfv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,[GL_CONSTANT_BORDER])
+    assert_equal(glGetConvolutionParameterfv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_CONSTANT_BORDER)
 
-	def test_separablefilter
-		supported?(1.2)
-		sf_a = ([0]*3+[1]*3).pack("f*")
-		sf_b = ([1]*3+[0]*3).pack("f*")
-		
-		glSeparableFilter2D(GL_SEPARABLE_2D,GL_RGB8, 2,2,GL_RGB,GL_FLOAT,sf_a,sf_b)
-		assert_equal(glGetSeparableFilter(GL_SEPARABLE_2D,GL_RGB,GL_FLOAT), [sf_a,sf_b])
-	end
+    glConvolutionParameteri(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,GL_REPLICATE_BORDER)
+    assert_equal(glGetConvolutionParameteriv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_REPLICATE_BORDER)
 
-	def test_histogram
-		supported?(1.2)
+    glConvolutionParameteriv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE,[GL_CONSTANT_BORDER])
+    assert_equal(glGetConvolutionParameteriv(GL_CONVOLUTION_1D,GL_CONVOLUTION_BORDER_MODE),GL_CONSTANT_BORDER)
+  end
 
-		glEnable(GL_HISTOGRAM)
+  def test_separablefilter
+    supported?(1.2)
+    sf_a = ([0]*3+[1]*3).pack("f*")
+    sf_b = ([1]*3+[0]*3).pack("f*")
 
-		glHistogram(GL_HISTOGRAM,1,GL_RGB,GL_FALSE)
-		assert_equal(glGetHistogramParameterfv(GL_HISTOGRAM,GL_HISTOGRAM_WIDTH),1)
-		assert_equal(glGetHistogramParameteriv(GL_HISTOGRAM,GL_HISTOGRAM_FORMAT),GL_RGB)
-		assert_equal(glGetHistogramParameteriv(GL_HISTOGRAM,GL_HISTOGRAM_SINK),GL_FALSE)
+    glSeparableFilter2D(GL_SEPARABLE_2D, GL_RGB8, 2, 2, GL_RGB, GL_FLOAT, sf_a, sf_b)
+    assert_equal(glGetSeparableFilter(GL_SEPARABLE_2D, GL_RGB, GL_FLOAT), [sf_a, sf_b])
+  end
 
-		glDrawPixels(2,1,GL_RGB,GL_FLOAT,[1,1,1,1,1,1].pack("f*"))
-		h = glGetHistogram(GL_HISTOGRAM,GL_FALSE,GL_RGB,GL_FLOAT)
-		assert_equal(h.unpack("f*"),[2,2,2])
-		glResetHistogram(GL_HISTOGRAM)
-		h = glGetHistogram(GL_HISTOGRAM,GL_FALSE,GL_RGB,GL_FLOAT)
-		assert_equal(h.unpack("f*"),[0,0,0])
+  def test_histogram
+    supported?(1.2)
 
-		glDisable(GL_HISTOGRAM)
-	end
+    glEnable(GL_HISTOGRAM)
 
-	def test_minmax
-		supported?(1.2)
+    glHistogram(GL_HISTOGRAM, 1, GL_RGB, GL_FALSE)
+    assert_equal(glGetHistogramParameterfv(GL_HISTOGRAM, GL_HISTOGRAM_WIDTH), 1)
+    assert_equal(glGetHistogramParameteriv(GL_HISTOGRAM, GL_HISTOGRAM_FORMAT), GL_RGB)
+    assert_equal(glGetHistogramParameteriv(GL_HISTOGRAM, GL_HISTOGRAM_SINK), GL_FALSE)
 
-		glEnable(GL_MINMAX)		
+    glDrawPixels(2, 1, GL_RGB, GL_FLOAT, [1, 1, 1, 1, 1, 1].pack("f*"))
+    h = glGetHistogram(GL_HISTOGRAM, GL_FALSE, GL_RGB, GL_FLOAT)
+    assert_equal(h.unpack("f*"), [2, 2, 2])
+    glResetHistogram(GL_HISTOGRAM)
+    h = glGetHistogram(GL_HISTOGRAM, GL_FALSE, GL_RGB, GL_FLOAT)
+    assert_equal(h.unpack("f*"), [0, 0, 0])
 
-		glMinmax(GL_MINMAX,GL_RGB,GL_FALSE)
-		assert_equal(glGetMinmaxParameteriv(GL_MINMAX,GL_MINMAX_FORMAT),GL_RGB)
-		assert_equal(glGetMinmaxParameterfv(GL_MINMAX,GL_MINMAX_FORMAT),GL_RGB)
-		assert_equal(glGetMinmaxParameteriv(GL_MINMAX,GL_MINMAX_SINK),GL_FALSE)
+    glDisable(GL_HISTOGRAM)
+  end
 
-		glDrawPixels(2,1,GL_RGB,GL_FLOAT,[0,0,0,1,1,1].pack("f*"))
-		mm = glGetMinmax(GL_MINMAX,GL_FALSE,GL_RGB,GL_FLOAT)
-		assert_equal(mm.unpack("f*"),[0,0,0,1,1,1])
-		glResetMinmax(GL_MINMAX)
-		mm = glGetMinmax(GL_MINMAX,GL_FALSE,GL_RGB,GL_UNSIGNED_BYTE)
-		assert(assert_in_delta(mm.unpack("f*"),[0,0,0,0,0,0]))
+  def test_minmax
+    supported?(1.2)
 
-		glDisable(GL_MINMAX)
-	end
+    glEnable(GL_MINMAX)
 
-	def test_texture_3D
-		supported?(1.2)
-		image = ([0,0,0,1,1,1] * 2 * 2).pack("f*")
-		image2 = ([1,1,1,0,0,0] * 2 * 2).pack("f*")
+    glMinmax(GL_MINMAX, GL_RGB, GL_FALSE)
+    assert_equal(glGetMinmaxParameteriv(GL_MINMAX, GL_MINMAX_FORMAT), GL_RGB)
+    assert_equal(glGetMinmaxParameterfv(GL_MINMAX, GL_MINMAX_FORMAT), GL_RGB)
+    assert_equal(glGetMinmaxParameteriv(GL_MINMAX, GL_MINMAX_SINK), GL_FALSE)
 
-		textures = glGenTextures(1)
-		glBindTexture(GL_TEXTURE_3D,textures[0])
+    glDrawPixels(2, 1, GL_RGB, GL_FLOAT, [0, 0, 0, 1, 1, 1].pack("f*"))
+    mm = glGetMinmax(GL_MINMAX, GL_FALSE, GL_RGB, GL_FLOAT)
+    assert_each_in_delta [0, 0, 0, 1, 1, 1], mm.unpack("f*")
 
-		glTexImage3D(GL_TEXTURE_3D,0,GL_RGB8,2,2,2,0,GL_RGB,GL_FLOAT,image)
-		assert_equal(glGetTexImage(GL_TEXTURE_3D,0,GL_RGB,GL_FLOAT),image)
+    glResetMinmax(GL_MINMAX)
+    mm = glGetMinmax(GL_MINMAX, GL_FALSE, GL_RGB, GL_UNSIGNED_BYTE)
+    assert_equal [-1, -1, -1, 0, 0, 0], mm.unpack("c*")
 
-		glTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,2,GL_RGB,GL_FLOAT,image2)
-		assert_equal(glGetTexImage(GL_TEXTURE_3D,0,GL_RGB,GL_FLOAT),image2)
+    glDisable(GL_MINMAX)
+  end
 
-		glDrawPixels(2,2,GL_RGB,GL_FLOAT,image)
-		glCopyTexSubImage3D(GL_TEXTURE_3D,0,0,0,0,0,0,2,2)
-		ti = glGetTexImage(GL_TEXTURE_3D,0,GL_RGB,GL_FLOAT).unpack("f*")
-		assert_equal(ti,([0]*3 + [1]*3) * 2 + ([1]*3 + [0]*3) * 2)
+  def test_texture_3D
+    supported?(1.2)
+    image = ([0, 0, 0, 1, 1, 1] * 2 * 2).pack("f*")
+    image2 = ([1, 1, 1, 0, 0, 0] * 2 * 2).pack("f*")
 
-		glDeleteTextures(textures)
-	end
+    textures = glGenTextures(1)
+    glBindTexture(GL_TEXTURE_3D, textures[0])
+
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB8, 2, 2, 2, 0, GL_RGB, GL_FLOAT, image)
+    assert_equal(glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_FLOAT), image)
+
+    glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, 2, 2, 2, GL_RGB, GL_FLOAT, image2)
+    assert_equal(glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_FLOAT), image2)
+
+    glDrawPixels(2, 2, GL_RGB, GL_FLOAT, image)
+    glCopyTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, 0, 0, 2, 2)
+    ti = glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_FLOAT).unpack("f*")
+    assert_equal(ti, ([0]*3 + [1]*3) * 2 + ([1]*3 + [0]*3) * 2)
+
+    glDeleteTextures(textures)
+  end
+
 end
+

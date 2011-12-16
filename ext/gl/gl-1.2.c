@@ -568,7 +568,7 @@ VALUE obj;
 	LOAD_GL_FUNC(glGetHistogramParameteriv,"1.2")
 	numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
 	target = (GLenum)NUM2INT(args[0]);
-	reset = (GLboolean)NUM2INT(args[1]);
+	reset = (GLboolean)RUBYBOOL2GL(args[1]);
 	format = (GLenum)NUM2INT(args[2]);
 	type = (GLenum)NUM2INT(args[3]);
 
@@ -616,7 +616,7 @@ VALUE obj;
 	LOAD_GL_FUNC(glGetMinmax,"1.2")
 	numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
 	target = (GLenum)NUM2INT(args[0]);
-	reset = (GLboolean)NUM2INT(args[1]);
+	reset = (GLboolean)RUBYBOOL2GL(args[1]);
 	format = (GLenum)NUM2INT(args[2]);
 	type = (GLenum)NUM2INT(args[3]);
 
