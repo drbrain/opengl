@@ -69,7 +69,7 @@ VALUE obj,arg1;
 	ary2cuint(arg1,buffers,size);
 	fptr_glDrawBuffers(size,buffers);
 	xfree(buffers);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glDrawBuffers")
 	return Qnil;
 }
 
@@ -85,7 +85,7 @@ VALUE obj,arg1,arg2,arg3;
 	index = (GLuint)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	fptr_glBindAttribLocation(program,index,RSTRING_PTR(arg3));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glBindAttribLocation")
 	return Qnil;
 }
 
@@ -101,7 +101,7 @@ VALUE obj,arg1,arg2;
 	program = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetProgramiv(program,pname,&params);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramiv")
 	return cond_GLBOOL2RUBY(pname,params);
 }
 
@@ -123,7 +123,7 @@ VALUE obj,arg1,arg2;
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	fptr_glGetProgramiv(program,GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramiv")
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum attribute name length");
 	buffer = allocate_buffer_with_string(max_size-1);
@@ -132,7 +132,7 @@ VALUE obj,arg1,arg2;
 	rb_ary_push(retary, INT2NUM(attrib_size));
 	rb_ary_push(retary, INT2NUM(attrib_type));
 	rb_ary_push(retary, buffer);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetActiveAttrib")
 	return retary;
 }
 
@@ -183,7 +183,7 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glGetProgramiv,"2.0")
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetProgramiv(program,GL_ATTACHED_SHADERS,&shaders_num);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramiv")
 	if (shaders_num<=0)
 		return Qnil;
 	shaders = ALLOC_N(GLuint,shaders_num);
@@ -202,7 +202,7 @@ VALUE obj,arg1,arg2;
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetAttribLocation(program,RSTRING_PTR(arg2));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetAttribLocation")
 	return INT2NUM(ret);
 }
 
@@ -219,12 +219,12 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glGetProgramiv,"2.0")
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetProgramiv(program,GL_INFO_LOG_LENGTH,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramiv")
 	if (max_size<=0)
 		return rb_str_new2("");
 	buffer = allocate_buffer_with_string(max_size);
 	fptr_glGetProgramInfoLog(program,max_size,&ret_length,RSTRING_PTR(buffer));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramInfoLog")
 	return buffer;
 }
 
@@ -240,7 +240,7 @@ VALUE obj,arg1,arg2;
 	program = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetShaderiv(program,pname,&params);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetShaderiv")
 	return cond_GLBOOL2RUBY(pname,params);
 }
 
@@ -258,7 +258,7 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glGetShaderiv,"2.0")
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetShaderiv(program,GL_INFO_LOG_LENGTH,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetShaderiv")
 	if (max_size<=0)
 		return rb_str_new2("");
 	buffer = ALLOC_N(GLchar,max_size+1);
@@ -266,7 +266,7 @@ VALUE obj,arg1;
 	fptr_glGetShaderInfoLog(program,max_size,&ret_length,buffer);
 	ret_buffer = rb_str_new(buffer, ret_length);
 	xfree(buffer);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetShaderInfoLog")
 	return ret_buffer;
 }
 
@@ -283,12 +283,12 @@ VALUE obj,arg1;
 	LOAD_GL_FUNC(glGetShaderiv,"2.0")
 	shader = (GLuint)NUM2UINT(arg1);
 	fptr_glGetShaderiv(shader,GL_SHADER_SOURCE_LENGTH,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetShaderiv")
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum shader source length");
 	buffer = allocate_buffer_with_string(max_size-1);
 	fptr_glGetShaderSource(shader,max_size,&ret_length,RSTRING_PTR(buffer));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetShaderSource")
 	return buffer;
 }
 
@@ -466,15 +466,15 @@ VALUE obj,arg1,arg2,arg3; \
 	GLsizei count; \
 	GLboolean transpose; \
 	GLfloat *value;	\
-	LOAD_GL_FUNC(gl##_name_,"2.0") \
+	LOAD_GL_FUNC(gl##_name_, "2.0") \
 	location = (GLint)NUM2INT(arg1); \
-	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
+	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3), rb_intern("flatten"), 0)); \
 	transpose = (GLboolean)RUBYBOOL2GL(arg2); \
 	value = ALLOC_N(GLfloat, count); \
 	ary2cmatfloatcount(arg3,value,_size_,_size_); \
 	fptr_gl##_name_(location,count / (_size_*_size_),transpose,value); \
 	xfree(value); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_) \
 	return Qnil; \
 }
 
@@ -495,7 +495,7 @@ VALUE obj,arg1,arg2; \
 	index = (GLuint)NUM2UINT(arg1); \
 	_conv_(arg2,v,_size_); \
 	fptr_gl##_name_(index,v); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_) \
 	return Qnil; \
 }
 
