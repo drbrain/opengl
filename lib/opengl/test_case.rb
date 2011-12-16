@@ -33,8 +33,10 @@ Gl.enable_error_checking
 module OpenGL; end
 
 class OpenGL::TestCase < MiniTest::Unit::TestCase
-  @glut_initialized = false
+
   WINDOW_SIZE = 512
+
+  @glut_initialized = false
 
   def self.glut_init
     return if @glut_initialized
@@ -84,7 +86,7 @@ class OpenGL::TestCase < MiniTest::Unit::TestCase
     assert_equal error, 0, gluErrorString(error)
   end
 
-  def assert_each_in_delta expected, actual, epsilon = 0.001
+  def assert_each_in_delta expected, actual, epsilon = 0.01
     assert_equal expected.length, actual.length, 'array lengths do not match'
 
     expected.flatten.zip(actual.flatten).each_with_index do |(e, a), i|
