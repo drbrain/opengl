@@ -16,255 +16,243 @@
 require 'opengl/test_case'
 
 class TestGl15 < OpenGL::TestCase
-	def setup
-		super()
-	end
 
-	def teardown
-		super()
-	end
+  def setup
+    super
 
-	def test_query
-		supported?(1.5)
-		queries = glGenQueries(2)
-		assert_equal(queries.size,2)
+    supported? 1.5
+  end
 
-		glBeginQuery(GL_SAMPLES_PASSED,queries[1])
-		assert_equal(glIsQuery(queries[1]),true)
-		
-		glBegin(GL_TRIANGLES)
-		glVertex2i(0,0)
-		glVertex2i(1,0)
-		glVertex2i(1,1)
-		glEnd()
+  def test_query
+    queries = glGenQueries(2)
+    assert_equal(queries.size,2)
 
-		assert_equal(glGetQueryiv(GL_SAMPLES_PASSED,GL_CURRENT_QUERY),queries[1])
-	
-		glEndQuery(GL_SAMPLES_PASSED)
-		
-		r = glGetQueryObjectiv(queries[1],GL_QUERY_RESULT_AVAILABLE)
-		assert((r==GL_TRUE || r==GL_FALSE))
+    glBeginQuery(GL_SAMPLES_PASSED,queries[1])
+    assert_equal(glIsQuery(queries[1]),true)
 
-		if (r==GL_TRUE)
-		assert(glGetQueryObjectiv(queries[1],GL_QUERY_RESULT)[0] > 0)
-		assert(glGetQueryObjectuiv(queries[1],GL_QUERY_RESULT)[0] > 0)
-		end
-		
-		glDeleteQueries(queries)
-		assert_equal(glIsQuery(queries[1]),false)
-	end
-	
-	def test_buffers
-		supported?(1.5)
-		buffers = glGenBuffers(2)
-		glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
-		assert_equal(glIsBuffer(buffers[0]),true)		
+    glBegin(GL_TRIANGLES)
+    glVertex2i(0,0)
+    glVertex2i(1,0)
+    glVertex2i(1,1)
+    glEnd()
 
-		data = [0,1,2,3].pack("C*")
-		data2 = [4,5,6,7].pack("C*")
+    assert_equal(glGetQueryiv(GL_SAMPLES_PASSED,GL_CURRENT_QUERY),queries[1])
 
-		glBufferData(GL_ARRAY_BUFFER,4,data,GL_STREAM_READ)
-		assert_equal(glGetBufferSubData(GL_ARRAY_BUFFER,0,4),data)
+    glEndQuery(GL_SAMPLES_PASSED)
 
-		assert_equal(glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_USAGE),GL_STREAM_READ)
+    r = glGetQueryObjectiv(queries[1],GL_QUERY_RESULT_AVAILABLE)
+    assert((r==GL_TRUE || r==GL_FALSE))
 
-		glBufferSubData(GL_ARRAY_BUFFER,0,4,data2)
-		assert_equal(glGetBufferSubData(GL_ARRAY_BUFFER,0,4),data2)
+    if (r==GL_TRUE)
+      assert(glGetQueryObjectiv(queries[1],GL_QUERY_RESULT)[0] > 0)
+      assert(glGetQueryObjectuiv(queries[1],GL_QUERY_RESULT)[0] > 0)
+    end
 
-		assert_equal(glMapBuffer(GL_ARRAY_BUFFER,GL_READ_ONLY),data2)
-		r = glUnmapBuffer(GL_ARRAY_BUFFER)
-		assert(r == true || r == false)
-		glDeleteBuffers(buffers)		
-		assert_equal(glIsBuffer(buffers[0]),false)
+    glDeleteQueries(queries)
+    assert_equal(glIsQuery(queries[1]),false)
+  end
 
-		# FIXME: GetBufferPointerv not yet implemented
-	end
+  def test_buffers
+    buffers = glGenBuffers(2)
+    glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
+    assert_equal(glIsBuffer(buffers[0]),true)		
 
-	def test_buffer_binding_element_array
-		supported?(1.5)
+    data = [0,1,2,3].pack("C*")
+    data2 = [4,5,6,7].pack("C*")
 
-		glEnableClientState(GL_VERTEX_ARRAY)
-		va = [0,0, 0,1, 1,1].pack("f*")
-		glVertexPointer(2,GL_FLOAT,0,va)
+    glBufferData(GL_ARRAY_BUFFER,4,data,GL_STREAM_READ)
+    assert_equal(glGetBufferSubData(GL_ARRAY_BUFFER,0,4),data)
 
-		#
-		data = [0,1,2].pack("C*")
-		buffers = glGenBuffers(1)
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,buffers[0])
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,3,data,GL_DYNAMIC_DRAW)
+    assert_equal(glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_USAGE),GL_STREAM_READ)
 
-		#
-		feedback = glFeedbackBuffer(256,GL_3D)
-		glRenderMode(GL_FEEDBACK)
+    glBufferSubData(GL_ARRAY_BUFFER,0,4,data2)
+    assert_equal(glGetBufferSubData(GL_ARRAY_BUFFER,0,4),data2)
 
-		glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_BYTE,0)
-		glDrawRangeElements(GL_TRIANGLES,0,3,3,GL_UNSIGNED_BYTE,0)
+    assert_equal(glMapBuffer(GL_ARRAY_BUFFER,GL_READ_ONLY),data2)
+    r = glUnmapBuffer(GL_ARRAY_BUFFER)
+    assert(r == true || r == false)
+    glDeleteBuffers(buffers)		
+    assert_equal(glIsBuffer(buffers[0]),false)
 
-		count = glRenderMode(GL_RENDER)
-		assert_equal(count,22)
+    # FIXME: GetBufferPointerv not yet implemented
+  end
 
-		glDisableClientState(GL_VERTEX_ARRAY)
-		glDeleteBuffers(buffers)
-	end
+  def test_buffer_binding_element_array
+    glEnableClientState(GL_VERTEX_ARRAY)
+    va = [0,0, 0,1, 1,1].pack("f*")
+    glVertexPointer(2,GL_FLOAT,0,va)
 
-	def test_buffer_binding_array_1
-		supported?(1.5)
+    #
+    data = [0,1,2].pack("C*")
+    buffers = glGenBuffers(1)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,buffers[0])
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,3,data,GL_DYNAMIC_DRAW)
 
-		glEnableClientState(GL_VERTEX_ARRAY)
-		va = [0,0, 0,1, 1,1].pack("f*")
+    #
+    feedback = glFeedbackBuffer(256,GL_3D)
+    glRenderMode(GL_FEEDBACK)
 
-		#
-		buffers = glGenBuffers(1)
-		glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
-		glBufferData(GL_ARRAY_BUFFER,6*4,va,GL_DYNAMIC_DRAW)
+    glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_BYTE,0)
+    glDrawRangeElements(GL_TRIANGLES,0,3,3,GL_UNSIGNED_BYTE,0)
 
-		glVertexPointer(2,GL_FLOAT,0,0)
-		assert_equal(glGetPointerv(GL_VERTEX_ARRAY_POINTER),0)
-		#
-		feedback = glFeedbackBuffer(256,GL_3D)
-		glRenderMode(GL_FEEDBACK)
+    count = glRenderMode(GL_RENDER)
+    assert_equal(count,22)
 
-		glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_BYTE,[0,1,2].pack("f*"))
+    glDisableClientState(GL_VERTEX_ARRAY)
+    glDeleteBuffers(buffers)
+  end
 
-		count = glRenderMode(GL_RENDER)
-		assert_equal(count,11)
-		
-		glDeleteBuffers(buffers)
-		glDisableClientState(GL_VERTEX_ARRAY)
-	end
+  def test_buffer_binding_array_1
+    glEnableClientState(GL_VERTEX_ARRAY)
+    va = [0,0, 0,1, 1,1].pack("f*")
 
-	def test_buffer_binding_array_2
-		supported?(1.5)
+    #
+    buffers = glGenBuffers(1)
+    glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
+    glBufferData(GL_ARRAY_BUFFER,6*4,va,GL_DYNAMIC_DRAW)
 
-		efa = [0].pack("C*")
-		na = [0,1,0].pack("f*")
-		ca = [1,0,1,0].pack("f*")
-		ta = [1,0,1,0].pack("f*")
+    glVertexPointer(2,GL_FLOAT,0,0)
+    assert_equal(glGetPointerv(GL_VERTEX_ARRAY_POINTER),0)
+    #
+    feedback = glFeedbackBuffer(256,GL_3D)
+    glRenderMode(GL_FEEDBACK)
 
-		buffers = glGenBuffers(4)
-		# load data into buffers
-		buffer_efa,buffer_na,buffer_ca,buffer_ta = buffers
+    glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_BYTE,[0,1,2].pack("f*"))
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_efa)
-		glBufferData(GL_ARRAY_BUFFER,1,efa,GL_DYNAMIC_DRAW)
+    count = glRenderMode(GL_RENDER)
+    assert_equal(count,11)
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_na)
-		glBufferData(GL_ARRAY_BUFFER,3*4,na,GL_DYNAMIC_DRAW)
+    glDeleteBuffers(buffers)
+    glDisableClientState(GL_VERTEX_ARRAY)
+  end
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_ca)
-		glBufferData(GL_ARRAY_BUFFER,4*4,ca,GL_DYNAMIC_DRAW)
+  def test_buffer_binding_array_2
+    efa = [0].pack("C*")
+    na = [0,1,0].pack("f*")
+    ca = [1,0,1,0].pack("f*")
+    ta = [1,0,1,0].pack("f*")
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_ta)
-		glBufferData(GL_ARRAY_BUFFER,4*4,ta,GL_DYNAMIC_DRAW)
+    buffers = glGenBuffers(4)
+    # load data into buffers
+    buffer_efa,buffer_na,buffer_ca,buffer_ta = buffers
 
-		# load buffers into arrays
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_na)
-		glEdgeFlagPointer(0,0)
-		assert_equal(glGetPointerv(GL_EDGE_FLAG_ARRAY_POINTER),0)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_efa)
+    glBufferData(GL_ARRAY_BUFFER,1,efa,GL_DYNAMIC_DRAW)
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_na)
-		glNormalPointer(GL_FLOAT,0,0)
-		assert_equal(glGetPointerv(GL_NORMAL_ARRAY_POINTER),0)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_na)
+    glBufferData(GL_ARRAY_BUFFER,3*4,na,GL_DYNAMIC_DRAW)
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_ca)
-		glColorPointer(4,GL_FLOAT,0,0)
-		assert_equal(glGetPointerv(GL_COLOR_ARRAY_POINTER),0)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_ca)
+    glBufferData(GL_ARRAY_BUFFER,4*4,ca,GL_DYNAMIC_DRAW)
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_ta)
-		glTexCoordPointer(4,GL_FLOAT,0,0)
-		assert_equal(glGetPointerv(GL_TEXTURE_COORD_ARRAY_POINTER),0)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_ta)
+    glBufferData(GL_ARRAY_BUFFER,4*4,ta,GL_DYNAMIC_DRAW)
 
-		# not really testing index
-		glIndexPointer(GL_INT,2,0)
-		assert_equal(glGetPointerv(GL_INDEX_ARRAY_POINTER),0)
+    # load buffers into arrays
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_na)
+    glEdgeFlagPointer(0,0)
+    assert_equal(glGetPointerv(GL_EDGE_FLAG_ARRAY_POINTER),0)
 
-		# draw arrays
-		glEnable(GL_NORMAL_ARRAY)
-		glEnable(GL_COLOR_ARRAY)
-		glEnable(GL_TEXTURE_COORD_ARRAY)
-		glEnable(GL_EDGE_FLAG_ARRAY)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_na)
+    glNormalPointer(GL_FLOAT,0,0)
+    assert_equal(glGetPointerv(GL_NORMAL_ARRAY_POINTER),0)
 
-		glBegin(GL_TRIANGLES)
-		glArrayElement(0)
-		glEnd()
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_ca)
+    glColorPointer(4,GL_FLOAT,0,0)
+    assert_equal(glGetPointerv(GL_COLOR_ARRAY_POINTER),0)
 
-		assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[0,1,0])
-		assert_equal(glGetDoublev(GL_CURRENT_COLOR),[1,0,1,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,1,0])
-		assert_equal(glGetBooleanv(GL_EDGE_FLAG),GL_FALSE)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_ta)
+    glTexCoordPointer(4,GL_FLOAT,0,0)
+    assert_equal(glGetPointerv(GL_TEXTURE_COORD_ARRAY_POINTER),0)
 
-		glDisable(GL_EDGE_FLAG_ARRAY)
-		glDisable(GL_TEXTURE_COORD_ARRAY)
-		glDisable(GL_COLOR_ARRAY)
-		glDisable(GL_NORMAL_ARRAY)
+    # not really testing index
+    glIndexPointer(GL_INT,2,0)
+    assert_equal(glGetPointerv(GL_INDEX_ARRAY_POINTER),0)
 
-		glDeleteBuffers(buffers)
-	end
+    # draw arrays
+    glEnableClientState(GL_NORMAL_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+    glEnableClientState(GL_EDGE_FLAG_ARRAY)
 
-	def test_buffer_binding_array_3
-		supported?(1.5)
+    glBegin(GL_TRIANGLES)
+    glArrayElement(0)
+    glEnd()
 
-		sc = [0,1,0].pack("f*")
-		fc = [1].pack("f*")
+    assert_equal(glGetDoublev(GL_CURRENT_NORMAL),[0,1,0])
+    assert_equal(glGetDoublev(GL_CURRENT_COLOR),[1,0,1,0])
+    assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS),[1,0,1,0])
+    assert_equal(glGetBooleanv(GL_EDGE_FLAG),GL_FALSE)
 
-		buffers = glGenBuffers(2)
-		# load data into buffers
-		buffer_sc,buffer_fc = buffers
+    glDisableClientState(GL_EDGE_FLAG_ARRAY)
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY)
+    glDisableClientState(GL_COLOR_ARRAY)
+    glDisableClientState(GL_NORMAL_ARRAY)
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_sc)
-		glBufferData(GL_ARRAY_BUFFER,3*4,sc,GL_DYNAMIC_DRAW)
+    glDeleteBuffers(buffers)
+  end
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_fc)
-		glBufferData(GL_ARRAY_BUFFER,1*4,fc,GL_DYNAMIC_DRAW)
+  def test_buffer_binding_array_3
+    sc = [0,1,0].pack("f*")
+    fc = [1].pack("f*")
 
-		# load buffers into arrays
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_sc)
-		glSecondaryColorPointer(3,GL_FLOAT,0,0)
-		assert_equal(glGetPointerv(GL_SECONDARY_COLOR_ARRAY_POINTER),0)
+    buffers = glGenBuffers(2)
+    # load data into buffers
+    buffer_sc,buffer_fc = buffers
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffer_fc)
-		glFogCoordPointer(GL_FLOAT,0,0)
-		assert_equal(glGetPointerv(GL_FOG_COORD_ARRAY_POINTER),0)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_sc)
+    glBufferData(GL_ARRAY_BUFFER,3*4,sc,GL_DYNAMIC_DRAW)
 
-		# draw arrays
-		glEnableClientState(GL_SECONDARY_COLOR_ARRAY)
-		glEnableClientState(GL_FOG_COORD_ARRAY)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_fc)
+    glBufferData(GL_ARRAY_BUFFER,1*4,fc,GL_DYNAMIC_DRAW)
 
-		glBegin(GL_TRIANGLES)
-		glArrayElement(0)
-		glEnd()
+    # load buffers into arrays
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_sc)
+    glSecondaryColorPointer(3,GL_FLOAT,0,0)
+    assert_equal(glGetPointerv(GL_SECONDARY_COLOR_ARRAY_POINTER),0)
 
-		assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0,1,0,1])
-		assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),1)
+    glBindBuffer(GL_ARRAY_BUFFER,buffer_fc)
+    glFogCoordPointer(GL_FLOAT,0,0)
+    assert_equal(glGetPointerv(GL_FOG_COORD_ARRAY_POINTER),0)
 
-		glDisableClientState(GL_SECONDARY_COLOR_ARRAY)
-		glDisableClientState(GL_FOG_COORD_ARRAY)
-		
-		glDeleteBuffers(buffers)
-	end
+    # draw arrays
+    glEnableClientState(GL_SECONDARY_COLOR_ARRAY)
+    glEnableClientState(GL_FOG_COORD_ARRAY)
 
-	def test_buffer_binding_array_4
-		supported?(1.5)
-		va = [0,0, 1,0, 1,1, 0,0, 1,0, 0,1].pack("f*")
-		glVertexPointer(2,GL_FLOAT,0,va)
-		
-		glEnable(GL_VERTEX_ARRAY)
+    glBegin(GL_TRIANGLES)
+    glArrayElement(0)
+    glEnd()
 
-		buf = glFeedbackBuffer(256,GL_3D)
-		glRenderMode(GL_FEEDBACK)
+    assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR),[0,1,0,1])
+    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD),1)
 
-		data = [0,1,2,3,4,5]
-		buffers = glGenBuffers(3)
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,buffers[0])
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,6,data.pack("C*"),GL_DYNAMIC_DRAW)
+    glDisableClientState(GL_SECONDARY_COLOR_ARRAY)
+    glDisableClientState(GL_FOG_COORD_ARRAY)
 
-		glMultiDrawElements(GL_TRIANGLES,GL_UNSIGNED_BYTE,[3,3],[0,3])
+    glDeleteBuffers(buffers)
+  end
 
-		count = glRenderMode(GL_RENDER)
-		assert_equal(count,(3*3+2)*2)
+  def test_buffer_binding_array_4
+    va = [0,0, 1,0, 1,1, 0,0, 1,0, 0,1].pack("f*")
+    glVertexPointer(2,GL_FLOAT,0,va)
 
-		glDisable(GL_VERTEX_ARRAY)
-		glDeleteBuffers(buffers)
-	end
+    glEnableClientState(GL_VERTEX_ARRAY)
+
+    buf = glFeedbackBuffer(256,GL_3D)
+    glRenderMode(GL_FEEDBACK)
+
+    data = [0,1,2,3,4,5]
+    buffers = glGenBuffers(3)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,buffers[0])
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,6,data.pack("C*"),GL_DYNAMIC_DRAW)
+
+    glMultiDrawElements(GL_TRIANGLES,GL_UNSIGNED_BYTE,[3,3],[0,3])
+
+    count = glRenderMode(GL_RENDER)
+    assert_equal(count,(3*3+2)*2)
+
+    glDisableClientState(GL_VERTEX_ARRAY)
+    glDeleteBuffers(buffers)
+  end
 
 end
