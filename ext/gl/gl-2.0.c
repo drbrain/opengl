@@ -158,7 +158,10 @@ VALUE obj,arg1,arg2;
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum uniform name length");
 	buffer = allocate_buffer_with_string(max_size-1);
+
 	fptr_glGetActiveUniform(program,index,max_size,&written,&uniform_size,&uniform_type,RSTRING_PTR(buffer));
+
+  rb_str_set_len(buffer, strnlen(RSTRING_PTR(buffer), max_size));
 	retary = rb_ary_new2(3);
 	rb_ary_push(retary, INT2NUM(uniform_size));
 	rb_ary_push(retary, INT2NUM(uniform_type));
@@ -299,8 +302,9 @@ VALUE obj,arg1,arg2;
 	LOAD_GL_FUNC(glGetUniformLocation,"2.0")
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
-	ret = fptr_glGetUniformLocation(program,RSTRING_PTR(arg2));
-	CHECK_GLERROR
+	ret = fptr_glGetUniformLocation(program, RSTRING_PTR(arg2));
+
+  CHECK_GLERROR_FROM("glGetUniformLocation")
 	return INT2NUM(ret);
 }
 
@@ -323,7 +327,7 @@ VALUE obj,arg1,arg2; \
 	location = (GLint)NUM2INT(arg2); \
 \
 	fptr_glGetActiveUniform(program,location,0,NULL,&unused,&uniform_type,NULL); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("glGetActiveUniform") \
 	if (uniform_type==0) \
 		rb_raise(rb_eTypeError, "Can't determine the uniform's type"); \
 \
@@ -465,7 +469,7 @@ VALUE obj,arg1,arg2,arg3; \
 	LOAD_GL_FUNC(gl##_name_,"2.0") \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
-	transpose = (GLboolean)NUM2INT(arg2); \
+	transpose = (GLboolean)RUBYBOOL2GL(arg2); \
 	value = ALLOC_N(GLfloat, count); \
 	ary2cmatfloatcount(arg3,value,_size_,_size_); \
 	fptr_gl##_name_(location,count / (_size_*_size_),transpose,value); \
@@ -534,7 +538,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	index = (GLuint)NUM2UINT(arg1);
 	size = (GLuint)NUM2UINT(arg2);
 	type = (GLenum)NUM2INT(arg3);
-	normalized = (GLboolean)NUM2INT(arg4);
+	normalized = (GLboolean)RUBYBOOL2GL(arg4);
 	stride = (GLsizei)NUM2UINT(arg5);
 	if (index>_MAX_VERTEX_ATTRIBS)
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);

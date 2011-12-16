@@ -17,324 +17,408 @@ require 'opengl/test_case'
 
 class TestGl20 < OpenGL::TestCase
 
-	def test_glblendequationseparate
-		supported?(2.0)
-		glBlendEquationSeparate(GL_MIN,GL_MAX)
-		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB),GL_MIN)
-		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA),GL_MAX)
-		glBlendEquationSeparate(GL_MAX,GL_MIN)
-		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB),GL_MAX)
-		assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA),GL_MIN)
-	end
+  def setup
+    super
 
-	def test_stencilops
-		supported?(2.0)
+    supported? 2.0
+  end
 
-		glStencilOpSeparate(GL_FRONT, GL_ZERO, GL_INCR, GL_DECR)
-		assert_equal(glGetIntegerv(GL_STENCIL_FAIL), GL_ZERO)
-		assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL), GL_INCR)
-		assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS), GL_DECR)
-		glStencilOpSeparate(GL_FRONT, GL_INCR, GL_DECR, GL_ZERO)
-		assert_equal(glGetIntegerv(GL_STENCIL_FAIL), GL_INCR)
-		assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL), GL_DECR)
-		assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS), GL_ZERO)
+  def test_glblendequationseparate
+    glBlendEquationSeparate(GL_MIN, GL_MAX)
+    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB), GL_MIN)
+    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA), GL_MAX)
+    glBlendEquationSeparate(GL_MAX, GL_MIN)
+    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB), GL_MAX)
+    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA), GL_MIN)
+  end
 
-		glStencilFuncSeparate(GL_FRONT, GL_LEQUAL, 1, 0)
-		assert_equal(glGetIntegerv(GL_STENCIL_FUNC),GL_LEQUAL)
-		assert_equal(glGetIntegerv(GL_STENCIL_REF),1)
-		assert_equal(glGetIntegerv(GL_STENCIL_VALUE_MASK),0)
-		glStencilFuncSeparate(GL_FRONT, GL_GEQUAL, 0, 1)
-		assert_equal(glGetIntegerv(GL_STENCIL_FUNC),GL_GEQUAL)
-		assert_equal(glGetIntegerv(GL_STENCIL_REF),0)
-		assert_equal(glGetIntegerv(GL_STENCIL_VALUE_MASK),1)
+  def test_stencilops
+    glStencilOpSeparate(GL_FRONT, GL_ZERO, GL_INCR, GL_DECR)
+    assert_equal(glGetIntegerv(GL_STENCIL_FAIL), GL_ZERO)
+    assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL), GL_INCR)
+    assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS), GL_DECR)
+    glStencilOpSeparate(GL_FRONT, GL_INCR, GL_DECR, GL_ZERO)
+    assert_equal(glGetIntegerv(GL_STENCIL_FAIL), GL_INCR)
+    assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL), GL_DECR)
+    assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS), GL_ZERO)
 
-		glStencilMaskSeparate(GL_FRONT,1)
-		assert_equal(glGetIntegerv( GL_STENCIL_WRITEMASK),1)
-		glStencilMaskSeparate(GL_FRONT,0)
-		assert_equal(glGetIntegerv(GL_STENCIL_WRITEMASK),0)
-	end
+    glStencilFuncSeparate(GL_FRONT, GL_LEQUAL, 1, 0)
+    assert_equal(glGetIntegerv(GL_STENCIL_FUNC), GL_LEQUAL)
+    assert_equal(glGetIntegerv(GL_STENCIL_REF), 1)
+    assert_equal(glGetIntegerv(GL_STENCIL_VALUE_MASK), 0)
+    glStencilFuncSeparate(GL_FRONT, GL_GEQUAL, 0, 1)
+    assert_equal(glGetIntegerv(GL_STENCIL_FUNC), GL_GEQUAL)
+    assert_equal(glGetIntegerv(GL_STENCIL_REF), 0)
+    assert_equal(glGetIntegerv(GL_STENCIL_VALUE_MASK), 1)
 
-	def test_gldrawbuf
-		supported?(2.0)
-		glDrawBuffers([GL_FRONT_LEFT,GL_BACK_LEFT])
-		assert_equal(glGetIntegerv(GL_DRAW_BUFFER0),GL_FRONT_LEFT)
-		assert_equal(glGetIntegerv(GL_DRAW_BUFFER1),GL_BACK_LEFT)
-	end
+    glStencilMaskSeparate(GL_FRONT, 1)
+    assert_equal(glGetIntegerv( GL_STENCIL_WRITEMASK), 1)
+    glStencilMaskSeparate(GL_FRONT, 0)
+    assert_equal(glGetIntegerv(GL_STENCIL_WRITEMASK), 0)
+  end
 
-	def test_glvertexattrib
-		supported?(2.0)
-		# 1
-		glVertexAttrib1d(1,2.0)
-		assert_equal(glGetVertexAttribdv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,0.0,0.0,1.0])
-		glVertexAttrib1dv(1,[3.0])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,0.0,0.0,1.0])
-		glVertexAttrib1f(1,2.0)
-		assert_equal(glGetVertexAttribiv(1,GL_CURRENT_VERTEX_ATTRIB), [2,0,0,1])
-		glVertexAttrib1fv(1,[3.0])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,0.0,0.0,1.0])
-		glVertexAttrib1s(1,2)
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,0.0,0.0,1.0])
-		glVertexAttrib1sv(1,[3])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,0.0,0.0,1.0])
-		# 2
-		glVertexAttrib2d(1,2.0,2.0)
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,2.0,0.0,1.0])
-		glVertexAttrib2dv(1,[3.0,3.0])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,3.0,0.0,1.0])
-		glVertexAttrib2f(1,2.0,2.0)
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,2.0,0.0,1.0])
-		glVertexAttrib2fv(1,[3.0,3.0])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,3.0,0.0,1.0])
-		glVertexAttrib2s(1,2,2)
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,2.0,0.0,1.0])
-		glVertexAttrib2sv(1,[3,3])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,3.0,0.0,1.0])
-		# 3
-		glVertexAttrib3d(1,2.0,2.0,2.0)
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,2.0,2.0,1.0])
-		glVertexAttrib3dv(1,[3.0,3.0,3.0])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,3.0,3.0,1.0])
-		glVertexAttrib3f(1,2.0,2.0,2.0)
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,2.0,2.0,1.0])
-		glVertexAttrib3fv(1,[3.0,3.0,3.0])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,3.0,3.0,1.0])
-		glVertexAttrib3s(1,2,2,2)
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [2.0,2.0,2.0,1.0])
-		glVertexAttrib3sv(1,[3,3,3])
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [3.0,3.0,3.0,1.0])
-		# 4N
-		glVertexAttrib4Nbv(1,[2**7-1,2**7-1,2**7-1,2**7-1])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		glVertexAttrib4Niv(1,[0,0,0,0])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-		glVertexAttrib4Nsv(1,[2**15-1,2**15-1,2**15-1,2**15-1])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		glVertexAttrib4Nub(1,0,0,0,0)
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-		glVertexAttrib4Nubv(1,[2**8-1,2**8-1,2**8-1,2**8-1])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		glVertexAttrib4Nuiv(1,[0,0,0,0])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-		glVertexAttrib4Nusv(1,[2**16-1,2**16-1,2**16-1,2**16-1])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		# 4
-		glVertexAttrib4bv(1,[0,0,0,0])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-		glVertexAttrib4d(1,1,1,1,1)
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		glVertexAttrib4dv(1,[0,0,0,0])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-		glVertexAttrib4f(1,1,1,1,1)
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		glVertexAttrib4fv(1,[0,0,0,0])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-		glVertexAttrib4iv(1,[1,1,1,1])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		glVertexAttrib4s(1,0,0,0,0)
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-		glVertexAttrib4sv(1,[1,1,1,1])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		glVertexAttrib4ubv(1,[0,0,0,0])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-		glVertexAttrib4uiv(1,[1,1,1,1])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [1,1,1,1]))
-		glVertexAttrib4usv(1,[0,0,0,0])
-		assert(assert_in_delta(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB), [0,0,0,0]))
-	end
+  def test_gldrawbuf
+    glDrawBuffers([GL_FRONT_LEFT, GL_BACK_LEFT])
+    assert_equal(glGetIntegerv(GL_DRAW_BUFFER0), GL_FRONT_LEFT)
+    assert_equal(glGetIntegerv(GL_DRAW_BUFFER1), GL_BACK_LEFT)
+  end
 
-	def test_vertexattribpointer
-		supported?(2.0)
-		
-		vaa = [1,1,1,1, 2,2,2,2].pack("f*")
-		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,vaa)
-		assert_equal(glGetVertexAttribPointerv(1),vaa)
+  def test_glvertexattrib
+    # 1
+    glVertexAttrib1d(1, 2.0)
+    assert_equal([2.0, 0.0, 0.0, 1.0], glGetVertexAttribdv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib1dv(1, [3.0])
+    assert_equal([3.0, 0.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib1f(1, 2.0)
+    assert_equal([2, 0, 0, 1], glGetVertexAttribiv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib1fv(1, [3.0])
+    assert_equal([3.0, 0.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib1s(1, 2)
+    assert_equal([2.0, 0.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib1sv(1, [3])
+    assert_equal([3.0, 0.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    # 2
+    glVertexAttrib2d(1, 2.0, 2.0)
+    assert_equal([2.0, 2.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib2dv(1, [3.0, 3.0])
+    assert_equal([3.0, 3.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib2f(1, 2.0, 2.0)
+    assert_equal([2.0, 2.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib2fv(1, [3.0, 3.0])
+    assert_equal([3.0, 3.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib2s(1, 2, 2)
+    assert_equal([2.0, 2.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib2sv(1, [3, 3])
+    assert_equal([3.0, 3.0, 0.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    # 3
+    glVertexAttrib3d(1, 2.0, 2.0, 2.0)
+    assert_equal([2.0, 2.0, 2.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib3dv(1, [3.0, 3.0, 3.0])
+    assert_equal([3.0, 3.0, 3.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib3f(1, 2.0, 2.0, 2.0)
+    assert_equal([2.0, 2.0, 2.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib3fv(1, [3.0, 3.0, 3.0])
+    assert_equal([3.0, 3.0, 3.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib3s(1, 2, 2, 2)
+    assert_equal([2.0, 2.0, 2.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib3sv(1, [3, 3, 3])
+    assert_equal([3.0, 3.0, 3.0, 1.0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    # 4N
+    glVertexAttrib4Nbv(1, [2**7-1, 2**7-1, 2**7-1, 2**7-1])
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4Niv(1, [0, 0, 0, 0])
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4Nsv(1, [2**15-1, 2**15-1, 2**15-1, 2**15-1])
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4Nub(1, 0, 0, 0, 0)
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4Nubv(1, [2**8-1, 2**8-1, 2**8-1, 2**8-1])
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4Nuiv(1, [0, 0, 0, 0])
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4Nusv(1, [2**16-1, 2**16-1, 2**16-1, 2**16-1])
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    # 4
+    glVertexAttrib4bv(1, [0, 0, 0, 0])
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4d(1, 1, 1, 1, 1)
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4dv(1, [0, 0, 0, 0])
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4f(1, 1, 1, 1, 1)
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4fv(1, [0, 0, 0, 0])
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4iv(1, [1, 1, 1, 1])
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4s(1, 0, 0, 0, 0)
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4sv(1, [1, 1, 1, 1])
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4ubv(1, [0, 0, 0, 0])
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4uiv(1, [1, 1, 1, 1])
+    assert_each_in_delta([1, 1, 1, 1], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+    glVertexAttrib4usv(1, [0, 0, 0, 0])
+    assert_each_in_delta([0, 0, 0, 0], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+  end
 
-		glEnableVertexAttribArray(1)
+  def test_vertexattribpointer
+    vaa = [1, 1, 1, 1, 2, 2, 2, 2].pack("f*")
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, vaa)
+    assert_equal(glGetVertexAttribPointerv(1), vaa)
 
-		glBegin(GL_POINTS)
-		glArrayElement(1)
-		glEnd()
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB),[2,2,2,2])
-		
-		glDisableVertexAttribArray(1)
-	end
+    glEnableVertexAttribArray(1)
 
-	def test_shaders
-		supported?(2.0)
+    glBegin(GL_POINTS)
+    glArrayElement(1)
+    glEnd()
+    assert_equal([2, 2, 2, 2], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
 
-		vertex_shader_source = "void main() { gl_Position = ftransform();}"
-	
-		program = glCreateProgram()
-		assert_equal(glIsProgram(program),true)
+    glDisableVertexAttribArray(1)
+  end
 
-		vs = glCreateShader(GL_VERTEX_SHADER)
-		assert_equal(glIsShader(vs),true)
+  def test_shaders
+    vertex_shader_source = <<-SHADER
+#version 110
 
-		glShaderSource(vs,vertex_shader_source)
-		assert_equal(glGetShaderSource(vs),vertex_shader_source)
+void main() {
+  gl_Position = ftransform();
+}
+    SHADER
 
-		assert_equal(glGetShaderiv(vs, GL_SHADER_TYPE),GL_VERTEX_SHADER)
-		glCompileShader(vs)
-		assert_equal(glGetShaderiv(vs,GL_COMPILE_STATUS),GL_TRUE)
+    program = glCreateProgram
+    assert glIsProgram program
 
-		vslog = glGetShaderInfoLog(vs)
-		assert_equal(vslog.class,String)
+    vs = glCreateShader GL_VERTEX_SHADER
+    assert glIsShader vs
 
-		glAttachShader(program,vs)
-		assert_equal(glGetAttachedShaders(program),vs)
-		glDetachShader(program,vs)
-		assert_equal(glGetAttachedShaders(program),nil)
-		glAttachShader(program,vs)
+    glShaderSource vs, vertex_shader_source
+    assert_equal vertex_shader_source, glGetShaderSource(vs)
+    assert_equal GL_VERTEX_SHADER, glGetShaderiv(vs, GL_SHADER_TYPE)
 
-		glValidateProgram(program)
-		assert_equal(glGetProgramiv(program,GL_VALIDATE_STATUS),GL_TRUE)
-		prlog = glGetProgramInfoLog(program)
-		assert_equal(prlog.class,String)
+    glCompileShader vs
+    assert glGetShaderiv(vs, GL_COMPILE_STATUS)
 
-		glLinkProgram(program)
-		assert_equal(glGetProgramiv(program,GL_LINK_STATUS),GL_TRUE)
-	
-		glUseProgram(program)
-		assert_equal(glGetIntegerv(GL_CURRENT_PROGRAM),program)
+    vslog = glGetShaderInfoLog vs
+    assert_equal '', vslog
 
-		glUseProgram(0)
+    glAttachShader program, vs
+    assert_equal vs, glGetAttachedShaders(program)
 
-		glDetachShader(program,vs)
-		glDeleteShader(vs)
-		assert_equal(glIsShader(vs),false)
+    glDetachShader program, vs
+    assert_nil glGetAttachedShaders program
 
-		glDeleteProgram(program)
-		assert_equal(glIsProgram(program),false)
-	end
+    glAttachShader program, vs
 
-	def test_shaders_2
-		supported?(2.0)
+    glLinkProgram program
+    assert glGetProgramiv(program, GL_LINK_STATUS)
 
-		vertex_shader_source = "attribute vec4 test; uniform float testvec1; uniform vec2 testvec2; uniform vec3 testvec3; uniform vec4 testvec4; uniform int testivec1; uniform ivec2 testivec2; uniform ivec3 testivec3; uniform ivec4 testivec4; void main() { gl_Position = testvec1 * test * testvec2.x * testvec3.x * testivec1 * testivec2.x * testivec3.x * testivec4.x + testvec4;}"
-		program = glCreateProgram()
-		vs = glCreateShader(GL_VERTEX_SHADER)
+    glValidateProgram program
+    assert(glGetProgramiv(program, GL_VALIDATE_STATUS),
+           glGetProgramInfoLog(program))
 
-		glShaderSource(vs,vertex_shader_source)
-		glCompileShader(vs)
+    prlog = glGetProgramInfoLog program
+    assert_equal '', prlog
 
-		assert_equal(glGetShaderiv(vs,GL_COMPILE_STATUS),GL_TRUE)
-		glAttachShader(program,vs)
-		
-		glBindAttribLocation(program,2,"test")
-		glLinkProgram(program)	
-		assert_equal(glGetProgramiv(program,GL_LINK_STATUS),GL_TRUE)
-		glUseProgram(program)
-	
-		assert_equal(glGetAttribLocation(program,"test"),2)
-		assert((tv1l = glGetUniformLocation(program,"testvec1"))>=0)
-		assert((tv2l = glGetUniformLocation(program,"testvec2"))>=0)
-		assert((tv3l = glGetUniformLocation(program,"testvec3"))>=0)
-		assert((tv4l = glGetUniformLocation(program,"testvec4"))>=0)
-		assert((tv1il = glGetUniformLocation(program,"testivec1"))>=0)
-		assert((tv2il = glGetUniformLocation(program,"testivec2"))>=0)
-		assert((tv3il = glGetUniformLocation(program,"testivec3"))>=0)
-		assert((tv4il = glGetUniformLocation(program,"testivec4"))>=0)
+    glUseProgram program
+    assert_equal program, glGetIntegerv(GL_CURRENT_PROGRAM)
 
-		##
-		assert_equal(glGetActiveAttrib(program,0),[1,GL_FLOAT_VEC4,"test"])
-		assert_equal(glGetActiveUniform(program,tv1il),[1,GL_INT,"testivec1"])
+    glUseProgram 0
 
-		# f
-		glUniform1f(tv1l,2.0)
-		assert_equal(glGetUniformfv(program,tv1l),2.0)
-		glUniform2f(tv2l,2.0,2.0)
-		assert_equal(glGetUniformfv(program,tv2l),[2.0,2.0])
-		glUniform3f(tv3l,2.0,2.0,2.0)
-		assert_equal(glGetUniformfv(program,tv3l),[2.0,2.0,2.0])
-		glUniform4f(tv4l,2.0,2.0,2.0,2.0)
-		assert_equal(glGetUniformfv(program,tv4l),[2.0,2.0,2.0,2.0])
-		# i 
-		glUniform1i(tv1il,3)
-		assert_equal(glGetUniformiv(program,tv1il),3)
-		glUniform2i(tv2il,3,3)
-		assert_equal(glGetUniformiv(program,tv2il),[3,3])
-		glUniform3i(tv3il,3,3,3)
-		assert_equal(glGetUniformiv(program,tv3il),[3,3,3])
-		glUniform4i(tv4il,3,3,3,3)
-		assert_equal(glGetUniformiv(program,tv4il),[3,3,3,3])
-		# fv
-		glUniform1fv(tv1l,[3.0])
-		assert_equal(glGetUniformfv(program,tv1l),3.0)
-		glUniform2fv(tv2l,[3.0,3.0])
-		assert_equal(glGetUniformfv(program,tv2l),[3.0,3.0])
-		glUniform3fv(tv3l,[3.0,3.0,3.0])
-		assert_equal(glGetUniformfv(program,tv3l),[3.0,3.0,3.0])
-		glUniform4fv(tv4l,[3.0,3.0,3.0,3.0])
-		assert_equal(glGetUniformfv(program,tv4l),[3.0,3.0,3.0,3.0])
-		# iv
-		glUniform1iv(tv1il,[2])
-		assert_equal(glGetUniformiv(program,tv1il),2)
-		glUniform2iv(tv2il,[2,2])
-		assert_equal(glGetUniformiv(program,tv2il),[2,2])
-		glUniform3iv(tv3il,[2,2,2])
-		assert_equal(glGetUniformiv(program,tv3il),[2,2,2])
-		glUniform4iv(tv4il,[2,2,2,2])
-		assert_equal(glGetUniformiv(program,tv4il),[2,2,2,2])
+    glDetachShader program, vs
+    glDeleteShader vs
+    refute glIsShader vs
 
-		glDeleteShader(vs)
-		glDeleteProgram(program)
-	end
+    glDeleteProgram program
+    refute glIsProgram(program)
+  end
 
-	def test_shaders_3
-		supported?(2.0)
+  def test_shaders_2
+    vertex_shader_source = <<-SHADER
+#version 110
+attribute vec4 test;
 
-		vertex_shader_source = "uniform mat2 testmat2; uniform mat3 testmat3; uniform mat4 testmat4; void main() { gl_Position = gl_Vertex * testmat4[0].x * testmat3[0].x * testmat2[0].x;}"
+uniform float testvec1;
+uniform vec2 testvec2;
+uniform vec3 testvec3;
+uniform vec4 testvec4;
 
-		program = glCreateProgram()
-		vs = glCreateShader(GL_VERTEX_SHADER)
+uniform int testivec1;
+uniform ivec2 testivec2;
+uniform ivec3 testivec3;
+uniform ivec4 testivec4;
 
-		glShaderSource(vs,vertex_shader_source)
-		glCompileShader(vs)
+void main() {
+  testvec1;
+  testvec2;
+  testvec3;
+  testvec4;
+  testivec1;
+  testivec2;
+  testivec3;
+  testivec4;
+  gl_Position = ftransform();
+}
+    SHADER
 
-		assert_equal(glGetShaderiv(vs,GL_COMPILE_STATUS),GL_TRUE)
-		glAttachShader(program,vs)
-	
-		glLinkProgram(program)	
-		assert_equal(glGetProgramiv(program,GL_LINK_STATUS),GL_TRUE)
-		glUseProgram(program)
-		#
-		assert((tm2l = glGetUniformLocation(program,"testmat2"))>=0)
-		assert((tm3l = glGetUniformLocation(program,"testmat3"))>=0)
-		assert((tm4l = glGetUniformLocation(program,"testmat4"))>=0)
+    program = glCreateProgram
 
-		glUniformMatrix2fv(tm2l, GL_TRUE, [0,1, 1,0])
-		assert_equal(glGetUniformfv(program,tm2l),[0,1,1,0])
+    vs = glCreateShader GL_VERTEX_SHADER
 
-		glUniformMatrix3fv(tm3l, GL_TRUE, [0,1,0, 1,0,1, 0,1,0])
-		assert_equal(glGetUniformfv(program,tm3l),[0,1,0, 1,0,1, 0,1,0])
+    glShaderSource vs, vertex_shader_source
+    glCompileShader vs
 
-		glUniformMatrix4fv(tm4l, GL_TRUE, [0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
-		assert_equal(glGetUniformfv(program,tm4l),[0,1,0,1, 1,0,1,0, 0,1,0,1, 1,0,1,0])
-	end
+    assert glGetShaderiv(vs, GL_COMPILE_STATUS), glGetShaderInfoLog(vs)
 
-	def test_buffered_vertexattribpointer
-		supported?(2.0)
+    glAttachShader program, vs
 
-		vaa = [1,1,1,1, 2,2,2,2].pack("f*")
+    glBindAttribLocation program, 2, "test"
+    glLinkProgram program
 
-		buffers = glGenBuffers(1)
+    glValidateProgram program
+    assert(glGetProgramiv(program, GL_VALIDATE_STATUS),
+           glGetProgramInfoLog(program))
 
-		glBindBuffer(GL_ARRAY_BUFFER,buffers[0])
-		glBufferData(GL_ARRAY_BUFFER,8*4,vaa,GL_DYNAMIC_DRAW)
-		
-		glVertexAttribPointer(1,4,GL_FLOAT,GL_FALSE,0,0)
-		assert_equal(glGetVertexAttribPointerv(1),0)
-		
-		glEnableVertexAttribArray(1)
-		
-		glBegin(GL_POINTS)
-		glArrayElement(1)
-		glEnd()
-		assert_equal(glGetVertexAttribfv(1,GL_CURRENT_VERTEX_ATTRIB),[2,2,2,2])
-		
-		glDisableVertexAttribArray(1)
-		glDeleteBuffers(buffers)
-	end
+    assert glGetProgramiv(program, GL_LINK_STATUS)
+
+    glUseProgram program
+
+    test = glGetAttribLocation program, "test"
+    assert_equal -1, test
+
+    tv1l = glGetUniformLocation program, "testvec1"
+    refute_equal -1, tv1l, "testvec1 missing!"
+
+    tv2l = glGetUniformLocation program, "testvec2"
+    refute_equal -1, tv2l, "testvec2 missing!"
+
+    tv3l = glGetUniformLocation program, "testvec3"
+    refute_equal -1, tv3l, "testvec3 missing!"
+
+    tv4l = glGetUniformLocation program, "testvec4"
+    refute_equal -1, tv4l, "testvec4 missing!"
+
+    tv1il = glGetUniformLocation program, "testivec1"
+    refute_equal -1, tv1il, "testivec1 missing!"
+
+    tv2il = glGetUniformLocation program, "testivec2"
+    refute_equal -1, tv2il, "testivec2 missing!"
+
+    tv3il = glGetUniformLocation program, "testivec3"
+    refute_equal -1, tv3il, "testivec3 missing!"
+
+    tv4il = glGetUniformLocation program, "testivec4"
+    refute_equal -1, tv4il, "testivec4 missing!"
+
+    assert_equal [1, GL_FLOAT_VEC4, "gl_Vertex"], glGetActiveAttrib(program, 0)
+    assert_equal [1, GL_INT, "testivec1"], glGetActiveUniform(program, tv1il)
+
+    # f
+    glUniform1f(tv1l, 2.0)
+    assert_equal(glGetUniformfv(program, tv1l), 2.0)
+    glUniform2f(tv2l, 2.0, 2.0)
+    assert_equal([2.0, 2.0], glGetUniformfv(program, tv2l))
+    glUniform3f(tv3l, 2.0, 2.0, 2.0)
+    assert_equal([2.0, 2.0, 2.0], glGetUniformfv(program, tv3l))
+    glUniform4f(tv4l, 2.0, 2.0, 2.0, 2.0)
+    assert_equal([2.0, 2.0, 2.0, 2.0], glGetUniformfv(program, tv4l))
+    # i 
+    glUniform1i(tv1il, 3)
+    assert_equal(glGetUniformiv(program, tv1il), 3)
+    glUniform2i(tv2il, 3, 3)
+    assert_equal([3, 3], glGetUniformiv(program, tv2il))
+    glUniform3i(tv3il, 3, 3, 3)
+    assert_equal([3, 3, 3], glGetUniformiv(program, tv3il))
+    glUniform4i(tv4il, 3, 3, 3, 3)
+    assert_equal([3, 3, 3, 3], glGetUniformiv(program, tv4il))
+    # fv
+    glUniform1fv(tv1l, [3.0])
+    assert_equal(glGetUniformfv(program, tv1l), 3.0)
+    glUniform2fv(tv2l, [3.0, 3.0])
+    assert_equal([3.0, 3.0], glGetUniformfv(program, tv2l))
+    glUniform3fv(tv3l, [3.0, 3.0, 3.0])
+    assert_equal([3.0, 3.0, 3.0], glGetUniformfv(program, tv3l))
+    glUniform4fv(tv4l, [3.0, 3.0, 3.0, 3.0])
+    assert_equal([3.0, 3.0, 3.0, 3.0], glGetUniformfv(program, tv4l))
+    # iv
+    glUniform1iv(tv1il, [2])
+    assert_equal(glGetUniformiv(program, tv1il), 2)
+    glUniform2iv(tv2il, [2, 2])
+    assert_equal([2, 2], glGetUniformiv(program, tv2il))
+    glUniform3iv(tv3il, [2, 2, 2])
+    assert_equal([2, 2, 2], glGetUniformiv(program, tv3il))
+    glUniform4iv(tv4il, [2, 2, 2, 2])
+    assert_equal([2, 2, 2, 2], glGetUniformiv(program, tv4il))
+
+    glDeleteShader(vs)
+    glDeleteProgram(program)
+  end
+
+  def test_shaders_3
+    vertex_shader_source = <<-SHADER
+#version 110
+
+uniform mat2 testmat2;
+uniform mat3 testmat3;
+uniform mat4 testmat4;
+
+void main() {
+  testmat2;
+  testmat3;
+  testmat4;
+  gl_Position = ftransform();
+}
+    SHADER
+
+    program = glCreateProgram
+    vs = glCreateShader GL_VERTEX_SHADER
+
+    glShaderSource vs, vertex_shader_source
+    glCompileShader vs
+
+    assert glGetShaderiv(vs, GL_COMPILE_STATUS), glGetShaderInfoLog(vs)
+
+    glAttachShader program, vs
+
+    glLinkProgram program
+    assert glGetProgramiv(program, GL_LINK_STATUS)
+
+    glValidateProgram program
+    assert(glGetProgramiv(program, GL_VALIDATE_STATUS),
+           glGetProgramInfoLog(program))
+
+    glUseProgram program
+
+    tm2l = glGetUniformLocation(program, "testmat2")
+    refute_equal -1, tm2l, "testmat2 missing!"
+    tm3l = glGetUniformLocation(program, "testmat3")
+    refute_equal -1, tm3l, "testmat3 missing!"
+    tm4l = glGetUniformLocation(program, "testmat4")
+    refute_equal -1, tm4l, "testmat4 missing!"
+
+    skip "glGetUniformLocation is broken" if
+      glGetActiveUniform(program, tm2l).last != "testmat2"
+
+    skip "glGetUniformLocation is broken" if
+      glGetActiveUniform(program, tm3l).last != "testmat3"
+
+    skip "glGetUniformLocation is broken" if
+      glGetActiveUniform(program, tm4l).last != "testmat4"
+
+    glUniformMatrix2fv(tm2l, GL_TRUE, [0, 1, 1, 0])
+    assert_each_in_delta([0, 1, 1, 0], glGetUniformfv(program, 0))
+
+    glUniformMatrix3fv(tm3l, GL_TRUE, [0, 1, 0, 1, 0, 1, 0, 1, 0])
+    assert_each_in_delta([1, 0, 0, 1, 0, 0, 0, 0, 0],
+                         glGetUniformfv(program, 1))
+
+    glUniformMatrix4fv(tm4l, GL_TRUE, [0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0])
+    assert_each_in_delta([0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0],
+                         glGetUniformfv(program, 2))
+  end
+
+  def test_buffered_vertexattribpointer
+    vaa = [1, 1, 1, 1, 2, 2, 2, 2].pack("f*")
+
+    buffers = glGenBuffers(1)
+
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0])
+    glBufferData(GL_ARRAY_BUFFER, 8*4, vaa, GL_DYNAMIC_DRAW)
+
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0)
+    assert_equal(glGetVertexAttribPointerv(1), 0)
+
+    glEnableVertexAttribArray(1)
+
+    glBegin(GL_POINTS)
+    glArrayElement(1)
+    glEnd()
+    assert_equal([2, 2, 2, 2], glGetVertexAttribfv(1, GL_CURRENT_VERTEX_ATTRIB))
+
+    glDisableVertexAttribArray(1)
+    glDeleteBuffers(buffers)
+  end
 
 end
 

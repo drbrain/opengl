@@ -21,7 +21,7 @@ VALUE Class_GLError;
 
 #define BUFSIZE 256
 
-void check_for_glerror(void)
+void check_for_glerror(const char *caller)
 {
 	GLenum error;
 
@@ -31,9 +31,13 @@ void check_for_glerror(void)
 		return;
 	} else { /* process errors */
 		const char *error_string;
+    const char *from = "";
 		int queued_errors = 0;
 		char message[BUFSIZE];
 		VALUE exc;
+
+    if (caller)
+      from = " for ";
 	
 		/* check for queued errors */
 		for(queued_errors = 0;
@@ -54,9 +58,10 @@ void check_for_glerror(void)
 		}
 		
 		if (queued_errors==0) {
-			snprintf(message,BUFSIZE,"%s",error_string);
+			snprintf(message, BUFSIZE, "%s%s%s", error_string, from, caller);
 		} else {
-			snprintf(message,BUFSIZE,"%s [%i queued error(s) cleaned]",error_string,queued_errors);
+			snprintf(message, BUFSIZE, "%s%s%s [%i queued error(s) cleaned]",
+          error_string, from, caller, queued_errors);
 		}
 
 		exc = rb_funcall(Class_GLError, rb_intern("new"), 2, rb_str_new2(message), INT2NUM(error));
