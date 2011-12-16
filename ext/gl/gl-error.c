@@ -36,8 +36,11 @@ void check_for_glerror(const char *caller)
 		char message[BUFSIZE];
 		VALUE exc;
 
-    if (caller)
+    if (caller) {
       from = " for ";
+    } else {
+      caller = "";
+    }
 	
 		/* check for queued errors */
 		for(queued_errors = 0;

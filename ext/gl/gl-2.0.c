@@ -154,7 +154,7 @@ VALUE obj,arg1,arg2;
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	fptr_glGetProgramiv(program,GL_ACTIVE_UNIFORM_MAX_LENGTH,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramiv")
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum uniform name length");
 	buffer = allocate_buffer_with_string(max_size-1);
@@ -166,7 +166,7 @@ VALUE obj,arg1,arg2;
 	rb_ary_push(retary, INT2NUM(uniform_size));
 	rb_ary_push(retary, INT2NUM(uniform_type));
 	rb_ary_push(retary, buffer);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetActiveUniform")
 	return retary;
 }
 
