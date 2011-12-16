@@ -68,69 +68,71 @@ void main() {
     tm43l = glGetUniformLocation(program, "testmat43")
     refute_equal -1, tm43l, "testmat43 missing!"
 
-    skip "glGetUniformLocation is broken" if
-      glGetActiveUniform(program, tm24l).last != "testmat24"
+    refute_equal(-1, glGetUniformLocation(program, "testmat23"),
+                 "testmat23 missing!")
+    refute_equal(-1, glGetUniformLocation(program, "testmat32"),
+                 "testmat32 missing!")
+    refute_equal(-1, glGetUniformLocation(program, "testmat24"),
+                 "testmat24 missing!")
+    refute_equal(-1, glGetUniformLocation(program, "testmat42"),
+                 "testmat42 missing!")
+    refute_equal(-1, glGetUniformLocation(program, "testmat34"),
+                 "testmat34 missing!")
+    refute_equal(-1, glGetUniformLocation(program, "testmat43"),
+                 "testmat43 missing!")
 
-    skip "glGetUniformLocation is broken" if
-      glGetActiveUniform(program, tm42l).last != "testmat42"
+    uniforms = Hash.new do |_, k| raise "invalid uniform #{k}" end
+    (0...glGetProgramiv(program, GL_ACTIVE_UNIFORMS)).each do |i|
+      uniform = glGetActiveUniform program, i
+      uniforms[uniform.last] = i
+    end
 
-    skip "glGetUniformLocation is broken" if
-      glGetActiveUniform(program, tm23l).last != "testmat23"
+    skip "glUniformMatrix2x3fv complains but I don't know why"
+    glUniformMatrix2x3fv(uniforms["testmat23"], GL_FALSE, [0, 1, 1, 0, 0, 1])
+    assert_equal(glGetUniformfv(program, uniforms["testmat23"]), [0, 1, 1, 0, 0, 1])
+    glUniformMatrix3x2fv(uniforms["testmat32"], GL_FALSE, [1, 0, 0, 1, 1, 0])
+    assert_equal(glGetUniformfv(program, uniforms["testmat32"]), [1, 0, 0, 1, 1, 0])
 
-    skip "glGetUniformLocation is broken" if
-      glGetActiveUniform(program, tm32l).last != "testmat32"
+    glUniformMatrix2x4fv(uniforms["testmat24"], GL_FALSE, [0, 1, 1, 0, 0, 1, 1, 0])
+    assert_equal(glGetUniformfv(program, uniforms["testmat24"]), [0, 1, 1, 0, 0, 1, 1, 0])
+    glUniformMatrix4x2fv(uniforms["testmat42"], GL_FALSE, [1, 0, 0, 1, 1, 0, 0, 1])
+    assert_equal(glGetUniformfv(program, uniforms["testmat42"]), [1, 0, 0, 1, 1, 0, 0, 1])
 
-    skip "glGetUniformLocation is broken" if
-      glGetActiveUniform(program, tm34l).last != "testmat34"
-
-    skip "glGetUniformLocation is broken" if
-      glGetActiveUniform(program, tm43l).last != "testmat43"
-
-    glUniformMatrix2x3fv(tm23l, GL_FALSE, [0, 1, 1, 0, 0, 1])
-    assert_equal(glGetUniformfv(program, tm23l), [0, 1, 1, 0, 0, 1])
-    glUniformMatrix3x2fv(tm32l, GL_FALSE, [1, 0, 0, 1, 1, 0])
-    assert_equal(glGetUniformfv(program, tm32l), [1, 0, 0, 1, 1, 0])
-
-    glUniformMatrix2x4fv(tm24l, GL_FALSE, [0, 1, 1, 0, 0, 1, 1, 0])
-    assert_equal(glGetUniformfv(program, tm24l), [0, 1, 1, 0, 0, 1, 1, 0])
-    glUniformMatrix4x2fv(tm42l, GL_FALSE, [1, 0, 0, 1, 1, 0, 0, 1])
-    assert_equal(glGetUniformfv(program, tm42l), [1, 0, 0, 1, 1, 0, 0, 1])
-
-    glUniformMatrix3x4fv(tm34l, GL_FALSE, [0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1])
-    assert_equal(glGetUniformfv(program, tm34l), [0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1])
-    glUniformMatrix4x3fv(tm43l, GL_FALSE, [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0])
-    assert_equal(glGetUniformfv(program, tm43l), [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0])
+    glUniformMatrix3x4fv(uniforms["testmat34"], GL_FALSE, [0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1])
+    assert_equal(glGetUniformfv(program, uniforms["testmat34"]), [0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1])
+    glUniformMatrix4x3fv(uniforms["testmat43"], GL_FALSE, [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0])
+    assert_equal(glGetUniformfv(program, uniforms["testmat43"]), [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0])
 
     # 2
     m = Matrix.rows([[0, 1], [1, 0], [0, 1]])
-    glUniformMatrix2x3fv(tm23l, GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, tm23l), [0, 1, 1, 0, 0, 1])
+    glUniformMatrix2x3fv(uniforms["testmat23"], GL_FALSE, m)
+    assert_equal(glGetUniformfv(program, uniforms["testmat23"]), [0, 1, 1, 0, 0, 1])
     m = Matrix.rows([[0, 1, 1], [0, 0, 1]])
-    glUniformMatrix3x2fv(tm32l, GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, tm32l), [0, 1, 1, 0, 0, 1])
+    glUniformMatrix3x2fv(uniforms["testmat32"], GL_FALSE, m)
+    assert_equal(glGetUniformfv(program, uniforms["testmat32"]), [0, 1, 1, 0, 0, 1])
 
     m = Matrix.rows([[0, 1], [1, 0], [0, 1], [1, 0]])
-    glUniformMatrix2x4fv(tm24l, GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, tm24l), [0, 1, 1, 0, 0, 1, 1, 0])
+    glUniformMatrix2x4fv(uniforms["testmat24"], GL_FALSE, m)
+    assert_equal(glGetUniformfv(program, uniforms["testmat24"]), [0, 1, 1, 0, 0, 1, 1, 0])
     m = Matrix.rows([[0, 1, 1, 1], [0, 0, 1, 1]])
-    glUniformMatrix4x2fv(tm42l, GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, tm42l), [0, 1, 1, 1, 0, 0, 1, 1])
+    glUniformMatrix4x2fv(uniforms["testmat42"], GL_FALSE, m)
+    assert_equal(glGetUniformfv(program, uniforms["testmat42"]), [0, 1, 1, 1, 0, 0, 1, 1])
 
     m = Matrix.rows([[0, 1, 0], [1, 0, 1], [0, 1, 0], [1, 0, 1]])
-    glUniformMatrix3x4fv(tm34l, GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, tm34l), [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+    glUniformMatrix3x4fv(uniforms["testmat34"], GL_FALSE, m)
+    assert_equal(glGetUniformfv(program, uniforms["testmat34"]), [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
 
     m = Matrix.rows([[0, 1, 1, 1], [0, 0, 1, 1], [1, 1, 0, 0]])
-    glUniformMatrix4x3fv(tm43l, GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, tm43l), [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0])
+    glUniformMatrix4x3fv(uniforms["testmat43"], GL_FALSE, m)
+    assert_equal(glGetUniformfv(program, uniforms["testmat43"]), [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0])
 
     # 3
-    assert_raises ArgumentError do glUniformMatrix2x3fv(tm23l, GL_FALSE, [1, 2, 3, 4]) end
-    assert_raises ArgumentError do glUniformMatrix3x2fv(tm32l, GL_FALSE, [1, 2, 3, 4]) end
-    assert_raises ArgumentError do glUniformMatrix2x4fv(tm24l, GL_FALSE, [1, 2, 3, 4]) end
-    assert_raises ArgumentError do glUniformMatrix4x2fv(tm42l, GL_FALSE, [1, 2, 3, 4]) end
-    assert_raises ArgumentError do glUniformMatrix3x4fv(tm34l, GL_FALSE, [1, 2, 3, 4]) end
-    assert_raises ArgumentError do glUniformMatrix4x3fv(tm43l, GL_FALSE, [1, 2, 3, 4]) end
+    assert_raises ArgumentError do glUniformMatrix2x3fv(uniforms["testmat23"], GL_FALSE, [1, 2, 3, 4]) end
+    assert_raises ArgumentError do glUniformMatrix3x2fv(uniforms["testmat32"], GL_FALSE, [1, 2, 3, 4]) end
+    assert_raises ArgumentError do glUniformMatrix2x4fv(uniforms["testmat24"], GL_FALSE, [1, 2, 3, 4]) end
+    assert_raises ArgumentError do glUniformMatrix4x2fv(uniforms["testmat42"], GL_FALSE, [1, 2, 3, 4]) end
+    assert_raises ArgumentError do glUniformMatrix3x4fv(uniforms["testmat34"], GL_FALSE, [1, 2, 3, 4]) end
+    assert_raises ArgumentError do glUniformMatrix4x3fv(uniforms["testmat43"], GL_FALSE, [1, 2, 3, 4]) end
   end
 
   def test_pixelunpack_bitmap
