@@ -19,7 +19,7 @@ class Lesson07
     @light_position = [0.0, 0.0, 2.0, 1.0]
     @filter = 0
     @keys = []
-    @light = false
+    @lighting = false
     @fullscreen = false
 
     glutInit
@@ -172,9 +172,9 @@ class Lesson07
       glutDestroyWindow @window
       exit 0
     when 'l' then
-      @light = !@light
+      @lighting = !@lighting
 
-      if @light then
+      if @lighting then
         glEnable GL_LIGHTING
         puts "lights on"
       else
