@@ -40,7 +40,7 @@ glut_ ## _funcname(obj, callback) \
 VALUE obj, callback; \
 { \
     int win; \
-    check_callback(callback); \
+    callback = check_callback(obj, callback); \
     win = glutGetWindow(); \
     if (win == 0) \
         rb_raise(rb_eRuntimeError, "glut%s needs current window", #_funcname); \
@@ -66,12 +66,22 @@ VALUE obj; \
     return Qnil; \
 }
 
-static void check_callback(VALUE callback)
+static VALUE
+check_callback(VALUE self, VALUE callback)
 {
-	if (!NIL_P(callback) && !rb_respond_to(callback, callId)) {
-    VALUE inspect = rb_inspect(callback);
-    rb_raise(rb_eArgError, "%s must respond to call", StringValueCStr(inspect));
-  }
+  VALUE inspect;
+
+	if (NIL_P(callback))
+    return callback;
+
+  if (rb_respond_to(callback, callId))
+    return callback;
+
+  if (SYMBOL_P(callback))
+    return rb_obj_method(self, callback);
+
+  inspect = rb_inspect(callback);
+  rb_raise(rb_eArgError, "%s must respond to call", StringValueCStr(inspect));
 }
 
 /*
@@ -208,7 +218,7 @@ VALUE obj,callback,arg2;
 	int win;
 	int pollinterval;
 
-  check_callback(callback);
+  callback = check_callback(obj, callback);
 	pollinterval=NUM2INT(arg2);
 	win = glutGetWindow();
 
@@ -401,7 +411,7 @@ VALUE obj,callback;
 {
 	int menu;
 
-  check_callback(callback);
+  callback = check_callback(obj, callback);
 
 	if (NIL_P(callback))
 		menu = glutCreateMenu(NULL);
@@ -612,7 +622,7 @@ static VALUE
 glut_IdleFunc(obj, callback)
 VALUE obj, callback;
 {
-  check_callback(callback);
+  callback = check_callback(obj, callback);
 
 	idle_func = callback;
 
@@ -642,7 +652,7 @@ VALUE obj,arg1,callback,arg3;
 	int value;
 	millis = (unsigned int)NUM2INT(arg1);
 	value = NUM2INT(arg3);
-  check_callback(callback);
+  callback = check_callback(obj, callback);
 
 	timer_func = callback;
 
@@ -665,7 +675,7 @@ static VALUE
 glut_MenuStateFunc(obj, callback)
 VALUE obj, callback;
 {
-  check_callback(callback);
+  callback = check_callback(obj, callback);
 
 	menustate_func = callback;
 
@@ -689,7 +699,7 @@ static VALUE
 glut_MenuStatusFunc(obj, callback)
 VALUE obj, callback;
 {
-  check_callback(callback);
+  callback = check_callback(obj, callback);
 
 	menustatus_func = callback;
 

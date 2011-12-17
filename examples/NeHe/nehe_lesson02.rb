@@ -107,9 +107,9 @@ glutInitDisplayMode GLUT_RGB | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH
 glutInitWindowSize 640, 480
 glutInitWindowPosition 0, 0
 window = glutCreateWindow "NeHe Lesson 02 - ruby-opengl version"
-glutIdleFunc method(:idle)
-glutDisplayFunc method(:draw_gl_scene)
-glutReshapeFunc method(:reshape)
+glutIdleFunc :idle
+glutDisplayFunc :draw_gl_scene
+glutReshapeFunc :reshape
 glutKeyboardFunc keyboard
 init_gl_window 640, 480
 glutMainLoop
