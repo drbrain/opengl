@@ -36,17 +36,16 @@ static ID callId; /* 'call' method id */
 #define WINDOW_CALLBACK_SETUP(_funcname) \
 static VALUE _funcname = Qnil; \
 static VALUE \
-glut_ ## _funcname(obj,arg1) \
-VALUE obj,arg1; \
+glut_ ## _funcname(obj, callback) \
+VALUE obj, callback; \
 { \
     int win; \
-    if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1)) \
-        rb_raise(rb_eTypeError, "glut%s:%s",#_funcname, rb_class2name(CLASS_OF(arg1))); \
+    check_callback(callback); \
     win = glutGetWindow(); \
     if (win == 0) \
         rb_raise(rb_eRuntimeError, "glut%s needs current window", #_funcname); \
-    rb_ary_store(_funcname, win, arg1); \
-		if(NIL_P(arg1)) \
+    rb_ary_store(_funcname, win, callback); \
+		if(NIL_P(callback)) \
 			glut ## _funcname(NULL); \
 		else \
 			glut##_funcname(&glut_##_funcname##Callback); \
@@ -67,6 +66,13 @@ VALUE obj; \
     return Qnil; \
 }
 
+static void check_callback(VALUE callback)
+{
+	if (!NIL_P(callback) && !rb_respond_to(callback, callId)) {
+    VALUE inspect = rb_inspect(callback);
+    rb_raise(rb_eArgError, "%s must respond to call", StringValueCStr(inspect));
+  }
+}
 
 /*
  * GLUT Implementation
@@ -196,22 +202,26 @@ WINDOW_CALLBACK_SETUP(SpecialUpFunc)
 /* special case, 2 params */
 static VALUE JoystickFunc = Qnil;
 static VALUE
-glut_JoystickFunc(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
+glut_JoystickFunc(obj,callback,arg2)
+VALUE obj,callback,arg2;
 {
 	int win;
 	int pollinterval;
-	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
-		rb_raise(rb_eTypeError, "glutJoystickFunc:%s", rb_class2name(CLASS_OF(arg1)));
+
+  check_callback(callback);
 	pollinterval=NUM2INT(arg2);
 	win = glutGetWindow();
+
 	if (win == 0)
 		rb_raise(rb_eRuntimeError, "glutJoystickFunc needs current window");
-	rb_ary_store(JoystickFunc, win, arg1);
-	if (NIL_P(arg1))
-		glutJoystickFunc(NULL,pollinterval);
+
+	rb_ary_store(JoystickFunc, win, callback);
+
+	if (NIL_P(callback))
+		glutJoystickFunc(NULL, pollinterval);
 	else
-		glutJoystickFunc(glut_JoystickFuncCallback,pollinterval);
+		glutJoystickFunc(glut_JoystickFuncCallback, pollinterval);
+
 	return Qnil;
 }
 
@@ -386,19 +396,20 @@ glut_CreateMenuCallback(int value)
 
     
 static VALUE
-glut_CreateMenu(obj,arg1)
-VALUE obj,arg1;
+glut_CreateMenu(obj,callback)
+VALUE obj,callback;
 {
 	int menu;
-	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1))
-		rb_raise(rb_eTypeError, "glutCreateMenu:%s", rb_class2name(CLASS_OF(arg1)));
 
-	if (NIL_P(arg1))
+  check_callback(callback);
+
+	if (NIL_P(callback))
 		menu = glutCreateMenu(NULL);
 	else
 		menu = glutCreateMenu(glut_CreateMenuCallback);
 
-	rb_ary_store(g_menucallback,menu,arg1);
+	rb_ary_store(g_menucallback, menu, callback);
+
 	return INT2FIX(menu);
 }
 
@@ -598,16 +609,18 @@ glut_IdleFuncCallback(void)
 
 
 static VALUE
-glut_IdleFunc(obj, arg1)
-VALUE obj,arg1;
+glut_IdleFunc(obj, callback)
+VALUE obj, callback;
 {
-	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !NIL_P(arg1)) 
-		rb_raise(rb_eTypeError, "glutIdleFunc:%s", rb_class2name(CLASS_OF(arg1)));
-	idle_func = arg1;
-	if (NIL_P(arg1))
+  check_callback(callback);
+
+	idle_func = callback;
+
+	if (NIL_P(callback))
 		glutIdleFunc(NULL);
 	else
 		glutIdleFunc(glut_IdleFuncCallback);
+
 	return Qnil;
 }
 
@@ -622,17 +635,19 @@ glut_TimerFuncCallback(int value)
 
 
 static VALUE
-glut_TimerFunc(obj, arg1, arg2, arg3)
-VALUE obj,arg1,arg2,arg3;
+glut_TimerFunc(obj, arg1, callback, arg3)
+VALUE obj,arg1,callback,arg3;
 {
 	unsigned int millis;
 	int value;
 	millis = (unsigned int)NUM2INT(arg1);
 	value = NUM2INT(arg3);
-	if (!rb_obj_is_kind_of(arg2,rb_cProc)) 
-		rb_raise(rb_eTypeError, "glutTimerFunc:%s", rb_class2name(CLASS_OF(arg2)));
-	timer_func = arg2;
+  check_callback(callback);
+
+	timer_func = callback;
+
 	glutTimerFunc(millis, glut_TimerFuncCallback, value);
+
 	return Qnil;
 }
 
@@ -647,16 +662,18 @@ glut_MenuStateFuncCallback(int state)
 
 
 static VALUE
-glut_MenuStateFunc(obj, arg1)
-VALUE obj,arg1;
+glut_MenuStateFunc(obj, callback)
+VALUE obj, callback;
 {
-	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !(NIL_P(arg1)))
-		rb_raise(rb_eTypeError, "glutMenuStateFunc:%s", rb_class2name(CLASS_OF(arg1)));
-	menustate_func = arg1;
-	if (NIL_P(arg1))
+  check_callback(callback);
+
+	menustate_func = callback;
+
+	if (NIL_P(callback))
 		glutMenuStateFunc(NULL);
 	else
 		glutMenuStateFunc(glut_MenuStateFuncCallback);
+
 	return Qnil;
 }
 
@@ -669,16 +686,18 @@ glut_MenuStatusFuncCallback(int state,int x,int y)
 }
 
 static VALUE
-glut_MenuStatusFunc(obj, arg1)
-VALUE obj,arg1;
+glut_MenuStatusFunc(obj, callback)
+VALUE obj, callback;
 {
-	if (!rb_obj_is_kind_of(arg1,rb_cProc) && !(NIL_P(arg1)))
-		rb_raise(rb_eTypeError, "glutMenuStatusFunc:%s", rb_class2name(CLASS_OF(arg1)));
-	menustatus_func = arg1;
-	if (NIL_P(arg1))
+  check_callback(callback);
+
+	menustatus_func = callback;
+
+	if (NIL_P(callback))
 		glutMenuStatusFunc(NULL);
 	else
 		glutMenuStatusFunc(glut_MenuStatusFuncCallback);
+
 	return Qnil;
 }
 
