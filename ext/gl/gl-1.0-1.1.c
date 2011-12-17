@@ -208,21 +208,38 @@ GL_FUNC_STATIC_4(Viewport,GLvoid, GLuint,GLuint,GLuint,GLuint)
 VALUE inside_begin_end = Qfalse;
 
 static VALUE
-gl_Begin(obj,arg1)
-VALUE obj,arg1;
+gl_Begin0(GLenum mode) {
+	glBegin(mode);
+
+  if (rb_block_given_p())
+    rb_yield(Qundef);
+
+  return Qnil;
+}
+
+static VALUE
+gl_End(VALUE self)
 {
-	glBegin(CONV_GLenum(arg1));
-	inside_begin_end = Qtrue;
+	inside_begin_end = Qfalse;	
+
+	glEnd();
+
+	CHECK_GLERROR_FROM("glEnd")
+
 	return Qnil;	
 }
 
 static VALUE
-gl_End(obj)
-VALUE obj;
+gl_Begin(VALUE self, VALUE mode)
 {
-	inside_begin_end = Qfalse;	
-	glEnd();
-	CHECK_GLERROR
+  GLenum begin_mode = CONV_GLenum(mode);
+	inside_begin_end = Qtrue;
+
+  if (rb_block_given_p())
+    return rb_ensure(gl_Begin0, (VALUE)begin_mode, gl_End, self);
+  else
+	  gl_Begin0(begin_mode);
+
 	return Qnil;	
 }
 

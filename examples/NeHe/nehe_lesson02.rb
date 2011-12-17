@@ -63,22 +63,22 @@ def draw_gl_scene
   glTranslatef -1.5, 0.0, -6.0
 
   # Draw a triangle
-  glBegin GL_POLYGON
-  glVertex3f  0.0,  1.0, 0.0
-  glVertex3f  1.0, -1.0, 0.0
-  glVertex3f -1.0, -1.0, 0.0
-  glEnd
+  glBegin GL_POLYGON do
+    glVertex3f  0.0,  1.0, 0.0
+    glVertex3f  1.0, -1.0, 0.0
+    glVertex3f -1.0, -1.0, 0.0
+  end
 
   # Move right 3 units
   glTranslatef 3.0, 0.0, 0.0
 
   # Draw a rectangle
-  glBegin GL_QUADS
-  glVertex3f -1.0,  1.0, 0.0
-  glVertex3f  1.0,  1.0, 0.0
-  glVertex3f  1.0, -1.0, 0.0
-  glVertex3f -1.0, -1.0, 0.0
-  glEnd
+  glBegin GL_QUADS do
+    glVertex3f -1.0,  1.0, 0.0
+    glVertex3f  1.0,  1.0, 0.0
+    glVertex3f  1.0, -1.0, 0.0
+    glVertex3f -1.0, -1.0, 0.0
+  end
 
   # Swap buffers for display
   glutSwapBuffers
