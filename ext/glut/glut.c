@@ -164,7 +164,25 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-GLUT_SIMPLE_FUNCTION(MainLoop)
+/*
+ * No way to unblock glutMainLoop, so fake it?
+ */
+static void
+glut_MainLoop_unblock(void *ignored) {
+}
+
+static VALUE glut_MainLoop0(void *ignored) {
+  glutMainLoop();
+
+  return Qnil;
+}
+
+static VALUE
+glut_MainLoop(void) {
+  rb_thread_blocking_region(glut_MainLoop0, (void *)NULL, glut_MainLoop_unblock, NULL);
+
+  return Qnil; /* never reached */
+}
 
 static void GLUTCALLBACK glut_DisplayFuncCallback(void);
 static void GLUTCALLBACK glut_ReshapeFuncCallback(int,int);
