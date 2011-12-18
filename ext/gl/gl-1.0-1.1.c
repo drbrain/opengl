@@ -70,7 +70,6 @@ GL_FUNC_STATIC_1(DrawBuffer,GLvoid, GLenum)
 GL_FUNC_STATIC_1(EdgeFlag,GLvoid, GLboolean)
 GL_FUNC_STATIC_1(Enable,GLvoid, GLenum)
 GL_FUNC_STATIC_1(EnableClientState,GLvoid, GLenum)
-GL_FUNC_STATIC_0(EndList,GLvoid)
 GL_FUNC_STATIC_1(EvalCoord1d,GLvoid, GLdouble)
 GL_FUNC_STATIC_1(EvalCoord1f,GLvoid, GLfloat)
 GL_FUNC_STATIC_2(EvalCoord2d,GLvoid, GLdouble,GLdouble)
@@ -115,7 +114,6 @@ GL_FUNC_STATIC_6(MapGrid2f,GLvoid, GLint,GLfloat,GLfloat,GLint,GLfloat,GLfloat)
 GL_FUNC_STATIC_3(Materialf,GLvoid, GLenum,GLenum,GLfloat)
 GL_FUNC_STATIC_3(Materiali,GLvoid, GLenum,GLenum,GLint)
 GL_FUNC_STATIC_1(MatrixMode,GLvoid, GLenum)
-GL_FUNC_STATIC_2(NewList,GLvoid, GLuint,GLenum)
 GL_FUNC_STATIC_3(Normal3b,GLvoid, GLbyte,GLbyte,GLbyte)
 GL_FUNC_STATIC_3(Normal3d,GLvoid, GLdouble,GLdouble,GLdouble)
 GL_FUNC_STATIC_3(Normal3f,GLvoid, GLfloat,GLfloat,GLfloat)
@@ -208,7 +206,8 @@ GL_FUNC_STATIC_4(Viewport,GLvoid, GLuint,GLuint,GLuint,GLuint)
 VALUE inside_begin_end = Qfalse;
 
 static VALUE
-gl_Begin0(GLenum mode) {
+gl_Begin0(GLenum mode)
+{
 	glBegin(mode);
 
   if (rb_block_given_p())
@@ -239,6 +238,46 @@ gl_Begin(VALUE self, VALUE mode)
     return rb_ensure(gl_Begin0, (VALUE)begin_mode, gl_End, self);
   else
 	  gl_Begin0(begin_mode);
+
+	return Qnil;	
+}
+
+static VALUE
+gl_NewList0(VALUE args)
+{
+  GLuint list;
+  GLenum mode;
+
+  list = (GLuint)NUM2UINT(rb_ary_entry(args, 0));
+  mode = RUBY2GLENUM(rb_ary_entry(args, 1));
+
+  glNewList(list, mode);
+
+  if (rb_block_given_p())
+    rb_yield(Qundef);
+
+  return Qnil;
+}
+
+static VALUE
+gl_EndList(VALUE self)
+{
+  glEndList();
+
+  return Qnil;
+}
+
+static VALUE
+gl_NewList(VALUE self, VALUE list, VALUE mode)
+{
+  VALUE args = rb_ary_new2(2);
+  rb_ary_push(args, list);
+  rb_ary_push(args, mode);
+
+  if (rb_block_given_p())
+    return rb_ensure(gl_NewList0, args, gl_EndList, self);
+  else
+	  gl_NewList0(args);
 
 	return Qnil;	
 }
