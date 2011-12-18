@@ -131,11 +131,9 @@ GL_FUNC_STATIC_2(PolygonMode,GLvoid, GLenum,GLenum)
 GL_FUNC_STATIC_2(PolygonOffset,GLvoid, GLfloat,GLfloat)
 GL_FUNC_STATIC_0(PopAttrib,GLvoid)
 GL_FUNC_STATIC_0(PopClientAttrib,GLvoid)
-GL_FUNC_STATIC_0(PopMatrix,GLvoid)
 GL_FUNC_STATIC_0(PopName,GLvoid)
 GL_FUNC_STATIC_1(PushAttrib,GLvoid, GLbitfield)
 GL_FUNC_STATIC_1(PushClientAttrib,GLvoid, GLbitfield)
-GL_FUNC_STATIC_0(PushMatrix,GLvoid)
 GL_FUNC_STATIC_1(PushName,GLvoid, GLuint)
 GL_FUNC_STATIC_2(RasterPos2d,GLvoid, GLdouble,GLdouble)
 GL_FUNC_STATIC_2(RasterPos2f,GLvoid, GLfloat,GLfloat)
@@ -240,6 +238,38 @@ gl_Begin(VALUE self, VALUE mode)
 	  gl_Begin0(begin_mode);
 
 	return Qnil;	
+}
+
+static VALUE
+gl_PopMatrix(VALUE self)
+{
+  glPopMatrix();
+
+  CHECK_GLERROR_FROM("glPopMatrix")
+
+  return Qnil;
+}
+
+static VALUE
+gl_PushMatrix0(void)
+{
+  glPushMatrix();
+
+  if (rb_block_given_p())
+    rb_yield(Qnil);
+
+  return Qnil;
+}
+
+static VALUE
+gl_PushMatrix(VALUE self)
+{
+  if (rb_block_given_p())
+    return rb_ensure(gl_PushMatrix0, (VALUE)NULL, gl_PopMatrix, self);
+  else
+    glPushMatrix();
+
+  return Qnil;
 }
 
 static VALUE
