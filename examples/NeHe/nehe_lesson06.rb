@@ -12,8 +12,6 @@ class Lesson06
     @xrot = 0.0
     @yrot = 0.0
     @zrot = 0.0
-    @keys = []
-    @active = true
     @fullscreen = true
 
     glutInit
@@ -44,8 +42,6 @@ class Lesson06
     glEnable GL_DEPTH_TEST
     glDepthFunc GL_LEQUAL
     glHint GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST
-
-    true
   end
 
   def reshape width, height
@@ -62,8 +58,6 @@ class Lesson06
 
     glMatrixMode GL_MODELVIEW
     glLoadIdentity
-
-    true
   end
 
   def draw_gl_scene
@@ -156,6 +150,14 @@ class Lesson06
     when ?\e
       glutDestroyWindow @window
       exit 0
+    when 'F' then 
+      @fullscreen = !@fullscreen
+
+      if @fullscreen then
+        glutFullScreen
+      else
+        glutPositionWindow 0, 0
+      end
     end
 
     glutPostRedisplay
