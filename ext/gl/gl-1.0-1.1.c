@@ -2189,21 +2189,17 @@ VALUE obj; \
 { \
 	int num; \
 	VALUE args[3]; \
-	RArray* ary; \
+	VALUE ary; \
 	switch (num = rb_scan_args(argc, argv, "12", &args[0], &args[1], &args[2])) { \
 	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
+    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 3: \
 			gl_Normal3##_type_(obj,RARRAY_PTR(ary)[0], RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
 			break; \
 			default: \
-			rb_raise(rb_eArgError, "array length:%li", RARRAY_LEN(ary)); \
+			rb_raise(rb_eArgError, "array length: %li", RARRAY_LEN(ary)); \
 		} \
-		} \
-		else \
-			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 3: \
 		gl_Normal3##_type_(obj,args[0], args[1], args[2]); \
@@ -2378,11 +2374,10 @@ VALUE *argv; \
 VALUE obj; \
 { \
 	VALUE args[4]; \
-	RArray *ary; \
+	VALUE ary; \
 	switch (rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
 	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
+    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 2: \
 			gl_Vertex2##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1]); \
@@ -2394,11 +2389,8 @@ VALUE obj; \
 			gl_Vertex4##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2],RARRAY_PTR(ary)[3]); \
 			break; \
 			default: \
-			rb_raise(rb_eRuntimeError, "glVertex vertex num error!:%li", RARRAY_LEN(ary)); \
+			rb_raise(rb_eRuntimeError, "glVertex vertex num error!: %ld", RARRAY_LEN(ary)); \
 		} \
-		} \
-		else \
-			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 2: \
 		gl_Vertex2##_type_(obj,args[0], args[1]); \
