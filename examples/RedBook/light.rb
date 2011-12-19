@@ -9,7 +9,6 @@ def init
   glClearColor 0, 0, 0, 0
   glShadeModel GL_SMOOTH
 
-  glMaterialfv GL_FRONT, GL_DIFFUSE, mat_specular
   glMaterialfv GL_FRONT, GL_SPECULAR, mat_specular
   glMaterialfv GL_FRONT, GL_SHININESS, mat_shininess
   glLightfv GL_LIGHT0, GL_POSITION, light_position
@@ -43,7 +42,7 @@ end
 def keyboard key, x, y
   case key
   when ?\e
-    glutDestroyWindow @window
+    glutDestroyWindow $window
     exit 0
   end
 
@@ -54,7 +53,7 @@ glutInit
 glutInitDisplayMode GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH
 glutInitWindowSize 500, 500
 glutInitWindowPosition 100, 100
-glutCreateWindow 'example 5-1: light'
+$window = glutCreateWindow 'example 5-1: light'
 init
 glutDisplayFunc :display
 glutReshapeFunc :reshape
