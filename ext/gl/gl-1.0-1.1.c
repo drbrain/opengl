@@ -63,13 +63,9 @@ GL_FUNC_STATIC_2(DeleteLists,GLvoid, GLuint,GLuint)
 GL_FUNC_STATIC_1(DepthFunc,GLvoid, GLenum)
 GL_FUNC_STATIC_1(DepthMask,GLvoid, GLboolean)
 GL_FUNC_STATIC_2(DepthRange,GLvoid, GLclampd,GLclampd)
-GL_FUNC_STATIC_1(Disable,GLvoid, GLenum)
-GL_FUNC_STATIC_1(DisableClientState,GLvoid, GLenum)
 GL_FUNC_STATIC_3(DrawArrays,GLvoid, GLenum,GLint,GLsizei)
 GL_FUNC_STATIC_1(DrawBuffer,GLvoid, GLenum)
 GL_FUNC_STATIC_1(EdgeFlag,GLvoid, GLboolean)
-GL_FUNC_STATIC_1(Enable,GLvoid, GLenum)
-GL_FUNC_STATIC_1(EnableClientState,GLvoid, GLenum)
 GL_FUNC_STATIC_1(EvalCoord1d,GLvoid, GLdouble)
 GL_FUNC_STATIC_1(EvalCoord1f,GLvoid, GLfloat)
 GL_FUNC_STATIC_2(EvalCoord2d,GLvoid, GLdouble,GLdouble)
@@ -202,6 +198,186 @@ GL_FUNC_STATIC_4(Vertex4s,GLvoid, GLshort,GLshort,GLshort,GLshort)
 GL_FUNC_STATIC_4(Viewport,GLvoid, GLuint,GLuint,GLuint,GLuint)
 
 VALUE inside_begin_end = Qfalse;
+
+static VALUE
+gl_Enable1(VALUE caps)
+{
+  for (long i = 0; i < RARRAY_LEN(caps); i++) {
+    glEnable(CONV_GLenum(rb_ary_entry(caps, i)));
+
+    CHECK_GLERROR_FROM("glEnable")
+  }
+
+  return Qnil;
+}
+
+static VALUE
+gl_Enable0(VALUE caps)
+{
+  gl_Enable1(caps);
+
+  if (rb_block_given_p())
+    rb_yield(Qundef);
+
+  return Qnil;
+}
+
+static VALUE
+gl_Disable1(VALUE caps)
+{
+  for (long i = 0; i < RARRAY_LEN(caps); i++) {
+    glDisable(CONV_GLenum(rb_ary_entry(caps, i)));
+
+    CHECK_GLERROR_FROM("glDisable")
+  }
+
+  return Qnil;
+}
+
+static VALUE
+gl_Disable0(VALUE caps)
+{
+  gl_Disable1(caps);
+
+  if (rb_block_given_p())
+    rb_yield(Qundef);
+
+  return Qnil;
+}
+
+static VALUE
+gl_Enable(int argc, VALUE *argv, VALUE self)
+{
+  VALUE caps, rev;
+
+  rb_scan_args(argc, argv, "1*", NULL, NULL);
+
+  caps = rb_ary_new2(argc);
+
+  for (int i = 0; i < argc; i++)
+    rb_ary_push(caps, argv[i]);
+
+  rev = rb_ary_reverse(caps);
+
+  if (rb_block_given_p())
+    return rb_ensure(gl_Enable0, caps, gl_Disable1, rev);
+  else
+    gl_Enable0(caps);
+
+  return Qnil;	
+}
+
+static VALUE
+gl_Disable(int argc, VALUE *argv, VALUE self)
+{
+  VALUE caps, rev;
+
+  rb_scan_args(argc, argv, "1*", NULL, NULL);
+
+  caps = rb_ary_new2(argc);
+
+  for (int i = 0; i < argc; i++)
+    rb_ary_push(caps, argv[i]);
+
+  rev = rb_ary_reverse(caps);
+
+  if (rb_block_given_p())
+    return rb_ensure(gl_Disable0, caps, gl_Enable1, rev);
+  else
+    gl_Disable0(caps);
+
+  return Qnil;	
+}
+
+static VALUE
+gl_EnableClientState1(VALUE ary)
+{
+  for (long i = 0; i < RARRAY_LEN(ary); i++) {
+    glEnableClientState(CONV_GLenum(rb_ary_entry(ary, i)));
+
+    CHECK_GLERROR_FROM("glEnableClientState")
+  }
+
+  return Qnil;
+}
+
+static VALUE
+gl_EnableClientState0(VALUE ary)
+{
+  gl_EnableClientState1(ary);
+
+  if (rb_block_given_p())
+    rb_yield(Qundef);
+
+  return Qnil;
+}
+
+static VALUE
+gl_DisableClientState1(VALUE ary)
+{
+  for (long i = 0; i < RARRAY_LEN(ary); i++) {
+    glDisableClientState(CONV_GLenum(rb_ary_entry(ary, i)));
+
+    CHECK_GLERROR_FROM("glDisableClientState")
+  }
+
+  return Qnil;
+}
+
+static VALUE
+gl_DisableClientState0(VALUE ary)
+{
+  gl_DisableClientState1(ary);
+
+  if (rb_block_given_p())
+    rb_yield(Qundef);
+
+  return Qnil;
+}
+
+static VALUE
+gl_EnableClientState(int argc, VALUE *argv, VALUE self)
+{
+  VALUE ary, rev;
+
+  rb_scan_args(argc, argv, "1*", NULL, NULL);
+
+  ary = rb_ary_new2(argc);
+
+  for (int i = 0; i < argc; i++)
+    rb_ary_push(ary, argv[i]);
+
+  rev = rb_ary_reverse(ary);
+
+  if (rb_block_given_p())
+    return rb_ensure(gl_EnableClientState0, ary, gl_DisableClientState1, rev);
+  else
+    gl_EnableClientState0(ary);
+
+  return Qnil;	
+}
+
+static VALUE
+gl_DisableClientState(int argc, VALUE *argv, VALUE self)
+{
+  VALUE ary, rev;
+
+  rb_scan_args(argc, argv, "1*", NULL, NULL);
+
+  ary = rb_ary_new2(argc);
+
+  for (int i = 0; i < argc; i++)
+    rb_ary_push(ary, argv[i]);
+
+  rev = rb_ary_reverse(ary);
+
+  if (rb_block_given_p())
+    return rb_ensure(gl_DisableClientState0, ary, gl_EnableClientState1, rev);
+  else
+    gl_DisableClientState0(ary);
+
+  return Qnil;	
+}
 
 static VALUE
 gl_Begin0(GLenum mode)
@@ -2656,8 +2832,8 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glDepthMask", gl_DepthMask, 1);
 	rb_define_module_function(module, "glIndexMask", gl_IndexMask, 1);
 	rb_define_module_function(module, "glAccum", gl_Accum, 2);
-	rb_define_module_function(module, "glDisable", gl_Disable, 1);
-	rb_define_module_function(module, "glEnable", gl_Enable, 1);
+	rb_define_module_function(module, "glDisable", gl_Disable, -1);
+	rb_define_module_function(module, "glEnable", gl_Enable, -1);
 	rb_define_module_function(module, "glFinish", gl_Finish, 0);
 	rb_define_module_function(module, "glFlush", gl_Flush, 0);
 	rb_define_module_function(module, "glPopAttrib", gl_PopAttrib, 0);
@@ -2752,11 +2928,11 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	/* OpenGL 1.1 functions */
 	rb_define_module_function(module, "glArrayElement", gl_ArrayElement, 1);
 	rb_define_module_function(module, "glColorPointer", gl_ColorPointer, 4);
-	rb_define_module_function(module, "glDisableClientState", gl_DisableClientState, 1);
+	rb_define_module_function(module, "glDisableClientState", gl_DisableClientState, -1);
 	rb_define_module_function(module, "glDrawArrays", gl_DrawArrays, 3);
 	rb_define_module_function(module, "glDrawElements", gl_DrawElements, 4);
 	rb_define_module_function(module, "glEdgeFlagPointer", gl_EdgeFlagPointer, 2);
-	rb_define_module_function(module, "glEnableClientState", gl_EnableClientState, 1);
+	rb_define_module_function(module, "glEnableClientState", gl_EnableClientState, -1);
 	rb_define_module_function(module, "glGetPointerv", gl_GetPointerv, 1);
 	rb_define_module_function(module, "glIndexPointer", gl_IndexPointer, 3);
 	rb_define_module_function(module, "glInterleavedArrays", gl_InterleavedArrays, 3);
