@@ -179,7 +179,10 @@ static VALUE glut_MainLoop0(void *ignored) {
 
 static VALUE
 glut_MainLoop(void) {
-  rb_thread_blocking_region(glut_MainLoop0, (void *)NULL, glut_MainLoop_unblock, NULL);
+  /* need to acquire GVL in callbacks */
+  /*rb_thread_blocking_region(glut_MainLoop0, (void *)NULL, glut_MainLoop_unblock, NULL);*/
+
+  glut_MainLoop0(NULL);
 
   return Qnil; /* never reached */
 }

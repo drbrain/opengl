@@ -41,17 +41,7 @@ CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
 CLOBBER.exclude("website/images/tab_bottom.gif")
 CLOBBER.exclude("website/images/*.jpg")
 
-desc 'Does a full compile'
-task :default => [:compile, :fixpermissions]
-
-task :fixpermissions do
-	# fix wrong lib permissions (mkrf bug ?)
-	Dir["lib/*.so","lib/*.bundle"].each do |fname|
-		File.chmod(0755,fname)
-	end
-end
-
-task :extension => :default
+task :default => :test
 
 desc 'Show contents of some variables related to website doc generation.'
 task :explain_website do
@@ -107,16 +97,10 @@ end
 
 desc 'Runs unit tests.'
 Rake::TestTask.new do |t|
-    t.libs << "test"
-    t.test_files = FileList['test/tc_*.rb']
-    t.verbose = true
+  t.test_files = FileList['test/test_*.rb']
 end
 
-desc 'Runs unit tests.'
-task :test_all => [:test]
-
-
-
+task :test => :compile
 
 ############# gems #############
 
@@ -128,11 +112,8 @@ spec = Gem::Specification.new do |s|
     s.homepage          = "http://ruby-opengl.rubyforge.org"
     s.email             = "ruby-opengl-devel@rubyforge.org"
     s.rubyforge_project = 'ruby-opengl'
-    s.platform          = Gem::Platform::RUBY
     s.summary           = "OpenGL Interface for Ruby"
     s.require_path      = "lib"
-    s.autorequire       = "gl"
-    s.has_rdoc          = false
     s.extensions     = []
 end
 
@@ -146,7 +127,7 @@ task :binary_gem => [:default] do
   binary_gem_files = FileList["{lib,examples}/**/*"] + FileList["doc/*.txt"] + ["MIT-LICENSE","README.txt"]
   binary_spec = spec.dup
   binary_spec.files = binary_gem_files
-  binary_spec.platform = Config::CONFIG['arch']
+  binary_spec.platform = Gem::Platform::CURRENT
 
   gem_fname_ext = ".gem"
   if (RUBY_VERSION.split(".").join < "190")

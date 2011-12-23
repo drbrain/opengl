@@ -13,6 +13,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+require 'rubygems'
 begin
   gem 'minitest'
 rescue Gem::LoadError
