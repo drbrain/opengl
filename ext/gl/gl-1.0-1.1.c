@@ -202,7 +202,9 @@ VALUE inside_begin_end = Qfalse;
 static VALUE
 gl_Enable1(VALUE caps)
 {
-  for (long i = 0; i < RARRAY_LEN(caps); i++) {
+  long i;
+
+  for (i = 0; i < RARRAY_LEN(caps); i++) {
     glEnable(CONV_GLenum(rb_ary_entry(caps, i)));
 
     CHECK_GLERROR_FROM("glEnable")
@@ -225,7 +227,8 @@ gl_Enable0(VALUE caps)
 static VALUE
 gl_Disable1(VALUE caps)
 {
-  for (long i = 0; i < RARRAY_LEN(caps); i++) {
+  long i;
+  for (i = 0; i < RARRAY_LEN(caps); i++) {
     glDisable(CONV_GLenum(rb_ary_entry(caps, i)));
 
     CHECK_GLERROR_FROM("glDisable")
@@ -248,13 +251,14 @@ gl_Disable0(VALUE caps)
 static VALUE
 gl_Enable(int argc, VALUE *argv, VALUE self)
 {
+  int i;
   VALUE caps, rev;
 
   rb_scan_args(argc, argv, "1*", NULL, NULL);
 
   caps = rb_ary_new2(argc);
 
-  for (int i = 0; i < argc; i++)
+  for (i = 0; i < argc; i++)
     rb_ary_push(caps, argv[i]);
 
   rev = rb_ary_reverse(caps);
@@ -270,13 +274,14 @@ gl_Enable(int argc, VALUE *argv, VALUE self)
 static VALUE
 gl_Disable(int argc, VALUE *argv, VALUE self)
 {
+  int i;
   VALUE caps, rev;
 
   rb_scan_args(argc, argv, "1*", NULL, NULL);
 
   caps = rb_ary_new2(argc);
 
-  for (int i = 0; i < argc; i++)
+  for (i = 0; i < argc; i++)
     rb_ary_push(caps, argv[i]);
 
   rev = rb_ary_reverse(caps);
@@ -292,7 +297,8 @@ gl_Disable(int argc, VALUE *argv, VALUE self)
 static VALUE
 gl_EnableClientState1(VALUE ary)
 {
-  for (long i = 0; i < RARRAY_LEN(ary); i++) {
+  long i;
+  for (i = 0; i < RARRAY_LEN(ary); i++) {
     glEnableClientState(CONV_GLenum(rb_ary_entry(ary, i)));
 
     CHECK_GLERROR_FROM("glEnableClientState")
@@ -315,7 +321,8 @@ gl_EnableClientState0(VALUE ary)
 static VALUE
 gl_DisableClientState1(VALUE ary)
 {
-  for (long i = 0; i < RARRAY_LEN(ary); i++) {
+  long i;
+  for (i = 0; i < RARRAY_LEN(ary); i++) {
     glDisableClientState(CONV_GLenum(rb_ary_entry(ary, i)));
 
     CHECK_GLERROR_FROM("glDisableClientState")
@@ -338,13 +345,14 @@ gl_DisableClientState0(VALUE ary)
 static VALUE
 gl_EnableClientState(int argc, VALUE *argv, VALUE self)
 {
+  int i;
   VALUE ary, rev;
 
   rb_scan_args(argc, argv, "1*", NULL, NULL);
 
   ary = rb_ary_new2(argc);
 
-  for (int i = 0; i < argc; i++)
+  for (i = 0; i < argc; i++)
     rb_ary_push(ary, argv[i]);
 
   rev = rb_ary_reverse(ary);
@@ -360,13 +368,14 @@ gl_EnableClientState(int argc, VALUE *argv, VALUE self)
 static VALUE
 gl_DisableClientState(int argc, VALUE *argv, VALUE self)
 {
+  int i;
   VALUE ary, rev;
 
   rb_scan_args(argc, argv, "1*", NULL, NULL);
 
   ary = rb_ary_new2(argc);
 
-  for (int i = 0; i < argc; i++)
+  for (i = 0; i < argc; i++)
     rb_ary_push(ary, argv[i]);
 
   rev = rb_ary_reverse(ary);
