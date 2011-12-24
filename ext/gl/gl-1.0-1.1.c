@@ -2614,13 +2614,17 @@ VALUE obj,arg1,arg2;
 }
 
 static VALUE
-gl_Material(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
+gl_Material(VALUE self, VALUE face, VALUE pname, VALUE param)
 {
-	if (TYPE(arg3) == T_ARRAY)
-		gl_Materialfv(obj,arg1,arg2,arg3);
-	else
-		gl_Materialf(obj,arg1,arg2,arg3);
+  VALUE ary;
+
+	if (RB_TYPE_P(param, T_ARRAY)) {
+		gl_Materialfv(self, face, pname, param);
+  } else if (ary = rb_convert_type(param, T_ARRAY, "Array", "to_a")) {
+		gl_Materialfv(self, face, pname, ary);
+  } else {
+		gl_Materialf(self, face, pname, param);
+  }
 
 	return Qnil;
 }
