@@ -106,15 +106,23 @@ task :test => :compile
 
 # common specification for source and binary gems
 spec = Gem::Specification.new do |s|
-    s.name              = "ruby-opengl"
-    s.version           = "0.60.1"
-    s.authors           = [ "Alain Hoang", "Jan Dvorak", "Minh Thu Vo", "James Adam" ]
-    s.homepage          = "http://ruby-opengl.rubyforge.org"
-    s.email             = "ruby-opengl-devel@rubyforge.org"
-    s.rubyforge_project = 'ruby-opengl'
-    s.summary           = "OpenGL Interface for Ruby"
-    s.require_path      = "lib"
-    s.extensions     = []
+  s.name              = "ruby-opengl"
+  s.version           = "0.60.1"
+  s.authors           = ["Alain Hoang", "Jan Dvorak", "Minh Thu Vo", "James Adam"]
+  s.homepage          = "http://ruby-opengl.rubyforge.org"
+  s.email             = "ruby-opengl-devel@rubyforge.org"
+  s.rubyforge_project = 'ruby-opengl'
+  s.summary           = "OpenGL Interface for Ruby"
+
+  gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
+  gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*/Rakefile", "lib/*.bundle")
+
+  s.files = gem_files
+  s.extensions << 'ext/gl/extconf.rb'
+  s.extensions << 'ext/glu/extconf.rb'
+  s.extensions << 'ext/glut/extconf.rb'
+  s.add_development_dependency("rake")
+  s.add_development_dependency("rake-compiler", "~> 0.7", ">= 0.7.9")
 end
 
 Rake::ExtensionTask.new 'gl', spec
@@ -150,15 +158,5 @@ end
 # Create a task for creating a ruby source gem
 Gem::PackageTask.new(spec) do |pkg|
   # Define the files that will go into the source gem
-  gem_files = FileList["{lib,ext,doc,examples,test}/**/*"]
-  gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*/Rakefile", "lib/*.bundle")
-
-  spec.files = gem_files
-  spec.extensions << 'ext/gl/extconf.rb'
-  spec.extensions << 'ext/glu/extconf.rb'
-  spec.extensions << 'ext/glut/extconf.rb'
-  spec.add_development_dependency("rake")
-  spec.add_development_dependency("rake-compiler", "~> 0.7", ">= 0.7.9")
-  pkg.gem_spec = spec
   pkg.need_tar = true
 end
