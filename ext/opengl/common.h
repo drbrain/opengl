@@ -436,6 +436,17 @@ static inline VALUE pack_array_or_pass_string(GLenum type,VALUE ary)
 	return rb_funcall(ary,rb_intern("pack"),1,rb_str_new2(type_str));
 }
 
-/* -------------------------------------------------------------------- */
+/* GLUT */
 
-#endif /* _COMMON_H_ */
+#define GLUT_SIMPLE_FUNCTION(_name_) \
+static VALUE \
+glut_##_name_(obj) \
+VALUE obj; \
+{ \
+    glut##_name_(); \
+    return Qnil; \
+}
+
+VALUE rb_glut_check_callback(VALUE, VALUE);
+
+#endif
