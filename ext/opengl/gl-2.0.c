@@ -13,7 +13,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "../common/common.h"
+#include "common.h"
 
 GL_FUNC_LOAD_2(BlendEquationSeparate,GLvoid, GLenum,GLenum, "2.0")
 GL_FUNC_LOAD_4(StencilOpSeparate,GLvoid, GLenum,GLenum,GLenum,GLenum, "2.0")

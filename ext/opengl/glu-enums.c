@@ -2,7 +2,7 @@
    source: http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec
 */
 
-#include "../common/common.h"
+#include "common.h"
 void glu_init_enums(VALUE module)
 {
 	rb_define_const(module, "GLU_TRUE", Qtrue);

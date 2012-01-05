@@ -20,7 +20,7 @@
  *
  */
 
-#include "../common/common.h"
+#include "common.h"
 
 static ID callId; /* 'call' method id */
 

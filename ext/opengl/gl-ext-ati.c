@@ -13,15 +13,29 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "../common/common.h"
+#include "common.h"
 
-/* OpenGL 3DFX extensions */
+/* OpenGL ATI extensions */
 
-/* #208 - GL_3DFX_tbuffer */
-GL_FUNC_LOAD_1(TbufferMask3DFX,GLvoid, GLuint, "GL_3DFX_tbuffer")
-
-void gl_init_functions_ext_3dfx(VALUE module)
+/* #277 GL_ATI_draw_buffers */
+static void (APIENTRY * fptr_glDrawBuffersATI)(GLsizei,const GLenum *);
+static VALUE gl_DrawBuffersATI(VALUE obj,VALUE arg1)
 {
-/* #208 - GL_3DFX_tbuffer */
-	rb_define_module_function(module, "glTbufferMask3DFX", gl_TbufferMask3DFX, 1);
+	GLsizei size;
+	GLenum *buffers;
+	LOAD_GL_FUNC(glDrawBuffersATI,"GL_ATI_draw_buffers")
+	Check_Type(arg1,T_ARRAY); 
+	size = (GLsizei)RARRAY_LENINT(arg1);
+	buffers = ALLOC_N(GLenum,size);
+	ary2cuint(arg1,buffers,size);
+	fptr_glDrawBuffersATI(size,buffers);
+	xfree(buffers);
+	CHECK_GLERROR
+	return Qnil;
+}
+
+void gl_init_functions_ext_ati(VALUE module)
+{
+/* #277 GL_ATI_draw_buffers */
+	rb_define_module_function(module, "glDrawBuffersATI", gl_DrawBuffersATI, 1);
 }

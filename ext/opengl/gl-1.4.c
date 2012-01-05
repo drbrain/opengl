@@ -13,7 +13,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "../common/common.h"
+#include "common.h"
 
 /* OpenGL 1.4 functions */
 

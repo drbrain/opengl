@@ -1,7 +1,5 @@
 *.swp
 /TAGS
-/lib/gl.bundle
-/lib/glu.bundle
-/lib/glut.bundle
+/lib/opengl/opengl.bundle
 /pkg
 /tmp

@@ -20,9 +20,7 @@
 # Thanks to Ilmari Heikkinen for a previous "reversed" version of this code,
 # and to Bill Kelly for a version before that one.
 
-require 'gl'
-require 'glu'
-require 'glut'
+require 'opengl/opengl'
 
 include Gl,Glu,Glut
 

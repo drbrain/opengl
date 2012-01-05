@@ -13,7 +13,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "../common/common.h"
+#include "common.h"
 
 #define UNIFORMMATRIX_FUNC(_x_,_y_) \
 static void (APIENTRY * fptr_glUniformMatrix##_x_##x##_y_##fv)(GLint,GLsizei,GLboolean,GLfloat *); \

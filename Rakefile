@@ -31,10 +31,6 @@ NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 # defines columns in the HTML extension list
 GLEXT_VERSIONS = ["svn","0.60","0.50"]
 
-CLEAN.include("ext/gl*/Rakefile", "ext/*/mkrf.log", "ext/*/*.so", 
-              "ext/**/*.bundle", "lib/*.so", "lib/*.bundle", "ext/*/*.o{,bj}", 
-              "ext/*/*.lib", "ext/*/*.exp", "ext/*/*.pdb",
-              "pkg")
 CLOBBER.include("*.plain", "doc/*.plain", "doc/*.snip", "*.html",
                 "doc/*.html", "website/*.html", "website/images/*")
 # Make sure these files aren't deleted in a clobber op
@@ -118,16 +114,14 @@ spec = Gem::Specification.new do |s|
   gem_files = gem_files.exclude("**/*.so", "**/*.o{,bj}", "ext/**/*.log", "ext/gl*/Rakefile", "lib/*.bundle")
 
   s.files = gem_files
-  s.extensions << 'ext/gl/extconf.rb'
-  s.extensions << 'ext/glu/extconf.rb'
-  s.extensions << 'ext/glut/extconf.rb'
+  s.extensions << 'ext/opengl/extconf.rb'
   s.add_development_dependency("rake")
   s.add_development_dependency("rake-compiler", "~> 0.7", ">= 0.7.9")
 end
 
-Rake::ExtensionTask.new 'gl', spec
-Rake::ExtensionTask.new 'glu', spec
-Rake::ExtensionTask.new 'glut', spec
+Rake::ExtensionTask.new 'opengl', spec do |ext|
+  ext.lib_dir = 'lib/opengl'
+end
 
 desc "builds binary gem on any platform"
 task :binary_gem => [:default] do
@@ -155,8 +149,7 @@ task :binary_gem => [:default] do
   end
 end
 
-# Create a task for creating a ruby source gem
 Gem::PackageTask.new(spec) do |pkg|
-  # Define the files that will go into the source gem
   pkg.need_tar = true
 end
+
