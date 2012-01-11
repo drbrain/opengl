@@ -19,7 +19,7 @@ require 'mathn'
 
 require 'OGLBench'
 
-$VERSION = '0.1.24-ruby-p1'
+VER = '0.1.24-ruby-p1'
 
 $test = 0
 $run = 0
@@ -144,7 +144,7 @@ The configuration for this series of tests will be as follows:
 
 EOM
 
-	OGLBench.show_basic_config($conf, $gl_info, $VERSION)
+	OGLBench.show_basic_config($conf, $gl_info, VER)
 	
 	puts "standard runs:    #{$slow.join(' ')}"
 	puts "extra fast runs:  #{$fast.join(' ')}"

@@ -18,7 +18,7 @@ include Gl,Glu,Glut
 
 require 'getoptlong'
 
-$VERSION = '0.1.4'
+VER = '0.1.4'
 
 # Cached config and state, for simpler API
 $CACHED = {}
