@@ -183,7 +183,7 @@ static void *
 glut_KeyboardFuncCallback(struct callback_args *args) {
 	VALUE func = rb_ary_entry(KeyboardFunc, glutGetWindow());
 #if HAVE_SINGLE_BYTE_STRINGS
-  VALUE key = rb_str_new((char *)args->arg0.key, 1);
+  VALUE key = rb_str_new((char *)&args->arg0.key, 1);
 #else
   VALUE key = UINT2FIX((unsigned char)args->arg0.key);
 #endif
