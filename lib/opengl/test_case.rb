@@ -37,44 +37,24 @@ class OpenGL::TestCase < MiniTest::Unit::TestCase
 
   WINDOW_SIZE = 512
 
-  @glut_initialized = false
-
-  def self.glut_init
-    return if @glut_initialized
-    @glut_initialized = true
-
-    display_func = lambda do
-      raise
-    end
-
-    glutInit
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_ACCUM | GLUT_ALPHA)
-    glutInitWindowPosition(1, 1)
-    glutInitWindowSize(WINDOW_SIZE, WINDOW_SIZE)
-    glutCreateWindow("test")
-
-    # hack the need to call glutMainLoop on some implementations
-    glutDisplayFunc(display_func)
-
-    begin
-      glutMainLoop
-    rescue
-      # continue
-    end
-  end
+  glutInit
+  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL |
+                      GLUT_ACCUM | GLUT_ALPHA)
 
   def setup
-    self.class.glut_init
+    glutInitWindowPosition 1, 1
+    glutInitWindowSize WINDOW_SIZE, WINDOW_SIZE
+    @window = glutCreateWindow "test"
 
-    glPushAttrib(GL_ALL_ATTRIB_BITS)
-    glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS)
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
+    glPushAttrib GL_ALL_ATTRIB_BITS
+    glPushClientAttrib GL_CLIENT_ALL_ATTRIB_BITS
+    glMatrixMode GL_MODELVIEW
+    glLoadIdentity
+    glMatrixMode GL_PROJECTION
+    glLoadIdentity
 
-    glClearColor(0,0,0,0)
-    glClear(GL_COLOR_BUFFER_BIT)
+    glClearColor 0, 0, 0, 0
+    glClear GL_COLOR_BUFFER_BIT
   end
 
   def teardown
@@ -85,6 +65,8 @@ class OpenGL::TestCase < MiniTest::Unit::TestCase
     # in case there is an GL error that escaped error checking routines ...
     error = glGetError
     assert_equal error, 0, gluErrorString(error)
+
+    glutDestroyWindow @window
   end
 
   def assert_each_in_delta expected, actual, epsilon = 0.01

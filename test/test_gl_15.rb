@@ -24,32 +24,32 @@ class TestGl15 < OpenGL::TestCase
   end
 
   def test_query
-    queries = glGenQueries(2)
-    assert_equal(queries.size,2)
+    queries = glGenQueries 2
+    assert_equal queries.length, 2
 
-    glBeginQuery(GL_SAMPLES_PASSED,queries[1])
-    assert_equal(glIsQuery(queries[1]),true)
+    glBeginQuery GL_SAMPLES_PASSED, queries[1]
+    assert glIsQuery(queries[1])
 
-    glBegin(GL_TRIANGLES)
-    glVertex2i(0,0)
-    glVertex2i(1,0)
-    glVertex2i(1,1)
-    glEnd()
-
-    assert_equal(glGetQueryiv(GL_SAMPLES_PASSED,GL_CURRENT_QUERY),queries[1])
-
-    glEndQuery(GL_SAMPLES_PASSED)
-
-    r = glGetQueryObjectiv(queries[1],GL_QUERY_RESULT_AVAILABLE)
-    assert((r==GL_TRUE || r==GL_FALSE))
-
-    if (r==GL_TRUE)
-      assert(glGetQueryObjectiv(queries[1],GL_QUERY_RESULT)[0] > 0)
-      assert(glGetQueryObjectuiv(queries[1],GL_QUERY_RESULT)[0] > 0)
+    glBegin GL_TRIANGLES do
+      glVertex2i 0, 0
+      glVertex2i 1, 0
+      glVertex2i 1, 1
     end
 
-    glDeleteQueries(queries)
-    assert_equal(glIsQuery(queries[1]),false)
+    assert_equal queries[1], glGetQueryiv(GL_SAMPLES_PASSED, GL_CURRENT_QUERY)
+
+    glEndQuery GL_SAMPLES_PASSED
+
+    r = glGetQueryObjectiv queries[1], GL_QUERY_RESULT_AVAILABLE
+    assert(r == GL_TRUE || r == GL_FALSE)
+
+    if r == GL_TRUE
+      assert_operator 0, :<=, glGetQueryObjectiv(queries[1], GL_QUERY_RESULT)[0]
+      assert_operator 0, :<=, glGetQueryObjectuiv(queries[1], GL_QUERY_RESULT)[0]
+    end
+
+    glDeleteQueries queries
+    refute glIsQuery queries[1]
   end
 
   def test_buffers

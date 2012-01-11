@@ -164,48 +164,57 @@ class TestGl14 < OpenGL::TestCase
   end
 
   def test_glwindowpos_2
-    glWindowPos2d(1.0, 2.0)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glLoadIdentity
 
-    glWindowPos2dv([2.0, 1.0])
-    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos2d 1.0, 2.0
+    assert_each_in_delta [1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
 
-    glWindowPos2f(1.0, 2.0)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos2dv [2.0, 1.0]
+    assert_each_in_delta [2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
 
-    glWindowPos2fv([2.0, 1.0])
-    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos2f 1.0, 2.0
+    assert_each_in_delta [1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
 
-    glWindowPos2i(1, 2)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos2fv [2.0, 1.0]
+    assert_each_in_delta [2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
 
-    glWindowPos2iv([2, 1])
-    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos2i 1, 2
+    assert_each_in_delta [1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
 
-    glWindowPos2s(1, 2)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos2iv [2, 1]
+    assert_each_in_delta [2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
 
-    glWindowPos2sv([2, 1])
-    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos2s 1, 2
+    assert_each_in_delta [1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+
+    glWindowPos2sv [2, 1]
+    assert_each_in_delta [2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
   end
 
   def test_glwindowspos_3
-    glWindowPos3d(1.0, 2.0, 0.5)
-    assert_equal([1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
-    glWindowPos3dv([3.0, 2.0, 1.0])
-    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
-    glWindowPos3f(1.0, 2.0, 0.5)
-    assert_equal([1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
-    glWindowPos3fv([3.0, 2.0, 1.0])
-    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
-    glWindowPos3i(1, 2, 0)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
-    glWindowPos3iv([3, 2, 1])
-    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
-    glWindowPos3s(1, 2, 0)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
-    glWindowPos3sv([3, 2, 1])
-    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    glWindowPos3d 1.0, 2.0, 0.5
+    assert_each_in_delta [1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+
+    glWindowPos3dv [3.0, 2.0, 1.0]
+    assert_each_in_delta [3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+
+    glWindowPos3f 1.0, 2.0, 0.5
+    assert_each_in_delta [1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+
+    glWindowPos3fv [3.0, 2.0, 1.0]
+    assert_each_in_delta [3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+
+    glWindowPos3i 1, 2, 0
+    assert_each_in_delta [1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+
+    glWindowPos3iv [3, 2, 1]
+    assert_each_in_delta [3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+
+    glWindowPos3s 1, 2, 0
+    assert_each_in_delta [1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+
+    glWindowPos3sv [3, 2, 1]
+    assert_each_in_delta [3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
   end
 
 end
