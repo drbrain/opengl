@@ -378,10 +378,17 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal(data[9],2.0)
   end
 
-  def test_glrasterpos
-    glOrtho(0,WINDOW_SIZE,0,WINDOW_SIZE,0,-1)
+  def test_glrasterposv
+    glOrtho 0, WINDOW_SIZE, 0, WINDOW_SIZE, 0, -1
 
-    # 2		
+    glRasterPos3dv Vector[1, 1, 1]
+
+    assert_each_in_delta [1, 1, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
+  end
+
+  def test_glrasterpos_2
+    glOrtho 0, WINDOW_SIZE, 0, WINDOW_SIZE, 0, -1
+
     glRasterPos2d(1.0,2.0)
     assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,0.0,1.0])
     glRasterPos2dv([3.0,4.0])
@@ -401,8 +408,11 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,0.0,1.0])
     glRasterPos2sv([3,4])
     assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[3.0,4.0,0.0,1.0])
+  end
 
-    # 3
+  def test_glrasterpos_3
+    glOrtho 0, WINDOW_SIZE, 0, WINDOW_SIZE, 0, -1
+
     glRasterPos3d(1.0,2.0,1.0)
     assert_equal(glGetDoublev(GL_CURRENT_RASTER_POSITION),[1.0,2.0,1.0,1.0])
     glRasterPos3dv([3.0,4.0,0.0])
@@ -469,6 +479,12 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal(glGetIntegerv(GL_FOG_MODE),GL_EXP)
     glFogiv(GL_FOG_MODE,[GL_EXP2])
     assert_equal(glGetIntegerv(GL_FOG_MODE),GL_EXP2)
+  end
+
+  def test_glcolorv
+    glColor3fv Vector[1, 1, 1]
+
+    assert_each_in_delta [1, 1, 1, 1], glGetDoublev(GL_CURRENT_COLOR)
   end
 
   def test_glcolor_3
@@ -662,8 +678,13 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal([1, 0, 1, 0], glGetIntegerv(GL_LIGHT_MODEL_AMBIENT))
   end
 
-  def test_gltexcoord
-    # 1
+  def test_gltexcoordv
+    glTexCoord2dv [1, 1]
+
+    assert_each_in_delta [1, 1, 0, 1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS)
+  end
+
+  def test_gltexcoord_1
     glTexCoord1d(1.5)
     assert_equal([1.5,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
     glTexCoord1dv([0.5])
@@ -680,7 +701,9 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal([1,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
     glTexCoord1sv([0])
     assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
-    # 2
+  end
+
+  def test_gltexcoord_2
     glTexCoord2d(1.5,1.5)
     assert_equal([1.5,1.5,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
     glTexCoord2dv([0.5,0.5])
@@ -697,7 +720,9 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal([1,1,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
     glTexCoord2sv([0,0])
     assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
-    # 3
+  end
+
+  def test_gltexcoord_3
     glTexCoord3d(1.5,1.5,1.5)
     assert_equal([1.5,1.5,1.5,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
     glTexCoord3dv([0.5,0.5,0.5])
@@ -714,7 +739,9 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
     glTexCoord3sv([0,0,0])
     assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
-    # 4
+  end
+
+  def test_gltexcoord_4
     glTexCoord4d(1.5,1.5,1.5,1.5)
     assert_equal([1.5,1.5,1.5,1.5], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
     glTexCoord4dv([0.5,0.5,0.5,0.5])
@@ -872,27 +899,43 @@ class TestGl10_11 < OpenGL::TestCase
   end
 
   def test_glrect
-    glMatrixMode(GL_PROJECTION)
-    glOrtho(0, WINDOW_SIZE, 0, WINDOW_SIZE, 0, -1)
+    glMatrixMode GL_PROJECTION
+    glOrtho 0, WINDOW_SIZE, 0, WINDOW_SIZE, 0, -1
 
-    buf = glFeedbackBuffer(256, GL_3D)
+    buf = glFeedbackBuffer 256, GL_3D
 
-    glRenderMode(GL_FEEDBACK)
+    glRenderMode GL_FEEDBACK
 
     glRectd(0, 0, 1, 1)
     glRectdv([0, 0], [1, 1])
+
     glRectf(0, 0, 1, 1)
     glRectfv([0, 0], [1, 1])
+
     glRecti(0, 0, 1, 1)
     glRectiv([0, 0], [1, 1])
+
     glRects(0, 0, 1, 1)
     glRectsv([0, 0], [1, 1])
 
-    count = glRenderMode(GL_RENDER)
+    count = glRenderMode GL_RENDER
     data = buf.unpack("f*")
 
     # eight 3d polygons with four points
     assert_equal 8 * (4 * 3 + 2), count
+  end
+
+  def test_glrectv
+    glMatrixMode GL_PROJECTION
+    glOrtho 0, WINDOW_SIZE, 0, WINDOW_SIZE, 0, -1
+
+    buf = glFeedbackBuffer 256, GL_3D
+
+    glRenderMode GL_FEEDBACK
+
+    glRectdv Vector[0, 0], Vector[1, 1]
+
+    refute_equal 0, glRenderMode(GL_RENDER)
   end
 
   def test_glclear

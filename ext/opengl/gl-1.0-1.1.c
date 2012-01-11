@@ -2324,11 +2324,10 @@ VALUE obj; \
 { \
 	int num; \
 	VALUE args[4]; \
-	RArray *ary; \
+	VALUE ary; \
 	switch (num = rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
 	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
+    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 3: \
 			gl_Color3##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
@@ -2339,9 +2338,6 @@ VALUE obj; \
 			default: \
 			rb_raise(rb_eArgError, "array length:%li", RARRAY_LEN(ary)); \
 		} \
-		} \
-		else \
-			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 3: \
 		gl_Color3##_type_(obj,args[0], args[1], args[2]); \
@@ -2411,11 +2407,10 @@ VALUE obj; \
 { \
 	int num; \
 	VALUE args[4]; \
-	RArray *ary; \
+	VALUE ary; \
 	switch (num = rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
 	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
+    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 2: \
 			gl_RasterPos2##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1]); \
@@ -2429,9 +2424,6 @@ VALUE obj; \
 			default: \
 			rb_raise(rb_eArgError, "array length:%d", num); \
 		} \
-		} \
-		else \
-			Check_Type(args[0],T_ARRAY); /* force exception */ \
 		break; \
 	case 2: \
 		gl_RasterPos2##_type_(obj,args[0], args[1]); \
@@ -2463,28 +2455,28 @@ VALUE obj; \
 { \
 	int num; \
 	VALUE args[4]; \
-	RArray *ary,*ary2; \
+	VALUE ary1, ary2; \
 	switch (num = rb_scan_args(argc, argv, "22", &args[0], &args[1], &args[2], &args[3])) { \
 	case 2: \
-		if (TYPE(args[0]) == T_ARRAY && TYPE(args[1]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
-		ary2 = RARRAY(args[1]); \
-		switch (RARRAY_LEN(ary)) { \
-			case 2: \
-			gl_Rect##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary2)[0],RARRAY_PTR(ary2)[1]); \
-			break; \
-			default: \
-			rb_raise(rb_eArgError, "array length:%li", RARRAY_LEN(ary)); \
-		} \
-		} \
-		else \
-			Check_Type(args[0],T_ARRAY); /* force exception */ \
+    ary1 = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
+    ary2 = rb_convert_type(args[1], T_ARRAY, "Array", "to_a"); \
+    if (RARRAY_LEN(ary1) != 2) \
+			rb_raise(rb_eArgError, "first array must be of length 2 (was %li)", \
+          RARRAY_LEN(ary1)); \
+\
+    if (RARRAY_LEN(ary2) != 2) \
+			rb_raise(rb_eArgError, "second array must be of length 2 (was %li)", \
+          RARRAY_LEN(ary2)); \
+\
+    gl_Rect##_type_(obj, \
+        RARRAY_PTR(ary1)[0], RARRAY_PTR(ary1)[1], \
+        RARRAY_PTR(ary2)[0], RARRAY_PTR(ary2)[1]); \
 		break; \
 	case 4: \
 		gl_Rect##_type_(obj,args[0], args[1], args[2], args[3]); \
 		break; \
 	default: \
-		rb_raise(rb_eArgError, "arg length:%d", num); \
+		rb_raise(rb_eArgError, "arg length: %d", num); \
 	} \
 	return Qnil; \
 }
@@ -2504,11 +2496,10 @@ VALUE obj; \
 { \
 	int num; \
 	VALUE args[4]; \
-	RArray *ary; \
+	VALUE ary; \
 	switch (num = rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
 	case 1: \
-		if (TYPE(args[0]) == T_ARRAY) { \
-		ary = RARRAY(args[0]); \
+    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 1: \
 			gl_TexCoord1##_type_(obj,RARRAY_PTR(ary)[0]); \
@@ -2523,11 +2514,8 @@ VALUE obj; \
 			gl_TexCoord4##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2],RARRAY_PTR(ary)[3]); \
 			break; \
 			default: \
-			rb_raise(rb_eArgError, "array length:%d", num); \
+				rb_raise(rb_eArgError, "array length: %d", num); \
 		} \
-		} \
-		else \
-			gl_TexCoord1##_type_(obj,args[0]); \
 		break; \
 	case 2: \
 		gl_TexCoord2##_type_(obj,args[0], args[1]); \
