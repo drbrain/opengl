@@ -1,8 +1,9 @@
 = opengl
 
-home :: https://github.com/drbrain/opengl
-rdoc :: http://ruby-opengl.rubyforge.org
-bugs :: https://github.com/drbrain/opengl/issues
+source :: https://github.com/drbrain/opengl
+docs   :: http://ruby-opengl.rubyforge.org
+bugs   :: https://github.com/drbrain/opengl/issues
+email  :: mailto:ruby-opengl-devel@rubyforge.org
 
 == Description
 

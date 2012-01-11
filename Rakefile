@@ -30,6 +30,8 @@ hoe = Hoe.spec 'opengl' do
   self.history_file = 'History.rdoc'
   self.extra_rdoc_files = FileList['*.rdoc']
 
+  extra_dev_deps << ['rake-compiler', '~> 0.7', '>= 0.7.9']
+
   self.spec_extras = {
     :extensions            => %w[ext/opengl/extconf.rb],
     :required_ruby_version => '>= 1.9.2',
@@ -39,6 +41,8 @@ end
 Rake::ExtensionTask.new 'opengl', hoe.spec do |ext|
   ext.lib_dir = 'lib/opengl'
 end
+
+task :test => :compile
 
 # Generate html docs from the markdown source and upload to the site.
 # All doc files that are destined for the website have filenames that
@@ -101,23 +105,5 @@ task :upload_entire_website => [:gen_website] do
   sh "scp", "website/*.html", RUBYFORGE
   sh "scp", "website/*.css", RUBYFORGE
   sh "scp", "-r", "website", "images", RUBYFORGE
-end
-
-task :test => :compile
-
-############# gems #############
-
-# common specification for source and binary gems
-spec = Gem::Specification.new do |s|
-  s.name              = "ruby-opengl"
-  s.version           = "0.60.1"
-  s.homepage          = "http://ruby-opengl.rubyforge.org"
-  s.email             = "ruby-opengl-devel@rubyforge.org"
-  s.rubyforge_project = 'ruby-opengl'
-  s.summary           = "OpenGL Interface for Ruby"
-
-  s.extensions << 'ext/opengl/extconf.rb'
-  s.add_development_dependency("rake")
-  s.add_development_dependency("rake-compiler", "~> 0.7", ">= 0.7.9")
 end
 
