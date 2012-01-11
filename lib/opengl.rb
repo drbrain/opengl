@@ -20,6 +20,12 @@
 # Thanks to Ilmari Heikkinen for a previous "reversed" version of this code,
 # and to Bill Kelly for a version before that one.
 
+module OpenGL
+
+  VERSION = '1.0'
+
+end
+
 require 'opengl/opengl'
 
 include Gl,Glu,Glut

@@ -1,0 +1,31 @@
+=== 1.0 / 2012-01-10
+
+=== 0.60.1 / 2009-02-16
+
+* Bugfixes
+* Proper support for ruby 1.9/1.9.1+
+* Updated OpenGL enumerators in preparation for OpenGL 3.0
+
+=== 0.60.0 / 2008-01-06
+
+* Automatic error checking for GL/GLU calls, enabled by default (see
+  doc/tutorial)
+* Added support for many more OpenGL extensions
+* Support for Ruby 1.9.0+ (requires mkrf 0.2.3)
+* Ton of bugfixes.
+
+* API Changes:
+	* Boolean functions/parameters was changed to ruby true/false instead of
+	  GL_TRUE / GL_FALSE, which remains for compatibility
+	* glGet\* functions now returns +x+ instead of <code>[x]</code> when
+	  returning only one value
+	* Functions operating on packed strings (glTexture, glPointer etc.) now
+	  also accepts ruby arrays directly
+	* Matrix handling functions now also accepts instances of Matrix class, or
+	  any class that can be converted to array
+	* glUniform*v and glUniformmatrix*v now does not require 'count'
+	  parameter, they will calculate it from length of passed array
+	* glCallLists needs type specifier (previously was forced to GL_BYTE)
+	* On ruby 1.9, glut keyboard callback returns char ("x") instead of integer
+	  so using 'if key == ?x' works on both 1.8 and 1.9
+
