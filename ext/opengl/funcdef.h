@@ -14,37 +14,37 @@
  */
 
 /* These macros are for simplification of function definition, as passing
-  arguments from/to OpenGL usually follows the same few patterns. It would
-  be probably wise to adapt the whole bindings to C++ (templates, overloaded
-  functions, etc.), but for now supporting ruby extension for Windows means
-  MSVC6, and that in turn means unspeakable horrors and pains for everyone
-  attempting to merely write, much less debug or maintain any template-based
-  code.
-*/
+   arguments from/to OpenGL usually follows the same few patterns. It would
+   be probably wise to adapt the whole bindings to C++ (templates, overloaded
+   functions, etc.), but for now supporting ruby extension for Windows means
+   MSVC6, and that in turn means unspeakable horrors and pains for everyone
+   attempting to merely write, much less debug or maintain any template-based
+   code.
+ */
 
 /* Will load function pointer for function _NAME_ on first call to the
-  function, or raise if the OpenGL version is less then required or the
-  required extension is not supported */
+   function, or raise if the OpenGL version is less then required or the
+   required extension is not supported */
 #define LOAD_GL_FUNC(_NAME_,_VEREXT_) \
-if (fptr_##_NAME_==NULL) { \
-	if (CheckVersionExtension(_VEREXT_)==GL_FALSE) { \
-		if (isdigit(_VEREXT_[0])) \
-			rb_raise(rb_eNotImpError,"OpenGL version %s is not available on this system",_VEREXT_); \
-		else \
-			rb_raise(rb_eNotImpError,"Extension %s is not available on this system",_VEREXT_); \
-	} \
-	fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
-}
+  if (fptr_##_NAME_==NULL) { \
+    if (CheckVersionExtension(_VEREXT_)==GL_FALSE) { \
+      if (isdigit(_VEREXT_[0])) \
+      rb_raise(rb_eNotImpError,"OpenGL version %s is not available on this system",_VEREXT_); \
+      else \
+      rb_raise(rb_eNotImpError,"Extension %s is not available on this system",_VEREXT_); \
+    } \
+    fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
+  }
 
 /* Macroset for defining simple functions, i.e. functions that take n arguments and
-  pass them to GL API function without any additional processing.
+   pass them to GL API function without any additional processing.
 
-  Some checking is implicit in _conversion_ argument - e.g. NUM2INT makes sure that
-  user is really passing type that can be converted to INT, otherwire raises.
-  
-  *_LOAD version of macros are for defining functions where we load function pointer
-  instead of direct call - that means all functions above OpenGL 1.1 (including all extensions)
-*/
+   Some checking is implicit in _conversion_ argument - e.g. NUM2INT makes sure that
+   user is really passing type that can be converted to INT, otherwire raises.
+
+ *_LOAD version of macros are for defining functions where we load function pointer
+ instead of direct call - that means all functions above OpenGL 1.1 (including all extensions)
+ */
 
 #define ARGLIST0 
 #define ARGLIST1 ,arg1
@@ -150,27 +150,27 @@ if (fptr_##_NAME_==NULL) { \
 #define CALLCONV10(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4),CONV_##cv5(arg5),CONV_##cv6(arg6),CONV_##cv7(arg7),CONV_##cv8(arg8),CONV_##cv9(arg9),CONV_##cv10(arg10)
 
 #define GL_FUNC_LOAD(_num_,_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_) \
-static _returntype_ (APIENTRY * fptr_gl##_name_)(PROTOPARAM##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
+  static _returntype_ (APIENTRY * fptr_gl##_name_)(PROTOPARAM##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
 static VALUE \
 gl_##_name_(obj ARGLIST##_num_) \
 VALUE obj ARGLIST##_num_; \
 { \
-	RETDECL_##_returntype_ \
-	LOAD_GL_FUNC(gl##_name_,_ver_) \
-	RETSTAT_##_returntype_ fptr_gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
-	CHECK_GLERROR_FROM("gl" #_name_) \
-	return RETCONV_##_returntype_(ret) ; \
+  RETDECL_##_returntype_ \
+  LOAD_GL_FUNC(gl##_name_,_ver_) \
+  RETSTAT_##_returntype_ fptr_gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
+  CHECK_GLERROR_FROM("gl" #_name_) \
+  return RETCONV_##_returntype_(ret) ; \
 }
 
 #define GL_FUNC_STATIC(_num_,_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10) \
-static VALUE \
+  static VALUE \
 gl_##_name_(obj ARGLIST##_num_) \
 VALUE obj ARGLIST##_num_; \
 { \
-	RETDECL_##_returntype_ \
-	RETSTAT_##_returntype_ gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
-	CHECK_GLERROR_FROM("gl" #_name_) \
-	return RETCONV_##_returntype_(ret) ; \
+  RETDECL_##_returntype_ \
+  RETSTAT_##_returntype_ gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
+  CHECK_GLERROR_FROM("gl" #_name_) \
+  return RETCONV_##_returntype_(ret) ; \
 }
 
 #define GL_FUNC_LOAD_0(_name_,_returntype_,_ver_) GL_FUNC_LOAD(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0,_ver_)
@@ -200,81 +200,81 @@ VALUE obj ARGLIST##_num_; \
 /* Templates for glGen* and glDelete* */
 
 #define GL_FUNC_GENOBJECTS_LOAD(_name_,_ver_) \
-static void (APIENTRY * fptr_gl##_name_)(GLsizei,GLuint *); \
+  static void (APIENTRY * fptr_gl##_name_)(GLsizei,GLuint *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
-	GLsizei n; \
-	GLuint *objects; \
-	VALUE ret; \
-	GLsizei i; \
-	LOAD_GL_FUNC(gl##_name_,_ver_) \
-	n = CONV_GLsizei(arg1); \
-	objects = ALLOC_N(GLuint, n); \
-	fptr_gl##_name_(n,objects); \
-	ret = rb_ary_new2(n); \
-	for (i = 0; i < n; i++) \
-		rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
-	xfree(objects); \
-	CHECK_GLERROR_FROM("gl" #_name_) \
-	return ret; \
+  GLsizei n; \
+  GLuint *objects; \
+  VALUE ret; \
+  GLsizei i; \
+  LOAD_GL_FUNC(gl##_name_,_ver_) \
+  n = CONV_GLsizei(arg1); \
+  objects = ALLOC_N(GLuint, n); \
+  fptr_gl##_name_(n,objects); \
+  ret = rb_ary_new2(n); \
+  for (i = 0; i < n; i++) \
+  rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
+  xfree(objects); \
+  CHECK_GLERROR_FROM("gl" #_name_) \
+  return ret; \
 }
 
 #define GL_FUNC_GENOBJECTS(_name_) \
-static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+  static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
-	GLsizei n; \
-	GLuint *objects; \
-	VALUE ret; \
-	GLsizei i; \
-	n = CONV_GLsizei(arg1); \
-	objects = ALLOC_N(GLuint, n); \
-	gl##_name_(n,objects); \
-	ret = rb_ary_new2(n); \
-	for (i = 0; i < n; i++) \
-		rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
-	xfree(objects); \
-	CHECK_GLERROR_FROM("gl" #_name_) \
-	return ret; \
+  GLsizei n; \
+  GLuint *objects; \
+  VALUE ret; \
+  GLsizei i; \
+  n = CONV_GLsizei(arg1); \
+  objects = ALLOC_N(GLuint, n); \
+  gl##_name_(n,objects); \
+  ret = rb_ary_new2(n); \
+  for (i = 0; i < n; i++) \
+  rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
+  xfree(objects); \
+  CHECK_GLERROR_FROM("gl" #_name_) \
+  return ret; \
 }
 
 #define GL_FUNC_DELETEOBJECTS_LOAD(_name_,_ver_) \
-static void (APIENTRY * fptr_gl##_name_)(GLsizei,const GLuint *); \
+  static void (APIENTRY * fptr_gl##_name_)(GLsizei,const GLuint *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
-	GLsizei n; \
-	LOAD_GL_FUNC(gl##_name_,_ver_) \
-	if (TYPE(arg1)==T_ARRAY) { \
-		GLuint *objects; \
-		n = (GLsizei)RARRAY_LENINT(arg1); \
-		objects = ALLOC_N(GLuint,n); \
-		ary2cuint(arg1,objects,n);  \
-		fptr_gl##_name_(n,objects); \
-		xfree(objects); \
-	} else { \
-		GLuint object; \
-		object = CONV_GLsizei(arg1); \
-		fptr_gl##_name_(1,&object);  \
-	} \
-	CHECK_GLERROR_FROM("gl" #_name_) \
-	return Qnil; \
+  GLsizei n; \
+  LOAD_GL_FUNC(gl##_name_,_ver_) \
+  if (TYPE(arg1)==T_ARRAY) { \
+    GLuint *objects; \
+    n = (GLsizei)RARRAY_LENINT(arg1); \
+    objects = ALLOC_N(GLuint,n); \
+    ary2cuint(arg1,objects,n);  \
+    fptr_gl##_name_(n,objects); \
+    xfree(objects); \
+  } else { \
+    GLuint object; \
+    object = CONV_GLsizei(arg1); \
+    fptr_gl##_name_(1,&object);  \
+  } \
+  CHECK_GLERROR_FROM("gl" #_name_) \
+  return Qnil; \
 }
 
 #define GL_FUNC_DELETEOBJECTS(_name_) \
-static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
+  static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
-	GLsizei n; \
-	if (TYPE(arg1)==T_ARRAY) { \
-		GLuint *objects; \
-		n = (GLsizei)RARRAY_LENINT(arg1); \
-		objects = ALLOC_N(GLuint,n); \
-		ary2cuint(arg1,objects,n);  \
-		gl##_name_(n,objects); \
-		xfree(objects); \
-	} else { \
-		GLuint object; \
-		object = CONV_GLsizei(arg1); \
-		gl##_name_(1,&object);  \
-	} \
-	CHECK_GLERROR_FROM("gl" #_name_) \
-	return Qnil; \
+  GLsizei n; \
+  if (TYPE(arg1)==T_ARRAY) { \
+    GLuint *objects; \
+    n = (GLsizei)RARRAY_LENINT(arg1); \
+    objects = ALLOC_N(GLuint,n); \
+    ary2cuint(arg1,objects,n);  \
+    gl##_name_(n,objects); \
+    xfree(objects); \
+  } else { \
+    GLuint object; \
+    object = CONV_GLsizei(arg1); \
+    gl##_name_(1,&object);  \
+  } \
+  CHECK_GLERROR_FROM("gl" #_name_) \
+  return Qnil; \
 }
