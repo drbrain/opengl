@@ -17,15 +17,15 @@
 
 /* OpenGL 1.5 functions */
 
-GL_FUNC_LOAD_1(EndQuery,GLvoid, GLenum, "1.5")
-GL_FUNC_LOAD_1(IsQuery,GLboolean, GLuint, "1.5")
-GL_FUNC_LOAD_2(BeginQuery,GLvoid, GLenum,GLuint, "1.5")
-GL_FUNC_LOAD_2(BindBuffer,GLvoid, GLenum,GLuint, "1.5")
-GL_FUNC_LOAD_1(IsBuffer,GLboolean, GLuint, "1.5")
-GL_FUNC_GENOBJECTS_LOAD(GenQueries,"1.5")
-GL_FUNC_DELETEOBJECTS_LOAD(DeleteQueries,"1.5")
-GL_FUNC_GENOBJECTS_LOAD(GenBuffers,"1.5")
-GL_FUNC_DELETEOBJECTS_LOAD(DeleteBuffers,"1.5")
+GL_FUNC_LOAD_1(EndQuery,GLvoid, GLenum, "1.5");
+GL_FUNC_LOAD_1(IsQuery,GLboolean, GLuint, "1.5");
+GL_FUNC_LOAD_2(BeginQuery,GLvoid, GLenum,GLuint, "1.5");
+GL_FUNC_LOAD_2(BindBuffer,GLvoid, GLenum,GLuint, "1.5");
+GL_FUNC_LOAD_1(IsBuffer,GLboolean, GLuint, "1.5");
+GL_FUNC_GENOBJECTS_LOAD(GenQueries, "1.5");
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteQueries, "1.5");
+GL_FUNC_GENOBJECTS_LOAD(GenBuffers, "1.5");
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteBuffers, "1.5");
 
 static void (APIENTRY * fptr_glGetQueryiv)(GLenum,GLenum,GLint *);
 static VALUE
@@ -35,11 +35,11 @@ VALUE obj,arg1,arg2;
 	GLenum target;
 	GLenum pname;
 	GLint params = 0;
-	LOAD_GL_FUNC(glGetQueryiv,"1.5")
+	LOAD_GL_FUNC(glGetQueryiv, "1.5");
 	target = (GLenum)NUM2INT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryiv(target,pname,&params);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetQueryiv");
 	return RETCONV_GLint(params);
 }
 
@@ -51,11 +51,11 @@ VALUE obj,arg1,arg2;
 	GLuint id;
 	GLenum pname;
 	GLint params = 0;
-	LOAD_GL_FUNC(glGetQueryObjectiv,"1.5")
+	LOAD_GL_FUNC(glGetQueryObjectiv, "1.5");
 	id = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectiv(id,pname,&params);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetQueryObjectiv");
 	return cond_GLBOOL2RUBY(pname,params);
 }
 
@@ -67,11 +67,11 @@ VALUE obj,arg1,arg2;
 	GLuint id;
 	GLenum pname;
 	GLuint params = 0;
-	LOAD_GL_FUNC(glGetQueryObjectuiv,"1.5")
+	LOAD_GL_FUNC(glGetQueryObjectuiv, "1.5");
 	id = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetQueryObjectuiv(id,pname,&params);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetQueryObjectuiv");
 	return cond_GLBOOL2RUBY_U(pname,params);
 }
 
@@ -83,7 +83,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLenum target;
 	GLsizeiptr size;
 	GLenum usage;
-	LOAD_GL_FUNC(glBufferData,"1.5")
+	LOAD_GL_FUNC(glBufferData, "1.5");
 	target = (GLenum)NUM2INT(arg1);
 	size = (GLsizeiptr)NUM2INT(arg2);
 	usage = (GLenum)NUM2INT(arg4);
@@ -92,9 +92,9 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	} else if (NIL_P(arg3)) {
 		fptr_glBufferData(target,size,NULL,usage);
 	} else {
-		Check_Type(arg3,T_STRING); /* force exception */
+		Check_Type(arg3,T_STRING); /* force exception - HACK do it right */
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glBufferData");
 	return Qnil;
 }
 
@@ -106,13 +106,13 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLenum target;
 	GLintptr offset;
 	GLsizeiptr size;
-	LOAD_GL_FUNC(glBufferSubData,"1.5")
+	LOAD_GL_FUNC(glBufferSubData, "1.5");
 	target = (GLenum)NUM2INT(arg1);
 	offset = (GLintptr)NUM2INT(arg2);
 	size = (GLsizeiptr)NUM2INT(arg3);
 	Check_Type(arg4,T_STRING);
 	fptr_glBufferSubData(target,offset,size,(GLvoid *)RSTRING_PTR(arg4));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glBufferSubData");
 	return Qnil;
 }
 
@@ -125,13 +125,13 @@ VALUE obj,arg1,arg2,arg3;
 	GLintptr offset;
 	GLsizeiptr size;
 	VALUE data;
-	LOAD_GL_FUNC(glGetBufferSubData,"1.5")
+	LOAD_GL_FUNC(glGetBufferSubData, "1.5");
 	target = (GLenum)NUM2INT(arg1);
 	offset = (GLintptr)NUM2INT(arg2);
 	size = (GLsizeiptr)NUM2INT(arg3);
 	data = allocate_buffer_with_string((long)size);
 	fptr_glGetBufferSubData(target,offset,size,(GLvoid *)RSTRING_PTR(data));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetBufferSubData");
 	return data;
 }
 
@@ -143,11 +143,11 @@ VALUE obj,arg1,arg2;
 	GLenum target;
 	GLenum value;
 	GLint data = 0;
-	LOAD_GL_FUNC(glGetBufferParameteriv,"1.5")
+	LOAD_GL_FUNC(glGetBufferParameteriv, "1.5");
 	target = (GLenum)NUM2INT(arg1);
 	value = (GLenum)NUM2INT(arg2);
 	fptr_glGetBufferParameteriv(target,value,&data);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetBufferParameteriv");
 	return cond_GLBOOL2RUBY(value,data);
 }
 
@@ -159,14 +159,14 @@ gl_MapBuffer(VALUE self, VALUE _target, VALUE _access) {
 	GLint size = 0;
 	GLvoid *buffer_ptr = NULL;
 
-	LOAD_GL_FUNC(glMapBuffer, "1.5")
-	LOAD_GL_FUNC(glGetBufferParameteriv, "1.5")
+	LOAD_GL_FUNC(glMapBuffer, "1.5");
+	LOAD_GL_FUNC(glGetBufferParameteriv, "1.5");
 
 	fptr_glGetBufferParameteriv(target, GL_BUFFER_SIZE, &size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetBufferParameteriv");
 
 	buffer_ptr = fptr_glMapBuffer(target, access);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glMapBuffer");
 
 	/* fail late to avoid GL_INVALID_OPERATION from glUnampBuffer */
 	if (buffer_ptr == NULL || size <= 0)
@@ -182,10 +182,10 @@ VALUE obj,arg1;
 {
 	GLenum target;
 	GLboolean ret;
-	LOAD_GL_FUNC(glUnmapBuffer,"1.5")
+	LOAD_GL_FUNC(glUnmapBuffer, "1.5");
 	target = (GLenum)NUM2INT(arg1);
 	ret = fptr_glUnmapBuffer(target);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glUnmapBuffer");
 	return GLBOOL2RUBY(ret);
 }
 
@@ -194,9 +194,9 @@ static VALUE
 gl_GetBufferPointerv(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
-	LOAD_GL_FUNC(glGetBufferPointerv,"1.5")
+	LOAD_GL_FUNC(glGetBufferPointerv, "1.5");
 	rb_raise(rb_eArgError, "glGetBufferPointerv not implemented");
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetBufferPointerv");
 	return Qnil;
 }
 

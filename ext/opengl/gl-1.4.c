@@ -45,11 +45,11 @@ gl_FogCoordfv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLfloat coord;
-	LOAD_GL_FUNC(glFogCoordfv,"1.4")
+	LOAD_GL_FUNC(glFogCoordfv, "1.4");
 	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,&coord,1);
 	fptr_glFogCoordfv(&coord);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glFogCoordfv");
 	return Qnil;
 }
 
@@ -59,11 +59,11 @@ gl_FogCoorddv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLdouble coord;
-	LOAD_GL_FUNC(glFogCoorddv,"1.4")
+	LOAD_GL_FUNC(glFogCoorddv, "1.4");
 	Check_Type(arg1,T_ARRAY);
 	ary2cdbl(arg1,&coord,1);
 	fptr_glFogCoorddv(&coord);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glFogCoorddv");
 	return Qnil;
 }
 
@@ -75,7 +75,7 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLenum type;
 	GLsizei stride;
-	LOAD_GL_FUNC(glFogCoordPointer,"1.4")
+	LOAD_GL_FUNC(glFogCoordPointer, "1.4");
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
@@ -88,7 +88,7 @@ VALUE obj,arg1,arg2,arg3;
 		g_FogCoord_ptr = data;
 		fptr_glFogCoordPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glFogCoordPointer");
 	return Qnil;
 }
 
@@ -101,7 +101,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint *ary1;
 	GLsizei *ary2;
   int len1,len2;
-	LOAD_GL_FUNC(glMultiDrawArrays,"1.4")
+	LOAD_GL_FUNC(glMultiDrawArrays, "1.4");
   len1 = (int)RARRAY_LENINT(arg2);
   len2 = (int)RARRAY_LENINT(arg3);
 	if (len1!=len2)
@@ -114,7 +114,7 @@ VALUE obj,arg1,arg2,arg3;
 	fptr_glMultiDrawArrays(mode,ary1,ary2,len1);
 	xfree(ary1);
 	xfree(ary2);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glMultiDrawArrays");
 	return Qnil;
 }
 
@@ -133,7 +133,7 @@ VALUE obj;
 	RArray *ary;
 	int i;
 	VALUE args[4];
-	LOAD_GL_FUNC(glMultiDrawElements,"1.4")
+	LOAD_GL_FUNC(glMultiDrawElements, "1.4");
 	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
 		default:
 		case 3:
@@ -179,7 +179,7 @@ VALUE obj;
 			xfree(indices);
 			break;
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glMultiDrawElements");
 	return Qnil;
 }
 
@@ -191,7 +191,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[3] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLint size;
-	LOAD_GL_FUNC(glPointParameterfv,"1.4")
+	LOAD_GL_FUNC(glPointParameterfv, "1.4");
 	pname = (GLenum)NUM2INT(arg1);
 	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
@@ -200,7 +200,7 @@ VALUE obj,arg1,arg2;
 		size = 1;
 	ary2cflt(arg2,params,size);
 	fptr_glPointParameterfv(pname,params);	
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glPointParameterfv");
 	return Qnil;
 }
 
@@ -212,7 +212,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[3] = {0,0,0};
 	GLint size;
-	LOAD_GL_FUNC(glPointParameteriv,"1.4")
+	LOAD_GL_FUNC(glPointParameteriv, "1.4");
 	pname = (GLenum)NUM2INT(arg1);
 	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
@@ -221,7 +221,7 @@ VALUE obj,arg1,arg2;
 		size = 1;
 	ary2cint(arg2,params,size);
 	fptr_glPointParameteriv(pname,params);	
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glPointParameteriv");
 	return Qnil;
 }
 
@@ -230,11 +230,11 @@ static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
 VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	_type_ cary[3] = {0,0,0}; \
-	LOAD_GL_FUNC(gl##_name_,"1.4") \
+	LOAD_GL_FUNC(gl##_name_, "1.4"); \
 	Check_Type(arg1,T_ARRAY); \
 	_conv_(arg1,cary,3); \
 	fptr_gl##_name_(cary); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -257,7 +257,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLint size;
 	GLenum type;
 	GLsizei stride;
-	LOAD_GL_FUNC(glSecondaryColorPointer,"1.4")
+	LOAD_GL_FUNC(glSecondaryColorPointer, "1.4");
 	size = (GLint)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
 	stride = (GLsizei)NUM2UINT(arg3);
@@ -271,7 +271,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		g_SecondaryColor_ptr = data;
 		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glSecondaryColorPointer");
 	return Qnil;
 }
 
@@ -280,11 +280,11 @@ static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
 VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	_type_ cary[3] = {0,0,0}; \
-	LOAD_GL_FUNC(gl##_name_,"1.4") \
+	LOAD_GL_FUNC(gl##_name_, "1.4"); \
 	Check_Type(arg1,T_ARRAY); \
 	_conv_(arg1,cary,_size_); \
 	fptr_gl##_name_(cary); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 

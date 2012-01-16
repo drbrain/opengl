@@ -23,14 +23,14 @@ static VALUE gl_DrawBuffersATI(VALUE obj,VALUE arg1)
 {
 	GLsizei size;
 	GLenum *buffers;
-	LOAD_GL_FUNC(glDrawBuffersATI,"GL_ATI_draw_buffers")
+	LOAD_GL_FUNC(glDrawBuffersATI, "GL_ATI_draw_buffers");
 	Check_Type(arg1,T_ARRAY); 
 	size = (GLsizei)RARRAY_LENINT(arg1);
 	buffers = ALLOC_N(GLenum,size);
 	ary2cuint(arg1,buffers,size);
 	fptr_glDrawBuffersATI(size,buffers);
 	xfree(buffers);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glDrawBuffersATI");
 	return Qnil;
 }
 

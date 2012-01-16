@@ -25,10 +25,10 @@ gl_##_name_(obj,arg1) \
 VALUE obj,arg1; \
 { \
 	_type_ m[4*4]; \
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_transpose_matrix") \
+	LOAD_GL_FUNC(gl##_name_, "GL_ARB_transpose_matrix"); \
 	_conv_(arg1, m, 4, 4); \
 	fptr_gl##_name_(m); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -51,7 +51,7 @@ static VALUE gl_PointParameterfvARB(VALUE obj,VALUE arg1,VALUE arg2)
 	GLfloat params[3] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLenum pname;
 	GLint size;
-	LOAD_GL_FUNC(glPointParameterfvARB,"GL_ARB_point_parameters")
+	LOAD_GL_FUNC(glPointParameterfvARB, "GL_ARB_point_parameters");
 	pname = NUM2UINT(arg1);
 	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
@@ -60,7 +60,7 @@ static VALUE gl_PointParameterfvARB(VALUE obj,VALUE arg1,VALUE arg2)
 		size = 1;
 	ary2cflt(arg2,params,size);
 	fptr_glPointParameterfvARB(pname,params);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glPointParameterfvARB");
 	return Qnil;
 }
 
@@ -79,13 +79,13 @@ static void (APIENTRY * fptr_gl##_name_)(const _type_ *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	_type_ cary[_size_]; \
-	LOAD_GL_FUNC(gl##_name_,_ext_) \
+	LOAD_GL_FUNC(gl##_name_, _ext_); \
 	Check_Type(arg1,T_ARRAY); \
 	if (RARRAY_LEN(arg1) != _size_) \
 		rb_raise(rb_eArgError, "Incorrect array length - must have '%i' elements.",_size_); \
 	_conv_(arg1,cary,_size_); \
 	fptr_gl##_name_(cary); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -104,10 +104,10 @@ WINDOWPOSFUNCV(WindowPos3svARB,GLshort,ary2cshort,3,"GL_ARB_window_pos")
 static void (APIENTRY * fptr_glProgramStringARB)(GLenum,GLenum,GLsizei,const void *);
 static VALUE gl_ProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
-	LOAD_GL_FUNC(glProgramStringARB,"GL_ARB_vertex_program")
+	LOAD_GL_FUNC(glProgramStringARB, "GL_ARB_vertex_program");
 	Check_Type(arg3,T_STRING);
 	fptr_glProgramStringARB((GLenum)NUM2INT(arg1),(GLenum)NUM2INT(arg2),(GLsizei)RSTRING_LENINT(arg3),RSTRING_PTR(arg3));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glProgramStringARB");
 	return Qnil;
 }
 
@@ -115,9 +115,9 @@ static void (APIENTRY * fptr_glGetProgramivARB)(GLenum,GLenum,GLint *);
 static VALUE gl_GetProgramivARB(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint ret = 0;
-	LOAD_GL_FUNC(glGetProgramivARB,"GL_ARB_vertex_program")
+	LOAD_GL_FUNC(glGetProgramivARB, "GL_ARB_vertex_program");
 	fptr_glGetProgramivARB(NUM2INT(arg1),NUM2INT(arg2),&ret);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramivARB");
 	return cond_GLBOOL2RUBY(NUM2INT(arg2),ret);
 }
 
@@ -128,11 +128,11 @@ static VALUE gl_GetProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2)
 	char *buffer;
 	VALUE ret_buffer;
 
-	LOAD_GL_FUNC(glGetProgramStringARB,"GL_ARB_vertex_program")
-	LOAD_GL_FUNC(glGetProgramivARB,"GL_ARB_vertex_program")
+	LOAD_GL_FUNC(glGetProgramStringARB, "GL_ARB_vertex_program");
+	LOAD_GL_FUNC(glGetProgramivARB, "GL_ARB_vertex_program");
 
 	fptr_glGetProgramivARB(NUM2INT(arg1),GL_PROGRAM_LENGTH_ARB,&len);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramivARB");
 	if (len<=0)
 		return rb_str_new2("");
 	
@@ -142,7 +142,7 @@ static VALUE gl_GetProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2)
 	ret_buffer = rb_str_new2(buffer);
 	xfree(buffer);
 
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetProgramStringARB");
 	return ret_buffer;
 }
 
@@ -164,7 +164,7 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
 	GLboolean normalized;
 	GLsizei stride;
 
-	LOAD_GL_FUNC(glVertexAttribPointerARB,"GL_ARB_vertex_program")
+	LOAD_GL_FUNC(glVertexAttribPointerARB, "GL_ARB_vertex_program");
 
 	index = (GLuint)NUM2UINT(arg1);
 	size = (GLuint)NUM2UINT(arg2);
@@ -185,7 +185,7 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
 		fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glVertexAttribPointerARB");
 	return Qnil;
 }
 
@@ -196,7 +196,7 @@ gl_GetVertexAttribPointervARB(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint index;
-	LOAD_GL_FUNC(glGetVertexAttribPointervARB,"GL_ARB_vertex_program")
+	LOAD_GL_FUNC(glGetVertexAttribPointervARB, "GL_ARB_vertex_program");
 	index =(GLuint) NUM2INT(arg1);
 	if (index>_MAX_VERTEX_ATTRIBS)
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
@@ -216,10 +216,10 @@ gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ cary[4]; \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
+	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	_conv_(arg3,cary,4); \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -236,9 +236,9 @@ gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ cary[4] = {(_type_)0.0,(_type_)0.0,(_type_)0.0,(_type_)0.0}; \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
+	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
-	RET_ARRAY_OR_SINGLE(4,RETCONV_##_type_,cary) \
+	RET_ARRAY_OR_SINGLE("gl" #_name_, 4, RETCONV_##_type_, cary); \
 }
 
 GETPROGRAMPARAM_FUNC(GetProgramEnvParameterdvARB,GLdouble,"GL_ARB_vertex_program")
@@ -270,11 +270,11 @@ VALUE obj,arg1,arg2; \
 { \
 	GLuint index; \
 	_type_ v[_size_]; \
-	LOAD_GL_FUNC(gl##_name_,_extension_)  \
+	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	index = (GLuint)NUM2UINT(arg1); \
 	_conv_(arg2,v,_size_); \
 	fptr_gl##_name_(index,v); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -313,7 +313,7 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
+	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
 	if (pname==GL_CURRENT_VERTEX_ATTRIB_ARB) \
@@ -321,7 +321,7 @@ VALUE obj,arg1,arg2; \
 	else \
 		size = 1; \
 	fptr_gl##_name_(index,pname,params); \
-	RET_ARRAY_OR_SINGLE(size,RETCONV_##_type_,params) \
+	RET_ARRAY_OR_SINGLE("gl" #_name_, size, RETCONV_##_type_, params); \
 }
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribdvARB,GLdouble,"GL_ARB_vertex_program")
@@ -338,7 +338,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	GLint size;
-	LOAD_GL_FUNC(glGetVertexAttribivARB,"GL_ARB_vertex_program")
+	LOAD_GL_FUNC(glGetVertexAttribivARB, "GL_ARB_vertex_program");
 	index = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	if (pname==GL_CURRENT_VERTEX_ATTRIB)
@@ -346,7 +346,8 @@ VALUE obj,arg1,arg2;
 	else
 		size = 1;
 	fptr_glGetVertexAttribivARB(index,pname,params);
-	RET_ARRAY_OR_SINGLE_BOOL(size,cond_GLBOOL2RUBY,pname,params)
+  RET_ARRAY_OR_SINGLE_BOOL("glGetVertexAttribivARB", size, cond_GLBOOL2RUBY,
+      pname, params);
 }
 
 
@@ -362,9 +363,9 @@ static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 { \
 	_type_ ret = 0; \
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_occlusion_query") \
+	LOAD_GL_FUNC(gl##_name_, "GL_ARB_occlusion_query"); \
 	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return _conv_(NUM2INT(arg2),ret); \
 }
 
@@ -393,13 +394,13 @@ VALUE obj,arg1,arg2;
 	GLuint shader;
 	GLint length;
 	GLchar *str;
-	LOAD_GL_FUNC(glShaderSourceARB,"GL_ARB_shader_objects")
+	LOAD_GL_FUNC(glShaderSourceARB, "GL_ARB_shader_objects");
 	shader = (GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	str = RSTRING_PTR(arg2);
 	length = (GLint)RSTRING_LENINT(arg2);
 	fptr_glShaderSourceARB(shader,1,&str,&length);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glShaderSourceARB");
 	return Qnil;
 }
 
@@ -421,7 +422,7 @@ VALUE obj,arg1,arg2; \
 	GLint location; \
 	GLsizei count; \
 	_type_ *value; \
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
 	Check_Type(arg2,T_ARRAY); \
 	count = (GLsizei)RARRAY_LENINT(arg2); \
 	if (count<=0 || (count % _size_) != 0) \
@@ -431,7 +432,7 @@ VALUE obj,arg1,arg2; \
 	_conv_(arg2,value,count); \
 	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -455,7 +456,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLsizei count; \
 	GLboolean transpose; \
 	GLfloat *value;	\
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
 	transpose = (GLboolean)RUBYBOOL2GL(arg2); \
@@ -463,7 +464,7 @@ VALUE obj,arg1,arg2,arg3; \
 	ary2cmatfloatcount(arg3,value,_size_,_size_); \
 	fptr_gl##_name_(location,count / (_size_*_size_),transpose,value); \
 	xfree(value); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -481,11 +482,11 @@ VALUE obj,arg1,arg2; \
 	GLuint program; \
 	GLenum pname; \
 	_type_ params = 0; \
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
 	program = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
 	fptr_gl##_name_(program,pname,&params); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return _conv_(pname,params); \
 }
 
@@ -503,16 +504,16 @@ VALUE obj,arg1;
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
 	VALUE buffer;
-	LOAD_GL_FUNC(glGetInfoLogARB,"GL_ARB_shader_objects")
-	LOAD_GL_FUNC(glGetObjectParameterivARB,"GL_ARB_shader_objects")
+	LOAD_GL_FUNC(glGetInfoLogARB, "GL_ARB_shader_objects");
+	LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_shader_objects");
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetObjectParameterivARB(program,GL_OBJECT_INFO_LOG_LENGTH_ARB,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetObjectParameterivARB");
 	if (max_size<=0)
 		return rb_str_new2("");
 	buffer = allocate_buffer_with_string(max_size);
 	fptr_glGetInfoLogARB(program,max_size,&ret_length,RSTRING_PTR(buffer));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetInfoLogARB");
 	return buffer;
 }
 
@@ -525,16 +526,16 @@ VALUE obj,arg1;
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
 	VALUE buffer;
-	LOAD_GL_FUNC(glGetShaderSourceARB,"GL_ARB_shader_objects")
-	LOAD_GL_FUNC(glGetObjectParameterivARB,"GL_ARB_shader_objects")
+	LOAD_GL_FUNC(glGetShaderSourceARB, "GL_ARB_shader_objects");
+	LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_shader_objects");
 	shader = (GLuint)NUM2UINT(arg1);
 	fptr_glGetObjectParameterivARB(shader,GL_OBJECT_SHADER_SOURCE_LENGTH_ARB,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetObjectParameterivARB");
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum shader source length");
 	buffer = allocate_buffer_with_string(max_size-1);
 	fptr_glGetShaderSourceARB(shader,max_size,&ret_length,RSTRING_PTR(buffer));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetShaderSourceARB");
 	return buffer;
 }
 
@@ -551,12 +552,12 @@ VALUE obj,arg1,arg2;
 	GLenum uniform_type = 0;
 	VALUE buffer;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetActiveUniformARB,"GL_ARB_shader_objects")
-	LOAD_GL_FUNC(glGetObjectParameterivARB,"GL_EXT_sahder_objects")
+	LOAD_GL_FUNC(glGetActiveUniformARB, "GL_ARB_shader_objects");
+	LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_EXT_sahder_objects");
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	fptr_glGetObjectParameterivARB(program,GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetObjectParameterivARB");
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum uniform name length");
 	buffer = allocate_buffer_with_string(max_size-1);
@@ -567,7 +568,7 @@ VALUE obj,arg1,arg2;
 	rb_ary_push(retary, INT2NUM(uniform_size));
 	rb_ary_push(retary, INT2NUM(uniform_type));
 	rb_ary_push(retary, buffer);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetACtiveUniformARB");
 	return retary;
 }
 
@@ -584,13 +585,13 @@ VALUE obj,arg1,arg2; \
 	GLenum uniform_type = 0; \
 	GLint uniform_size = 0; \
 \
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
-	LOAD_GL_FUNC(glGetActiveUniformARB,"GL_ARB_shader_objects") \
+	LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
+	LOAD_GL_FUNC(glGetActiveUniformARB, "GL_ARB_shader_objects"); \
 	program = (GLuint)NUM2UINT(arg1); \
 	location = (GLint)NUM2INT(arg2); \
 \
 	fptr_glGetActiveUniformARB(program,location,0,NULL,&unused,&uniform_type,NULL); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("glGetActiveUniformARB"); \
 	if (uniform_type==0) \
 		rb_raise(rb_eTypeError, "Can't determine the uniform's type"); \
 \
@@ -598,7 +599,8 @@ VALUE obj,arg1,arg2; \
 \
 	memset(params,0,16*sizeof(_type_)); \
 	fptr_gl##_name_(program,location,params); \
-	RET_ARRAY_OR_SINGLE(uniform_size,RETCONV_##_type_,params) \
+  CHECK_GLERROR_FROM("gl" #_name_); \
+	RET_ARRAY_OR_SINGLE("gl" #_name_, uniform_size, RETCONV_##_type_, params); \
 }
 
 GETUNIFORM_FUNC(GetUniformfvARB,GLfloat)
@@ -612,11 +614,11 @@ VALUE obj,arg1,arg2;
 {
 	GLuint program;
 	GLint ret;
-	LOAD_GL_FUNC(glGetUniformLocationARB,"GL_ARB_shader_objects")
+	LOAD_GL_FUNC(glGetUniformLocationARB, "GL_ARB_shader_objects");
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetUniformLocationARB(program,RSTRING_PTR(arg2));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetUniformLocationARB");
 	return INT2NUM(ret);
 }
 
@@ -629,16 +631,17 @@ VALUE obj,arg1;
 	GLint shaders_num = 0;
 	GLuint *shaders;
 	GLsizei count = 0;
-	LOAD_GL_FUNC(glGetAttachedObjectsARB,"GL_ARB_shader_objects")
-	LOAD_GL_FUNC(glGetObjectParameterivARB,"GL_ARB_shader_objects")
+	LOAD_GL_FUNC(glGetAttachedObjectsARB, "GL_ARB_shader_objects");
+	LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_shader_objects");
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetObjectParameterivARB(program,GL_OBJECT_ATTACHED_OBJECTS_ARB,&shaders_num);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetObjectParameterivARB");
 	if (shaders_num<=0)
 		return Qnil;
 	shaders = ALLOC_N(GLuint,shaders_num);
 	fptr_glGetAttachedObjectsARB(program,shaders_num,&count,shaders);
-	RET_ARRAY_OR_SINGLE_FREE(count,RETCONV_GLuint,shaders)
+  RET_ARRAY_OR_SINGLE_FREE("glGetAttachedObjectsARB", count, RETCONV_GLuint,
+      shaders);
 }
 
 /* #31 GL_ARB_vertex_shader */
@@ -650,12 +653,12 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLuint program;
 	GLuint index;
-	LOAD_GL_FUNC(glBindAttribLocationARB,"GL_ARB_vertex_shader")
+	LOAD_GL_FUNC(glBindAttribLocationARB, "GL_ARB_vertex_shader");
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	fptr_glBindAttribLocationARB(program,index,RSTRING_PTR(arg3));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glBindAttribLocationARB");
 	return Qnil;
 }
 
@@ -672,12 +675,12 @@ VALUE obj,arg1,arg2;
 	GLenum attrib_type = 0;
 	VALUE buffer;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetActiveAttribARB,"GL_ARB_vertex_shader")
-	LOAD_GL_FUNC(glGetObjectParameterivARB,"GL_ARB_vertex_shader")
+	LOAD_GL_FUNC(glGetActiveAttribARB, "GL_ARB_vertex_shader");
+	LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_vertex_shader");
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	fptr_glGetObjectParameterivARB(program,GL_OBJECT_ACTIVE_ATTRIBUTE_MAX_LENGTH_ARB,&max_size);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetObjectParameterivARB");
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum attribute name length");
 	buffer = allocate_buffer_with_string(max_size-1);
@@ -686,7 +689,7 @@ VALUE obj,arg1,arg2;
 	rb_ary_push(retary, INT2NUM(attrib_size));
 	rb_ary_push(retary, INT2NUM(attrib_type));
 	rb_ary_push(retary, buffer);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetActiveAttribARB");
 	return retary;
 }
 
@@ -697,11 +700,11 @@ VALUE obj,arg1,arg2;
 {
 	GLuint program;
 	GLint ret;
-	LOAD_GL_FUNC(glGetAttribLocationARB,"GL_ARB_shader_objects")
+	LOAD_GL_FUNC(glGetAttribLocationARB, "GL_ARB_shader_objects");
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetAttribLocationARB(program,RSTRING_PTR(arg2));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetAttribLocationARB");
 	return INT2NUM(ret);
 }
 

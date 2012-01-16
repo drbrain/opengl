@@ -38,7 +38,7 @@ VALUE obj,arg1,arg2;
 	GLuint *textures;
 	GLclampf *priorities;
 	GLsizei size;
-	LOAD_GL_FUNC(glPrioritizeTexturesEXT,"GL_EXT_texture_object")
+	LOAD_GL_FUNC(glPrioritizeTexturesEXT, "GL_EXT_texture_object");
 	Check_Type(arg1,T_ARRAY);
 	Check_Type(arg2,T_ARRAY);
 	if ((size = (GLsizei)RARRAY_LENINT(arg1)) != (GLsizei)RARRAY_LENINT(arg2))
@@ -50,7 +50,7 @@ VALUE obj,arg1,arg2;
 	fptr_glPrioritizeTexturesEXT(size,textures,priorities);
 	xfree(textures);
 	xfree(priorities);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glPrioritizeTexturesEXT");
 	return Qnil;
 }
 
@@ -66,7 +66,7 @@ VALUE obj,arg1;
 	VALUE retary;
 	VALUE ary;
 	int i;
-	LOAD_GL_FUNC(glAreTexturesResidentEXT,"GL_EXT_texture_object")
+	LOAD_GL_FUNC(glAreTexturesResidentEXT, "GL_EXT_texture_object");
 	ary = rb_Array(arg1);
 	size = (GLsizei)RARRAY_LENINT(ary);
 	textures = ALLOC_N(GLuint,size);
@@ -83,7 +83,7 @@ VALUE obj,arg1;
 	}
 	xfree(textures);
 	xfree(residences);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glAreTexturesResidentEXT");
 	return retary;
 }
 
@@ -101,7 +101,7 @@ static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
 	GLfloat params[3] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLenum pname;
 	GLint size;
-	LOAD_GL_FUNC(glPointParameterfvEXT,"GL_EXT_point_parameters")
+	LOAD_GL_FUNC(glPointParameterfvEXT, "GL_EXT_point_parameters");
 	pname = NUM2UINT(arg1);
 	Check_Type(arg2,T_ARRAY);
 	if (pname==GL_POINT_DISTANCE_ATTENUATION)
@@ -110,7 +110,7 @@ static VALUE gl_PointParameterfvEXT(VALUE obj,VALUE arg1,VALUE arg2)
 		size = 1;
 	ary2cflt(arg2,params,size);
 	fptr_glPointParameterfvEXT(pname,params);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glPointParameterfvEXT");
 	return Qnil;
 }
 
@@ -129,11 +129,11 @@ static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
 VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	_type_ cary[3] = {0,0,0}; \
-	LOAD_GL_FUNC(gl##_name_,"GL_EXT_secondary_color") \
+	LOAD_GL_FUNC(gl##_name_, "GL_EXT_secondary_color"); \
 	Check_Type(arg1,T_ARRAY); \
 	_conv_(arg1,cary,3); \
 	fptr_gl##_name_(cary); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -156,7 +156,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLint size;
 	GLenum type;
 	GLsizei stride;
-	LOAD_GL_FUNC(glSecondaryColorPointerEXT,"GL_EXT_secondary_color")
+	LOAD_GL_FUNC(glSecondaryColorPointerEXT, "GL_EXT_secondary_color");
 	size = (GLint)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
 	stride = (GLsizei)NUM2UINT(arg3);
@@ -170,7 +170,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 		g_SecondaryColor_ptr = data;
 		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glSecondaryColorPointerEXT");
 	return Qnil;
 }
 
@@ -189,7 +189,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLuint end;
 	GLsizei count;
 	GLenum type;
-	LOAD_GL_FUNC(glDrawRangeElementsEXT,"GL_EXT_draw_range_elements")
+	LOAD_GL_FUNC(glDrawRangeElementsEXT, "GL_EXT_draw_range_elements");
 	mode = (GLenum)NUM2INT(arg1);
 	start = (GLuint)NUM2UINT(arg2);
 	end = (GLuint)NUM2UINT(arg3);
@@ -202,7 +202,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		data = pack_array_or_pass_string(type,arg6);
 		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, RSTRING_PTR(data));
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glDrawRangeElementsEXT");
 	return Qnil;
 }
 
@@ -216,7 +216,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint *ary1;
 	GLsizei *ary2;
   int len1,len2;
-	LOAD_GL_FUNC(glMultiDrawArraysEXT,"GL_EXT_multi_draw_arrays")
+	LOAD_GL_FUNC(glMultiDrawArraysEXT, "GL_EXT_multi_draw_arrays");
   len1 = (int)RARRAY_LENINT(arg2);
   len2 = (int)RARRAY_LENINT(arg3);
 	if (len1!=len2)
@@ -229,7 +229,7 @@ VALUE obj,arg1,arg2,arg3;
 	fptr_glMultiDrawArraysEXT(mode,ary1,ary2,len1);
 	xfree(ary1);
 	xfree(ary2);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glMultiDrawArraysEXT");
 	return Qnil;
 }
 
@@ -248,7 +248,7 @@ VALUE obj;
 	RArray *ary;
 	int i;
 	VALUE args[4];
-	LOAD_GL_FUNC(glMultiDrawElementsEXT,"GL_EXT_multi_draw_arrays")
+	LOAD_GL_FUNC(glMultiDrawElementsEXT, "GL_EXT_multi_draw_arrays");
 	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
 		default:
 		case 3:
@@ -295,7 +295,7 @@ VALUE obj;
 			xfree(indices);
 			break;
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glMultiDrawElementsEXT");
 	return Qnil;
 }
 
@@ -308,11 +308,11 @@ static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
 VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	_type_ cary = 0; \
-	LOAD_GL_FUNC(gl##_name_,"GL_EXT_secondary_color") \
+	LOAD_GL_FUNC(gl##_name_, "GL_EXT_secondary_color"); \
 	Check_Type(arg1,T_ARRAY); \
 	_conv_(arg1,&cary,1); \
 	fptr_gl##_name_(&cary); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 GLFOGCOORD_VFUNC(FogCoordfvEXT,GLfloat,ary2cflt)
@@ -327,7 +327,7 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLenum type;
 	GLsizei stride;
-	LOAD_GL_FUNC(glFogCoordPointerEXT,"GL_EXT_secondary_color")
+	LOAD_GL_FUNC(glFogCoordPointerEXT, "GL_EXT_secondary_color");
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
@@ -340,7 +340,7 @@ VALUE obj,arg1,arg2,arg3;
 		g_FogCoord_ptr = data;
 		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glFogCoordPointerEXT");
 	return Qnil;
 }
 
@@ -367,9 +367,9 @@ static void (APIENTRY * fptr_glGetRenderbufferParameterivEXT)(GLenum,GLenum,GLin
 static VALUE gl_GetRenderbufferParameterivEXT(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint param = 0;
-	LOAD_GL_FUNC(glGetRenderbufferParameterivEXT,"GL_EXT_framebuffer_object")
+	LOAD_GL_FUNC(glGetRenderbufferParameterivEXT, "GL_EXT_framebuffer_object");
 	fptr_glGetRenderbufferParameterivEXT(NUM2UINT(arg1),NUM2UINT(arg2),&param);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetRenderbufferParameterivEXT");
 	return INT2NUM(param);
 }
 
@@ -388,9 +388,9 @@ static void (APIENTRY * fptr_glGetFramebufferAttachmentParameterivEXT)(GLenum,GL
 static VALUE gl_GetFramebufferAttachmentParameterivEXT(VALUE obj,VALUE arg1, VALUE arg2, VALUE arg3)
 {
 	GLint ret = 0;
-	LOAD_GL_FUNC(glGetFramebufferAttachmentParameterivEXT,"GL_EXT_framebuffer_object")
+	LOAD_GL_FUNC(glGetFramebufferAttachmentParameterivEXT, "GL_EXT_framebuffer_object");
 	fptr_glGetFramebufferAttachmentParameterivEXT(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),&ret);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetFramebufferAttachmentParameterivEXT");
 	return cond_GLBOOL2RUBY(NUM2UINT(arg3),ret);
 }
 
@@ -412,9 +412,9 @@ static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 { \
 	_type_ ret = 0; \
-	LOAD_GL_FUNC(gl##_name_,"GL_EXT_timer_query") \
+	LOAD_GL_FUNC(gl##_name_, "GL_EXT_timer_query"); \
 	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return _conv_(NUM2INT(arg2),ret); \
 }
 
@@ -432,7 +432,7 @@ VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ *cary; \
 	GLsizei len; \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
+	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	len = (GLsizei)RARRAY_LENINT(rb_Array(arg3)); \
 	if (len<=0 || (len % 4) != 0) \
 		rb_raise(rb_eArgError, "Parameter array size must be multiplication of 4"); \
@@ -440,7 +440,7 @@ VALUE obj,arg1,arg2,arg3; \
 	_conv_(arg3,cary,len); \
 	fptr_gl##_name_((GLenum)NUM2UINT(arg1),(GLuint)NUM2UINT(arg2),len / 4, cary); \
 	xfree(cary); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -468,10 +468,10 @@ gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ value[_size_]; \
-	LOAD_GL_FUNC(gl##_name_,"GL_ARB_shader_objects") \
+	LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
 	_conv_(arg2,value,_size_); \
 	fptr_gl##_name_(NUM2UINT(arg1),value); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -499,7 +499,7 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
-	LOAD_GL_FUNC(gl##_name_,_extension_) \
+	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
 	if (pname==GL_CURRENT_VERTEX_ATTRIB_ARB) \
@@ -507,7 +507,7 @@ VALUE obj,arg1,arg2; \
 	else \
 		size = 1; \
 	fptr_gl##_name_(index,pname,params); \
-	RET_ARRAY_OR_SINGLE_BOOL(size,_conv_,pname,params) \
+	RET_ARRAY_OR_SINGLE_BOOL("gl" #_name_, size, _conv_, pname, params); \
 }
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribIivEXT,GLint,cond_GLBOOL2RUBY,"GL_EXT_gpu_shader4")
@@ -524,7 +524,7 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 	GLenum type;
 	GLsizei stride;
 
-	LOAD_GL_FUNC(glVertexAttribIPointerEXT,"GL_EXT_gpu_shader4")
+	LOAD_GL_FUNC(glVertexAttribIPointerEXT, "GL_EXT_gpu_shader4");
 
 	index = (GLuint)NUM2UINT(arg1);
 	size = (GLuint)NUM2UINT(arg2);
@@ -544,7 +544,7 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glVertexAttribIPointerEXT");
 	return Qnil;
 }
 
@@ -562,7 +562,7 @@ VALUE obj,arg1,arg2; \
 	GLint location; \
 	GLsizei count; \
 	_type_ *value; \
-	LOAD_GL_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
+	LOAD_GL_FUNC(gl##_name_, "GL_EXT_gpu_shader4"); \
 	Check_Type(arg2,T_ARRAY); \
 	count = (GLsizei)RARRAY_LENINT(arg2); \
 	if (count<=0 || (count % _size_) != 0) \
@@ -572,7 +572,7 @@ VALUE obj,arg1,arg2; \
 	_conv_(arg2,value,count); \
 	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -596,13 +596,13 @@ VALUE obj,arg1,arg2; \
 	GLenum uniform_type = 0; \
 	GLint uniform_size = 0; \
 \
-	LOAD_GL_FUNC(gl##_name_,"GL_EXT_gpu_shader4") \
-	LOAD_GL_FUNC(glGetActiveUniformARB,"GL_ARB_shader_objects") \
+	LOAD_GL_FUNC(gl##_name_, "GL_EXT_gpu_shader4"); \
+	LOAD_GL_FUNC(glGetActiveUniformARB, "GL_ARB_shader_objects"); \
 	program = (GLuint)NUM2UINT(arg1); \
 	location = (GLint)NUM2INT(arg2); \
 \
 	fptr_glGetActiveUniformARB(program,location,0,NULL,&unused,&uniform_type,NULL); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("glGetActiveUniformARB"); \
 	if (uniform_type==0) \
 		rb_raise(rb_eTypeError, "Can't determine the uniform's type"); \
 \
@@ -610,7 +610,7 @@ VALUE obj,arg1,arg2; \
 \
 	memset(params,0,16*sizeof(_type_)); \
 	fptr_gl##_name_(program,location,params); \
-	RET_ARRAY_OR_SINGLE(uniform_size,RETCONV_##_type_,params) \
+	RET_ARRAY_OR_SINGLE("gl" #_name_, uniform_size, RETCONV_##_type_, params); \
 }
 
 GETUNIFORM_FUNC(GetUniformuivEXT,GLuint)
@@ -619,10 +619,10 @@ GETUNIFORM_FUNC(GetUniformuivEXT,GLuint)
 static void (APIENTRY * fptr_glBindFragDataLocationEXT)(GLuint,GLuint,const GLchar *);
 static VALUE gl_BindFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
-	LOAD_GL_FUNC(glBindFragDataLocationEXT,"GL_EXT_gpu_shader4")
+	LOAD_GL_FUNC(glBindFragDataLocationEXT, "GL_EXT_gpu_shader4");
 	Check_Type(arg3,T_STRING);
 	fptr_glBindFragDataLocationEXT(NUM2UINT(arg1),NUM2UINT(arg2),RSTRING_PTR(arg3));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glBindFragDataLocationEXT");
 	return Qnil;
 }
 
@@ -630,10 +630,10 @@ static GLint (APIENTRY * fptr_glGetFragDataLocationEXT)(GLuint,const GLchar *);
 static VALUE gl_GetFragDataLocationEXT(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint ret;
-	LOAD_GL_FUNC(glGetFragDataLocationEXT,"GL_EXT_gpu_shader4")
+	LOAD_GL_FUNC(glGetFragDataLocationEXT, "GL_EXT_gpu_shader4");
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetFragDataLocationEXT(NUM2UINT(arg1),RSTRING_PTR(arg2));
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetFragDataLocationEXT");
 	return INT2NUM(ret);
 }
 
@@ -648,7 +648,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	GLsizei count;
 	GLenum type;
 	GLsizei primcount;
-	LOAD_GL_FUNC(glDrawElementsInstancedEXT,"GL_EXT_draw_instanced")
+	LOAD_GL_FUNC(glDrawElementsInstancedEXT, "GL_EXT_draw_instanced");
 	mode = (GLenum)NUM2INT(arg1);
 	count = (GLsizei)NUM2UINT(arg2);
 	type = (GLenum)NUM2INT(arg3);
@@ -660,7 +660,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 		data = pack_array_or_pass_string(type,arg4);
 		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)RSTRING_PTR(data), primcount);
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glDrawArraysInstancedEXT");
 	return Qnil;
 }
 
@@ -680,13 +680,13 @@ VALUE obj,arg1,arg2,arg3; \
 	GLenum target; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
-	LOAD_GL_FUNC(gl##_name_,"GL_EXT_texture_integer") \
+	LOAD_GL_FUNC(gl##_name_, "GL_EXT_texture_integer"); \
 	target = (GLenum)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2UINT(arg2); \
 	Check_Type(arg3,T_ARRAY); \
 	_conv_(arg3,params,4); \
 	fptr_gl##_name_(target,pname,params); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -704,7 +704,7 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	int size; \
-	LOAD_GL_FUNC(gl##_name_,"GL_EXT_texture_integer") \
+	LOAD_GL_FUNC(gl##_name_, "GL_EXT_texture_integer"); \
 	target = (GLenum)NUM2INT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
 	switch(pname) { \
@@ -719,7 +719,7 @@ VALUE obj,arg1,arg2; \
 			break; \
 	} \
 	fptr_gl##_name_(target,pname,params); \
-	RET_ARRAY_OR_SINGLE_BOOL(size,_conv_,pname,params) \
+	RET_ARRAY_OR_SINGLE_BOOL("gl" #_name_, size, _conv_, pname, params); \
 }
 
 GETTEXPARAMETER_VFUNC(GetTexParameterIivEXT,GLint,cond_GLBOOL2RUBY)

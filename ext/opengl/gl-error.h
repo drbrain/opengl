@@ -20,11 +20,9 @@ extern VALUE inside_begin_end;
 
 void check_for_glerror(const char *);
 
-#define CHECK_GLERROR \
-  if (error_checking==Qtrue && inside_begin_end==Qfalse) \
-    check_for_glerror(NULL);
-
 #define CHECK_GLERROR_FROM(caller) \
-  if (error_checking==Qtrue && inside_begin_end==Qfalse) \
-    check_for_glerror(caller);
+  do { \
+    if (error_checking == Qtrue && inside_begin_end == Qfalse) \
+      check_for_glerror(caller); \
+  } while (0)
 

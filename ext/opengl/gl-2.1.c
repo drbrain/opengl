@@ -25,7 +25,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLsizei count; \
 	GLboolean transpose; \
 	GLfloat *value;	\
-	LOAD_GL_FUNC(glUniformMatrix##_x_##x##_y_##fv,"2.1") \
+	LOAD_GL_FUNC(glUniformMatrix##_x_##x##_y_##fv,"2.1"); \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
 	transpose = (GLboolean)RUBYBOOL2GL(arg2); \
@@ -33,7 +33,7 @@ VALUE obj,arg1,arg2,arg3; \
 	ary2cmatfloatcount(arg3,value, _x_, _y_); \
 	fptr_glUniformMatrix##_x_##x##_y_##fv(location,count /(_x_ * _y_),transpose,value); \
 	xfree(value); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("glUniformMatrix" #_x_ "x" #_y_ "fv"); \
 	return Qnil; \
 }
 

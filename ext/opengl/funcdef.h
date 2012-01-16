@@ -22,19 +22,27 @@
    code.
  */
 
-/* Will load function pointer for function _NAME_ on first call to the
-   function, or raise if the OpenGL version is less then required or the
-   required extension is not supported */
-#define LOAD_GL_FUNC(_NAME_,_VEREXT_) \
-  if (fptr_##_NAME_==NULL) { \
-    if (CheckVersionExtension(_VEREXT_)==GL_FALSE) { \
-      if (isdigit(_VEREXT_[0])) \
-      rb_raise(rb_eNotImpError,"OpenGL version %s is not available on this system",_VEREXT_); \
-      else \
-      rb_raise(rb_eNotImpError,"Extension %s is not available on this system",_VEREXT_); \
+/*
+ * Loads the function pointer for function _NAME_ on first call to the
+ * function, or raises a NotImplementedError if the OpenGL version is less
+ * then required or the required extension is not supported.
+ */
+#define LOAD_GL_FUNC(_NAME_, _VEREXT_) \
+  do { \
+    if (fptr_##_NAME_==NULL) { \
+      if (CheckVersionExtension(_VEREXT_) == GL_FALSE) { \
+        if (isdigit(_VEREXT_[0])) { \
+          rb_raise(rb_eNotImpError, \
+              "OpenGL version %s is not available on this system",_VEREXT_); \
+        } else { \
+          rb_raise(rb_eNotImpError, \
+              "Extension %s is not available on this system",_VEREXT_); \
+        } \
+      } \
+      \
+      fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
     } \
-    fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
-  }
+  } while (0)
 
 /* Macroset for defining simple functions, i.e. functions that take n arguments and
    pass them to GL API function without any additional processing.
@@ -46,7 +54,7 @@
  instead of direct call - that means all functions above OpenGL 1.1 (including all extensions)
  */
 
-#define ARGLIST0 
+#define ARGLIST0
 #define ARGLIST1 ,arg1
 #define ARGLIST2 ,arg1,arg2
 #define ARGLIST3 ,arg1,arg2,arg3
@@ -156,9 +164,9 @@ gl_##_name_(obj ARGLIST##_num_) \
 VALUE obj ARGLIST##_num_; \
 { \
   RETDECL_##_returntype_ \
-  LOAD_GL_FUNC(gl##_name_,_ver_) \
+  LOAD_GL_FUNC(gl##_name_,_ver_); \
   RETSTAT_##_returntype_ fptr_gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
-  CHECK_GLERROR_FROM("gl" #_name_) \
+  CHECK_GLERROR_FROM("gl" #_name_); \
   return RETCONV_##_returntype_(ret) ; \
 }
 
@@ -169,33 +177,55 @@ VALUE obj ARGLIST##_num_; \
 { \
   RETDECL_##_returntype_ \
   RETSTAT_##_returntype_ gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
-  CHECK_GLERROR_FROM("gl" #_name_) \
+  CHECK_GLERROR_FROM("gl" #_name_); \
   return RETCONV_##_returntype_(ret) ; \
 }
 
-#define GL_FUNC_LOAD_0(_name_,_returntype_,_ver_) GL_FUNC_LOAD(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0,_ver_)
-#define GL_FUNC_LOAD_1(_name_,_returntype_,targ1,_ver_) GL_FUNC_LOAD(1, _name_,_returntype_,targ1,0,0,0,0,0,0,0,0,0,_ver_)
-#define GL_FUNC_LOAD_2(_name_,_returntype_,targ1,targ2,_ver_) GL_FUNC_LOAD(2, _name_,_returntype_,targ1,targ2,0,0,0,0,0,0,0,0,_ver_)
-#define GL_FUNC_LOAD_3(_name_,_returntype_,targ1,targ2,targ3,_ver_) GL_FUNC_LOAD(3, _name_,_returntype_,targ1,targ2,targ3,0,0,0,0,0,0,0,_ver_)
-#define GL_FUNC_LOAD_4(_name_,_returntype_,targ1,targ2,targ3,targ4,_ver_) GL_FUNC_LOAD(4, _name_,_returntype_,targ1,targ2,targ3,targ4,0,0,0,0,0,0,_ver_)
-#define GL_FUNC_LOAD_5(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,_ver_) GL_FUNC_LOAD(5, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,0,0,0,0,0,_ver_)
-#define GL_FUNC_LOAD_6(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,_ver_) GL_FUNC_LOAD(6, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,0,0,0,0,_ver_)
-#define GL_FUNC_LOAD_7(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,_ver_) GL_FUNC_LOAD(7, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,0,0,0,_ver_)
-#define GL_FUNC_LOAD_8(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,_ver_) GL_FUNC_LOAD(8, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,0,0,_ver_)
-#define GL_FUNC_LOAD_9(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,_ver_) GL_FUNC_LOAD(9, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,0,_ver_)
-#define GL_FUNC_LOAD_10(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_) GL_FUNC_LOAD(10, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_)
+#define GL_FUNC_LOAD_0(_name_,_returntype_,_ver_) \
+  GL_FUNC_LOAD(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_1(_name_,_returntype_,targ1,_ver_) \
+  GL_FUNC_LOAD(1, _name_,_returntype_,targ1,0,0,0,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_2(_name_,_returntype_,targ1,targ2,_ver_) \
+  GL_FUNC_LOAD(2, _name_,_returntype_,targ1,targ2,0,0,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_3(_name_,_returntype_,targ1,targ2,targ3,_ver_) \
+  GL_FUNC_LOAD(3, _name_,_returntype_,targ1,targ2,targ3,0,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_4(_name_,_returntype_,targ1,targ2,targ3,targ4,_ver_) \
+  GL_FUNC_LOAD(4, _name_,_returntype_,targ1,targ2,targ3,targ4,0,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_5(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,_ver_) \
+  GL_FUNC_LOAD(5, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,0,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_6(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,_ver_) \
+  GL_FUNC_LOAD(6, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,0,0,0,0,_ver_)
+#define GL_FUNC_LOAD_7(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,_ver_) \
+  GL_FUNC_LOAD(7, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,0,0,0,_ver_)
+#define GL_FUNC_LOAD_8(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,_ver_) \
+  GL_FUNC_LOAD(8, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,0,0,_ver_)
+#define GL_FUNC_LOAD_9(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,_ver_) \
+  GL_FUNC_LOAD(9, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,0,_ver_)
+#define GL_FUNC_LOAD_10(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_) \
+  GL_FUNC_LOAD(10, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_)
 
-#define GL_FUNC_STATIC_0(_name_,_returntype_) GL_FUNC_STATIC(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0)
-#define GL_FUNC_STATIC_1(_name_,_returntype_,targ1) GL_FUNC_STATIC(1, _name_,_returntype_,targ1,0,0,0,0,0,0,0,0,0)
-#define GL_FUNC_STATIC_2(_name_,_returntype_,targ1,targ2) GL_FUNC_STATIC(2, _name_,_returntype_,targ1,targ2,0,0,0,0,0,0,0,0)
-#define GL_FUNC_STATIC_3(_name_,_returntype_,targ1,targ2,targ3) GL_FUNC_STATIC(3, _name_,_returntype_,targ1,targ2,targ3,0,0,0,0,0,0,0)
-#define GL_FUNC_STATIC_4(_name_,_returntype_,targ1,targ2,targ3,targ4) GL_FUNC_STATIC(4, _name_,_returntype_,targ1,targ2,targ3,targ4,0,0,0,0,0,0)
-#define GL_FUNC_STATIC_5(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5) GL_FUNC_STATIC(5, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,0,0,0,0,0)
-#define GL_FUNC_STATIC_6(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6) GL_FUNC_STATIC(6, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,0,0,0,0)
-#define GL_FUNC_STATIC_7(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7) GL_FUNC_STATIC(7, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,0,0,0)
-#define GL_FUNC_STATIC_8(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8) GL_FUNC_STATIC(8, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,0,0)
-#define GL_FUNC_STATIC_9(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9) GL_FUNC_STATIC(9, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,0)
-#define GL_FUNC_STATIC_10(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10_ver_) GL_FUNC_STATIC(10, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)
+#define GL_FUNC_STATIC_0(_name_,_returntype_) \
+  GL_FUNC_STATIC(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_1(_name_,_returntype_,targ1) \
+  GL_FUNC_STATIC(1, _name_,_returntype_,targ1,0,0,0,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_2(_name_,_returntype_,targ1,targ2) \
+  GL_FUNC_STATIC(2, _name_,_returntype_,targ1,targ2,0,0,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_3(_name_,_returntype_,targ1,targ2,targ3) \
+  GL_FUNC_STATIC(3, _name_,_returntype_,targ1,targ2,targ3,0,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_4(_name_,_returntype_,targ1,targ2,targ3,targ4) \
+  GL_FUNC_STATIC(4, _name_,_returntype_,targ1,targ2,targ3,targ4,0,0,0,0,0,0)
+#define GL_FUNC_STATIC_5(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5) \
+  GL_FUNC_STATIC(5, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,0,0,0,0,0)
+#define GL_FUNC_STATIC_6(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6) \
+  GL_FUNC_STATIC(6, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,0,0,0,0)
+#define GL_FUNC_STATIC_7(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7) \
+  GL_FUNC_STATIC(7, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,0,0,0)
+#define GL_FUNC_STATIC_8(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8) \
+  GL_FUNC_STATIC(8, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,0,0)
+#define GL_FUNC_STATIC_9(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9) \
+  GL_FUNC_STATIC(9, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,0)
+#define GL_FUNC_STATIC_10(_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10_ver_) \
+  GL_FUNC_STATIC(10, _name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)
 
 /* Templates for glGen* and glDelete* */
 
@@ -207,7 +237,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
   GLuint *objects; \
   VALUE ret; \
   GLsizei i; \
-  LOAD_GL_FUNC(gl##_name_,_ver_) \
+  LOAD_GL_FUNC(gl##_name_,_ver_); \
   n = CONV_GLsizei(arg1); \
   objects = ALLOC_N(GLuint, n); \
   fptr_gl##_name_(n,objects); \
@@ -215,7 +245,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
   for (i = 0; i < n; i++) \
   rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
   xfree(objects); \
-  CHECK_GLERROR_FROM("gl" #_name_) \
+  CHECK_GLERROR_FROM("gl" #_name_); \
   return ret; \
 }
 
@@ -233,7 +263,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
   for (i = 0; i < n; i++) \
   rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
   xfree(objects); \
-  CHECK_GLERROR_FROM("gl" #_name_) \
+  CHECK_GLERROR_FROM("gl" #_name_); \
   return ret; \
 }
 
@@ -242,7 +272,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
   GLsizei n; \
-  LOAD_GL_FUNC(gl##_name_,_ver_) \
+  LOAD_GL_FUNC(gl##_name_,_ver_); \
   if (TYPE(arg1)==T_ARRAY) { \
     GLuint *objects; \
     n = (GLsizei)RARRAY_LENINT(arg1); \
@@ -255,7 +285,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
     object = CONV_GLsizei(arg1); \
     fptr_gl##_name_(1,&object);  \
   } \
-  CHECK_GLERROR_FROM("gl" #_name_) \
+  CHECK_GLERROR_FROM("gl" #_name_); \
   return Qnil; \
 }
 
@@ -275,6 +305,6 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
     object = CONV_GLsizei(arg1); \
     gl##_name_(1,&object);  \
   } \
-  CHECK_GLERROR_FROM("gl" #_name_) \
+  CHECK_GLERROR_FROM("gl" #_name_); \
   return Qnil; \
 }

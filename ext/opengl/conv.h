@@ -198,34 +198,39 @@ ARY2CMATCNT(double)
 ARY2CMATCNT(float)
 #undef ARY2CMATCNT
 
-
 #define EMPTY
 #define FREE(_x_) xfree(_x_);
 
-#define RET_ARRAY_OR_SINGLE(_size_,_conv_,_params_) RET_ARRAY_OR_SINGLE_FUNC(_size_,_conv_,_params_,EMPTY)
-#define RET_ARRAY_OR_SINGLE_FREE(_size_,_conv_,_params_) RET_ARRAY_OR_SINGLE_FUNC(_size_,_conv_,_params_,FREE(_params_))
+#define RET_ARRAY_OR_SINGLE(_name_, _size_, _conv_, _params_) \
+    RET_ARRAY_OR_SINGLE_FUNC(_name_, _size_, _conv_, _params_, EMPTY)
 
-#define RET_ARRAY_OR_SINGLE_FUNC(_size_,_conv_,_params_,_extra_) \
-{ \
-	int iter; \
-	VALUE return_array; \
-	if (_size_ == 1) { \
-		return_array = _conv_(_params_[0]); \
-	} else { \
-		return_array = rb_ary_new2(_size_); \
-		for(iter=0;iter<_size_;iter++) \
-			rb_ary_push(return_array, _conv_(_params_[iter])); \
-	} \
-	_extra_ \
-	CHECK_GLERROR \
-	return return_array; \
-}
+#define RET_ARRAY_OR_SINGLE_FREE(_name, _size_, _conv_, _params_) \
+    RET_ARRAY_OR_SINGLE_FUNC(_name, _size_, _conv_, _params_, FREE(_params_))
 
-#define RET_ARRAY_OR_SINGLE_BOOL(_size_,_conv_,_enum_,_params_) RET_ARRAY_OR_SINGLE_BOOL_FUNC(_size_,_conv_,_enum_,_params_,EMPTY)
-#define RET_ARRAY_OR_SINGLE_BOOL_FREE(_size_,_conv_,_enum_,_params_) RET_ARRAY_OR_SINGLE_BOOL_FUNC(_size_,_conv_,_enum_,_params_,FREE(_params_))
+#define RET_ARRAY_OR_SINGLE_FUNC(_name_, _size_, _conv_, _params_, _extra_) \
+do { \
+  int iter; \
+  VALUE return_array; \
+  if (_size_ == 1) { \
+    return_array = _conv_(_params_[0]); \
+  } else { \
+    return_array = rb_ary_new2(_size_); \
+    for(iter=0;iter<_size_;iter++) \
+    rb_ary_push(return_array, _conv_(_params_[iter])); \
+  } \
+  _extra_ \
+  CHECK_GLERROR_FROM(_name_); \
+  return return_array; \
+} while (0)
 
-#define RET_ARRAY_OR_SINGLE_BOOL_FUNC(_size_,_conv_,_enum_,_params_,_extra_) \
-{ \
+#define RET_ARRAY_OR_SINGLE_BOOL(_name_, _size_, _conv_, _enum_, _params_) \
+    RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, EMPTY)
+
+#define RET_ARRAY_OR_SINGLE_BOOL_FREE(_name_, _size_, _conv_, _enum_, _params_) \
+    RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, FREE(_params_))
+
+#define RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, _extra_) \
+do { \
 	int iter; \
 	VALUE return_array; \
 	if (_size_ == 1) { \
@@ -236,6 +241,7 @@ ARY2CMATCNT(float)
 			rb_ary_push(return_array, _conv_(_enum_,_params_[iter])); \
 	} \
 	_extra_ \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM(_name_); \
 	return return_array; \
-}
+} while (0)
+

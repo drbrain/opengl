@@ -62,14 +62,14 @@ VALUE obj,arg1;
 {
 	GLsizei size;
 	GLenum *buffers;
-	LOAD_GL_FUNC(glDrawBuffers,"2.0")
+	LOAD_GL_FUNC(glDrawBuffers, "2.0");
 	Check_Type(arg1,T_ARRAY); 
 	size = (GLsizei)RARRAY_LENINT(arg1);
 	buffers = ALLOC_N(GLenum,size);
 	ary2cuint(arg1,buffers,size);
 	fptr_glDrawBuffers(size,buffers);
 	xfree(buffers);
-	CHECK_GLERROR_FROM("glDrawBuffers")
+	CHECK_GLERROR_FROM("glDrawBuffers");
 	return Qnil;
 }
 
@@ -80,12 +80,12 @@ VALUE obj,arg1,arg2,arg3;
 {
 	GLuint program;
 	GLuint index;
-	LOAD_GL_FUNC(glBindAttribLocation,"2.0")
+	LOAD_GL_FUNC(glBindAttribLocation, "2.0");
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	Check_Type(arg3, T_STRING);
 	fptr_glBindAttribLocation(program,index,RSTRING_PTR(arg3));
-	CHECK_GLERROR_FROM("glBindAttribLocation")
+	CHECK_GLERROR_FROM("glBindAttribLocation");
 	return Qnil;
 }
 
@@ -97,11 +97,11 @@ VALUE obj,arg1,arg2;
 	GLuint program;
 	GLenum pname;
 	GLint params = 0;
-	LOAD_GL_FUNC(glGetProgramiv,"2.0")
+	LOAD_GL_FUNC(glGetProgramiv, "2.0");
 	program = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetProgramiv(program,pname,&params);
-	CHECK_GLERROR_FROM("glGetProgramiv")
+	CHECK_GLERROR_FROM("glGetProgramiv");
 	return cond_GLBOOL2RUBY(pname,params);
 }
 
@@ -118,12 +118,12 @@ VALUE obj,arg1,arg2;
 	GLenum attrib_type = 0;
 	VALUE buffer;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetActiveAttrib,"2.0")
-	LOAD_GL_FUNC(glGetProgramiv,"2.0")
+	LOAD_GL_FUNC(glGetActiveAttrib, "2.0");
+	LOAD_GL_FUNC(glGetProgramiv, "2.0");
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	fptr_glGetProgramiv(program,GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,&max_size);
-	CHECK_GLERROR_FROM("glGetProgramiv")
+	CHECK_GLERROR_FROM("glGetProgramiv");
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum attribute name length");
 	buffer = allocate_buffer_with_string(max_size-1);
@@ -132,7 +132,7 @@ VALUE obj,arg1,arg2;
 	rb_ary_push(retary, INT2NUM(attrib_size));
 	rb_ary_push(retary, INT2NUM(attrib_type));
 	rb_ary_push(retary, buffer);
-	CHECK_GLERROR_FROM("glGetActiveAttrib")
+	CHECK_GLERROR_FROM("glGetActiveAttrib");
 	return retary;
 }
 
@@ -149,12 +149,12 @@ VALUE obj,arg1,arg2;
 	GLenum uniform_type = 0;
 	VALUE buffer;
 	VALUE retary;
-	LOAD_GL_FUNC(glGetActiveUniform,"2.0")
-	LOAD_GL_FUNC(glGetProgramiv,"2.0")
+	LOAD_GL_FUNC(glGetActiveUniform, "2.0");
+	LOAD_GL_FUNC(glGetProgramiv, "2.0");
 	program = (GLuint)NUM2UINT(arg1);
 	index = (GLuint)NUM2UINT(arg2);
 	fptr_glGetProgramiv(program,GL_ACTIVE_UNIFORM_MAX_LENGTH,&max_size);
-	CHECK_GLERROR_FROM("glGetProgramiv")
+	CHECK_GLERROR_FROM("glGetProgramiv");
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum uniform name length");
 	buffer = allocate_buffer_with_string(max_size-1);
@@ -166,7 +166,7 @@ VALUE obj,arg1,arg2;
 	rb_ary_push(retary, INT2NUM(uniform_size));
 	rb_ary_push(retary, INT2NUM(uniform_type));
 	rb_ary_push(retary, buffer);
-	CHECK_GLERROR_FROM("glGetActiveUniform")
+	CHECK_GLERROR_FROM("glGetActiveUniform");
 	return retary;
 }
 
@@ -179,16 +179,17 @@ VALUE obj,arg1;
 	GLint shaders_num = 0;
 	GLuint *shaders;
 	GLsizei count = 0;
-	LOAD_GL_FUNC(glGetAttachedShaders,"2.0")
-	LOAD_GL_FUNC(glGetProgramiv,"2.0")
+	LOAD_GL_FUNC(glGetAttachedShaders, "2.0");
+	LOAD_GL_FUNC(glGetProgramiv, "2.0");
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetProgramiv(program,GL_ATTACHED_SHADERS,&shaders_num);
-	CHECK_GLERROR_FROM("glGetProgramiv")
+	CHECK_GLERROR_FROM("glGetProgramiv");
 	if (shaders_num<=0)
 		return Qnil;
 	shaders = ALLOC_N(GLuint,shaders_num);
 	fptr_glGetAttachedShaders(program,shaders_num,&count,shaders);
-	RET_ARRAY_OR_SINGLE_FREE(count,RETCONV_GLuint,shaders)
+  RET_ARRAY_OR_SINGLE_FREE("glGetAttachedShaders", count, RETCONV_GLuint,
+      shaders);
 }
 
 static GLint (APIENTRY * fptr_glGetAttribLocation)(GLuint, GLchar *);
@@ -198,11 +199,11 @@ VALUE obj,arg1,arg2;
 {
 	GLuint program;
 	GLint ret;
-	LOAD_GL_FUNC(glGetAttribLocation,"2.0")
+	LOAD_GL_FUNC(glGetAttribLocation, "2.0");
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetAttribLocation(program,RSTRING_PTR(arg2));
-	CHECK_GLERROR_FROM("glGetAttribLocation")
+	CHECK_GLERROR_FROM("glGetAttribLocation");
 	return INT2NUM(ret);
 }
 
@@ -215,16 +216,16 @@ VALUE obj,arg1;
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
 	VALUE buffer;
-	LOAD_GL_FUNC(glGetProgramInfoLog,"2.0")
-	LOAD_GL_FUNC(glGetProgramiv,"2.0")
+	LOAD_GL_FUNC(glGetProgramInfoLog, "2.0");
+	LOAD_GL_FUNC(glGetProgramiv, "2.0");
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetProgramiv(program,GL_INFO_LOG_LENGTH,&max_size);
-	CHECK_GLERROR_FROM("glGetProgramiv")
+	CHECK_GLERROR_FROM("glGetProgramiv");
 	if (max_size<=0)
 		return rb_str_new2("");
 	buffer = allocate_buffer_with_string(max_size);
 	fptr_glGetProgramInfoLog(program,max_size,&ret_length,RSTRING_PTR(buffer));
-	CHECK_GLERROR_FROM("glGetProgramInfoLog")
+	CHECK_GLERROR_FROM("glGetProgramInfoLog");
 	return buffer;
 }
 
@@ -236,11 +237,11 @@ VALUE obj,arg1,arg2;
 	GLuint program;
 	GLenum pname;
 	GLint params = 0;
-	LOAD_GL_FUNC(glGetShaderiv,"2.0")
+	LOAD_GL_FUNC(glGetShaderiv, "2.0");
 	program = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	fptr_glGetShaderiv(program,pname,&params);
-	CHECK_GLERROR_FROM("glGetShaderiv")
+	CHECK_GLERROR_FROM("glGetShaderiv");
 	return cond_GLBOOL2RUBY(pname,params);
 }
 
@@ -254,11 +255,11 @@ VALUE obj,arg1;
 	GLsizei ret_length = 0;
 	VALUE ret_buffer;
 	GLchar *buffer;
-	LOAD_GL_FUNC(glGetShaderInfoLog,"2.0")
-	LOAD_GL_FUNC(glGetShaderiv,"2.0")
+	LOAD_GL_FUNC(glGetShaderInfoLog, "2.0");
+	LOAD_GL_FUNC(glGetShaderiv, "2.0");
 	program = (GLuint)NUM2UINT(arg1);
 	fptr_glGetShaderiv(program,GL_INFO_LOG_LENGTH,&max_size);
-	CHECK_GLERROR_FROM("glGetShaderiv")
+	CHECK_GLERROR_FROM("glGetShaderiv");
 	if (max_size<=0)
 		return rb_str_new2("");
 	buffer = ALLOC_N(GLchar,max_size+1);
@@ -266,7 +267,7 @@ VALUE obj,arg1;
 	fptr_glGetShaderInfoLog(program,max_size,&ret_length,buffer);
 	ret_buffer = rb_str_new(buffer, ret_length);
 	xfree(buffer);
-	CHECK_GLERROR_FROM("glGetShaderInfoLog")
+	CHECK_GLERROR_FROM("glGetShaderInfoLog");
 	return ret_buffer;
 }
 
@@ -279,16 +280,16 @@ VALUE obj,arg1;
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
 	VALUE buffer;
-	LOAD_GL_FUNC(glGetShaderSource,"2.0")
-	LOAD_GL_FUNC(glGetShaderiv,"2.0")
+	LOAD_GL_FUNC(glGetShaderSource, "2.0");
+	LOAD_GL_FUNC(glGetShaderiv, "2.0");
 	shader = (GLuint)NUM2UINT(arg1);
 	fptr_glGetShaderiv(shader,GL_SHADER_SOURCE_LENGTH,&max_size);
-	CHECK_GLERROR_FROM("glGetShaderiv")
+	CHECK_GLERROR_FROM("glGetShaderiv");
 	if (max_size==0)
 		rb_raise(rb_eTypeError, "Can't determine maximum shader source length");
 	buffer = allocate_buffer_with_string(max_size-1);
 	fptr_glGetShaderSource(shader,max_size,&ret_length,RSTRING_PTR(buffer));
-	CHECK_GLERROR_FROM("glGetShaderSource")
+	CHECK_GLERROR_FROM("glGetShaderSource");
 	return buffer;
 }
 
@@ -299,12 +300,12 @@ VALUE obj,arg1,arg2;
 {
 	GLuint program;
 	GLint ret;
-	LOAD_GL_FUNC(glGetUniformLocation,"2.0")
+	LOAD_GL_FUNC(glGetUniformLocation, "2.0");
 	program=(GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetUniformLocation(program, RSTRING_PTR(arg2));
 
-  CHECK_GLERROR_FROM("glGetUniformLocation")
+  CHECK_GLERROR_FROM("glGetUniformLocation");
 	return INT2NUM(ret);
 }
 
@@ -321,13 +322,13 @@ VALUE obj,arg1,arg2; \
 	GLenum uniform_type = 0; \
 	GLint uniform_size = 0; \
 \
-	LOAD_GL_FUNC(gl##_name_,"2.0") \
-	LOAD_GL_FUNC(glGetActiveUniform,"2.0") \
+	LOAD_GL_FUNC(gl##_name_, "2.0"); \
+	LOAD_GL_FUNC(glGetActiveUniform, "2.0"); \
 	program = (GLuint)NUM2UINT(arg1); \
 	location = (GLint)NUM2INT(arg2); \
 \
 	fptr_glGetActiveUniform(program,location,0,NULL,&unused,&uniform_type,NULL); \
-	CHECK_GLERROR_FROM("glGetActiveUniform") \
+	CHECK_GLERROR_FROM("glGetActiveUniform"); \
 	if (uniform_type==0) \
 		rb_raise(rb_eTypeError, "Can't determine the uniform's type"); \
 \
@@ -335,7 +336,7 @@ VALUE obj,arg1,arg2; \
 \
 	memset(params,0,16*sizeof(_type_)); \
 	fptr_gl##_name_(program,location,params); \
-	RET_ARRAY_OR_SINGLE(uniform_size,RETCONV_##_type_,params) \
+	RET_ARRAY_OR_SINGLE("gl" #_name_, uniform_size, RETCONV_##_type_, params); \
 }
 
 GETUNIFORM_FUNC(GetUniformfv,GLfloat)
@@ -352,7 +353,7 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
-	LOAD_GL_FUNC(gl##_name_,"2.0") \
+	LOAD_GL_FUNC(gl##_name_, "2.0"); \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
 	if (pname==GL_CURRENT_VERTEX_ATTRIB) \
@@ -360,7 +361,7 @@ VALUE obj,arg1,arg2; \
 	else \
 		size = 1; \
 	fptr_gl##_name_(index,pname,params); \
-	RET_ARRAY_OR_SINGLE(size,RETCONV_##_type_,params) \
+	RET_ARRAY_OR_SINGLE("gl" #_name_, size, RETCONV_##_type_, params); \
 }
 
 GETVERTEXATTRIB_FUNC(GetVertexAttribdv,GLdouble)
@@ -377,7 +378,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	GLint size;
-	LOAD_GL_FUNC(glGetVertexAttribiv,"2.0")
+	LOAD_GL_FUNC(glGetVertexAttribiv, "2.0");
 	index = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
 	if (pname==GL_CURRENT_VERTEX_ATTRIB)
@@ -385,7 +386,8 @@ VALUE obj,arg1,arg2;
 	else
 		size = 1;
 	fptr_glGetVertexAttribiv(index,pname,params);
-	RET_ARRAY_OR_SINGLE_BOOL(size,cond_GLBOOL2RUBY,pname,params)
+  RET_ARRAY_OR_SINGLE_BOOL("glGetVertexAttribiv", size, cond_GLBOOL2RUBY,
+      pname, params);
 }
 
 
@@ -397,7 +399,7 @@ gl_GetVertexAttribPointerv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint index;
-	LOAD_GL_FUNC(glGetVertexAttribPointerv,"2.0")
+	LOAD_GL_FUNC(glGetVertexAttribPointerv, "2.0");
 	index =(GLuint) NUM2INT(arg1);
 	if (index>_MAX_VERTEX_ATTRIBS)
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
@@ -413,13 +415,13 @@ VALUE obj,arg1,arg2;
 	GLuint shader;
 	GLint length;
 	GLchar *str;
-	LOAD_GL_FUNC(glShaderSource,"2.0")
+	LOAD_GL_FUNC(glShaderSource, "2.0");
 	shader = (GLuint)NUM2UINT(arg1);
 	Check_Type(arg2,T_STRING);
 	str = RSTRING_PTR(arg2);
 	length = (GLint)RSTRING_LENINT(arg2);
 	fptr_glShaderSource(shader,1,&str,&length);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glShaderSource");
 	return Qnil;
 }
 
@@ -432,7 +434,7 @@ VALUE obj,arg1,arg2; \
 	GLint location; \
 	GLsizei count; \
 	_type_ *value; \
-	LOAD_GL_FUNC(gl##_name_,"2.0") \
+	LOAD_GL_FUNC(gl##_name_,"2.0"); \
 	Check_Type(arg2,T_ARRAY); \
 	count = (GLsizei)RARRAY_LENINT(arg2); \
 	if (count<=0 || (count % _size_) != 0) \
@@ -442,7 +444,7 @@ VALUE obj,arg1,arg2; \
 	_conv_(arg2,value,count); \
 	fptr_gl##_name_(location,count / _size_,value); \
 	xfree(value); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -466,7 +468,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLsizei count; \
 	GLboolean transpose; \
 	GLfloat *value;	\
-	LOAD_GL_FUNC(gl##_name_, "2.0") \
+	LOAD_GL_FUNC(gl##_name_, "2.0"); \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3), rb_intern("flatten"), 0)); \
 	transpose = (GLboolean)RUBYBOOL2GL(arg2); \
@@ -474,7 +476,7 @@ VALUE obj,arg1,arg2,arg3; \
 	ary2cmatfloatcount(arg3,value,_size_,_size_); \
 	fptr_gl##_name_(location,count / (_size_*_size_),transpose,value); \
 	xfree(value); \
-	CHECK_GLERROR_FROM("gl" #_name_) \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -491,11 +493,11 @@ VALUE obj,arg1,arg2; \
 { \
 	GLuint index; \
 	_type_ v[_size_]; \
-	LOAD_GL_FUNC(gl##_name_,"2.0")  \
+	LOAD_GL_FUNC(gl##_name_, "2.0"); \
 	index = (GLuint)NUM2UINT(arg1); \
 	_conv_(arg2,v,_size_); \
 	fptr_gl##_name_(index,v); \
-	CHECK_GLERROR_FROM("gl" #_name_) \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -534,7 +536,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLenum type;
 	GLboolean normalized;
 	GLsizei stride;
-	LOAD_GL_FUNC(glVertexAttribPointer,"2.0")
+	LOAD_GL_FUNC(glVertexAttribPointer, "2.0");
 	index = (GLuint)NUM2UINT(arg1);
 	size = (GLuint)NUM2UINT(arg2);
 	type = (GLenum)NUM2INT(arg3);
@@ -553,7 +555,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		g_VertexAttrib_ptr[index] = data;
 		fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(data));
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glVertexAttribPointer");
 	return Qnil;
 }
 

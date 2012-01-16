@@ -46,7 +46,7 @@ const int *GetOpenglVersion(void)
 {
 	if (opengl_version[0]==0) { /* not cached, query */
 		const char *vstr = (const char *) glGetString(GL_VERSION);
-		CHECK_GLERROR
+		CHECK_GLERROR_FROM("glGetString");
 		if (vstr)
 			sscanf( vstr, "%d.%d", &opengl_version[0], &opengl_version[1] );
 	}
@@ -76,7 +76,7 @@ const char *GetOpenglExtensions(void)
 {
 	if (opengl_extensions == NULL) {
 		const char *estr = (const char *) glGetString(GL_EXTENSIONS);
-		CHECK_GLERROR
+		CHECK_GLERROR_FROM("glGetString");
 		if (estr) {
 			long len = strlen(estr);
 			opengl_extensions = ALLOC_N(GLchar,len+1+1); /* terminating null and added space */
@@ -176,7 +176,7 @@ GLint CheckBufferBinding(GLint buffer)
 			break;
 	}
 	glGetIntegerv(buffer,&result);
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glGetIntegerv");
 	return result;
 }
 

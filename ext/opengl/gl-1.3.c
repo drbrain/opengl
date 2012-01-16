@@ -102,10 +102,10 @@ gl_##_name_(obj,arg1) \
 VALUE obj,arg1; \
 { \
 	_type_ m[4*4]; \
-	LOAD_GL_FUNC(gl##_name_,"1.3") \
+	LOAD_GL_FUNC(gl##_name_, "1.3"); \
 	ary2cmat##_type_(arg1, m, 4, 4); \
 	fptr_gl##_name_(m); \
-	CHECK_GLERROR \
+	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
 
@@ -130,7 +130,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexImage3D,"1.3")
+	LOAD_GL_FUNC(glCompressedTexImage3D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
@@ -156,7 +156,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		}
 		fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,pixels);
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glCompressedTexImage3D");
 	return Qnil;
 }
 
@@ -173,7 +173,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexImage2D,"1.3")
+	LOAD_GL_FUNC(glCompressedTexImage2D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
@@ -198,7 +198,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 		}
 		fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,pixels);
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glCompressedTexImage2D");
 	return Qnil;
 }
 
@@ -214,7 +214,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexImage1D,"1.3")
+	LOAD_GL_FUNC(glCompressedTexImage1D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	internalformat = (GLenum)NUM2INT(arg3);
@@ -238,7 +238,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		}
 		fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,pixels);
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glCompressedTexImage1D");
 	return Qnil;
 }
 
@@ -258,7 +258,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexSubImage3D,"1.3")
+	LOAD_GL_FUNC(glCompressedTexSubImage3D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -280,7 +280,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 
 		fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,pixels);
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glCompressedTexSubImage3D");
 	return Qnil;
 }
 
@@ -298,7 +298,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexSubImage2D,"1.3")
+	LOAD_GL_FUNC(glCompressedTexSubImage2D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -317,7 +317,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 		pixels = RSTRING_PTR(data);
 		fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,pixels);
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glCompressedTexSubImage2D");
 	return Qnil;
 }
 
@@ -333,7 +333,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
-	LOAD_GL_FUNC(glCompressedTexSubImage1D,"1.3")
+	LOAD_GL_FUNC(glCompressedTexSubImage1D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
 	xoffset = (GLint)NUM2INT(arg3);
@@ -350,7 +350,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 		pixels = RSTRING_PTR(data);
 		fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,pixels);
 	}
-	CHECK_GLERROR
+	CHECK_GLERROR_FROM("glCompressedTexSubImage1D");
 	return Qnil;
 }
 
@@ -367,7 +367,7 @@ VALUE obj;
 	VALUE data;
 	VALUE args[3];
 	int numargs;
-	LOAD_GL_FUNC(glGetCompressedTexImage,"1.3")
+	LOAD_GL_FUNC(glGetCompressedTexImage, "1.3");
 	numargs = rb_scan_args(argc, argv, "21", &args[0], &args[1], &args[2]);
 	target = (GLenum)NUM2INT(args[0]);
 	lod = (GLenum)NUM2INT(args[1]);
@@ -377,14 +377,14 @@ VALUE obj;
 			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
 			glGetTexLevelParameteriv(target,lod,GL_TEXTURE_COMPRESSED_IMAGE_SIZE,&size); /* 1.0 function */
-			CHECK_GLERROR
+			CHECK_GLERROR_FROM("glGetTexLevelParameteriv");
 			data = allocate_buffer_with_string(size);
 			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)RSTRING_PTR(data));
-			CHECK_GLERROR
+			CHECK_GLERROR_FROM("glGetCompressedTexImage");
 			return data;
 		case 3:
 			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)NUM2LONG(args[2]));
-			CHECK_GLERROR
+			CHECK_GLERROR_FROM("glGetCompressedTexImage");
 			return Qnil;	
 	}
 }
