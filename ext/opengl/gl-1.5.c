@@ -153,27 +153,26 @@ VALUE obj,arg1,arg2;
 
 static GLvoid * (APIENTRY * fptr_glMapBuffer)(GLenum,GLenum);
 static VALUE
-gl_MapBuffer(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum access;
+gl_MapBuffer(VALUE self, VALUE _target, VALUE _access) {
+	GLenum target = CONV_GLenum(_target);
+	GLenum access = CONV_GLenum(_access);
 	GLint size = 0;
-	VALUE data;
 	GLvoid *buffer_ptr = NULL;
-	LOAD_GL_FUNC(glMapBuffer,"1.5")
-	LOAD_GL_FUNC(glGetBufferParameteriv,"1.5")
-	target = (GLenum)NUM2INT(arg1);
-	access = (GLenum)NUM2INT(arg2);
-	fptr_glGetBufferParameteriv(target,GL_BUFFER_SIZE,&size);
+
+	LOAD_GL_FUNC(glMapBuffer, "1.5")
+	LOAD_GL_FUNC(glGetBufferParameteriv, "1.5")
+
+	fptr_glGetBufferParameteriv(target, GL_BUFFER_SIZE, &size);
 	CHECK_GLERROR
-	buffer_ptr = fptr_glMapBuffer(target,access);
+
+	buffer_ptr = fptr_glMapBuffer(target, access);
 	CHECK_GLERROR
-	if (buffer_ptr==NULL || size<=0)
+
+	/* fail late to avoid GL_INVALID_OPERATION from glUnampBuffer */
+	if (buffer_ptr == NULL || size <= 0)
 		return Qnil;
-	data = allocate_buffer_with_string(size);
-	memcpy(RSTRING_PTR(data), buffer_ptr, size);
-	return data;
+
+  return rb_str_new(buffer_ptr, size);
 }
 
 static GLboolean (APIENTRY * fptr_glUnmapBuffer)(GLenum);
