@@ -33,7 +33,7 @@ void gl_init_functions_ext_ati(VALUE);
 void gl_init_functions_ext_ext(VALUE);
 void gl_init_functions_ext_gremedy(VALUE);
 void gl_init_functions_ext_nv(VALUE);
-
+void gl_init_buffer(void);
 
 static int opengl_version[2]; /* major, minor */
 static char *opengl_extensions = NULL;
@@ -182,12 +182,16 @@ GLint CheckBufferBinding(GLint buffer)
 
 DLLEXPORT void Init_gl()
 {
-	VALUE VERSION = rb_str_new2("0.60");
+  VALUE mOpenGL = rb_path2class("OpenGL");
+	VALUE version = rb_const_get(mOpenGL, rb_intern("VERSION"));
+
+  gl_init_buffer();
 
 	module = rb_define_module("Gl");
 
-	rb_define_const(module, "BINDINGS_VERSION", VERSION);
-	rb_define_const(module, "RUBY_OPENGL_VERSION", VERSION);
+  /* TODO remove */
+	rb_define_const(module, "BINDINGS_VERSION", version);
+	rb_define_const(module, "RUBY_OPENGL_VERSION", version);
 
 	gl_init_error(module);
 	gl_init_enums(module);

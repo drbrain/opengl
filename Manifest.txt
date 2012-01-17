@@ -118,6 +118,7 @@ ext/opengl/gl-ext-gremedy.c
 ext/opengl/gl-ext-nv.c
 ext/opengl/gl-types.h
 ext/opengl/gl.c
+ext/opengl/gl_buffer.c
 ext/opengl/glu-enums.c
 ext/opengl/glu-enums.h
 ext/opengl/glu.c
@@ -143,6 +144,7 @@ test/test_gl_ext_ext.rb
 test/test_gl_ext_gremedy.rb
 test/test_gl_ext_nv.rb
 test/test_glu.rb
+test/test_opengl_buffer.rb
 utils/README
 utils/enumgen.rb
 utils/extlistgen.rb

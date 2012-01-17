@@ -123,6 +123,7 @@
 #define RETCONV_GLbitfield(x) UINT2NUM(x)
 #define RETCONV_GLbyte(x) INT2NUM(x)
 #define RETCONV_GLshort(x) INT2NUM(x)
+#define RETCONV_GLsizeiptr(x) ULONG2NUM(x)
 #define RETCONV_GLint(x) INT2NUM(x)
 #define RETCONV_GLubyte(x) UINT2NUM(x)
 #define RETCONV_GLushort(x) UINT2NUM(x)
