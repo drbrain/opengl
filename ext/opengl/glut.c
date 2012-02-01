@@ -858,12 +858,14 @@ VALUE obj,arg1;
 }
 
 void Init_glut() {
+  VALUE mGlut;
+
 	call_id = rb_intern("call");
-	VALUE mGlut = rb_define_module("Glut");
+	mGlut = rb_define_module("Glut");
 
 	menu_callback = rb_ary_new();
 	rb_global_variable(&menu_callback);
-	
+
 	rb_define_module_function(mGlut, "glutInit", glut_Init, -1);
 	rb_define_module_function(mGlut, "glutInitDisplayMode", glut_InitDisplayMode, 1);
 	rb_define_module_function(mGlut, "glutInitDisplayString", glut_InitDisplayString, 1);
