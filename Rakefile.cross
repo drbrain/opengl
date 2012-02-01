@@ -1,0 +1,104 @@
+# -*- coding: utf-8 -*-
+# -*- ruby -*-
+
+require 'rubygems'
+require 'hoe'
+require 'rake/extensiontask'
+require 'rake/extensioncompiler'
+require 'uri'
+require 'rbconfig'
+require 'pathname'
+
+ENV['RUBY_CC_VERSION'] ||= '1.9.3'
+
+# Cross-compilation constants
+COMPILE_HOME               = Pathname( "build" ).expand_path
+STATIC_SOURCESDIR          = COMPILE_HOME + 'sources'
+STATIC_BUILDDIR            = COMPILE_HOME + 'builds'
+STATIC_INSTALLDIR          = COMPILE_HOME + 'install'
+RUBY_BUILD                 = RbConfig::CONFIG["host"]
+CROSS_PREFIX = begin
+  Rake::ExtensionCompiler.mingw_host
+rescue => err
+  $stderr.puts "Cross-compilation disabled -- %s" % [ err.message ]
+  'unknown'
+end
+
+NUM_CPUS = if File.exist?('/proc/cpuinfo')
+    File.read('/proc/cpuinfo').scan('processor').length
+elsif RUBY_PLATFORM.include?( 'darwin' )
+    `system_profiler SPHardwareDataType | grep 'Cores' | awk '{print $5}'`.chomp
+else
+    1
+end
+
+
+# Fetch libfreeglut tarball
+LIBFREEGLUT_VERSION            = ENV['LIBFREEGLUT_VERSION'] || '2.8.0'
+LIBFREEGLUT_SOURCE_URI         = URI( "http://downloads.sourceforge.net/project/freeglut/freeglut/#{LIBFREEGLUT_VERSION}/freeglut-#{LIBFREEGLUT_VERSION}.tar.gz" )
+LIBFREEGLUT_TARBALL            = STATIC_SOURCESDIR + File.basename( LIBFREEGLUT_SOURCE_URI.path )
+STATIC_LIBFREEGLUT_BUILDDIR    = STATIC_BUILDDIR + LIBFREEGLUT_TARBALL.basename(".tar.gz")
+LIBFREEGLUT_MAKEFILE           = STATIC_LIBFREEGLUT_BUILDDIR + 'Makefile'
+LIBFREEGLUT_A                  = STATIC_INSTALLDIR + 'lib' + 'libglut.a'
+
+
+# clean intermediate files and folders
+CLEAN.include( STATIC_BUILDDIR.to_s )
+
+#####################################################################
+### C R O S S - C O M P I L A T I O N - T A S K S
+#####################################################################
+
+
+directory STATIC_SOURCESDIR.to_s
+
+#
+# Static libfreeglut build tasks
+#
+directory STATIC_LIBFREEGLUT_BUILDDIR.to_s
+
+# libfreeglut source file should be stored there
+file LIBFREEGLUT_TARBALL => STATIC_SOURCESDIR do |t|
+  # download the source file using wget or curl
+  chdir File.dirname(t.name) do
+    sh "wget '#{LIBFREEGLUT_SOURCE_URI}' -O #{LIBFREEGLUT_TARBALL}"
+  end
+end
+
+# Extract the libfreeglut builds
+file STATIC_LIBFREEGLUT_BUILDDIR => LIBFREEGLUT_TARBALL do |t|
+  sh 'tar', '-xzf', LIBFREEGLUT_TARBALL.to_s, '-C', STATIC_LIBFREEGLUT_BUILDDIR.parent.to_s
+end
+
+LIBFREEGLUT_ENV = [
+  "'CPPFLAGS=-I#{STATIC_INSTALLDIR}/include'",
+  "'LDFLAGS=-L#{STATIC_INSTALLDIR}/lib'",
+]
+# generate the makefile in a clean build location
+file LIBFREEGLUT_MAKEFILE => [STATIC_LIBFREEGLUT_BUILDDIR] do |t|
+  Dir.chdir( STATIC_LIBFREEGLUT_BUILDDIR ) do
+    options = [
+      "--target=#{CROSS_PREFIX}",
+      "--host=#{CROSS_PREFIX}",
+      "--build=#{RUBY_BUILD}",
+      "--prefix=#{STATIC_INSTALLDIR}",
+      "--enable-static",
+    ]
+
+    configure_path = STATIC_LIBFREEGLUT_BUILDDIR + 'configure'
+    sh "env #{[LIBFREEGLUT_ENV, configure_path.to_s, *options].join(" ")}"
+  end
+end
+
+# generate the makefile in a clean build location
+task LIBFREEGLUT_A => [LIBFREEGLUT_MAKEFILE] do |t|
+  Dir.chdir( STATIC_LIBFREEGLUT_BUILDDIR ) do
+    sh "make -j#{NUM_CPUS} install"
+  end
+end
+
+desc "compile static libraries"
+task :static_libs => [ LIBFREEGLUT_A ]
+
+desc 'cross compile required libs for win32'
+task :cross => [ :static_libs ]

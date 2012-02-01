@@ -36,6 +36,35 @@ After checking out the source, run:
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
 
+== Cross compiling for Windows
+
+Using rake-compiler a cross compiled opengl gem can be build on a Linux or MacOS X
+host for the win32 platform. The generated gem is statically linked against
+libfreeglut. Freeglut is downloaded and compiled from the sources.
+There are no runtime dependencies to any but the standard Windows
+DLLs.
+
+Install mingw32 using the instructions in rake-compiler's README.
+For Debian/Ubuntu it is <tt>apt-get install gcc-mingw-w64</tt> .
+Use ruby-1.8.7 for the following commands.
+
+Download and cross compile ruby 1.8 and 1.9 for win32 with:
+
+  rake-compiler cross-ruby VERSION=1.8.7-p357
+  rake-compiler cross-ruby VERSION=1.9.3-p0
+
+Download and cross compile opengl for win32:
+
+  rake cross native gem
+
+or with custom versions:
+
+  rake cross native gem RUBY_CC_VERSION=1.8.7:1.9.3 LIBFREEGLUT_VERSION=2.8.0
+
+If everything works, there should be ruby-opengl-VERSION-x86-mingw32.gem in the pkg
+directory.
+
+
 == License
 
 (The MIT License)

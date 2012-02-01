@@ -18,6 +18,7 @@ require 'rubygems'
 
 require 'hoe'
 require 'rake/extensiontask'
+load 'Rakefile.cross'
 
 hoe = Hoe.spec 'opengl' do
   developer 'Eric Hodel', 'drbrain@segment7.net'
@@ -40,6 +41,12 @@ end
 
 Rake::ExtensionTask.new 'opengl', hoe.spec do |ext|
   ext.lib_dir = 'lib/opengl'
+
+  ext.cross_compile = true
+  ext.cross_platform = ['i386-mingw32']
+  ext.cross_config_options += [
+    "--with-installed-dir=#{STATIC_INSTALLDIR}",
+  ]
 end
 
 task :test => :compile
