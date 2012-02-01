@@ -1,5 +1,8 @@
 #include "common.h"
 
+static GLvoid * (APIENTRY * fptr_glMapBuffer)(GLenum,GLenum);
+static GLboolean (APIENTRY * fptr_glUnmapBuffer)(GLenum);
+
 struct buffer {
   GLenum target;
   void *ptr;
@@ -9,9 +12,10 @@ struct buffer {
 static void
 buffer_free(void *ptr) {
   struct buffer *buf = ptr;
+  LOAD_GL_FUNC(glUnmapBuffer, "1.5");
 
   if (buf->ptr != NULL)
-    glUnmapBuffer(buf->target);
+    fptr_glUnmapBuffer(buf->target);
 }
 
 static size_t
@@ -28,11 +32,12 @@ static const rb_data_type_t buffer_type = {
 VALUE
 rb_gl_buffer_s_map(VALUE klass, VALUE _target, VALUE _access) {
   struct buffer *buf = ALLOC(struct buffer);
+  LOAD_GL_FUNC(glMapBuffer, "1.5");
 
   buf->target = RUBY2GLENUM(_target);
   buf->len    = 0;
 
-  buf->ptr = glMapBuffer(buf->target, RUBY2GLENUM(_access));
+  buf->ptr = fptr_glMapBuffer(buf->target, RUBY2GLENUM(_access));
 
   if (buf->ptr == NULL) {
     xfree(buf);
@@ -100,13 +105,14 @@ rb_gl_buffer_target(VALUE self) {
 static VALUE
 rb_gl_buffer_unmap(VALUE self) {
   struct buffer *buf;
+  LOAD_GL_FUNC(glUnmapBuffer, "1.5");
 
   TypedData_Get_Struct(self, struct buffer, &buffer_type, buf);
 
   if (!buf->ptr)
     return self;
 
-  glUnmapBuffer(buf->target);
+  fptr_glUnmapBuffer(buf->target);
 
   CHECK_GLERROR_FROM("glUnmapBuffer");
 
