@@ -125,14 +125,13 @@ GL##_type_ cary[]; \
 long maxlen; \
 { \
     long i; \
-    struct RArray* ary; \
-    ary = RARRAY(rb_Array(arg)); \
+    VALUE ary = rb_Array(arg); \
     if (maxlen < 1) \
         maxlen = RARRAY_LEN(ary); \
     else \
         maxlen = maxlen < RARRAY_LEN(ary) ? maxlen : RARRAY_LEN(ary); \
     for (i=0; i < maxlen; i++) \
-        cary[i] = (GL##_type_)_convert_(rb_ary_entry((VALUE)ary,i)); \
+        cary[i] = (GL##_type_)_convert_(rb_ary_entry(ary,i)); \
     return i; \
 }
 

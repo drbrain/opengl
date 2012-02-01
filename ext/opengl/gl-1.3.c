@@ -45,12 +45,11 @@ VALUE *argv; \
 VALUE obj; \
 { \
 	int num; \
-	VALUE args[5]; \
-	RArray *ary; \
+	VALUE ary, args[5]; \
 	switch (num = rb_scan_args(argc, argv, "23", &args[0], &args[1], &args[2], &args[3],&args[4])) { \
 	case 2: \
 		if (TYPE(args[1]) == T_ARRAY) { \
-		ary = RARRAY(args[1]); \
+		ary = args[1]; \
 		switch (RARRAY_LEN(ary)) { \
 			case 1: \
 			gl_MultiTexCoord1##_type_(obj,args[0],RARRAY_PTR(ary)[0]); \
