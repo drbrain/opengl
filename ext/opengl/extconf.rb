@@ -23,7 +23,7 @@ ok =
    have_library('glut32.lib',   'gluSolidTeapot')) ||
   (have_library('opengl32') &&
    have_library('glu32') &&
-   have_library('glut32')) ||
+   have_library('glut')) ||
   (have_library('GL',   'glVertex3d') &&
    have_library('GLU',  'gluLookAt') &&
    have_library('glut', 'glutSolidTeapot')) ||
