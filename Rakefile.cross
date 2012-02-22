@@ -94,6 +94,7 @@ end
 task LIBFREEGLUT_A => [LIBFREEGLUT_MAKEFILE] do |t|
   Dir.chdir( STATIC_LIBFREEGLUT_BUILDDIR ) do
     sh "make -j#{NUM_CPUS} install"
+    (STATIC_INSTALLDIR + "lib" + "libglut.dll.a").unlink
   end
 end
 
@@ -101,4 +102,6 @@ desc "compile static libraries"
 task :static_libs => [ LIBFREEGLUT_A ]
 
 desc 'cross compile required libs for win32'
-task :cross => [ :static_libs ]
+task :cross => [ :static_libs ] do
+  ENV['CROSS_COMPILING'] = 'yes'
+end
