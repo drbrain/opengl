@@ -22,7 +22,7 @@
 
 module OpenGL
 
-  VERSION = '1.0'
+  VERSION = '0.8.0.pre1'
 
 end
 
@@ -35,15 +35,15 @@ include Gl,Glu,Glut
 module GL
 	extend self
 	include Gl
-	
+
 	Gl.constants.each do |cn|
 		n = cn.to_s.sub(/^GL_/,'')
 		# due to ruby naming scheme, we can't export constants with leading decimal,
 		# e.g. (Gl::)GL_2D would under old syntax become (GL::)2D which is illegal
-		next if n =~ /^[0-9]/ 
+		next if n =~ /^[0-9]/
 		const_set( n, Gl.const_get( cn ) )
 	end
-	
+
 	Gl.methods( false ).each do |mn|
 		n = mn.to_s.sub(/^gl/,'')
 		alias_method( n, mn )
@@ -56,12 +56,12 @@ end
 module GLU
 	extend self
 	include Glu
-	
+
 	Glu.constants.each do |cn|
 		n = cn.to_s.sub(/^GLU_/,'')
 		const_set( n, Glu.const_get( cn ) )
 	end
-	
+
 	Glu.methods( false ).each do |mn|
 		n = mn.to_s.sub(/^glu/,'')
 		alias_method( n, mn )
@@ -74,12 +74,12 @@ end
 module GLUT
 	extend self
 	include Glut
-	
+
 	Glut.constants.each do |cn|
 		n = cn.to_s.sub(/^GLUT_/,'')
 		const_set( n, Glut.const_get( cn ) )
 	end
-	
+
 	Glut.methods( false ).each do |mn|
 		n = mn.to_s.sub(/^glut/,'')
 		alias_method( n, mn )
