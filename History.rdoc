@@ -1,4 +1,6 @@
-=== 1.0 / 2012-01-10
+=== 0.8 / master HEAD
+
+* drop support for Ruby 1.8
 
 === 0.60.1 / 2009-02-16
 

@@ -12,20 +12,21 @@ GLU and GLUT libraries.
 
 == Features and Problems
 
-* FIX (list of features or problems)
+* available for Windows, Linux, OS-X
 
 == Synopsis
 
+  require 'opengl'
   FIX (code sample of usage)
 
 == Requirements
 
 * Ruby 1.9.2+
-* OpenGL
+* proper OpenGL, GLU and (free-)GLUT development files installed
 
 == Install
 
-  sudo gem install ruby-opengl
+  sudo gem install opengl
 
 == Developers
 
