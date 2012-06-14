@@ -1,9 +1,12 @@
 .autotest
+.gemtest
+.gitignore
 History.rdoc
 MIT-LICENSE
 Manifest.txt
 README.rdoc
 Rakefile
+Rakefile.cross
 docs/build_install.txt
 docs/extensions.txt.in
 docs/history.txt
