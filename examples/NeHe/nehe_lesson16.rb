@@ -1,6 +1,5 @@
 require 'opengl'
-require 'png'
-require 'png/reader'
+require 'chunky_png'
 
 class Lesson16
   include Gl
@@ -16,9 +15,9 @@ class Lesson16
     @filter = 0
 
     @fog_mode = [
-      GL_EXP,
-      GL_EXP2,
-      GL_LINEAR
+        GL_EXP,
+        GL_EXP2,
+        GL_LINEAR
     ]
 
     @fog_filter = 0
@@ -64,7 +63,7 @@ class Lesson16
   end
 
   def reshape width, height
-    width   = width.to_f
+    width = width.to_f
     height = height.to_f
     height = 1.0 if height.zero?
 
@@ -94,63 +93,63 @@ class Lesson16
     glBegin GL_QUADS do
       # front face
       glTexCoord2f(0.0, 1.0)
-      glVertex3f(-1.0, -1.0,  1.0)
+      glVertex3f(-1.0, -1.0, 1.0)
       glTexCoord2f(1.0, 1.0)
-      glVertex3f( 1.0, -1.0,  1.0)
+      glVertex3f(1.0, -1.0, 1.0)
       glTexCoord2f(1.0, 0.0)
-      glVertex3f( 1.0,  1.0,  1.0)
+      glVertex3f(1.0, 1.0, 1.0)
       glTexCoord2f(0.0, 0.0)
-      glVertex3f(-1.0,  1.0,  1.0)
+      glVertex3f(-1.0, 1.0, 1.0)
 
       # back face
       glTexCoord2f(0.0, 1.0)
       glVertex3f(-1.0, -1.0, -1.0)
       glTexCoord2f(1.0, 1.0)
-      glVertex3f(-1.0,  1.0, -1.0)
+      glVertex3f(-1.0, 1.0, -1.0)
       glTexCoord2f(1.0, 0.0)
-      glVertex3f( 1.0,  1.0, -1.0)
+      glVertex3f(1.0, 1.0, -1.0)
       glTexCoord2f(0.0, 0.0)
-      glVertex3f( 1.0, -1.0, -1.0)
+      glVertex3f(1.0, -1.0, -1.0)
 
       # top face
       glTexCoord2f(0.0, 1.0)
-      glVertex3f(-1.0,  1.0, -1.0)
+      glVertex3f(-1.0, 1.0, -1.0)
       glTexCoord2f(1.0, 1.0)
-      glVertex3f(-1.0,  1.0,  1.0)
+      glVertex3f(-1.0, 1.0, 1.0)
       glTexCoord2f(1.0, 0.0)
-      glVertex3f( 1.0,  1.0,  1.0)
+      glVertex3f(1.0, 1.0, 1.0)
       glTexCoord2f(0.0, 0.0)
-      glVertex3f( 1.0,  1.0, -1.0)
+      glVertex3f(1.0, 1.0, -1.0)
 
       # bottom face
       glTexCoord2f(1.0, 1.0)
       glVertex3f(-1.0, -1.0, -1.0)
       glTexCoord2f(1.0, 0.0)
-      glVertex3f( 1.0, -1.0, -1.0)
+      glVertex3f(1.0, -1.0, -1.0)
       glTexCoord2f(0.0, 0.0)
-      glVertex3f( 1.0, -1.0,  1.0)
+      glVertex3f(1.0, -1.0, 1.0)
       glTexCoord2f(0.0, 1.0)
-      glVertex3f(-1.0, -1.0,  1.0)
+      glVertex3f(-1.0, -1.0, 1.0)
 
       # right face
       glTexCoord2f(1.0, 0.0)
-      glVertex3f( 1.0, -1.0, -1.0)
+      glVertex3f(1.0, -1.0, -1.0)
       glTexCoord2f(0.0, 0.0)
-      glVertex3f( 1.0,  1.0, -1.0)
+      glVertex3f(1.0, 1.0, -1.0)
       glTexCoord2f(0.0, 1.0)
-      glVertex3f( 1.0,  1.0,  1.0)
+      glVertex3f(1.0, 1.0, 1.0)
       glTexCoord2f(1.0, 1.0)
-      glVertex3f( 1.0, -1.0,  1.0)
+      glVertex3f(1.0, -1.0, 1.0)
 
       # left face
       glTexCoord2f(0.0, 0.0)
       glVertex3f(-1.0, -1.0, -1.0)
       glTexCoord2f(0.0, 1.0)
-      glVertex3f(-1.0, -1.0,  1.0)
+      glVertex3f(-1.0, -1.0, 1.0)
       glTexCoord2f(1.0, 1.0)
-      glVertex3f(-1.0,  1.0,  1.0)
+      glVertex3f(-1.0, 1.0, 1.0)
       glTexCoord2f(1.0, 0.0)
-      glVertex3f(-1.0,  1.0, -1.0)
+      glVertex3f(-1.0, 1.0, -1.0)
     end
 
     @xrot += 0.03
@@ -166,34 +165,35 @@ class Lesson16
 
   def keyboard key, x, y
     case key
-    when ?\e
-      glutDestroyWindow @window
-      exit 0
-    when 'F' then 
-      @fullscreen = !@fullscreen
+      when ?\e
+        glutDestroyWindow @window
+        exit 0
+      when 'F' then
+        @fullscreen = !@fullscreen
 
-      if @fullscreen then
-        glutFullScreen
-      else
-        glutPositionWindow 0, 0
-      end
-    when 'f' then
-      @fog_filter += 1
-      @fog_filter %= 3
+        if @fullscreen then
+          glutFullScreen
+        else
+          glutPositionWindow 0, 0
+        end
+      when 'f' then
+        @fog_filter += 1
+        @fog_filter %= 3
 
-      glFogi GL_FOG_MODE, @fog_mode[@fog_filter]
-      puts "fog #{@fog_filter}"
+        glFogi GL_FOG_MODE, @fog_mode[@fog_filter]
+        puts "fog #{@fog_filter}"
     end
 
     glutPostRedisplay
   end
 
   def load_texture
-    png = PNG.load_file File.expand_path('../crate.png', __FILE__)
+    png = ChunkyPNG::Image.from_file(File.expand_path('../crate.png', __FILE__))
+
     height = png.height
     width = png.width
 
-    image = png.data.flatten.map { |c| c.values }.join
+    image = png.to_rgba_stream.each_byte.to_a
 
     @textures = glGenTextures 1
     glBindTexture GL_TEXTURE_2D, @textures[0]

@@ -1,6 +1,5 @@
 require 'opengl'
-require 'png'
-require 'png/reader'
+require 'chunky_png'
 
 class Lesson07
   include Gl
@@ -208,11 +207,12 @@ class Lesson07
   end
 
   def load_texture
-    png = PNG.load_file File.expand_path('../crate.png', __FILE__)
+    png = ChunkyPNG::Image.from_file(File.expand_path('../crate.png', __FILE__))
+
     height = png.height
     width = png.width
 
-    image = png.data.flatten.map { |c| c.values }.join
+    image = png.to_rgba_stream
 
     @textures = glGenTextures 3
     glBindTexture GL_TEXTURE_2D, @textures[0]
