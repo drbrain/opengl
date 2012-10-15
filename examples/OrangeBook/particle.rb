@@ -289,7 +289,7 @@ end
 
 special = lambda do |key,x,y|
 	case key
-	when GLUT_KEY_HOME:
+	when GLUT_KEY_HOME
 		$fXDiff = 206
 		$fYDiff = 16
 		$fZDiff = 10
@@ -299,13 +299,13 @@ special = lambda do |key,x,y|
 		$fYInertia = 0
 		$fScale = 0.25
 		$particleTime = 0
-	when GLUT_KEY_LEFT:
+	when GLUT_KEY_LEFT
 		$fXDiff -= 1
-	when GLUT_KEY_RIGHT:
+	when GLUT_KEY_RIGHT
 		$fXDiff += 1
-	when GLUT_KEY_UP:
+	when GLUT_KEY_UP
 		$fYDiff -= 1
-	when GLUT_KEY_DOWN:
+	when GLUT_KEY_DOWN
 		$fYDiff += 1
 	end
 end
@@ -349,7 +349,7 @@ def installParticleShaders(vs_name,fs_name)
 
 	#Bind generic attribute indices to attribute variable names
 	glBindAttribLocation($programObject, VELOCITY_ARRAY, "Velocity")
-	glBindAttribLocation($programObject, START_TIME_ARRAY, "StartTime");
+	glBindAttribLocation($programObject, START_TIME_ARRAY, "StartTime")
 
 	# Link the program object and print out the info log
 	glLinkProgram($programObject)

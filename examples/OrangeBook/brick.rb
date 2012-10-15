@@ -139,13 +139,13 @@ display = lambda do
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	
 	case $gleModel[0]
-		when :teapot :
+		when :teapot
 			glutSolidTeapot(0.6)
-		when :torus :
+		when :torus
 			glutSolidTorus(0.2, 0.6, 64, 64)
-		when :sphere :
+		when :sphere
 			glutSolidSphere(0.6, 64, 64)
-		when :cube :
+		when :cube
 			drawCube()
 	end
 	glFlush()
@@ -257,7 +257,7 @@ end
 
 special = lambda do |key,x,y|
 	case key
-	when GLUT_KEY_HOME:
+	when GLUT_KEY_HOME
 		$fXDiff = 0
 		$fYDiff = 35
 		$fZDiff = 0
@@ -266,13 +266,13 @@ special = lambda do |key,x,y|
 		$fXInertia = -0.5
 		$fYInertia = 0
 		$fScale = 1.0
-	when GLUT_KEY_LEFT:
+	when GLUT_KEY_LEFT
 		$fXDiff -= 1
-	when GLUT_KEY_RIGHT:
+	when GLUT_KEY_RIGHT
 		$fXDiff += 1
-	when GLUT_KEY_UP:
+	when GLUT_KEY_UP
 		$fYDiff -= 1
-	when GLUT_KEY_DOWN:
+	when GLUT_KEY_DOWN
 		$fYDiff += 1
 	end
 end
