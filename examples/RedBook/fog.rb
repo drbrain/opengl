@@ -109,7 +109,7 @@ def renderRedTeapot(x, y, z)
 	mat[1] = 0.626959
 	mat[2] = 0.626959
 	glMaterial(GL_FRONT, GL_SPECULAR, mat)
-	glMaterial(GL_FRONT, GL_SHININESS, 0.6 * 128.0)
+	glMaterial(GL_FRONT, GL_SHININESS, mat)
 	glutSolidTeapot(1.0)
 	glPopMatrix()
 end
