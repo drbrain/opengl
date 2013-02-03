@@ -1,6 +1,24 @@
-=== 0.8 / master HEAD
+=== 0.8.0 / 2013-02-03
 
-* drop support for Ruby 1.8
+* Drop support for Ruby 1.8.
+* Wrap glut callbacks in GVL release/acquire for better thread support.
+* Add OpenGL::Buffer for mapped buffers that allows writing.
+
+=== 0.7.0 / 2013-02-03
+
+* Better support of 64 bit systems.
+* Replace mkrf with extconf.rb, hoe and rake-compiler.
+* Switch to dlopen() from deprecated NSAddImage() and friends for OS X.
+* glBegin, glPushMatrix, glEnable and glEnableClientState now accept a block.
+* glEnable/glDisable and glEnableClientState/glDisableClientState now accept
+  multiple arguments.
+* Allow to_a-able objects for glColor*v, glRasterPos*v, glRect*v, glTexCoord*v,
+  glMaterial, glNormal and glVertex.
+* Fix unused param count in ARY2CMAT.
+* Fix a lot of bugs in the test suite.
+* Merge opengl C extensions into a single extension to avoid code duplication
+  in extconf.rb and simplify rebuilding based on header changes.
+* Add cross compilation tasks with download of freeglut for binary windows gems
 
 === 0.60.1 / 2009-02-16
 
