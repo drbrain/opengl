@@ -53,9 +53,9 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 
 	if (rb_scan_args(argc, argv, "01", &orig_arg) == 0)
 		orig_arg = rb_eval_string("[$0] + ARGV");
-	else 
+	else
 		Check_Type(orig_arg, T_ARRAY);
-	
+
 	/* converts commandline parameters from ruby to C, passes them
 	to glutInit and returns the parameters stripped of glut-specific
 	commands ("-display","-geometry" etc.) */
@@ -63,9 +63,9 @@ static VALUE glut_Init( int argc, VALUE * argv, VALUE obj)
 	largv = ALLOCA_N(char*, largc);
 	for (i = 0; i < largc; i++)
 		largv[i] = StringValueCStr(RARRAY_PTR(orig_arg)[i]);
-	
+
 	glutInit(&largc, largv);
-	
+
 	new_argv = rb_ary_new2(largc);
 	for (i = 0; i < largc; i++)
 		rb_ary_push(new_argv,rb_str_new2(largv[i]));
@@ -137,7 +137,7 @@ glut_CheckLoop(void) {
   return Qnil;
 }
 
-/* GLUT window sub-API. */ 
+/* GLUT window sub-API. */
 static VALUE glut_CreateWindow(argc, argv, obj)
 int argc;
 VALUE* argv;
@@ -504,7 +504,7 @@ static inline void * bitmap_font_map(int f)
 	switch (f) {
 		case 0: return (void *)GLUT_BITMAP_9_BY_15;
 		case 1: return (void *)GLUT_BITMAP_8_BY_13;
-		case 2: return (void *)GLUT_BITMAP_TIMES_ROMAN_10; 
+		case 2: return (void *)GLUT_BITMAP_TIMES_ROMAN_10;
 		case 3: return (void *)GLUT_BITMAP_TIMES_ROMAN_24;
 		case 4: return (void *)GLUT_BITMAP_HELVETICA_10;
 		case 5: return (void *)GLUT_BITMAP_HELVETICA_12;
@@ -956,7 +956,7 @@ void Init_glut() {
 	rb_define_module_function(mGlut, "glutIgnoreKeyRepeat", glut_IgnoreKeyRepeat, 1);
 	rb_define_module_function(mGlut, "glutPostWindowOverlayRedisplay", glut_PostWindowOverlayRedisplay, 1);
 	rb_define_module_function(mGlut, "glutPostWindowRedisplay", glut_PostWindowRedisplay, 1);
-	
+
 	rb_define_const(mGlut, "GLUT_API_VERSION", INT2NUM(GLUT_API_VERSION));
 	rb_define_const(mGlut, "GLUT_XLIB_IMPLEMENTATION", INT2NUM(GLUT_XLIB_IMPLEMENTATION));
 	rb_define_const(mGlut, "GLUT_RGB", INT2NUM(GLUT_RGB));
@@ -1133,5 +1133,13 @@ void Init_glut() {
 	rb_define_const(mGlut, "GLUT_GAME_MODE_PIXEL_DEPTH", INT2NUM(GLUT_GAME_MODE_PIXEL_DEPTH));
 	rb_define_const(mGlut, "GLUT_GAME_MODE_REFRESH_RATE", INT2NUM(GLUT_GAME_MODE_REFRESH_RATE));
 	rb_define_const(mGlut, "GLUT_GAME_MODE_DISPLAY_CHANGED", INT2NUM(GLUT_GAME_MODE_DISPLAY_CHANGED));
+
+	// Some OSX specific constants
+#ifdef GLUT_NO_RECOVERY
+	rb_define_const(mGlut, "GLUT_NO_RECOVERY", INT2NUM(GLUT_NO_RECOVERY));
+#endif
+#ifdef GLUT_3_2_CORE_PROFILE
+	rb_define_const(mGlut, "GLUT_3_2_CORE_PROFILE", INT2NUM(GLUT_3_2_CORE_PROFILE));
+#endif
 }
 

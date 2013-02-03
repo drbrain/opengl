@@ -77,6 +77,7 @@ module GLUT
 
 	Glut.constants.each do |cn|
 		n = cn.to_s.sub(/^GLUT_/,'')
+		next if n =~ /^[0-9]/
 		const_set( n, Glut.const_get( cn ) )
 	end
 
