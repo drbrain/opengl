@@ -185,7 +185,7 @@ glut_KeyboardFuncCallback(struct callback_args *args) {
 #if HAVE_SINGLE_BYTE_STRINGS
   VALUE key = rb_str_new((char *)&args->arg0.key, 1);
 #else
-  VALUE key = UINT2FIX((unsigned char)args->arg0.key);
+  VALUE key = UINT2NUM((unsigned char)args->arg0.key);
 #endif
   VALUE x = INT2FIX(args->arg1.x);
   VALUE y = INT2FIX(args->arg2.y);
@@ -215,7 +215,7 @@ glut_KeyboardUpFuncCallback(struct callback_args *args) {
 #if HAVE_SINGLE_BYTE_STRINGS
   VALUE key = rb_str_new((char *)args->arg0.key, 1);
 #else
-  VALUE key = UINT2FIX((unsigned char)args->arg0.key);
+  VALUE key = UINT2NUM((unsigned char)args->arg0.key);
 #endif
   VALUE x = INT2FIX((int)args->arg1.x);
   VALUE y = INT2FIX((int)args->arg2.y);
@@ -275,7 +275,7 @@ glut_MotionFuncCallback(struct callback_args *args) {
   VALUE y = INT2FIX(args->arg1.y);
 
 	if (!NIL_P(func))
-		rb_funcall(func, call_id, 2, x, y); 
+		rb_funcall(func, call_id, 2, x, y);
 
   return NULL;
 }
