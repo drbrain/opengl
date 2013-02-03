@@ -27,7 +27,7 @@ GLU and GLUT libraries.
 
 == Install
 
-  gem install opengl --pre
+  gem install opengl
 
 == Developers
 
