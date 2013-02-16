@@ -610,10 +610,10 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal([4.0, 5.0, 6.0], glGetDoublev(GL_CURRENT_NORMAL))
 
     glNormal3i(1, 2, 3)
-    assert_equal([0, 1, 2], glGetIntegerv(GL_CURRENT_NORMAL))
+    assert_equal([1, 2, 3], glGetIntegerv(GL_CURRENT_NORMAL))
 
     glNormal3iv([4, 5, 6])
-    assert_equal([3, 4, 5], glGetIntegerv(GL_CURRENT_NORMAL))
+    assert_equal([4, 5, 6], glGetIntegerv(GL_CURRENT_NORMAL))
 
     glNormal3b(2**7-1, 0, 2**7-1)
     assert_each_in_delta([1.0, 0.0, 1.0], glGetDoublev(GL_CURRENT_NORMAL))
@@ -675,7 +675,7 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal([0.5, 0.5, 0.5, 1.0], glGetDoublev(GL_LIGHT_MODEL_AMBIENT))
 
     glLightModeliv(GL_LIGHT_MODEL_AMBIENT, [2, 0, 2, 0])
-    assert_equal([1, 0, 1, 0], glGetIntegerv(GL_LIGHT_MODEL_AMBIENT))
+    assert_equal([2, 0, 2, 0], glGetIntegerv(GL_LIGHT_MODEL_AMBIENT))
   end
 
   def test_gltexcoordv
