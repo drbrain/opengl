@@ -85,26 +85,26 @@ class TestGlu < OpenGL::TestCase
 
   def test_gluproject
     pos = gluProject(1, 1, 1)
-    assert_equal [WINDOW_SIZE, WINDOW_SIZE, 1], pos
+    assert_equal pos, [WINDOW_SIZE, WINDOW_SIZE, 1]
 
     mp = glGetDoublev(GL_PROJECTION_MATRIX)
     mm = Matrix.rows(glGetDoublev(GL_MODELVIEW_MATRIX))
     view = glGetDoublev(GL_VIEWPORT)
     pos = gluProject(1, 1, 1, mp, mm, view)
-    assert_equal(pos, [WINDOW_SIZE, WINDOW_SIZE, 1])
+    assert_equal([WINDOW_SIZE, WINDOW_SIZE, 1], pos)
 
     assert_raises ArgumentError do pos = gluProject(1, 1, 1, mp, [1, 2, 3, 4], view) end
   end
 
   def test_gluunproject
     pos = gluUnProject(WINDOW_SIZE, WINDOW_SIZE, 1)
-    assert_equal(pos, [1, 1, 1])
+    assert_equal([1, 1, 1], pos)
 
     mp = glGetDoublev(GL_PROJECTION_MATRIX)
     mm = Matrix.rows(glGetDoublev(GL_MODELVIEW_MATRIX))
     view = glGetDoublev(GL_VIEWPORT)
     pos = gluUnProject(WINDOW_SIZE, WINDOW_SIZE, 1, mp, mm, view)
-    assert_equal(pos, [1, 1, 1])
+    assert_equal([1, 1, 1], pos)
     assert_raises ArgumentError do	pos = gluUnProject(WINDOW_SIZE, WINDOW_SIZE, 1, mp, [1, 2, 3, 4], view) end
   end
 
@@ -135,7 +135,7 @@ class TestGlu < OpenGL::TestCase
   def test_gluscaleimage
     image = ([0, 0, 0, 1, 1, 1] * 8).pack("f*") # 16 RGB pixels
     scaled = gluScaleImage(GL_RGB, 4, 4, GL_FLOAT, image, 2, 2, GL_FLOAT)
-    assert_equal(scaled.unpack("f*").length, 2*2*3)
+    assert_equal(2*2*3, scaled.unpack("f*").length)
   end
 
   def test_gluquadrics
