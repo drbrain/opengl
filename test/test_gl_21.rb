@@ -48,11 +48,11 @@ void main() {
     glShaderSource(vs, vertex_shader_source)
     glCompileShader(vs)
 
-    assert_equal(glGetShaderiv(vs, GL_COMPILE_STATUS), GL_TRUE)
+    assert_equal(GL_TRUE, glGetShaderiv(vs, GL_COMPILE_STATUS))
     glAttachShader(program, vs)
 
     glLinkProgram(program)	
-    assert_equal(glGetProgramiv(program, GL_LINK_STATUS), GL_TRUE)
+    assert_equal(GL_TRUE, glGetProgramiv(program, GL_LINK_STATUS))
     glUseProgram(program)
 
     tm23l = glGetUniformLocation(program, "testmat23")
@@ -89,42 +89,42 @@ void main() {
 
     skip "glUniformMatrix2x3fv complains but I don't know why"
     glUniformMatrix2x3fv(uniforms["testmat23"], GL_FALSE, [0, 1, 1, 0, 0, 1])
-    assert_equal(glGetUniformfv(program, uniforms["testmat23"]), [0, 1, 1, 0, 0, 1])
+    assert_equal([0, 1, 1, 0, 0, 1], glGetUniformfv(program, uniforms["testmat23"]))
     glUniformMatrix3x2fv(uniforms["testmat32"], GL_FALSE, [1, 0, 0, 1, 1, 0])
-    assert_equal(glGetUniformfv(program, uniforms["testmat32"]), [1, 0, 0, 1, 1, 0])
+    assert_equal([1, 0, 0, 1, 1, 0], glGetUniformfv(program, uniforms["testmat32"]))
 
     glUniformMatrix2x4fv(uniforms["testmat24"], GL_FALSE, [0, 1, 1, 0, 0, 1, 1, 0])
-    assert_equal(glGetUniformfv(program, uniforms["testmat24"]), [0, 1, 1, 0, 0, 1, 1, 0])
+    assert_equal([0, 1, 1, 0, 0, 1, 1, 0], glGetUniformfv(program, uniforms["testmat24"]))
     glUniformMatrix4x2fv(uniforms["testmat42"], GL_FALSE, [1, 0, 0, 1, 1, 0, 0, 1])
-    assert_equal(glGetUniformfv(program, uniforms["testmat42"]), [1, 0, 0, 1, 1, 0, 0, 1])
+    assert_equal([1, 0, 0, 1, 1, 0, 0, 1], glGetUniformfv(program, uniforms["testmat42"]))
 
     glUniformMatrix3x4fv(uniforms["testmat34"], GL_FALSE, [0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1])
-    assert_equal(glGetUniformfv(program, uniforms["testmat34"]), [0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1])
+    assert_equal([0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1], glGetUniformfv(program, uniforms["testmat34"]))
     glUniformMatrix4x3fv(uniforms["testmat43"], GL_FALSE, [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0])
-    assert_equal(glGetUniformfv(program, uniforms["testmat43"]), [1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0])
+    assert_equal([1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0], glGetUniformfv(program, uniforms["testmat43"]))
 
     # 2
     m = Matrix.rows([[0, 1], [1, 0], [0, 1]])
     glUniformMatrix2x3fv(uniforms["testmat23"], GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, uniforms["testmat23"]), [0, 1, 1, 0, 0, 1])
+    assert_equal([0, 1, 1, 0, 0, 1], glGetUniformfv(program, uniforms["testmat23"]))
     m = Matrix.rows([[0, 1, 1], [0, 0, 1]])
     glUniformMatrix3x2fv(uniforms["testmat32"], GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, uniforms["testmat32"]), [0, 1, 1, 0, 0, 1])
+    assert_equal([0, 1, 1, 0, 0, 1], glGetUniformfv(program, uniforms["testmat32"]))
 
     m = Matrix.rows([[0, 1], [1, 0], [0, 1], [1, 0]])
     glUniformMatrix2x4fv(uniforms["testmat24"], GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, uniforms["testmat24"]), [0, 1, 1, 0, 0, 1, 1, 0])
+    assert_equal([0, 1, 1, 0, 0, 1, 1, 0], glGetUniformfv(program, uniforms["testmat24"]))
     m = Matrix.rows([[0, 1, 1, 1], [0, 0, 1, 1]])
     glUniformMatrix4x2fv(uniforms["testmat42"], GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, uniforms["testmat42"]), [0, 1, 1, 1, 0, 0, 1, 1])
+    assert_equal([0, 1, 1, 1, 0, 0, 1, 1], glGetUniformfv(program, uniforms["testmat42"]))
 
     m = Matrix.rows([[0, 1, 0], [1, 0, 1], [0, 1, 0], [1, 0, 1]])
     glUniformMatrix3x4fv(uniforms["testmat34"], GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, uniforms["testmat34"]), [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+    assert_equal([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], glGetUniformfv(program, uniforms["testmat34"]))
 
     m = Matrix.rows([[0, 1, 1, 1], [0, 0, 1, 1], [1, 1, 0, 0]])
     glUniformMatrix4x3fv(uniforms["testmat43"], GL_FALSE, m)
-    assert_equal(glGetUniformfv(program, uniforms["testmat43"]), [0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0])
+    assert_equal([0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0], glGetUniformfv(program, uniforms["testmat43"]))
 
     # 3
     assert_raises ArgumentError do glUniformMatrix2x3fv(uniforms["testmat23"], GL_FALSE, [1, 2, 3, 4]) end
@@ -148,7 +148,7 @@ void main() {
 
     glBitmap(8, 8, 0, 0, 0, 0, 0)
     data = glReadPixels(0, 0, 8, 8, GL_RED, GL_UNSIGNED_BYTE)
-    assert_equal(data.unpack("C*"), [0, 255] * 32)
+    assert_equal([0, 255] * 32, data.unpack("C*"))
 
     glDeleteBuffers(buffers)
   end
@@ -166,15 +166,15 @@ void main() {
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
     glColorTable(GL_COLOR_TABLE, GL_RGB8, 4, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT), ct)
+    assert_equal(ct, glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT))
     glConvolutionFilter1D(GL_CONVOLUTION_1D, GL_RGB8, 4, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT), ct)
+    assert_equal(ct, glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT))
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
     glColorSubTable(GL_COLOR_TABLE, 0, 4, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT), ct2)
+    assert_equal(ct2, glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT))
     glConvolutionFilter2D(GL_CONVOLUTION_2D, GL_RGB8, 2, 2, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetConvolutionFilter(GL_CONVOLUTION_2D, GL_RGB, GL_FLOAT), ct2)
+    assert_equal(ct2, glGetConvolutionFilter(GL_CONVOLUTION_2D, GL_RGB, GL_FLOAT))
 
     glDeleteBuffers(buffers)
   end
@@ -188,7 +188,7 @@ void main() {
     glBufferData(GL_PIXEL_UNPACK_BUFFER, 2*3*4 *2, sf_a + sf_b, GL_DYNAMIC_DRAW)
 
     glSeparableFilter2D(GL_SEPARABLE_2D, GL_RGB8, 2, 2, GL_RGB, GL_FLOAT, 0, 2*3*4)
-    assert_equal(glGetSeparableFilter(GL_SEPARABLE_2D, GL_RGB, GL_FLOAT), [sf_a, sf_b])
+    assert_equal([sf_a, sf_b], glGetSeparableFilter(GL_SEPARABLE_2D, GL_RGB, GL_FLOAT))
 
     glDeleteBuffers(buffers)
   end
@@ -206,7 +206,7 @@ void main() {
     glDrawPixels(4, 4, GL_RGB, GL_FLOAT, 0)
 
     data = glReadPixels(0, 0, 4, 4, GL_RGB, GL_FLOAT)
-    assert_equal(data, image)
+    assert_equal(image, data)
 
     glDeleteBuffers(buffers)
   end
@@ -218,7 +218,7 @@ void main() {
     glBufferData(GL_PIXEL_UNPACK_BUFFER, 128, stipple, GL_DYNAMIC_DRAW)
 
     glPolygonStipple(0)
-    assert_equal(glGetPolygonStipple(), stipple)
+    assert_equal(stipple, glGetPolygonStipple())
     glDeleteBuffers(buffers)
   end
 
@@ -247,7 +247,7 @@ void main() {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
     begin
       glCompressedTexImage1D(GL_TEXTURE_1D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 4, 0, 16, 0)
-      assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D, 0), image_1)
+      assert_equal(image_1, glGetCompressedTexImage(GL_TEXTURE_1D, 0))
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
     end
@@ -255,7 +255,7 @@ void main() {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
     begin
       glCompressedTexSubImage1D(GL_TEXTURE_1D, 0, 0, 4, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, 0)
-      assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D, 0), image_2)
+      assert_equal(image_2, glGetCompressedTexImage(GL_TEXTURE_1D, 0))
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
     end
@@ -263,17 +263,17 @@ void main() {
     # 2D
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
     glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 2, 2, 0, 16, 0)
-    assert_equal(glGetCompressedTexImage(GL_TEXTURE_2D, 0), image_1)
+    assert_equal(image_1, glGetCompressedTexImage(GL_TEXTURE_2D, 0))
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
     glCompressedTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 2, 2, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, 0)
-    assert_equal(glGetCompressedTexImage(GL_TEXTURE_2D, 0), image_2)
+    assert_equal(image_2, glGetCompressedTexImage(GL_TEXTURE_2D, 0))
 
     # 3D
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
     begin
       glCompressedTexImage3D(GL_TEXTURE_3D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 2, 2, 1, 0, 16, 0)
-      assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D, 0), image_1)
+      assert_equal(image_1, glGetCompressedTexImage(GL_TEXTURE_3D, 0))
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
     end
@@ -281,7 +281,7 @@ void main() {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
     begin
       glCompressedTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, 2, 2, 1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, 0)
-      assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D, 0), image_2)
+      assert_equal(image_2, glGetCompressedTexImage(GL_TEXTURE_3D, 0))
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
     end
@@ -306,22 +306,22 @@ void main() {
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
     glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB8, 2, 2, 4, 0, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_FLOAT), image_1)
+    assert_equal(image_1, glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_FLOAT))
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
     glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, 2, 2, 4, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_FLOAT), image_2)
+    assert_equal(image_2, glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_FLOAT))
 
     # 2D
     glBindTexture(GL_TEXTURE_2D, textures[1])
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 4, 4, 0, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT), image_1)
+    assert_equal(image_1, glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT))
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 4, 4, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT), image_2)
+    assert_equal(image_2, glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT))
 
     # 1D
     glBindTexture(GL_TEXTURE_1D, textures[2])
@@ -329,11 +329,11 @@ void main() {
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
 
     glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB8, 16, 0, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetTexImage(GL_TEXTURE_1D, 0, GL_RGB, GL_FLOAT), image_1)
+    assert_equal(image_1, glGetTexImage(GL_TEXTURE_1D, 0, GL_RGB, GL_FLOAT))
 
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
     glTexSubImage1D(GL_TEXTURE_1D, 0, 0, 16, GL_RGB, GL_FLOAT, 0)
-    assert_equal(glGetTexImage(GL_TEXTURE_1D, 0, GL_RGB, GL_FLOAT), image_2)
+    assert_equal(image_2, glGetTexImage(GL_TEXTURE_1D, 0, GL_RGB, GL_FLOAT))
 
     glDeleteBuffers(buffers)
     glDeleteTextures(textures)
@@ -349,13 +349,13 @@ void main() {
     glBufferData(GL_PIXEL_UNPACK_BUFFER, 4*4+4*4+4*2, data_1+data_2+data_3, GL_DYNAMIC_DRAW)
 
     glPixelMapfv(GL_PIXEL_MAP_I_TO_I, 4, 0)
-    assert_equal(glGetPixelMapfv(GL_PIXEL_MAP_I_TO_I), [1, 2, 3, 4])
+    assert_equal([1, 2, 3, 4], glGetPixelMapfv(GL_PIXEL_MAP_I_TO_I))
 
     glPixelMapuiv(GL_PIXEL_MAP_I_TO_I, 4, 4*4)
-    assert_equal(glGetPixelMapuiv(GL_PIXEL_MAP_I_TO_I), [5, 6, 7, 8])
+    assert_equal([5, 6, 7, 8], glGetPixelMapuiv(GL_PIXEL_MAP_I_TO_I))
 
     glPixelMapusv(GL_PIXEL_MAP_I_TO_I, 4, 4*4+4*4)
-    assert_equal(glGetPixelMapusv(GL_PIXEL_MAP_I_TO_I), [9, 10, 11, 12])
+    assert_equal([9, 10, 11, 12], glGetPixelMapusv(GL_PIXEL_MAP_I_TO_I))
 
     glDeleteBuffers(buffers)
   end
@@ -373,7 +373,7 @@ void main() {
     glReadPixels(0, 0, 4, 4, GL_RGB, GL_FLOAT, 0)
 
     data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(data, image)
+    assert_equal(image, data)
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
     glDeleteBuffers(buffers)
@@ -442,7 +442,7 @@ void main() {
     glGetSeparableFilter(GL_SEPARABLE_2D, GL_RGB, GL_FLOAT, 0, 6*4, 0)
 
     data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(data, sf_a + sf_b)
+    assert_equal(sf_a + sf_b, data)
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
     glDeleteBuffers(buffers)
@@ -459,7 +459,7 @@ void main() {
 
     glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT, 0)
     data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(data, cf)
+    assert_equal(cf, data)
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
     glDeleteBuffers(buffers)
@@ -478,7 +478,7 @@ void main() {
     glGetHistogram(GL_HISTOGRAM, GL_FALSE, GL_RGB, GL_FLOAT, 0)
 
     data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(data.unpack("f*"), [2, 2, 2])
+    assert_equal([2, 2, 2], data.unpack("f*"))
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
     glDeleteBuffers(buffers)
@@ -497,7 +497,7 @@ void main() {
     glDrawPixels(2, 1, GL_RGB, GL_FLOAT, [0, 0, 0, 1, 1, 1].pack("f*"))
     glGetMinmax(GL_MINMAX, GL_FALSE, GL_RGB, GL_FLOAT, 0)
     data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(data.unpack("f*"), [0, 0, 0, 1, 1, 1])
+    assert_equal([0, 0, 0, 1, 1, 1], data.unpack("f*"))
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
     glDeleteBuffers(buffers)
@@ -518,7 +518,7 @@ void main() {
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, 0)
 
     data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(data, image)
+    assert_equal(image, data)
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
     glDeleteBuffers(buffers)
@@ -542,7 +542,7 @@ void main() {
     glGetCompressedTexImage(GL_TEXTURE_2D, 0, 0)
 
     data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(data, image)
+    assert_equal(image, data)
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
     glDeleteBuffers(buffers)

@@ -26,20 +26,20 @@ class TestGl13 < OpenGL::TestCase
 
 	def test_glsamplecoverage
 		supported?(1.3)
-		glSampleCoverage(0.0,GL_TRUE)
-		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_VALUE),0.0)
-		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT),GL_TRUE)
-		glSampleCoverage(1.0,GL_FALSE)
-		assert_equal(glGetDoublev(GL_SAMPLE_COVERAGE_VALUE),1.0)
-		assert_equal(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT),GL_FALSE)
+		glSampleCoverage(0.0, GL_TRUE)
+		assert_equal(0.0, glGetDoublev(GL_SAMPLE_COVERAGE_VALUE))
+		assert_equal(GL_TRUE, glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT))
+		glSampleCoverage(1.0, GL_FALSE)
+		assert_equal(1.0, glGetDoublev(GL_SAMPLE_COVERAGE_VALUE))
+		assert_equal(GL_FALSE, glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT))
 	end
 
 	def test_multitexture
 		supported?(1.3)
 		glActiveTexture(GL_TEXTURE1)
 		glClientActiveTexture(GL_TEXTURE2)
-		assert_equal(glGetIntegerv(GL_ACTIVE_TEXTURE),GL_TEXTURE1)
-		assert_equal(glGetIntegerv(GL_CLIENT_ACTIVE_TEXTURE),GL_TEXTURE2)
+		assert_equal(GL_TEXTURE1, glGetIntegerv(GL_ACTIVE_TEXTURE))
+		assert_equal(GL_TEXTURE2, glGetIntegerv(GL_CLIENT_ACTIVE_TEXTURE))
 	end
 
 	def test_transposematrix
@@ -56,33 +56,33 @@ class TestGl13 < OpenGL::TestCase
 
 		glMatrixMode(GL_MODELVIEW)
 		glLoadTransposeMatrixf(m_a)
-		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_a)
+		assert_equal(m_a, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX))
 
 		glLoadTransposeMatrixd(m_b)
-		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_b)
+		assert_equal(m_b, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX))
 
 		glLoadIdentity()
 		glMultTransposeMatrixf(m_a)
-		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_a)
+		assert_equal(m_a, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX))
 
 		glLoadIdentity()
 		glMultTransposeMatrixd(m_b)
-		assert_equal(glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX), m_b)
+		assert_equal(m_b, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX))
 
 		# 2
 		m = Matrix.rows([[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
 		glMatrixMode(GL_MODELVIEW)
 		glLoadTransposeMatrixf(m)
-		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		assert_equal(m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX))
 		glLoadIdentity()
 		glLoadTransposeMatrixd(m)
-		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		assert_equal(m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX))
 		glLoadIdentity()
 		glMultTransposeMatrixf(m)
-		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		assert_equal(m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX))
 		glLoadIdentity()
 		glMultTransposeMatrixd(m)
-		assert_equal(glGetDoublev(GL_MODELVIEW_MATRIX), m.to_a.transpose)
+		assert_equal(m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX))
 
 		assert_raises ArgumentError do glLoadTransposeMatrixf([1,2,3,4]) end
 		assert_raises ArgumentError do glLoadTransposeMatrixd([1,2,3,4]) end
@@ -108,36 +108,36 @@ class TestGl13 < OpenGL::TestCase
 		# 1D
 		begin 
 			glCompressedTexImage1D(GL_TEXTURE_1D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,4,0,16,image_1)
-			assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D,0), image_1)
+			assert_equal(image_1, glGetCompressedTexImage(GL_TEXTURE_1D,0))
 		rescue Gl::Error => err
 			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
 		begin 
 			glCompressedTexSubImage1D(GL_TEXTURE_1D,0,0,4,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,image_2)
-			assert_equal(glGetCompressedTexImage(GL_TEXTURE_1D,0), image_2)
+			assert_equal(image_2, glGetCompressedTexImage(GL_TEXTURE_1D,0))
 		rescue Gl::Error => err
 			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
 		# 2D
 		glCompressedTexImage2D(GL_TEXTURE_2D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,0,16,image_1)
-		assert_equal(glGetCompressedTexImage(GL_TEXTURE_2D,0), image_1)
+		assert_equal(image_1, glGetCompressedTexImage(GL_TEXTURE_2D,0))
 
 		glCompressedTexSubImage2D(GL_TEXTURE_2D,0,0,0,2,2,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,image_2)
-		assert_equal(glGetCompressedTexImage(GL_TEXTURE_2D,0), image_2)
+		assert_equal(image_2, glGetCompressedTexImage(GL_TEXTURE_2D,0))
 
 		# 3D
 		begin 
 			glCompressedTexImage3D(GL_TEXTURE_3D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,1,0,16,image_1)
-			assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D,0), image_1)
+			assert_equal(image_1, glGetCompressedTexImage(GL_TEXTURE_3D,0))
 		rescue Gl::Error => err
 			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
 		begin 
 			glCompressedTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, image_2)
-			assert_equal(glGetCompressedTexImage(GL_TEXTURE_3D,0), image_2)
+			assert_equal(image_2, lGetCompressedTexImage(GL_TEXTURE_3D,0))
 		rescue Gl::Error => err
 			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
@@ -146,7 +146,7 @@ class TestGl13 < OpenGL::TestCase
 
 		n = glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS)
 		if (n>0)
-			assert_equal(glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS).size,n)
+			assert_equal(n, glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS).size)
 		end
 	end
 	
@@ -157,72 +157,72 @@ class TestGl13 < OpenGL::TestCase
 
 		# 1
 		glMultiTexCoord1d(GL_TEXTURE1, 1.0)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,0,0,1])
+		assert_equal([1,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord1dv(GL_TEXTURE1, [0.0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord1f(GL_TEXTURE1, 1.0)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,0,0,1])
+		assert_equal([1,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord1fv(GL_TEXTURE1, [0.0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord1i(GL_TEXTURE1, 1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,0,0,1])
+		assert_equal([1,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord1iv(GL_TEXTURE1, [0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord1s(GL_TEXTURE1, 1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,0,0,1])
+		assert_equal([1,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord1sv(GL_TEXTURE1, [0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		# 2
 		glMultiTexCoord2d(GL_TEXTURE1, 1.0,1.0)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,0,1])
+		assert_equal([1,1,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord2dv(GL_TEXTURE1, [0.0,0.0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord2f(GL_TEXTURE1, 1.0,1.0)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,0,1])
+		assert_equal([1,1,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord2fv(GL_TEXTURE1, [0.0,0.0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord2i(GL_TEXTURE1, 1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,0,1])
+		assert_equal([1,1,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord2iv(GL_TEXTURE1, [0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord2s(GL_TEXTURE1, 1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,0,1])
+		assert_equal([1,1,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord2sv(GL_TEXTURE1, [0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		# 3
 		glMultiTexCoord3d(GL_TEXTURE1, 1.0,1.0,1.0)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord3dv(GL_TEXTURE1, [0.0,0.0,0.0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord3f(GL_TEXTURE1, 1.0,1.0,1.0)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord3fv(GL_TEXTURE1, [0.0,0.0,0.0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord3i(GL_TEXTURE1, 1,1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord3iv(GL_TEXTURE1, [0,0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord3s(GL_TEXTURE1, 1,1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord3sv(GL_TEXTURE1, [0,0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,1])
+		assert_equal([0,0,0,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		# 4
 		glMultiTexCoord4d(GL_TEXTURE1, 1.0,1.0,1.0,1.0)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord4dv(GL_TEXTURE1, [0.0,0.0,0.0,0.0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,0])
+		assert_equal([0,0,0,0], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord4f(GL_TEXTURE1, 1.0,1.0,1.0,1.0)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord4fv(GL_TEXTURE1, [0.0,0.0,0.0,0.0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,0])
+		assert_equal([0,0,0,0], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord4i(GL_TEXTURE1, 1,1,1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord4iv(GL_TEXTURE1, [0,0,0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,0])
+		assert_equal([0,0,0,0], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord4s(GL_TEXTURE1, 1,1,1,1)
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [1,1,1,1])
+		assert_equal([1,1,1,1], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 		glMultiTexCoord4sv(GL_TEXTURE1, [0,0,0,0])
-		assert_equal(glGetDoublev(GL_CURRENT_TEXTURE_COORDS), [0,0,0,0])
+		assert_equal([0,0,0,0], glGetDoublev(GL_CURRENT_TEXTURE_COORDS))
 
 		glActiveTexture(GL_TEXTURE0)
 	end
