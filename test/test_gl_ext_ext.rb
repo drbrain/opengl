@@ -56,7 +56,7 @@ class TestGlExtExt < OpenGL::TestCase
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rb[0])
     assert_equal(glIsRenderbufferEXT(rb[0]), true)
 
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, WINDOW_SIZE, WINDOW_SIZE)
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, WINDOW_SIZE, WINDOW_SIZE)
 
     assert_equal WINDOW_SIZE, glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_WIDTH_EXT)
     assert_equal WINDOW_SIZE, glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_HEIGHT_EXT)
@@ -216,7 +216,7 @@ class TestGlExtExt < OpenGL::TestCase
 
     sc = [0, 1, 0, 1, 0, 1].pack("f*")
 
-    glSecondaryColorPointerEXT(3, GL_FLOAT, 0, sc)
+    glSecondaryColorPointerEXT(3, GL_FLOAT, 12, sc)
     assert_equal 3,        glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_SIZE)
     assert_equal GL_FLOAT, glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_TYPE)
     assert_equal 12,       glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_STRIDE)
@@ -343,7 +343,7 @@ class TestGlExtExt < OpenGL::TestCase
     assert_equal 3.0, glGetDoublev(GL_CURRENT_FOG_COORD)
 
     fc = [1, 0].pack("f*")
-    glFogCoordPointerEXT(GL_FLOAT, 0, fc)
+    glFogCoordPointerEXT(GL_FLOAT, 4, fc)
     assert_equal GL_FLOAT, glGetIntegerv(GL_FOG_COORD_ARRAY_TYPE)
     assert_equal 4, glGetIntegerv(GL_FOG_COORD_ARRAY_STRIDE)
     assert_equal fc, glGetPointerv(GL_FOG_COORD_ARRAY_POINTER)
