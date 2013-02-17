@@ -251,7 +251,7 @@ class TestGl15 < OpenGL::TestCase
     glMultiDrawElements(GL_TRIANGLES, GL_UNSIGNED_BYTE, [3, 3], [0, 3])
 
     count = glRenderMode(GL_RENDER)
-    assert_equal 2 * (3 * 3 + 2), count
+    assert_equal count, 2 * (3 * 3 + 2)
 
     glDisableClientState(GL_VERTEX_ARRAY)
     glDeleteBuffers(buffers)

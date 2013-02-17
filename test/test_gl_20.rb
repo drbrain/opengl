@@ -25,42 +25,42 @@ class TestGl20 < OpenGL::TestCase
 
   def test_glblendequationseparate
     glBlendEquationSeparate(GL_MIN, GL_MAX)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB), GL_MIN)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA), GL_MAX)
+    assert_equal(GL_MIN, glGetIntegerv(GL_BLEND_EQUATION_RGB))
+    assert_equal(GL_MAX, glGetIntegerv(GL_BLEND_EQUATION_ALPHA))
     glBlendEquationSeparate(GL_MAX, GL_MIN)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB), GL_MAX)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA), GL_MIN)
+    assert_equal(GL_MAX, glGetIntegerv(GL_BLEND_EQUATION_RGB))
+    assert_equal(GL_MIN, glGetIntegerv(GL_BLEND_EQUATION_ALPHA))
   end
 
   def test_stencilops
     glStencilOpSeparate(GL_FRONT, GL_ZERO, GL_INCR, GL_DECR)
-    assert_equal(glGetIntegerv(GL_STENCIL_FAIL), GL_ZERO)
-    assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL), GL_INCR)
-    assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS), GL_DECR)
+    assert_equal(GL_ZERO, glGetIntegerv(GL_STENCIL_FAIL))
+    assert_equal(GL_INCR, glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL))
+    assert_equal(GL_DECR, glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS))
     glStencilOpSeparate(GL_FRONT, GL_INCR, GL_DECR, GL_ZERO)
-    assert_equal(glGetIntegerv(GL_STENCIL_FAIL), GL_INCR)
-    assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL), GL_DECR)
-    assert_equal(glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS), GL_ZERO)
+    assert_equal(GL_INCR, glGetIntegerv(GL_STENCIL_FAIL))
+    assert_equal(GL_DECR, glGetIntegerv(GL_STENCIL_PASS_DEPTH_FAIL))
+    assert_equal(GL_ZERO, glGetIntegerv(GL_STENCIL_PASS_DEPTH_PASS))
 
     glStencilFuncSeparate(GL_FRONT, GL_LEQUAL, 1, 0)
-    assert_equal(glGetIntegerv(GL_STENCIL_FUNC), GL_LEQUAL)
-    assert_equal(glGetIntegerv(GL_STENCIL_REF), 1)
-    assert_equal(glGetIntegerv(GL_STENCIL_VALUE_MASK), 0)
+    assert_equal(GL_LEQUAL, glGetIntegerv(GL_STENCIL_FUNC))
+    assert_equal(1, glGetIntegerv(GL_STENCIL_REF))
+    assert_equal(0, glGetIntegerv(GL_STENCIL_VALUE_MASK))
     glStencilFuncSeparate(GL_FRONT, GL_GEQUAL, 0, 1)
-    assert_equal(glGetIntegerv(GL_STENCIL_FUNC), GL_GEQUAL)
-    assert_equal(glGetIntegerv(GL_STENCIL_REF), 0)
-    assert_equal(glGetIntegerv(GL_STENCIL_VALUE_MASK), 1)
+    assert_equal(GL_GEQUAL, glGetIntegerv(GL_STENCIL_FUNC))
+    assert_equal(0, glGetIntegerv(GL_STENCIL_REF))
+    assert_equal(1, glGetIntegerv(GL_STENCIL_VALUE_MASK))
 
     glStencilMaskSeparate(GL_FRONT, 1)
-    assert_equal(glGetIntegerv( GL_STENCIL_WRITEMASK), 1)
+    assert_equal(1, glGetIntegerv( GL_STENCIL_WRITEMASK))
     glStencilMaskSeparate(GL_FRONT, 0)
-    assert_equal(glGetIntegerv(GL_STENCIL_WRITEMASK), 0)
+    assert_equal(0, glGetIntegerv(GL_STENCIL_WRITEMASK))
   end
 
   def test_gldrawbuf
     glDrawBuffers([GL_FRONT_LEFT, GL_BACK_LEFT])
-    assert_equal(glGetIntegerv(GL_DRAW_BUFFER0), GL_FRONT_LEFT)
-    assert_equal(glGetIntegerv(GL_DRAW_BUFFER1), GL_BACK_LEFT)
+    assert_equal(GL_FRONT_LEFT, glGetIntegerv(GL_DRAW_BUFFER0))
+    assert_equal(GL_BACK_LEFT, glGetIntegerv(GL_DRAW_BUFFER1))
   end
 
   def test_glvertexattrib
@@ -296,7 +296,7 @@ void main() {
 
     # f
     glUniform1f(tv1l, 2.0)
-    assert_equal(glGetUniformfv(program, tv1l), 2.0)
+    assert_equal(2.0, glGetUniformfv(program, tv1l))
     glUniform2f(tv2l, 2.0, 2.0)
     assert_equal([2.0, 2.0], glGetUniformfv(program, tv2l))
     glUniform3f(tv3l, 2.0, 2.0, 2.0)
@@ -305,7 +305,7 @@ void main() {
     assert_equal([2.0, 2.0, 2.0, 2.0], glGetUniformfv(program, tv4l))
     # i 
     glUniform1i(tv1il, 3)
-    assert_equal(glGetUniformiv(program, tv1il), 3)
+    assert_equal(3, glGetUniformiv(program, tv1il))
     glUniform2i(tv2il, 3, 3)
     assert_equal([3, 3], glGetUniformiv(program, tv2il))
     glUniform3i(tv3il, 3, 3, 3)
@@ -314,7 +314,7 @@ void main() {
     assert_equal([3, 3, 3, 3], glGetUniformiv(program, tv4il))
     # fv
     glUniform1fv(tv1l, [3.0])
-    assert_equal(glGetUniformfv(program, tv1l), 3.0)
+    assert_equal(3.0, glGetUniformfv(program, tv1l))
     glUniform2fv(tv2l, [3.0, 3.0])
     assert_equal([3.0, 3.0], glGetUniformfv(program, tv2l))
     glUniform3fv(tv3l, [3.0, 3.0, 3.0])
@@ -323,7 +323,7 @@ void main() {
     assert_equal([3.0, 3.0, 3.0, 3.0], glGetUniformfv(program, tv4l))
     # iv
     glUniform1iv(tv1il, [2])
-    assert_equal(glGetUniformiv(program, tv1il), 2)
+    assert_equal(2, glGetUniformiv(program, tv1il))
     glUniform2iv(tv2il, [2, 2])
     assert_equal([2, 2], glGetUniformiv(program, tv2il))
     glUniform3iv(tv3il, [2, 2, 2])
@@ -413,7 +413,7 @@ void main() {
     glBufferData(GL_ARRAY_BUFFER, 8*4, vaa, GL_DYNAMIC_DRAW)
 
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0)
-    assert_equal(glGetVertexAttribPointerv(1), 0)
+    assert_equal(0, glGetVertexAttribPointerv(1))
 
     glEnableVertexAttribArray(1)
 
