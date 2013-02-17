@@ -1,5 +1,7 @@
 = opengl
 
+{<img src="https://travis-ci.org/larskanis/opengl.png" alt="Build Status" />}[https://travis-ci.org/larskanis/opengl]
+
 source :: https://github.com/drbrain/opengl
 docs   :: http://ruby-opengl.rubyforge.org
 bugs   :: https://github.com/drbrain/opengl/issues
