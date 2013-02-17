@@ -27,13 +27,13 @@ class TestGl14 < OpenGL::TestCase
     sc = [0, 1, 0, 1, 0, 1].pack("f*")
     fc = [1, 0].pack("f*")
 
-    glSecondaryColorPointer(3, GL_FLOAT, 0, sc)
+    glSecondaryColorPointer(3, GL_FLOAT, 12, sc)
     assert_equal 3,        glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_SIZE)
     assert_equal GL_FLOAT, glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_TYPE)
     assert_equal 12,       glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_STRIDE)
     assert_equal sc,       glGetPointerv(GL_SECONDARY_COLOR_ARRAY_POINTER)
 
-    glFogCoordPointer(GL_FLOAT, 0, fc)
+    glFogCoordPointer(GL_FLOAT, 4, fc)
     assert_equal GL_FLOAT, glGetIntegerv(GL_FOG_COORD_ARRAY_TYPE)
     assert_equal 4,        glGetIntegerv(GL_FOG_COORD_ARRAY_STRIDE)
     assert_equal fc,       glGetPointerv(GL_FOG_COORD_ARRAY_POINTER)
