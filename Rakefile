@@ -55,7 +55,7 @@ task :test => :compile
 # All doc files that are destined for the website have filenames that
 # end in .txt.
 
-WEBSITE_MKDN = FileList['./docs/*.txt'] << 'README.txt'
+WEBSITE_MKDN = FileList['./docs/*.txt'] << 'README.rdoc'
 NICE_HTML_DOCS = WEBSITE_MKDN.ext('html')
 
 # defines columns in the HTML extension list
@@ -83,7 +83,7 @@ desc 'Generate website html.'
 task :gen_website => [:gen_glext_list] + NICE_HTML_DOCS do
   # Now that the website docs have been generated, copy them to ./website.
   cp "README.html", "website/index.html"
-  cp "doc/*.html", "ebsite"
+  cp "doc/*.html", "website"
 end
 
 # You'll see some intermediate .plain files get generated. These are html,
