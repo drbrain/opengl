@@ -63,7 +63,7 @@ VALUE obj,arg1;
 	GLsizei size;
 	GLenum *buffers;
 	LOAD_GL_FUNC(glDrawBuffers, "2.0");
-	Check_Type(arg1,T_ARRAY); 
+	Check_Type(arg1,T_ARRAY);
 	size = (GLsizei)RARRAY_LENINT(arg1);
 	buffers = ALLOC_N(GLenum,size);
 	ary2cuint(arg1,buffers,size);
@@ -212,7 +212,7 @@ static VALUE
 gl_GetProgramInfoLog(obj,arg1)
 VALUE obj,arg1;
 {
-	GLuint program;	
+	GLuint program;
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
 	VALUE buffer;
@@ -225,6 +225,7 @@ VALUE obj,arg1;
 		return rb_str_new2("");
 	buffer = allocate_buffer_with_string(max_size);
 	fptr_glGetProgramInfoLog(program,max_size,&ret_length,RSTRING_PTR(buffer));
+	rb_str_set_len(buffer, ret_length);
 	CHECK_GLERROR_FROM("glGetProgramInfoLog");
 	return buffer;
 }
@@ -250,7 +251,7 @@ static VALUE
 gl_GetShaderInfoLog(obj,arg1)
 VALUE obj,arg1;
 {
-	GLuint program;	
+	GLuint program;
 	GLint max_size = 0;
 	GLsizei ret_length = 0;
 	VALUE ret_buffer;
