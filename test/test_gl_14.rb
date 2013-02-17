@@ -27,13 +27,13 @@ class TestGl14 < OpenGL::TestCase
     sc = [0, 1, 0, 1, 0, 1].pack("f*")
     fc = [1, 0].pack("f*")
 
-    glSecondaryColorPointer(3, GL_FLOAT, 0, sc)
+    glSecondaryColorPointer(3, GL_FLOAT, 12, sc)
     assert_equal 3,        glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_SIZE)
     assert_equal GL_FLOAT, glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_TYPE)
     assert_equal 12,       glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_STRIDE)
     assert_equal sc,       glGetPointerv(GL_SECONDARY_COLOR_ARRAY_POINTER)
 
-    glFogCoordPointer(GL_FLOAT, 0, fc)
+    glFogCoordPointer(GL_FLOAT, 4, fc)
     assert_equal GL_FLOAT, glGetIntegerv(GL_FOG_COORD_ARRAY_TYPE)
     assert_equal 4,        glGetIntegerv(GL_FOG_COORD_ARRAY_STRIDE)
     assert_equal fc,       glGetPointerv(GL_FOG_COORD_ARRAY_POINTER)
@@ -45,15 +45,15 @@ class TestGl14 < OpenGL::TestCase
     glArrayElement(0)
     glEnd()
 
-    assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR), [0, 1, 0, 1])
-    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 1)
+    assert_equal([0, 1, 0, 1], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+    assert_equal(1, glGetDoublev(GL_CURRENT_FOG_COORD))
 
     glBegin(GL_TRIANGLES)
     glArrayElement(1)
     glEnd()
 
-    assert_equal(glGetDoublev(GL_CURRENT_SECONDARY_COLOR), [1, 0, 1, 1])
-    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 0)
+    assert_equal([1, 0, 1, 1], glGetDoublev(GL_CURRENT_SECONDARY_COLOR))
+    assert_equal(0, glGetDoublev(GL_CURRENT_FOG_COORD))
 
     glDisableClientState(GL_SECONDARY_COLOR_ARRAY)
     glDisableClientState(GL_FOG_COORD_ARRAY)
@@ -81,21 +81,21 @@ class TestGl14 < OpenGL::TestCase
 
   def test_glblendfuncseparate
     glBlendFuncSeparate(GL_SRC_COLOR, GL_SRC_COLOR, GL_SRC_COLOR, GL_SRC_COLOR)
-    assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB), GL_SRC_COLOR)
-    assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA), GL_SRC_COLOR)
-    assert_equal(glGetIntegerv(GL_BLEND_DST_RGB), GL_SRC_COLOR)
-    assert_equal(glGetIntegerv(GL_BLEND_DST_ALPHA), GL_SRC_COLOR)
+    assert_equal(GL_SRC_COLOR, glGetIntegerv(GL_BLEND_SRC_RGB))
+    assert_equal(GL_SRC_COLOR, glGetIntegerv(GL_BLEND_SRC_ALPHA))
+    assert_equal(GL_SRC_COLOR, glGetIntegerv(GL_BLEND_DST_RGB))
+    assert_equal(GL_SRC_COLOR, glGetIntegerv(GL_BLEND_DST_ALPHA))
   end
 
   def test_glpointparameter
     glPointParameterf(GL_POINT_SIZE_MIN, 2.0)
-    assert_equal(glGetDoublev(GL_POINT_SIZE_MIN), 2.0)
+    assert_equal(2.0, glGetDoublev(GL_POINT_SIZE_MIN))
 
     glPointParameterfv(GL_POINT_DISTANCE_ATTENUATION, [0, 1, 0])
     assert_equal([0, 1, 0], glGetDoublev(GL_POINT_DISTANCE_ATTENUATION))
 
     glPointParameteri(GL_POINT_SIZE_MAX, 4)
-    assert_equal(glGetDoublev(GL_POINT_SIZE_MAX), 4)
+    assert_equal(4, glGetDoublev(GL_POINT_SIZE_MAX))
 
     glPointParameteriv(GL_POINT_DISTANCE_ATTENUATION, [1, 0, 1])
     assert_equal([1, 0, 1], glGetDoublev(GL_POINT_DISTANCE_ATTENUATION))
@@ -103,14 +103,14 @@ class TestGl14 < OpenGL::TestCase
 
   def test_glfogcoord
     glFogCoordf(2.0)
-    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 2.0)
+    assert_equal(2.0, glGetDoublev(GL_CURRENT_FOG_COORD))
     glFogCoordfv([3.0])
-    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 3.0)
+    assert_equal(3.0, glGetDoublev(GL_CURRENT_FOG_COORD))
 
     glFogCoordd(2.0)
-    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 2.0)
+    assert_equal(2.0, glGetDoublev(GL_CURRENT_FOG_COORD))
     glFogCoorddv([3.0])
-    assert_equal(glGetDoublev(GL_CURRENT_FOG_COORD), 3.0)
+    assert_equal(3.0, glGetDoublev(GL_CURRENT_FOG_COORD))
   end
 
   def test_glsecondarycolor

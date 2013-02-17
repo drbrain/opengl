@@ -3,7 +3,7 @@ require 'opengl/test_case'
 class TestOpenGLBuffer < OpenGL::TestCase
 
   def test_class_map
-    buffer, = glGenBuffers 1
+    buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
 
@@ -18,7 +18,7 @@ class TestOpenGLBuffer < OpenGL::TestCase
   end
 
   def test_read_length
-    buffer, = glGenBuffers 1
+    buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
 
@@ -32,7 +32,7 @@ class TestOpenGLBuffer < OpenGL::TestCase
   end
 
   def test_read_offset
-    buffer, = glGenBuffers 1
+    buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
 
@@ -46,7 +46,7 @@ class TestOpenGLBuffer < OpenGL::TestCase
   end
 
   def test_read_unbounded
-    buffer, = glGenBuffers 1
+    buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
 
@@ -64,7 +64,7 @@ class TestOpenGLBuffer < OpenGL::TestCase
   end
 
   def test_write
-    buffer, = glGenBuffers 1
+    buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
 
@@ -85,7 +85,7 @@ class TestOpenGLBuffer < OpenGL::TestCase
   end
 
   def test_write_nil
-    buffer, = glGenBuffers 1
+    buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
 
@@ -104,7 +104,7 @@ class TestOpenGLBuffer < OpenGL::TestCase
   end
 
   def test_write_offset
-    buffer, = glGenBuffers 1
+    buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
 
@@ -120,7 +120,7 @@ class TestOpenGLBuffer < OpenGL::TestCase
   end
 
   def test_write_unmapped
-    buffer, = glGenBuffers 1
+    buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
 

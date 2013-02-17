@@ -30,8 +30,8 @@ class TestGlExtExt < OpenGL::TestCase
     supported?("GL_EXT_polygon_offset")
 
     glPolygonOffsetEXT(1.0, 2.0)
-    assert_equal(glGetIntegerv(GL_POLYGON_OFFSET_FACTOR_EXT), 1.0)
-    assert_equal(glGetIntegerv(GL_POLYGON_OFFSET_BIAS_EXT), 2.0)
+    assert_equal(1.0, glGetIntegerv(GL_POLYGON_OFFSET_FACTOR_EXT))
+    assert_equal(2.0, glGetIntegerv(GL_POLYGON_OFFSET_BIAS_EXT))
   end
 
   def test_gl_ext_framebuffer_object
@@ -49,14 +49,14 @@ class TestGlExtExt < OpenGL::TestCase
     fb = glGenFramebuffersEXT(1)
     assert(fb.size==1)
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fb[0])
-    assert_equal(glIsFramebufferEXT(fb[0]), true)
+    assert_equal(true, glIsFramebufferEXT(fb[0]))
 
     rb = glGenRenderbuffersEXT(1)
     assert(rb.size==1)
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rb[0])
-    assert_equal(glIsRenderbufferEXT(rb[0]), true)
+    assert_equal(true, glIsRenderbufferEXT(rb[0]))
 
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, WINDOW_SIZE, WINDOW_SIZE)
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, WINDOW_SIZE, WINDOW_SIZE)
 
     assert_equal WINDOW_SIZE, glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_WIDTH_EXT)
     assert_equal WINDOW_SIZE, glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_HEIGHT_EXT)
@@ -85,8 +85,8 @@ class TestGlExtExt < OpenGL::TestCase
     supported?("GL_EXT_gpu_program_parameters")
 
     glProgramEnvParameters4fvEXT(GL_VERTEX_PROGRAM_ARB, 1, [1, 2, 3, 4, 5, 6, 7, 8])
-    assert_equal(glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB, 1), [1, 2, 3, 4])
-    assert_equal(glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB, 2), [5, 6, 7, 8])
+    assert_equal([1, 2, 3, 4], glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB, 1))
+    assert_equal([5, 6, 7, 8], glGetProgramEnvParameterdvARB(GL_VERTEX_PROGRAM_ARB, 2))
   end
 
   def test_gl_ext_framebuffer_blit
@@ -110,9 +110,9 @@ class TestGlExtExt < OpenGL::TestCase
     glFramebufferTexture2DEXT(GL_DRAW_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texture[1], 0)
 
     status = glCheckFramebufferStatusEXT(GL_READ_FRAMEBUFFER_EXT)
-    assert_equal(status, GL_FRAMEBUFFER_COMPLETE_EXT)
+    assert_equal(GL_FRAMEBUFFER_COMPLETE_EXT, status)
     status = glCheckFramebufferStatusEXT(GL_DRAW_FRAMEBUFFER_EXT)
-    assert_equal(status, GL_FRAMEBUFFER_COMPLETE_EXT)
+    assert_equal(GL_FRAMEBUFFER_COMPLETE_EXT, status)
 
     glBlitFramebufferEXT(0, 0, 2, 2,
                          0, 0, 2, 2,
@@ -121,7 +121,7 @@ class TestGlExtExt < OpenGL::TestCase
 
     glBindTexture(GL_TEXTURE_2D, texture[1])
     tex = glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE).unpack("C*")
-    assert_equal(tex, data)
+    assert_equal(data, tex)
 
     glDeleteTextures(texture)
     glDeleteFramebuffersEXT(fbo)
@@ -134,7 +134,7 @@ class TestGlExtExt < OpenGL::TestCase
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, rb)
     glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT, 4, GL_RGBA, 2, 2)
     samples = glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_SAMPLES_EXT)
-    assert_equal(samples, 4)
+    assert_equal(4, samples)
 
     glDeleteRenderbuffersEXT(rb)
   end
@@ -142,25 +142,25 @@ class TestGlExtExt < OpenGL::TestCase
   def test_gl_ext_pointparameter
     supported?("GL_EXT_point_parameters")
     glPointParameterfEXT(GL_POINT_SIZE_MIN, 1.0)
-    assert_equal(glGetDoublev(GL_POINT_SIZE_MIN), 1.0)
+    assert_equal(1.0, glGetDoublev(GL_POINT_SIZE_MIN))
 
     glPointParameterfvEXT(GL_POINT_DISTANCE_ATTENUATION, [1, 0, 1])
-    assert_equal(glGetDoublev(GL_POINT_DISTANCE_ATTENUATION), [1, 0, 1])
+    assert_equal([1, 0, 1], glGetDoublev(GL_POINT_DISTANCE_ATTENUATION))
   end
 
   def test_gl_ext_stencil_two_side
     supported?("GL_EXT_stencil_two_side")
     glActiveStencilFaceEXT(GL_FRONT)
-    assert_equal(glGetIntegerv(GL_ACTIVE_STENCIL_FACE_EXT), GL_FRONT)
+    assert_equal(GL_FRONT, glGetIntegerv(GL_ACTIVE_STENCIL_FACE_EXT))
     glActiveStencilFaceEXT(GL_BACK)
-    assert_equal(glGetIntegerv(GL_ACTIVE_STENCIL_FACE_EXT), GL_BACK)
+    assert_equal(GL_BACK, glGetIntegerv(GL_ACTIVE_STENCIL_FACE_EXT))
   end
 
   def test_gl_ext_stencil_clear_tag
     supported?("GL_EXT_stencil_clear_tag")
     glStencilClearTagEXT(1, 2)
-    assert_equal(glGetIntegerv(GL_STENCIL_TAG_BITS_EXT), 1)
-    assert_equal(glGetIntegerv(GL_STENCIL_CLEAR_TAG_VALUE_EXT), 2)
+    assert_equal(1, glGetIntegerv(GL_STENCIL_TAG_BITS_EXT))
+    assert_equal(2, glGetIntegerv(GL_STENCIL_CLEAR_TAG_VALUE_EXT))
   end
 
   def test_gl_ext_secondary_color
@@ -216,7 +216,7 @@ class TestGlExtExt < OpenGL::TestCase
 
     sc = [0, 1, 0, 1, 0, 1].pack("f*")
 
-    glSecondaryColorPointerEXT(3, GL_FLOAT, 0, sc)
+    glSecondaryColorPointerEXT(3, GL_FLOAT, 12, sc)
     assert_equal 3,        glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_SIZE)
     assert_equal GL_FLOAT, glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_TYPE)
     assert_equal 12,       glGetIntegerv(GL_SECONDARY_COLOR_ARRAY_STRIDE)
@@ -249,33 +249,33 @@ class TestGlExtExt < OpenGL::TestCase
   def test_gl_ext_blend_minmax
     supported?("GL_EXT_blend_minmax")
     glBlendEquationEXT(GL_MIN_EXT)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_EXT), GL_MIN_EXT)
+    assert_equal(GL_MIN_EXT, glGetIntegerv(GL_BLEND_EQUATION_EXT))
     glBlendEquationEXT(GL_MAX_EXT)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_EXT), GL_MAX_EXT)
+    assert_equal(GL_MAX_EXT, glGetIntegerv(GL_BLEND_EQUATION_EXT))
   end
 
   def test_gl_ext_blend_func_separate
     supported?("GL_EXT_blend_func_separate")
     glBlendFuncSeparateEXT(GL_ZERO, GL_ONE, GL_ZERO, GL_ONE)
-    assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB_EXT), GL_ZERO)
-    assert_equal(glGetIntegerv(GL_BLEND_DST_RGB_EXT), GL_ONE)
-    assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA_EXT), GL_ZERO)
+    assert_equal(GL_ZERO, glGetIntegerv(GL_BLEND_SRC_RGB_EXT))
+    assert_equal(GL_ONE, glGetIntegerv(GL_BLEND_DST_RGB_EXT))
+    assert_equal(GL_ZERO, glGetIntegerv(GL_BLEND_SRC_ALPHA_EXT))
     assert_equal(glGetIntegerv(GL_BLEND_DST_ALPHA_EXT), GL_ONE)
     glBlendFuncSeparateEXT(GL_ONE, GL_ZERO, GL_ONE, GL_ZERO)
-    assert_equal(glGetIntegerv(GL_BLEND_SRC_RGB_EXT), GL_ONE)
-    assert_equal(glGetIntegerv(GL_BLEND_DST_RGB_EXT), GL_ZERO)
-    assert_equal(glGetIntegerv(GL_BLEND_SRC_ALPHA_EXT), GL_ONE)
-    assert_equal(glGetIntegerv(GL_BLEND_DST_ALPHA_EXT), GL_ZERO)
+    assert_equal(GL_ONE, glGetIntegerv(GL_BLEND_SRC_RGB_EXT))
+    assert_equal(GL_ZERO, glGetIntegerv(GL_BLEND_DST_RGB_EXT))
+    assert_equal(GL_ONE, glGetIntegerv(GL_BLEND_SRC_ALPHA_EXT))
+    assert_equal(GL_ZERO, glGetIntegerv(GL_BLEND_DST_ALPHA_EXT))
   end
 
   def test_gl_ext_blend_equation_separate
     supported?("GL_EXT_blend_equation_separate")
     glBlendEquationSeparateEXT(GL_FUNC_ADD, GL_FUNC_SUBTRACT)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB_EXT), GL_FUNC_ADD)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA_EXT), GL_FUNC_SUBTRACT)
+    assert_equal(GL_FUNC_ADD, glGetIntegerv(GL_BLEND_EQUATION_RGB_EXT))
+    assert_equal(GL_FUNC_SUBTRACT, glGetIntegerv(GL_BLEND_EQUATION_ALPHA_EXT))
     glBlendEquationSeparateEXT(GL_FUNC_SUBTRACT, GL_FUNC_ADD)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_RGB_EXT), GL_FUNC_SUBTRACT)
-    assert_equal(glGetIntegerv(GL_BLEND_EQUATION_ALPHA_EXT), GL_FUNC_ADD)
+    assert_equal(GL_FUNC_SUBTRACT, glGetIntegerv(GL_BLEND_EQUATION_RGB_EXT))
+    assert_equal(GL_FUNC_ADD, glGetIntegerv(GL_BLEND_EQUATION_ALPHA_EXT))
   end
 
   def test_gl_ext_depth_bounds_test
@@ -310,22 +310,22 @@ class TestGlExtExt < OpenGL::TestCase
     textures = glGenTexturesEXT(2)
     glBindTextureEXT(GL_TEXTURE_1D, textures[0])
     glBindTextureEXT(GL_TEXTURE_2D, textures[1])
-    assert_equal(glIsTextureEXT(textures[0]), true)
-    assert_equal(glAreTexturesResidentEXT(textures).size, 2)
+    assert_equal(true, glIsTextureEXT(textures[0]))
+    assert_equal(2, glAreTexturesResidentEXT(textures).size)
 
     glPrioritizeTexturesEXT(textures, [0.5, 1.0])
-    assert_equal(glGetTexParameterfv(GL_TEXTURE_1D, GL_TEXTURE_PRIORITY), 0.5)
-    assert_equal(glGetTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY), 1.0)
+    assert_equal(0.5, glGetTexParameterfv(GL_TEXTURE_1D, GL_TEXTURE_PRIORITY))
+    assert_equal(1.0, glGetTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY))
 
     glDeleteTexturesEXT(textures)
-    assert_equal(glIsTextureEXT(textures[0]), false)
+    assert_equal(false, glIsTextureEXT(textures[0]))
   end
 
   def test_gl_ext_compiled_vertex_array
     supported?("GL_EXT_compiled_vertex_array")
     glLockArraysEXT(1, 2)
-    assert_equal(glGetIntegerv(GL_ARRAY_ELEMENT_LOCK_FIRST_EXT), 1)
-    assert_equal(glGetIntegerv(GL_ARRAY_ELEMENT_LOCK_COUNT_EXT), 2)
+    assert_equal(1, glGetIntegerv(GL_ARRAY_ELEMENT_LOCK_FIRST_EXT))
+    assert_equal(2, glGetIntegerv(GL_ARRAY_ELEMENT_LOCK_COUNT_EXT))
     glUnlockArraysEXT()
   end
 
@@ -343,7 +343,7 @@ class TestGlExtExt < OpenGL::TestCase
     assert_equal 3.0, glGetDoublev(GL_CURRENT_FOG_COORD)
 
     fc = [1, 0].pack("f*")
-    glFogCoordPointerEXT(GL_FLOAT, 0, fc)
+    glFogCoordPointerEXT(GL_FLOAT, 4, fc)
     assert_equal GL_FLOAT, glGetIntegerv(GL_FOG_COORD_ARRAY_TYPE)
     assert_equal 4, glGetIntegerv(GL_FOG_COORD_ARRAY_STRIDE)
     assert_equal fc, glGetPointerv(GL_FOG_COORD_ARRAY_POINTER)
@@ -398,7 +398,7 @@ class TestGlExtExt < OpenGL::TestCase
 
     glDrawRangeElementsEXT(GL_POINTS, 0, 2, 3, GL_UNSIGNED_BYTE, [0, 1, 2].pack("C*"))
     count = glRenderMode(GL_RENDER)
-    assert_equal(count, 12)
+    assert_equal(12, count)
 
     glDisableClientState(GL_VERTEX_ARRAY)
   end
@@ -408,7 +408,7 @@ class TestGlExtExt < OpenGL::TestCase
     program = glCreateProgramObjectARB()
 
     glProgramParameteriEXT(program, GL_GEOMETRY_INPUT_TYPE_EXT , GL_LINES_ADJACENCY_EXT)
-    assert_equal(glGetObjectParameterivARB(program, GL_GEOMETRY_INPUT_TYPE_EXT), GL_LINES_ADJACENCY_EXT)
+    assert_equal(GL_LINES_ADJACENCY_EXT, glGetObjectParameterivARB(program, GL_GEOMETRY_INPUT_TYPE_EXT))
 
     glDeleteObjectARB(program)
   end
@@ -423,31 +423,31 @@ class TestGlExtExt < OpenGL::TestCase
     glProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, program)
 
     glVertexAttribI1iEXT(1, 1)
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 1)
+    assert_equal(1, glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
     glVertexAttribI1uiEXT(1, 2)
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 2)
+    assert_equal(2, glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
     glVertexAttribI1ivEXT(1, [3])
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 3)
+    assert_equal(3, glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
     glVertexAttribI1uivEXT(1, [4])
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 4)
+    assert_equal(4, glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
 
     glVertexAttribI2iEXT(1, 1, 2)
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2], [1, 2])
+    assert_equal([1, 2], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2])
     glVertexAttribI2uiEXT(1, 2, 3)
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2], [2, 3])
+    assert_equal([2, 3], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2])
     glVertexAttribI2ivEXT(1, [3, 4])
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2], [3, 4])
+    assert_equal([3, 4], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2])
     glVertexAttribI2uivEXT(1, [4, 5])
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2], [4, 5])
+    assert_equal([4, 5], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2])
 
     glVertexAttribI3iEXT(1, 1, 2, 3)
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 3], [1, 2, 3])
+    assert_equal([1, 2, 3], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 3])
     glVertexAttribI3uiEXT(1, 2, 3, 4)
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 3], [2, 3, 4])
+    assert_equal([2, 3, 4], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 3])
     glVertexAttribI3ivEXT(1, [3, 4, 5])
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 3], [3, 4, 5])
+    assert_equal([3, 4, 5], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 3])
     glVertexAttribI3uivEXT(1, [4, 5, 6])
-    assert_equal(glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 3], [4, 5, 6])
+    assert_equal([4, 5, 6], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 3])
 
     glVertexAttribI4iEXT(1, 1, 2, 3, 4)
     assert_equal [1, 2, 3, 4], glGetVertexAttribIivEXT(1, GL_CURRENT_VERTEX_ATTRIB_ARB)
@@ -572,7 +572,7 @@ void main() {
 
     glDrawElementsInstancedEXT(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, [0, 1, 2].pack("C*"), 2)
     count = glRenderMode(GL_RENDER)
-    assert_equal(count, 2*2*11)
+    assert_equal(2*2*11, count)
 
     glDisableClientState(GL_VERTEX_ARRAY)
   end
@@ -587,8 +587,8 @@ void main() {
     glBindTexture(GL_TEXTURE_BUFFER_EXT, tex)
     glTexBufferEXT(GL_TEXTURE_BUFFER_EXT, GL_RGBA32F_ARB, buf)
 
-    assert_equal(glGetIntegerv(GL_TEXTURE_BINDING_BUFFER_EXT), tex)
-    assert_equal(glGetIntegerv(GL_TEXTURE_BUFFER_FORMAT_EXT), GL_RGBA32F_ARB)
+    assert_equal(tex, glGetIntegerv(GL_TEXTURE_BINDING_BUFFER_EXT))
+    assert_equal(GL_RGBA32F_ARB, glGetIntegerv(GL_TEXTURE_BUFFER_FORMAT_EXT))
 
     glDeleteBuffers(buf)
     glDeleteTextures(tex)
@@ -601,8 +601,8 @@ void main() {
     glClearColorIuiEXT(1, 2, 3, 4)	
 
     glTexParameterIivEXT(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, [1, 2, 3, 4])
-    assert_equal(glGetTexParameterIivEXT(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR), [1, 2, 3, 4])
+    assert_equal([1, 2, 3, 4], glGetTexParameterIivEXT(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR))
     glTexParameterIuivEXT(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, [5, 6, 7, 8])
-    assert_equal(glGetTexParameterIuivEXT(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR), [5, 6, 7, 8])
+    assert_equal([5, 6, 7, 8], glGetTexParameterIuivEXT(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR))
   end
 end

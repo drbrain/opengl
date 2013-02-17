@@ -87,9 +87,9 @@ class TestGlExtArb < OpenGL::TestCase
   def test_gl_arb_vertex_program
     supported? "GL_ARB_vertex_program"
 
-    assert_equal(glIsProgramARB(0), false)
+    assert_equal(false, glIsProgramARB(0))
     programs = glGenProgramsARB(1)
-    assert_equal(programs.size, 1)
+    assert_equal(1, programs.size)
 
     program = "!!ARBvp1.0\nTEMP vv;\nEND"
 
@@ -128,17 +128,17 @@ class TestGlExtArb < OpenGL::TestCase
     assert_equal([5, 6, 7, 8], glGetProgramLocalParameterfvARB(GL_VERTEX_PROGRAM_ARB, 1))
 
     glVertexAttrib1dARB(1, 1)
-    assert_equal(glGetVertexAttribdvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 1)
+    assert_equal(1, glGetVertexAttribdvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
     glVertexAttrib1fARB(1, 2)
-    assert_equal(glGetVertexAttribfvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 2)
+    assert_equal(2, glGetVertexAttribfvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
     glVertexAttrib1sARB(1, 3)
-    assert_equal(glGetVertexAttribivARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 3)
+    assert_equal(3, glGetVertexAttribivARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
     glVertexAttrib1dvARB(1, [1])
-    assert_equal(glGetVertexAttribdvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 1)
+    assert_equal(1, glGetVertexAttribdvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
     glVertexAttrib1fvARB(1, [2])
-    assert_equal(glGetVertexAttribfvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 2)
+    assert_equal(2, glGetVertexAttribfvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
     glVertexAttrib1svARB(1, [3])
-    assert_equal(glGetVertexAttribivARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0], 3)
+    assert_equal(3, glGetVertexAttribivARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0])
 
     glVertexAttrib2dARB(1, 1, 2)
     assert_equal([1, 2], glGetVertexAttribdvARB(1, GL_CURRENT_VERTEX_ATTRIB_ARB)[0, 2])
@@ -263,10 +263,10 @@ class TestGlExtArb < OpenGL::TestCase
     supported? "GL_ARB_occlusion_query"
 
     queries = glGenQueriesARB(2)
-    assert_equal(queries.size, 2)
+    assert_equal(2, queries.size)
 
     glBeginQueryARB(GL_SAMPLES_PASSED, queries[1])
-    assert_equal(glIsQueryARB(queries[1]), true)
+    assert_equal(true, glIsQueryARB(queries[1]))
 
     glEndQueryARB(GL_SAMPLES_PASSED)
     r = glGetQueryObjectivARB(queries[1], GL_QUERY_RESULT_AVAILABLE)
@@ -274,7 +274,7 @@ class TestGlExtArb < OpenGL::TestCase
     assert(glGetQueryObjectuivARB(queries[1], GL_QUERY_RESULT)>=0)
 
     glDeleteQueriesARB(queries)
-    assert_equal(glIsQueryARB(queries[1]), false)
+    assert_equal(false, glIsQueryARB(queries[1]))
   end
 
   def test_gl_arb_shader_objects
@@ -296,7 +296,7 @@ class TestGlExtArb < OpenGL::TestCase
     assert_equal GL_TRUE, glGetObjectParameterivARB(vs, GL_OBJECT_COMPILE_STATUS_ARB)
 
     vslog = glGetInfoLogARB(vs)
-    assert_equal(vslog.class, String)
+    assert_equal(String, vslog.class)
 
     glAttachObjectARB(program, vs)
     assert_equal vs, glGetAttachedObjectsARB(program)
