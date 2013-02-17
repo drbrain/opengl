@@ -28,7 +28,7 @@ class TestGl13 < OpenGL::TestCase
 		supported?(1.3)
 		glSampleCoverage(0.0, GL_TRUE)
 		assert_equal(0.0, glGetDoublev(GL_SAMPLE_COVERAGE_VALUE))
-		assert_equal(GL_TRUE, glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT))
+		assert(glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT))
 		glSampleCoverage(1.0, GL_FALSE)
 		assert_equal(1.0, glGetDoublev(GL_SAMPLE_COVERAGE_VALUE))
 		assert_equal(GL_FALSE, glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT))
@@ -89,7 +89,7 @@ class TestGl13 < OpenGL::TestCase
 		assert_raises ArgumentError do glMultTransposeMatrixf([1,2,3,4]) end
 		assert_raises ArgumentError do glMultTransposeMatrixd([1,2,3,4]) end
 	end
-	
+
 	def test_texturecompression
 		supported?(1.3)
 		supported?("GL_EXT_texture_compression_s3tc")
@@ -106,14 +106,14 @@ class TestGl13 < OpenGL::TestCase
 		# Note: 1D and 3D compressed textures are not supported by S3TC/DXTn, and usually not supported at all
 
 		# 1D
-		begin 
+		begin
 			glCompressedTexImage1D(GL_TEXTURE_1D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,4,0,16,image_1)
 			assert_equal(image_1, glGetCompressedTexImage(GL_TEXTURE_1D,0))
 		rescue Gl::Error => err
 			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
-		begin 
+		begin
 			glCompressedTexSubImage1D(GL_TEXTURE_1D,0,0,4,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,16,image_2)
 			assert_equal(image_2, glGetCompressedTexImage(GL_TEXTURE_1D,0))
 		rescue Gl::Error => err
@@ -128,20 +128,20 @@ class TestGl13 < OpenGL::TestCase
 		assert_equal(image_2, glGetCompressedTexImage(GL_TEXTURE_2D,0))
 
 		# 3D
-		begin 
+		begin
 			glCompressedTexImage3D(GL_TEXTURE_3D,0,GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,2,2,1,0,16,image_1)
 			assert_equal(image_1, glGetCompressedTexImage(GL_TEXTURE_3D,0))
 		rescue Gl::Error => err
 			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
 
-		begin 
+		begin
 			glCompressedTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, image_2)
 			assert_equal(image_2, lGetCompressedTexImage(GL_TEXTURE_3D,0))
 		rescue Gl::Error => err
 			assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
 		end
-		
+
 		glDeleteTextures(textures)
 
 		n = glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS)
@@ -149,10 +149,10 @@ class TestGl13 < OpenGL::TestCase
 			assert_equal(n, glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS).size)
 		end
 	end
-	
+
 	def test_glmultitexcoord
 		supported?(1.3)
-	
+
 		glActiveTexture(GL_TEXTURE1)
 
 		# 1

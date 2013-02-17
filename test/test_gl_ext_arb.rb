@@ -72,7 +72,7 @@ class TestGlExtArb < OpenGL::TestCase
     assert_equal false, glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB)
     glSampleCoverageARB(1.0, GL_TRUE)
     assert_equal 1.0, glGetFloatv(GL_SAMPLE_COVERAGE_VALUE_ARB)
-    assert_equal true, glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB)
+    assert glGetBooleanv(GL_SAMPLE_COVERAGE_INVERT_ARB)
   end
 
   def test_gl_arb_color_buffer_float
@@ -96,7 +96,7 @@ class TestGlExtArb < OpenGL::TestCase
     glBindProgramARB(GL_VERTEX_PROGRAM_ARB, programs[0])
     glProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB, program)
     assert_equal program, glGetProgramStringARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_STRING_ARB)
-    assert_equal(glIsProgramARB(programs[0]), true)	
+    assert_equal(glIsProgramARB(programs[0]), true)
 
     assert_equal program.size, glGetProgramivARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_LENGTH_ARB)
     assert_equal programs[0], glGetProgramivARB(GL_VERTEX_PROGRAM_ARB, GL_PROGRAM_BINDING_ARB)
@@ -384,7 +384,7 @@ void main() {
     assert_equal([2.0, 2.0, 2.0], glGetUniformfvARB(program, tv3l))
     glUniform4fARB(tv4l, 2.0, 2.0, 2.0, 2.0)
     assert_equal([2.0, 2.0, 2.0, 2.0], glGetUniformfvARB(program, tv4l))
-    # i 
+    # i
     glUniform1iARB(tv1il, 3)
     assert_equal 3, glGetUniformivARB(program, tv1il)
     glUniform2iARB(tv2il, 3, 3)
