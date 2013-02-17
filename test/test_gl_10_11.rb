@@ -1285,7 +1285,7 @@ class TestGl10_11 < OpenGL::TestCase
 
     va = [0, 0, 0, 1, 1, 1].pack("f*")
 
-    glVertexPointer 2, GL_FLOAT, 0, va
+    glVertexPointer 2, GL_FLOAT, 8, va
     assert_equal va,       glGetPointerv(GL_VERTEX_ARRAY_POINTER)
     assert_equal 2,        glGetIntegerv(GL_VERTEX_ARRAY_SIZE)
     assert_equal GL_FLOAT, glGetIntegerv(GL_VERTEX_ARRAY_TYPE)
@@ -1320,22 +1320,22 @@ class TestGl10_11 < OpenGL::TestCase
     ea = [0].pack("C*")
     ca = [1, 0, 1, 0].pack("f*")
 
-    glNormalPointer(GL_FLOAT, 0, na)
+    glNormalPointer(GL_FLOAT, 12, na)
     assert_equal(GL_FLOAT, glGetIntegerv(GL_NORMAL_ARRAY_TYPE))
     assert_equal(12, glGetIntegerv(GL_NORMAL_ARRAY_STRIDE))
     assert_equal(na, glGetPointerv(GL_NORMAL_ARRAY_POINTER))
 
-    glTexCoordPointer(4, GL_FLOAT, 0, ta)
+    glTexCoordPointer(4, GL_FLOAT, 16, ta)
     assert_equal(4, glGetIntegerv(GL_TEXTURE_COORD_ARRAY_SIZE))
     assert_equal(GL_FLOAT, glGetIntegerv(GL_TEXTURE_COORD_ARRAY_TYPE))
     assert_equal(16, glGetIntegerv(GL_TEXTURE_COORD_ARRAY_STRIDE))
     assert_equal(ta, glGetPointerv(GL_TEXTURE_COORD_ARRAY_POINTER))
 
-    glEdgeFlagPointer(0, ea)
+    glEdgeFlagPointer(1, ea)
     assert_equal(1, glGetIntegerv(GL_EDGE_FLAG_ARRAY_STRIDE))
     assert_equal(ea, glGetPointerv(GL_EDGE_FLAG_ARRAY_POINTER))
 
-    glColorPointer(4, GL_FLOAT, 0, ca)
+    glColorPointer(4, GL_FLOAT, 16, ca)
     assert_equal(4, glGetIntegerv(GL_COLOR_ARRAY_SIZE))
     assert_equal(GL_FLOAT, glGetIntegerv(GL_COLOR_ARRAY_TYPE))
     assert_equal(16, glGetIntegerv(GL_COLOR_ARRAY_STRIDE))
