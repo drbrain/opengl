@@ -505,16 +505,16 @@ void main() {
     glUseProgramObjectARB(program)
 
     tv1il = glGetUniformLocation program, "testivec1"
-    refute_equal -1, tv1il, "testivec1 missing!"
+    refute_equal(-1, tv1il, "testivec1 missing!")
 
     tv2il = glGetUniformLocation program, "testivec2"
-    refute_equal -1, tv2il, "testivec2 missing!"
+    refute_equal(-1, tv2il, "testivec2 missing!")
 
     tv3il = glGetUniformLocation program, "testivec3"
-    refute_equal -1, tv3il, "testivec3 missing!"
+    refute_equal(-1, tv3il, "testivec3 missing!")
 
     tv4il = glGetUniformLocation program, "testivec4"
-    refute_equal -1, tv4il, "testivec4 missing!"
+    refute_equal(-1, tv4il, "testivec4 missing!")
 
     skip "glGetUniformLocation is broken" if
       glGetActiveUniform(program, tv1il).last != "testivec1"
@@ -554,7 +554,7 @@ void main() {
     assert_equal [3, 4, 5, 6], glGetUniformuivEXT(program, tv4il)
 
     glBindFragDataLocationEXT(program, 1, "test")
-    assert_equal -1, glGetFragDataLocationEXT(program, "test")
+    assert_equal(-1, glGetFragDataLocationEXT(program, "test"))
   end
 
   def test_gl_ext_draw_instanced

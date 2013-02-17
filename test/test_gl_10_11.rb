@@ -835,7 +835,7 @@ class TestGl10_11 < OpenGL::TestCase
     c = count / 11
     ret = []
     (0...c).each do |x|
-      i = x *11
+      i = x * 11
       type = data[0+i]
 
       v1 = [data[2+i], data[3+i], data[4+i]]

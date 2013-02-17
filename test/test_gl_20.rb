@@ -265,31 +265,31 @@ void main() {
     glUseProgram program
 
     test = glGetAttribLocation program, "test"
-    assert_equal -1, test
+    assert_equal(-1, test)
 
     tv1l = glGetUniformLocation program, "testvec1"
-    refute_equal -1, tv1l, "testvec1 missing!"
+    refute_equal(-1, tv1l, "testvec1 missing!")
 
     tv2l = glGetUniformLocation program, "testvec2"
-    refute_equal -1, tv2l, "testvec2 missing!"
+    refute_equal(-1, tv2l, "testvec2 missing!")
 
     tv3l = glGetUniformLocation program, "testvec3"
-    refute_equal -1, tv3l, "testvec3 missing!"
+    refute_equal(-1, tv3l, "testvec3 missing!")
 
     tv4l = glGetUniformLocation program, "testvec4"
-    refute_equal -1, tv4l, "testvec4 missing!"
+    refute_equal(-1, tv4l, "testvec4 missing!")
 
     tv1il = glGetUniformLocation program, "testivec1"
-    refute_equal -1, tv1il, "testivec1 missing!"
+    refute_equal(-1, tv1il, "testivec1 missing!")
 
     tv2il = glGetUniformLocation program, "testivec2"
-    refute_equal -1, tv2il, "testivec2 missing!"
+    refute_equal(-1, tv2il, "testivec2 missing!")
 
     tv3il = glGetUniformLocation program, "testivec3"
-    refute_equal -1, tv3il, "testivec3 missing!"
+    refute_equal(-1, tv3il, "testivec3 missing!")
 
     tv4il = glGetUniformLocation program, "testivec4"
-    refute_equal -1, tv4il, "testivec4 missing!"
+    refute_equal(-1, tv4il, "testivec4 missing!")
 
     assert_equal [1, GL_FLOAT_VEC4, "gl_Vertex"], glGetActiveAttrib(program, 0)
     assert_equal [1, GL_INT, "testivec1"], glGetActiveUniform(program, tv1il)

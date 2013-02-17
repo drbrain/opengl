@@ -56,17 +56,17 @@ void main() {
     glUseProgram(program)
 
     tm23l = glGetUniformLocation(program, "testmat23")
-    refute_equal -1, tm23l, "testmat23 missing!"
+    refute_equal(-1, tm23l, "testmat23 missing!")
     tm32l = glGetUniformLocation(program, "testmat32")
-    refute_equal -1, tm32l, "testmat32 missing!"
+    refute_equal(-1, tm32l, "testmat32 missing!")
     tm24l = glGetUniformLocation(program, "testmat24")
-    refute_equal -1, tm24l, "testmat24 missing!"
+    refute_equal(-1, tm24l, "testmat24 missing!")
     tm42l = glGetUniformLocation(program, "testmat42")
-    refute_equal -1, tm42l, "testmat42 missing!"
+    refute_equal(-1, tm42l, "testmat42 missing!")
     tm34l = glGetUniformLocation(program, "testmat34")
-    refute_equal -1, tm34l, "testmat34 missing!"
+    refute_equal(-1, tm34l, "testmat34 missing!")
     tm43l = glGetUniformLocation(program, "testmat43")
-    refute_equal -1, tm43l, "testmat43 missing!"
+    refute_equal(-1, tm43l, "testmat43 missing!")
 
     refute_equal(-1, glGetUniformLocation(program, "testmat23"),
                  "testmat23 missing!")
@@ -185,7 +185,7 @@ void main() {
 
     buffers = glGenBuffers(1)
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, 2*3*4 *2, sf_a + sf_b, GL_DYNAMIC_DRAW)
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, (2*3*4)*2, sf_a + sf_b, GL_DYNAMIC_DRAW)
 
     glSeparableFilter2D(GL_SEPARABLE_2D, GL_RGB8, 2, 2, GL_RGB, GL_FLOAT, 0, 2*3*4)
     assert_equal([sf_a, sf_b], glGetSeparableFilter(GL_SEPARABLE_2D, GL_RGB, GL_FLOAT))
