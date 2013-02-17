@@ -97,7 +97,7 @@ class TestGl10_11 < OpenGL::TestCase
       [0.0,0.0,1.0,0.0],
       [0.0,0.0,0.0,1.0]]
 
-    # 1
+    # 1	 
     glMatrixMode(GL_MODELVIEW)
     glLoadMatrixf(m_a)
     assert_equal(m_a, glGetDoublev(GL_MODELVIEW_MATRIX))
@@ -156,7 +156,7 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal(false, glGetBooleanv(GL_EDGE_FLAG))
 
     glEdgeFlag(GL_TRUE)
-    assert(glGetBooleanv(GL_EDGE_FLAG))
+    assert_equal(true, glGetBooleanv(GL_EDGE_FLAG))
 
     glEdgeFlagv([GL_FALSE])
     assert_equal(false, glGetBooleanv(GL_EDGE_FLAG))
@@ -202,7 +202,7 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal([true,false,true,false], glGetBooleanv(GL_COLOR_WRITEMASK))
 
     glDepthMask(GL_TRUE)
-    assert(glGetBooleanv(GL_DEPTH_WRITEMASK))
+    assert_equal(true, glGetBooleanv(GL_DEPTH_WRITEMASK))
     glDepthMask(GL_FALSE)
     assert_equal(false, glGetBooleanv(GL_DEPTH_WRITEMASK))
 
@@ -219,7 +219,7 @@ class TestGl10_11 < OpenGL::TestCase
       glEnd
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_OPERATION)
-    end
+    end	
   end
 
   def test_glfinish
@@ -229,7 +229,7 @@ class TestGl10_11 < OpenGL::TestCase
       glEnd
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_OPERATION)
-    end
+    end	
   end
 
   def test_glgetstring
@@ -1219,7 +1219,7 @@ class TestGl10_11 < OpenGL::TestCase
     i2 = ([1.0] * 3 + [0.0] * 3 ).pack("f*")
 
     # init
-    glClearColor(0,0,0,0)
+    glClearColor(0,0,0,0)	
     glClear(GL_ACCUM_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
     # left
     glDrawPixels(2,1,GL_RGB,GL_FLOAT,i1)
@@ -1263,7 +1263,7 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal(true, glIsList(base+1))
     assert_equal(false, glIsList(base+2))
 
-    #
+    #		
     buf = glFeedbackBuffer(256,GL_3D)
     glRenderMode(GL_FEEDBACK)
 
