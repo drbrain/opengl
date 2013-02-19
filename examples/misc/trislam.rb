@@ -17,7 +17,7 @@ include Gl,Glu,Glut
 
 require 'mathn'
 
-require 'OGLBench'
+require_relative 'OGLBench'
 
 VER = '0.1.24-ruby-p1'
 

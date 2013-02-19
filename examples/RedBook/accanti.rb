@@ -39,7 +39,7 @@
 # accanti.c
 
 require 'opengl'
-require 'jitter'
+require_relative 'jitter'
 include Gl,Glu,Glut
 
 #  Initialize lighting and other values.
