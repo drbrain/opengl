@@ -72,7 +72,7 @@ FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG)
 /* note: according to the specs, we return true if we
    get a non-false value (GL_TRUE or a number).      */ 
 #define GLBOOL2RUBY(x) \
-    (x) == GL_FALSE ? Qfalse : Qtrue
+    (x) == GL_TRUE ? Qtrue : ((x)==GL_FALSE ? Qfalse : INT2NUM((x)))
 #define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
 
 #define cond_GLBOOL2RUBY_FUNC(_name_,_type_,_conv_) \

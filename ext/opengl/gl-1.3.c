@@ -46,7 +46,7 @@ VALUE obj; \
 { \
 	int num; \
 	VALUE ary, args[5]; \
-	switch (num = rb_scan_args(argc, argv, "23", &args[0], &args[1], &args[2], &args[3],&args[4])) { \
+	switch (num = rb_scan_args(argc, argv, "23", &args[0], &args[1], &args[2], &args[3], &args[4])) { \
 	case 2: \
 		if (TYPE(args[1]) == T_ARRAY) { \
 		ary = args[1]; \
