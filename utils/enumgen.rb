@@ -90,7 +90,7 @@ begin
 	}
 
 	glu_enums = {:c => "../ext/glu/glu-enums.c",:h => "../ext/common/glu-enums.h",
-		:sources => "http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec",
+		:sources => ["http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec"],
 		:prefix => "GLU_"
 	}
 
@@ -107,6 +107,7 @@ begin
 		write_enums(enum_list.sort,task)
 	end
 	puts "All OK"
-rescue
-	puts $!
+rescue => e
+	puts e
+	puts e.backtrace
 end

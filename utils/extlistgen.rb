@@ -39,7 +39,7 @@ begin
 	
 	# read the list
 	extensions = []
-	CSV.open(infile, 'r') do |row|
+	CSV.foreach(infile, 'r') do |row|
 		next if row[0][0] == ?#  # discard comment line
 		extensions << row
 	end
