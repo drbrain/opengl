@@ -1,10 +1,10 @@
 = opengl
 
-{<img src="https://travis-ci.org/larskanis/opengl.png" alt="Build Status" />}[https://travis-ci.org/larskanis/opengl]
+{<img src="https://travis-ci.org/archSeer/opengl.png" alt="Build Status" />}[https://travis-ci.org/archSeer/opengl]
 
-source :: https://github.com/drbrain/opengl
-docs   :: http://ruby-opengl.rubyforge.org
-bugs   :: https://github.com/drbrain/opengl/issues
+source :: https://github.com/archSeer/opengl
+docs   :: http://archseer.github.com/opengl
+bugs   :: https://github.com/archSeer/opengl/issues
 email  :: mailto:ruby-opengl-devel@rubyforge.org
 
 == Description
@@ -24,7 +24,7 @@ GLU and GLUT libraries.
 == Requirements
 
 * Ruby 1.9.2+
-  *  see https://github.com/larskanis/opengl/tree/0.7 for Ruby 1.8.x compatible branch
+  *  see https://github.com/archSeer/opengl/tree/0.7 for Ruby 1.8.x compatible branch
 * proper OpenGL, GLU and (free-)GLUT development files installed
 
 == Install
