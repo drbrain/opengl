@@ -1,6 +1,6 @@
 = opengl
 
-{<img src="https://travis-ci.org/archSeer/opengl.png" alt="Build Status" />}[https://travis-ci.org/archSeer/opengl]
+{<img src="https://travis-ci.org/archSeer/opengl.png?branch=master" alt="Build Status" />}[https://travis-ci.org/archSeer/opengl]
 
 source :: https://github.com/archSeer/opengl
 docs   :: http://archseer.github.com/opengl
