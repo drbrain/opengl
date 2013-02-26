@@ -14,7 +14,7 @@ GLU and GLUT libraries.
 
 == Features and Problems
 
-* available for Windows, Linux, OS-X
+* available for Windows, Linux and OS X
 
 == Synopsis
 
