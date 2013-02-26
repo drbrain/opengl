@@ -1,3 +1,13 @@
+=== git
+
+* Replace UINT2FIX with UINT2NUM since UINT2FIX is not defined in MRI ruby.
+* Don't return the terminating null from C in GetProgramInfoLog.
+* Remove the outdated website, use gh-pages now.
+* Fixes in tests, resolved some upstream mesa bugs.
+* glMaterial: Before converting using to_a, check if conversion is possible.
+* Fix incorrect conversion of bool arguments to functions, they were getting
+  converted from C instead of to C (`GL_TRUE/true` got converted to `41`).
+
 === 0.8.0 / 2013-02-03
 
 * Drop support for Ruby 1.8.

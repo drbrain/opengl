@@ -7,15 +7,6 @@ Manifest.txt
 README.rdoc
 Rakefile
 Rakefile.cross
-docs/build_install.txt
-docs/extensions.txt.in
-docs/history.txt
-docs/requirements_and_design.txt
-docs/roadmap.txt
-docs/scientific_use.txt
-docs/supplies/page_template.html
-docs/thanks.txt
-docs/tutorial.txt
 examples/NeHe/NeHe.png
 examples/NeHe/crate.png
 examples/NeHe/glass.png
@@ -151,8 +142,3 @@ test/test_opengl_buffer.rb
 utils/README
 utils/enumgen.rb
 utils/extlistgen.rb
-utils/mkdn2html.rb
-utils/post-mkdn2html.rb
-website/images/ogl.jpg
-website/images/tab_bottom.gif
-website/style.css
