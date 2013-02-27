@@ -596,7 +596,7 @@ VALUE obj,arg1,arg2; \
 	GLint uniform_size = 0; \
 \
 	LOAD_GL_FUNC(gl##_name_, "GL_EXT_gpu_shader4"); \
-	LOAD_GL_FUNC(glGetActiveUniformARB, "GL_EXT_gpu_shader4"); \
+	LOAD_GL_FUNC(glGetActiveUniformARB, "GL_ARB_shader_objects"); \
 	program = (GLuint)NUM2UINT(arg1); \
 	location = (GLint)NUM2INT(arg2); \
 \
