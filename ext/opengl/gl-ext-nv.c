@@ -530,7 +530,7 @@ GETPROGRAMPARAM_FUNC_2(GetProgramEnvParameterIuivNV,GLuint,"GL_NV_gpu_program4")
 #undef GETPROGRAMPARAM_FUNC_2
 
 /* #323 GL_NV_geometry_program4 */
-GL_FUNC_LOAD_2(ProgramVertexLimitNV,GLvoid, GLenum,GLint, "GL_NV_gpu_program4")
+GL_FUNC_LOAD_2(ProgramVertexLimitNV,GLvoid, GLenum,GLint, "GL_EXT_geometry_shader4")
 GL_FUNC_LOAD_4(FramebufferTextureEXT,GLvoid, GLenum,GLenum,GLuint,GLuint, "GL_EXT_geometry_shader4")
 GL_FUNC_LOAD_5(FramebufferTextureLayerEXT,GLvoid, GLenum,GLenum,GLuint,GLint,GLint, "GL_EXT_geometry_shader4")
 GL_FUNC_LOAD_5(FramebufferTextureFaceEXT,GLvoid, GLenum,GLenum,GLuint,GLint,GLenum, "GL_EXT_geometry_shader4")
