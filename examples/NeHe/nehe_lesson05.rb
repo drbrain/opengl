@@ -176,4 +176,3 @@ class Lesson05
 end
 
 Lesson05.new if $0 == __FILE__
-

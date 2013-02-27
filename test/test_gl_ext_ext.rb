@@ -81,7 +81,7 @@ class TestGlExtExt < OpenGL::TestCase
     glDeleteTextures(t)
   end
 
-  def test_gl_ext_gpu_program_parameters		
+  def test_gl_ext_gpu_program_parameters
     supported?("GL_EXT_gpu_program_parameters")
 
     glProgramEnvParameters4fvEXT(GL_VERTEX_PROGRAM_ARB, 1, [1, 2, 3, 4, 5, 6, 7, 8])
@@ -597,8 +597,8 @@ void main() {
   def test_gl_ext_texture_integer
     supported?("GL_EXT_texture_integer")
 
-    glClearColorIiEXT(1, 2, 3, 4)	
-    glClearColorIuiEXT(1, 2, 3, 4)	
+    glClearColorIiEXT(1, 2, 3, 4)
+    glClearColorIuiEXT(1, 2, 3, 4)
 
     glTexParameterIivEXT(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, [1, 2, 3, 4])
     assert_equal([1, 2, 3, 4], glGetTexParameterIivEXT(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR))

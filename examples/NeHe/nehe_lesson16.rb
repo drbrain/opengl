@@ -205,4 +205,3 @@ class Lesson16
 end
 
 Lesson16.new
-

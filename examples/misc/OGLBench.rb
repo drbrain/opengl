@@ -132,39 +132,39 @@ $KNOWN_RES = {
     'whuxga'    => [ 7680, 4800, 'Wide Hexadecatuple Ultra XGA' ],
 }
 
-def OGLBench.w_h_from_geometry(geom) 
-	geometry = geom.downcase
+def OGLBench.w_h_from_geometry(geom)
+  geometry = geom.downcase
 
-	return $~[1,2] if geometry =~ /^(\d+)x(\d+)$/
+  return $~[1,2] if geometry =~ /^(\d+)x(\d+)$/
 
   dims = $KNOWN_RES[geometry] || [0, 0]
-	dims[0,2]
+  dims[0,2]
 end
 
-def OGLBench.show_known_geometries 
-	puts "Known geometries:"
+def OGLBench.show_known_geometries
+  puts "Known geometries:"
 
-	# convert the hash to array, sort by resolution and iterate
-	$KNOWN_RES.sort {|a,b| a[1][0,2] <=> b[1][0,2] }.each do |row|
-		name, res = row
-		x,y,fullname = res
-		printf "%-10s  %4d x %4d  %s\n", name, x, y, fullname
-	end
+  # convert the hash to array, sort by resolution and iterate
+  $KNOWN_RES.sort {|a,b| a[1][0,2] <=> b[1][0,2] }.each do |row|
+    name, res = row
+    x,y,fullname = res
+    printf "%-10s  %4d x %4d  %s\n", name, x, y, fullname
+  end
 end
 
 def OGLBench.show_usage(conf = $CACHED[:conf])
-	usage = conf[:usage]
+  usage = conf[:usage]
 
-	if (not conf[:extra_usage].empty?)
-		conf[:_USAGE_LABEL_GENERAL] = "\nGENERAL OPTIONS:"
-		usage = "#{conf[:usage]}\nOTHER OPTIONS:\n#{conf[:extra_usage]}"
-	else
-		conf[:_USAGE_LABEL_GENERAL] = ''
-	end
+  if (not conf[:extra_usage].empty?)
+    conf[:_USAGE_LABEL_GENERAL] = "\nGENERAL OPTIONS:"
+    usage = "#{conf[:usage]}\nOTHER OPTIONS:\n#{conf[:extra_usage]}"
+  else
+    conf[:_USAGE_LABEL_GENERAL] = ''
+  end
 
-	usage.gsub!(/\$(\w+)/) do conf[$1.to_sym] end
+  usage.gsub!(/\$(\w+)/) do conf[$1.to_sym] end
 
-	print usage
+  print usage
 end
 
 def OGLBench.show_basic_config(conf,gl_info,version)
@@ -181,11 +181,11 @@ CONFIG
 end
 
 def OGLBench.friendly_booleans(conf)
-	booleans = conf[:booleans].update(conf[:extra_booleans])
+  booleans = conf[:booleans].update(conf[:extra_booleans])
 
-	booleans.each_pair do	|logical,readable|
-		conf[readable] = (conf[logical] ? 'yes' : 'no')
-	end
+  booleans.each_pair do  |logical,readable|
+    conf[readable] = (conf[logical] ? 'yes' : 'no')
+  end
 end
 
 def OGLBench.basic_init(extra_conf = nil,extra_options = nil)
@@ -207,131 +207,130 @@ USAGE
 #  show_usage(conf)
 # FIXME: $0 ?
 
-	conf = {
-		:title       => 'Ruby-OpenGL Benchmark',
-		:usage       => usage,
-		:extra_usage => '',
-		"0".to_sym   => $0,
-	
-		:frames      => 100,
-		:seconds     => 10,
-		:geometry    => '300x300',
-		
-		:fullscreen  => false,
-		:known       => false,
-		:help        => false,
-		
-		:booleans    => {
-				:fullscreen => :fs,
-				:known      => :show_known,
-				:help       => :show_help,
-		},
-		:extra_booleans => {},
-	}
+  conf = {
+    :title       => 'Ruby-OpenGL Benchmark',
+    :usage       => usage,
+    :extra_usage => '',
+    "0".to_sym   => $0,
 
-	conf.update(extra_conf) if extra_conf
+    :frames      => 100,
+    :seconds     => 10,
+    :geometry    => '300x300',
 
-	opts = GetoptLong.new(
-		[ "--frames", "-f", GetoptLong::REQUIRED_ARGUMENT ],
-		[ "--seconds", "-s", GetoptLong::REQUIRED_ARGUMENT ],
-		[ "--geometry", "-g", GetoptLong::REQUIRED_ARGUMENT ],
-		[ "--fullscreen", "--fs", GetoptLong::NO_ARGUMENT ],
-		[ "--known", "-k","--known-geometries", GetoptLong::NO_ARGUMENT ],
-		[ "--help", "-h",  "-?", GetoptLong::NO_ARGUMENT ]
-	)
+    :fullscreen  => false,
+    :known       => false,
+    :help        => false,
 
-	opts.each do |opt, arg|
-		name = opt.tr('-','')
-		if arg.empty?
-			conf[name.to_sym] = true
-		else
-			conf[name.to_sym] = arg 
-		end
-	end
+    :booleans    => {
+        :fullscreen => :fs,
+        :known      => :show_known,
+        :help       => :show_help,
+    },
+    :extra_booleans => {},
+  }
 
-	friendly_booleans(conf)
+  conf.update(extra_conf) if extra_conf
+
+  opts = GetoptLong.new(
+    [ "--frames", "-f", GetoptLong::REQUIRED_ARGUMENT ],
+    [ "--seconds", "-s", GetoptLong::REQUIRED_ARGUMENT ],
+    [ "--geometry", "-g", GetoptLong::REQUIRED_ARGUMENT ],
+    [ "--fullscreen", "--fs", GetoptLong::NO_ARGUMENT ],
+    [ "--known", "-k","--known-geometries", GetoptLong::NO_ARGUMENT ],
+    [ "--help", "-h",  "-?", GetoptLong::NO_ARGUMENT ]
+  )
+
+  opts.each do |opt, arg|
+    name = opt.tr('-','')
+    if arg.empty?
+      conf[name.to_sym] = true
+    else
+      conf[name.to_sym] = arg
+    end
+  end
+
+  friendly_booleans(conf)
 
 
   geometry  = conf[:geometry]
   w,h = w_h_from_geometry(geometry)
-	conf[:width] = w.to_i
-	conf[:height] = h.to_i
+  conf[:width] = w.to_i
+  conf[:height] = h.to_i
 
-	$stdout.sync = true
+  $stdout.sync = true
 
-	if (conf[:help])
-		show_usage(conf)
-		exit(0)
-	end
+  if (conf[:help])
+    show_usage(conf)
+    exit(0)
+  end
 
-	if (conf[:known])
-		show_known_geometries()
-		exit(0)
-	end
+  if (conf[:known])
+    show_known_geometries()
+    exit(0)
+  end
 
 
-	app = init_opengl(conf)
-	gl_info = get_gl_info(app)
+  app = init_opengl(conf)
+  gl_info = get_gl_info(app)
 
-	[conf, app, gl_info]
+  [conf, app, gl_info]
 end
 
 
 def OGLBench.init_opengl(conf)
-	w,h = conf[:width], conf[:height]
+  w,h = conf[:width], conf[:height]
 
-	raise "Could not determine sane width and height from '#{conf[:geometry]}'.\n" 	unless w > 0 && h > 0;
+  raise "Could not determine sane width and height from '#{conf[:geometry]}'.\n"   unless w > 0 && h > 0;
 
-	glutInit()
-	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH)
-	glutInitWindowSize(w,h)
-	app = glutCreateWindow(conf[:title])
-	glViewport(0, 0, w, h)
+  glutInit()
+  glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH)
+  glutInitWindowSize(w,h)
+  app = glutCreateWindow(conf[:title])
+  glViewport(0, 0, w, h)
 
-	glMatrixMode(GL_PROJECTION)
-	glLoadIdentity
+  glMatrixMode(GL_PROJECTION)
+  glLoadIdentity
 
-	glMatrixMode(GL_MODELVIEW)
-	glLoadIdentity
+  glMatrixMode(GL_MODELVIEW)
+  glLoadIdentity
 
-	$CACHED[:conf] = conf
-	$CACHED[:app] = app
+  $CACHED[:conf] = conf
+  $CACHED[:app] = app
 
-	app
+  app
 end
 
 def OGLBench.get_gl_info(app = $CACHED[:app])
-	gl_info = {}
+  gl_info = {}
 
-	# These values are faked
-	conf = $CACHED[:conf]
-	gl_info[:r] = 8
-	gl_info[:g] = 8
-	gl_info[:b] = 8
-	gl_info[:a] = 0
-	gl_info[:d] = 24
+  # These values are faked
+  conf = $CACHED[:conf]
+  gl_info[:r] = 8
+  gl_info[:g] = 8
+  gl_info[:b] = 8
+  gl_info[:a] = 0
+  gl_info[:d] = 24
 
-	$CACHED[:gl_info] = gl_info
+  $CACHED[:gl_info] = gl_info
 
-	gl_info
+  gl_info
 end
 
 def OGLBench.fade_to_white(frac)
-	glColor4f(frac, frac, frac, 1)
-	glClearColor(frac, frac, frac, 1)
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-	glFinish
+  glColor4f(frac, frac, frac, 1)
+  glClearColor(frac, frac, frac, 1)
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+  glFinish
 end
 
 def OGLBench.draw_string(font_style,str,x,y)
   glRasterPos2i(x,y)
-	str.each_byte do |char|
+  str.each_byte do |char|
     glutBitmapCharacter(font_style, char)
-	end
+  end
 end
 
 # def init_bitmap_font
 # def texture_from_texels
 
 end # end module
-	

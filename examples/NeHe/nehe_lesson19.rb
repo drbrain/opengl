@@ -109,7 +109,7 @@ class Lesson19
 
     @particles.each do |particle|
       next unless particle.active
-      
+
       x = particle.x
       y = particle.y
       z = particle.z + @zoom
@@ -166,7 +166,7 @@ class Lesson19
     when ?\e
       glutDestroyWindow @window
       exit 0
-    when 'F' then 
+    when 'F' then
       @fullscreen = !@fullscreen
 
       if @fullscreen then
@@ -203,4 +203,3 @@ class Lesson19
 end
 
 Lesson19.new
-

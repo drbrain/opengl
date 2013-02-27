@@ -149,7 +149,7 @@ class Lesson06
     when ?\e
       glutDestroyWindow @window
       exit 0
-    when 'F' then 
+    when 'F' then
       @fullscreen = !@fullscreen
 
       if @fullscreen then
@@ -180,4 +180,3 @@ class Lesson06
 end
 
 Lesson06.new
-

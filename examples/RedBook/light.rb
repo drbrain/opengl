@@ -151,4 +151,3 @@ glutDisplayFunc :display
 glutReshapeFunc :reshape
 glutKeyboardFunc :keyboard
 glutMainLoop
-

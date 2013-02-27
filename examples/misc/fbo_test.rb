@@ -2,8 +2,8 @@
 # Bob Free bfree@graphcomp.com
 # http://graphcomp.com/opengl
 
-# This program is freely distributable without licensing fees 
-# and is provided without guarantee or warrantee expressed or 
+# This program is freely distributable without licensing fees
+# and is provided without guarantee or warrantee expressed or
 # implied. This program is -not- in the public domain.
 #
 # Conversion to ruby by Jan Dvorak <jan.dvorak@kraxnet.cz>
@@ -21,11 +21,11 @@ CYCLES = 1000
 
 # Set up types
 class Bench
-	attr_accessor :start,:secs
-	def initialize
-		@start = 0
-		@secs = 0
-	end
+  attr_accessor :start,:secs
+  def initialize
+    @start = 0
+    @secs = 0
+  end
 end
 
 # Set up globals
@@ -58,14 +58,14 @@ $rotY = 0.0
 
 # Start benchmark
 def startBench(pBench)
-	pBench.start = Time.now
-#	pBench.secs = 0.0
+  pBench.start = Time.now
+#  pBench.secs = 0.0
 end
 
 # Accumulate benchmark
 def endBench(pBench)
-	$now = Time.now
-	pBench.secs += $now - pBench.start
+  $now = Time.now
+  pBench.secs += $now - pBench.start
 end
 
 # Print benchmark
@@ -75,7 +75,7 @@ def printBench
     puts "No measurable time has elapsed"
     return
   end
-  
+
   puts "FBO Texture Rendering FPS: #{$frames / $textureBench.secs}"
   puts "Teapot Shader FPS: #{$frames / $teapotBench.secs}"
 
@@ -86,7 +86,7 @@ def printBench
   puts "OS/GLUT overhead secs/frame: #{overhead / $frames}"
 
   puts "Overall FPS: #{$frames / $appBench.secs}"
-	puts ""
+  puts ""
 end
 
 # Error handling
@@ -102,27 +102,27 @@ def checkVersion
   renderer = glGetString(GL_RENDERER)
   exts = glGetString(GL_EXTENSIONS)
 
-	puts PROGRAM
-	puts ""
-	puts "OpenGL: #{version}"
-	puts "Vendor: #{vendor}"
-	puts "Renderer: #{renderer}"
-	puts ""
+  puts PROGRAM
+  puts ""
+  puts "OpenGL: #{version}"
+  puts "Vendor: #{vendor}"
+  puts "Renderer: #{renderer}"
+  puts ""
 
-	if Gl.is_available?("GL_EXT_framebuffer_object") == false
+  if Gl.is_available?("GL_EXT_framebuffer_object") == false
     error("Extension not available","EXT_framebuffer_object")
-	end
+  end
 end
 
 # Load Extension Procs
 def initExtensions
-	# (Not needed)
+  # (Not needed)
 end
 
 # Initialize Vertex/Fragment Programs
 def initProgs
   # NOP Vertex shader
-	$vertexProg = <<-END_OF_PROGRAM
+  $vertexProg = <<-END_OF_PROGRAM
 !!ARBvp1.0
 TEMP vertexClip;
 DP4 vertexClip.x, state.matrix.mvp.row[0], vertex.position;
@@ -134,16 +134,16 @@ MOV result.color, vertex.color;
 MOV result.texcoord[0], vertex.texcoord;
 MOV result.texcoord[1], vertex.normal;
 END
-	END_OF_PROGRAM
+  END_OF_PROGRAM
 
   # Black Light Fragment shader
-	$fragProg = <<-END_OF_PROGRAM
+  $fragProg = <<-END_OF_PROGRAM
 !!ARBfp1.0
 TEMP decal,color;
 TEX decal, fragment.texcoord[0], texture[0], 2D;
 MUL result.color, decal, fragment.texcoord[1];
 END
-	END_OF_PROGRAM
+  END_OF_PROGRAM
 
   $idVertexProg,$idFragProg = glGenProgramsARB(2)
 
@@ -180,7 +180,7 @@ def initFBO
   glBindTexture(GL_TEXTURE_2D, $idTexture)
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, $textureWidth, $textureHeight,
-		0, GL_RGBA, GL_UNSIGNED_BYTE, nil)
+    0, GL_RGBA, GL_UNSIGNED_BYTE, nil)
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
@@ -191,7 +191,7 @@ def initFBO
   glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, $idRenderBuffer)
 
   glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24,
-		$textureWidth, $textureHeight)
+    $textureWidth, $textureHeight)
 
   glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
       GL_RENDERBUFFER_EXT, $idRenderBuffer)
@@ -215,7 +215,7 @@ def renderFBO
   glClearColor(0, 0, 0, 0)
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
   glColor3d(1.0, 1.0, 1.0)
- 
+
   glutWireTeapot(0.125)
 
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0)
@@ -235,9 +235,9 @@ end
 # Resize Window
 def resizeScene(width,height)
   if (height==0)
-		height = 1
+    height = 1
   end
-  
+
   glViewport(0, 0, width, height)
 
   glMatrixMode(GL_PROJECTION)
@@ -286,7 +286,7 @@ end
 # Frame handler
 display = lambda do
   # Run benchmark CYCLES times
-	$frames += 1
+  $frames += 1
   term() if ($frames > CYCLES)
   startBench($frameBench)
 
@@ -294,7 +294,7 @@ display = lambda do
   startBench($textureBench)
   renderFBO()
   endBench($textureBench)
-  
+
   # Set up ModelView
   glMatrixMode(GL_MODELVIEW)
   glLoadIdentity()
@@ -317,7 +317,7 @@ display = lambda do
   startBench($teapotBench)
   glEnable(GL_VERTEX_PROGRAM_ARB)
   glEnable(GL_FRAGMENT_PROGRAM_ARB)
- 
+
   glutSolidTeapot(1.0)
 
   glDisable(GL_FRAGMENT_PROGRAM_ARB)
@@ -353,4 +353,3 @@ init()
 startBench($appBench)
 glutMainLoop()
 exit(0)
-

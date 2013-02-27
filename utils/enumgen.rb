@@ -17,97 +17,97 @@
 require 'open-uri'
 
 def parse_enum_spec(infilename)
-	puts "Reading #{infilename} ..."
-	enum_list = {}
-	f = open(infilename,"r")
-	f.each do |line|
-		case line
-		when /^#|:|^$/ # skip comment, directive or empty line
-  		next 
-		when /^\tuse/ # enum alias for organization purpose, we don't need that
-  		next
-		when /^\t|^ / # enum
-			# remove trailing comment (if any) and split
-			name,equals,value,*rest = line.split("#")[0].split(" ")
-			# true/false are special constants
-			unless (name=="TRUE" or name=="FALSE")
-				enum_list[name] = value
-			end
+  puts "Reading #{infilename} ..."
+  enum_list = {}
+  f = open(infilename,"r")
+  f.each do |line|
+    case line
+    when /^#|:|^$/ # skip comment, directive or empty line
+      next
+    when /^\tuse/ # enum alias for organization purpose, we don't need that
+      next
+    when /^\t|^ / # enum
+      # remove trailing comment (if any) and split
+      name,equals,value,*rest = line.split("#")[0].split(" ")
+      # true/false are special constants
+      unless (name=="TRUE" or name=="FALSE")
+        enum_list[name] = value
+      end
     else
       puts "Unexpected line: #{line}"
-		end
-	end
-	f.close
-	enum_list
+    end
+  end
+  f.close
+  enum_list
 end
 
 def write_enums(enum_list, task)
-	# .h
-	puts "Writing #{task[:h]}"
-	File.open(task[:h], "w") do |f|
-		f << "/* This file was genereated on #{Time.now}" << "\n"
-		task[:sources].each do |source|	f << "   source: #{source}" << "\n" end
-		f << "*/" << "\n\n"
-		enum_list.each do |name,value|
-			gl_name = task[:prefix] + name
-			f << "#ifndef #{gl_name}" << "\n"
-			f << "#define #{gl_name} #{value}" << "\n"
-			f << "#endif" << "\n"
-		end		
-	end
+  # .h
+  puts "Writing #{task[:h]}"
+  File.open(task[:h], "w") do |f|
+    f << "/* This file was genereated on #{Time.now}" << "\n"
+    task[:sources].each do |source|  f << "   source: #{source}" << "\n" end
+    f << "*/" << "\n\n"
+    enum_list.each do |name,value|
+      gl_name = task[:prefix] + name
+      f << "#ifndef #{gl_name}" << "\n"
+      f << "#define #{gl_name} #{value}" << "\n"
+      f << "#endif" << "\n"
+    end
+  end
 
-	# .c
-	puts "Writing #{task[:c]}"
-	File.open(task[:c], "w") do |f|
-		f << "/* This file was genereated on #{Time.now}" << "\n"
-		task[:sources].each do |source|	f << "   source: #{source}" << "\n" end
-		f << "*/" << "\n\n"
-		f << '#include "../common/common.h"' << "\n"
-		f << "void #{task[:prefix].downcase}init_enums(VALUE module)" << "\n"
-		f << "{" << "\n"
+  # .c
+  puts "Writing #{task[:c]}"
+  File.open(task[:c], "w") do |f|
+    f << "/* This file was genereated on #{Time.now}" << "\n"
+    task[:sources].each do |source|  f << "   source: #{source}" << "\n" end
+    f << "*/" << "\n\n"
+    f << '#include "../common/common.h"' << "\n"
+    f << "void #{task[:prefix].downcase}init_enums(VALUE module)" << "\n"
+    f << "{" << "\n"
 
-		# true/false are special constants
-		f << "\trb_define_const(module, \"#{task[:prefix]}TRUE\", Qtrue);" << "\n"
-		f << "\trb_define_const(module, \"#{task[:prefix]}FALSE\", Qfalse);" << "\n"
-		f << "\n"
+    # true/false are special constants
+    f << "\trb_define_const(module, \"#{task[:prefix]}TRUE\", Qtrue);" << "\n"
+    f << "\trb_define_const(module, \"#{task[:prefix]}FALSE\", Qfalse);" << "\n"
+    f << "\n"
 
-		enum_list.each do |name,value|
-			gl_name = task[:prefix] + name
-			f << "\trb_define_const(module, \"#{gl_name}\", INT2NUM(#{gl_name}));" << "\n"			
-		end		
+    enum_list.each do |name,value|
+      gl_name = task[:prefix] + name
+      f << "\trb_define_const(module, \"#{gl_name}\", INT2NUM(#{gl_name}));" << "\n"
+    end
 
-		f << "}" << "\n"
-	end
+    f << "}" << "\n"
+  end
 end
 
 
 # main
 begin
-	gl_enums = {:c => "../ext/gl/gl-enums.c",:h => "../ext/common/gl-enums.h",
-		:sources => ["http://www.opengl.org/registry/api/enum.spec",
-		"http://www.opengl.org/registry/api/enumext.spec"],
-		:prefix => "GL_"
-	}
+  gl_enums = {:c => "../ext/gl/gl-enums.c",:h => "../ext/common/gl-enums.h",
+    :sources => ["http://www.opengl.org/registry/api/enum.spec",
+    "http://www.opengl.org/registry/api/enumext.spec"],
+    :prefix => "GL_"
+  }
 
-	glu_enums = {:c => "../ext/glu/glu-enums.c",:h => "../ext/common/glu-enums.h",
-		:sources => ["http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec"],
-		:prefix => "GLU_"
-	}
+  glu_enums = {:c => "../ext/glu/glu-enums.c",:h => "../ext/common/glu-enums.h",
+    :sources => ["http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec"],
+    :prefix => "GLU_"
+  }
 
-	task_list = [gl_enums, glu_enums]
+  task_list = [gl_enums, glu_enums]
 
-	# main loop	
-	task_list.each do |task|
-		enum_list = {}
-		# gather enums from each source file/url
-		task[:sources].each do |fname| 
-			enum_list.update(parse_enum_spec(fname))
-		end
-		# write to files
-		write_enums(enum_list.sort,task)
-	end
-	puts "All OK"
+  # main loop
+  task_list.each do |task|
+    enum_list = {}
+    # gather enums from each source file/url
+    task[:sources].each do |fname|
+      enum_list.update(parse_enum_spec(fname))
+    end
+    # write to files
+    write_enums(enum_list.sort,task)
+  end
+  puts "All OK"
 rescue => e
-	puts e
-	puts e.backtrace
+  puts e
+  puts e.backtrace
 end

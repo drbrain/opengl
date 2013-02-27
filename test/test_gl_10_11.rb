@@ -97,7 +97,7 @@ class TestGl10_11 < OpenGL::TestCase
       [0.0,0.0,1.0,0.0],
       [0.0,0.0,0.0,1.0]]
 
-    # 1	 
+    # 1
     glMatrixMode(GL_MODELVIEW)
     glLoadMatrixf(m_a)
     assert_equal(m_a, glGetDoublev(GL_MODELVIEW_MATRIX))
@@ -219,7 +219,7 @@ class TestGl10_11 < OpenGL::TestCase
       glEnd
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_OPERATION)
-    end	
+    end
   end
 
   def test_glfinish
@@ -229,7 +229,7 @@ class TestGl10_11 < OpenGL::TestCase
       glEnd
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_OPERATION)
-    end	
+    end
   end
 
   def test_glgetstring
@@ -350,8 +350,8 @@ class TestGl10_11 < OpenGL::TestCase
     data = buf.unpack("i*")
     assert(count==1) # number of records
     assert(data[0]==1) # number of hits in this record
-    #		assert(data[1]>0) # zbuffer near
-    #		assert(data[2]>0) # zbuffer far
+    #    assert(data[1]>0) # zbuffer near
+    #    assert(data[2]>0) # zbuffer far
     assert(data[3]==6) # name of hit
   end
 
@@ -1219,7 +1219,7 @@ class TestGl10_11 < OpenGL::TestCase
     i2 = ([1.0] * 3 + [0.0] * 3 ).pack("f*")
 
     # init
-    glClearColor(0,0,0,0)	
+    glClearColor(0,0,0,0)
     glClear(GL_ACCUM_BUFFER_BIT | GL_COLOR_BUFFER_BIT)
     # left
     glDrawPixels(2,1,GL_RGB,GL_FLOAT,i1)
@@ -1263,7 +1263,7 @@ class TestGl10_11 < OpenGL::TestCase
     assert_equal(true, glIsList(base+1))
     assert_equal(false, glIsList(base+2))
 
-    #		
+    #
     buf = glFeedbackBuffer(256,GL_3D)
     glRenderMode(GL_FEEDBACK)
 

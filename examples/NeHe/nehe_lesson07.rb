@@ -185,7 +185,7 @@ class Lesson07
       @filter %= 3
 
       puts "texture #{@filter}"
-    when 'F' then 
+    when 'F' then
       @fullscreen = !@fullscreen
 
       if @fullscreen then
@@ -234,4 +234,3 @@ class Lesson07
 end
 
 Lesson07.new
-

@@ -71,4 +71,3 @@ if ok then
   create_header
   create_makefile 'opengl/opengl'
 end
-

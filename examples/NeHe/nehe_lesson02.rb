@@ -113,4 +113,3 @@ glutReshapeFunc :reshape
 glutKeyboardFunc keyboard
 init_gl_window 640, 480
 glutMainLoop
-

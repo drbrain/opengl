@@ -84,4 +84,3 @@ class OpenGL::TestCase < MiniTest::Unit::TestCase
   end
 
 end
-
