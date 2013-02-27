@@ -451,14 +451,14 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramLocalParameters4fvEXT,GLfloat,ary2cflt,"GL_EXT_
 GL_FUNC_LOAD_3(ProgramParameteriEXT,GLvoid, GLuint,GLenum,GLint, "GL_EXT_geometry_shader4")
 
 /* #326 - GL_EXT_gpu_shader4 */
-GL_FUNC_LOAD_2(VertexAttribI1iEXT,GLvoid, GLuint,GLint, "GL_ARB_shader_objects")
-GL_FUNC_LOAD_3(VertexAttribI2iEXT,GLvoid, GLuint,GLint,GLint, "GL_ARB_shader_objects")
-GL_FUNC_LOAD_4(VertexAttribI3iEXT,GLvoid, GLuint,GLint,GLint,GLint, "GL_ARB_shader_objects")
-GL_FUNC_LOAD_5(VertexAttribI4iEXT,GLvoid, GLuint,GLint,GLint,GLint,GLint, "GL_ARB_shader_objects")
-GL_FUNC_LOAD_2(VertexAttribI1uiEXT,GLvoid, GLuint,GLuint, "GL_ARB_shader_objects")
-GL_FUNC_LOAD_3(VertexAttribI2uiEXT,GLvoid, GLuint,GLuint,GLuint, "GL_ARB_shader_objects")
-GL_FUNC_LOAD_4(VertexAttribI3uiEXT,GLvoid, GLuint,GLuint,GLuint,GLuint, "GL_ARB_shader_objects")
-GL_FUNC_LOAD_5(VertexAttribI4uiEXT,GLvoid, GLuint,GLuint,GLuint,GLuint,GLuint, "GL_ARB_shader_objects")
+GL_FUNC_LOAD_2(VertexAttribI1iEXT,GLvoid, GLuint,GLint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_3(VertexAttribI2iEXT,GLvoid, GLuint,GLint,GLint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_4(VertexAttribI3iEXT,GLvoid, GLuint,GLint,GLint,GLint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_5(VertexAttribI4iEXT,GLvoid, GLuint,GLint,GLint,GLint,GLint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_2(VertexAttribI1uiEXT,GLvoid, GLuint,GLuint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_3(VertexAttribI2uiEXT,GLvoid, GLuint,GLuint,GLuint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_4(VertexAttribI3uiEXT,GLvoid, GLuint,GLuint,GLuint,GLuint, "GL_EXT_gpu_shader4")
+GL_FUNC_LOAD_5(VertexAttribI4uiEXT,GLvoid, GLuint,GLuint,GLuint,GLuint,GLuint, "GL_EXT_gpu_shader4")
 
 #define GLVERTEXATTRIB_VFUNC(_name_,_type_,_conv_,_size_) \
 static void (APIENTRY * fptr_gl##_name_)(GLuint,const _type_ *); \
@@ -467,7 +467,7 @@ gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ value[_size_]; \
-	LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
+	LOAD_GL_FUNC(gl##_name_, "GL_EXT_gpu_shader4"); \
 	_conv_(arg2,value,_size_); \
 	fptr_gl##_name_(NUM2UINT(arg1),value); \
 	CHECK_GLERROR_FROM("gl" #_name_); \
@@ -596,7 +596,7 @@ VALUE obj,arg1,arg2; \
 	GLint uniform_size = 0; \
 \
 	LOAD_GL_FUNC(gl##_name_, "GL_EXT_gpu_shader4"); \
-	LOAD_GL_FUNC(glGetActiveUniformARB, "GL_ARB_shader_objects"); \
+	LOAD_GL_FUNC(glGetActiveUniformARB, "GL_EXT_gpu_shader4"); \
 	program = (GLuint)NUM2UINT(arg1); \
 	location = (GLint)NUM2INT(arg2); \
 \
