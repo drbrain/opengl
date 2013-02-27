@@ -62,7 +62,7 @@ def write_enums(enum_list, task)
     f << "/* This file was genereated on #{Time.now}" << "\n"
     task[:sources].each do |source|  f << "   source: #{source}" << "\n" end
     f << "*/" << "\n\n"
-    f << '#include "../common/common.h"' << "\n"
+    f << '#include "common.h"' << "\n"
     f << "void #{task[:prefix].downcase}init_enums(VALUE module)" << "\n"
     f << "{" << "\n"
 
@@ -83,13 +83,13 @@ end
 
 # main
 begin
-  gl_enums = {:c => "../ext/gl/gl-enums.c",:h => "../ext/common/gl-enums.h",
+  gl_enums = {:c => "../ext/opengl/gl-enums.c",:h => "../ext/opengl/gl-enums.h",
     :sources => ["http://www.opengl.org/registry/api/enum.spec",
     "http://www.opengl.org/registry/api/enumext.spec"],
     :prefix => "GL_"
   }
 
-  glu_enums = {:c => "../ext/glu/glu-enums.c",:h => "../ext/common/glu-enums.h",
+  glu_enums = {:c => "../ext/opengl/glu-enums.c",:h => "../ext/opengl/glu-enums.h",
     :sources => ["http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec"],
     :prefix => "GLU_"
   }
