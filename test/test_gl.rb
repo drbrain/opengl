@@ -20,23 +20,23 @@ include Gl
 include Glut
 
 class TestGl < OpenGL::TestCase
-	def test_isavailable
-		assert_equal(true, is_available?(1.1))
-		assert_equal(true, is_available?("GL_ARB_multitexture"))
-		assert_equal(false, is_available?("GL_NON_EXISTENT"))
-	end
+  def test_isavailable
+    assert_equal(true, is_available?(1.1))
+    assert_equal(true, is_available?("GL_ARB_multitexture"))
+    assert_equal(false, is_available?("GL_NON_EXISTENT"))
+  end
 
-	def test_errorchecking
-		Gl.disable_error_checking
-		assert_equal(false, Gl.is_error_checking_enabled?)
-		Gl.enable_error_checking
-		assert_equal(true, Gl.is_error_checking_enabled?)
-		begin
-			glEnable(0)	
-		rescue Gl::Error => err
-		  assert_equal(err.id, GL_INVALID_ENUM)
-		else
-			assert(false) # error not detected
-		end
-	end
+  def test_errorchecking
+    Gl.disable_error_checking
+    assert_equal(false, Gl.is_error_checking_enabled?)
+    Gl.enable_error_checking
+    assert_equal(true, Gl.is_error_checking_enabled?)
+    begin
+      glEnable(0)
+    rescue Gl::Error => err
+      assert_equal(err.id, GL_INVALID_ENUM)
+    else
+      assert(false) # error not detected
+    end
+  end
 end

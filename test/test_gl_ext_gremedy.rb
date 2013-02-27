@@ -16,21 +16,14 @@
 require 'opengl/test_case'
 
 class TestGlExtGremedy < OpenGL::TestCase
-	def setup
-		super()
-	end
 
-	def teardown
-		super()
-	end
+  def test_gl_gremedy_string_marker
+    supported?("GL_GREMEDY_string_marker")
+    glStringMarkerGREMEDY("test")
+  end
 
-	def test_gl_gremedy_string_marker
-		supported?("GL_GREMEDY_string_marker")
-		glStringMarkerGREMEDY("test")
-	end
-
-	def test_gl_gremedy_frame_terminator
-		supported?("GL_GREMEDY_frame_terminator")
-		glFrameTerminatorGREMEDY()
-	end
+  def test_gl_gremedy_frame_terminator
+    supported?("GL_GREMEDY_frame_terminator")
+    glFrameTerminatorGREMEDY()
+  end
 end

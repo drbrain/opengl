@@ -19,7 +19,6 @@ class TestGl14 < OpenGL::TestCase
 
   def setup
     super
-
     supported? 1.4
   end
 
@@ -216,6 +215,4 @@ class TestGl14 < OpenGL::TestCase
     glWindowPos3sv [3, 2, 1]
     assert_each_in_delta [3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION)
   end
-
 end
-

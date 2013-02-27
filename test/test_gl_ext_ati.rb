@@ -25,6 +25,4 @@ class TestGlExtAti < OpenGL::TestCase
     assert_equal GL_BACK_LEFT, glGetIntegerv(GL_DRAW_BUFFER0)
     assert_equal GL_FRONT_LEFT, glGetIntegerv(GL_DRAW_BUFFER1)
   end
-
 end
-

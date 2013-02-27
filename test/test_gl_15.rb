@@ -19,7 +19,6 @@ class TestGl15 < OpenGL::TestCase
 
   def setup
     super
-
     supported? 1.5
   end
 
@@ -72,7 +71,7 @@ class TestGl15 < OpenGL::TestCase
     r = glUnmapBuffer(GL_ARRAY_BUFFER)
     assert(r == true || r == false)
 
-    glDeleteBuffers(buffers)		
+    glDeleteBuffers(buffers)
     refute glIsBuffer(buffers[0])
 
     # FIXME: GetBufferPointerv not yet implemented
@@ -256,5 +255,4 @@ class TestGl15 < OpenGL::TestCase
     glDisableClientState(GL_VERTEX_ARRAY)
     glDeleteBuffers(buffers)
   end
-
 end

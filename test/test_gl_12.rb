@@ -17,8 +17,12 @@ require 'opengl/test_case'
 
 class TestGl12 < OpenGL::TestCase
 
+  def setup
+    super
+    supported? 1.2
+  end
+
   def test_glblend
-    supported?(1.2)
     glBlendColor(0.0, 1.0, 0.0, 1.0)
     assert_equal(glGetDoublev(GL_BLEND_COLOR), [0, 1, 0, 1])
 
@@ -29,7 +33,6 @@ class TestGl12 < OpenGL::TestCase
   end
 
   def test_gldrawrangeelements
-    supported?(1.2)
     va = [0, 0, 0, 1, 1, 1].pack("f*")
     glVertexPointer(2, GL_FLOAT, 0, va)
 
@@ -46,8 +49,6 @@ class TestGl12 < OpenGL::TestCase
   end
 
   def test_colortable
-    supported?(1.2)
-
     ct = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
     ct2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
     glColorTable(GL_COLOR_TABLE, GL_RGB8, 4, GL_RGB, GL_FLOAT, ct)
@@ -72,8 +73,6 @@ class TestGl12 < OpenGL::TestCase
   end
 
   def test_convolutionfilter
-    supported?(1.2)
-
     cf = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
     cf2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
     glConvolutionFilter1D(GL_CONVOLUTION_1D, GL_RGB8, 4, GL_RGB, GL_FLOAT,cf)
@@ -107,7 +106,6 @@ class TestGl12 < OpenGL::TestCase
   end
 
   def test_separablefilter
-    supported?(1.2)
     sf_a = ([0]*3+[1]*3).pack("f*")
     sf_b = ([1]*3+[0]*3).pack("f*")
 
@@ -116,8 +114,6 @@ class TestGl12 < OpenGL::TestCase
   end
 
   def test_histogram
-    supported?(1.2)
-
     glEnable(GL_HISTOGRAM)
 
     glHistogram(GL_HISTOGRAM, 1, GL_RGB, GL_FALSE)
@@ -136,8 +132,6 @@ class TestGl12 < OpenGL::TestCase
   end
 
   def test_minmax
-    supported?(1.2)
-
     glEnable(GL_MINMAX)
 
     glMinmax(GL_MINMAX, GL_RGB, GL_FALSE)
@@ -157,7 +151,6 @@ class TestGl12 < OpenGL::TestCase
   end
 
   def test_texture_3D
-    supported?(1.2)
     image = ([0, 0, 0, 1, 1, 1] * 2 * 2).pack("f*")
     image2 = ([1, 1, 1, 0, 0, 0] * 2 * 2).pack("f*")
 
@@ -177,6 +170,4 @@ class TestGl12 < OpenGL::TestCase
 
     glDeleteTextures(textures)
   end
-
 end
-

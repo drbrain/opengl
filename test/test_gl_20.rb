@@ -19,7 +19,6 @@ class TestGl20 < OpenGL::TestCase
 
   def setup
     super
-
     supported? 2.0
   end
 
@@ -303,7 +302,7 @@ void main() {
     assert_equal([2.0, 2.0, 2.0], glGetUniformfv(program, tv3l))
     glUniform4f(tv4l, 2.0, 2.0, 2.0, 2.0)
     assert_equal([2.0, 2.0, 2.0, 2.0], glGetUniformfv(program, tv4l))
-    # i 
+    # i
     glUniform1i(tv1il, 3)
     assert_equal(3, glGetUniformiv(program, tv1il))
     glUniform2i(tv2il, 3, 3)
@@ -425,6 +424,4 @@ void main() {
     glDisableVertexAttribArray(1)
     glDeleteBuffers(buffers)
   end
-
 end
-

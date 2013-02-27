@@ -19,7 +19,6 @@ class TestGl21 < OpenGL::TestCase
 
   def setup
     super
-
     supported? 2.1
   end
 
@@ -51,7 +50,7 @@ void main() {
     assert_equal(GL_TRUE, glGetShaderiv(vs, GL_COMPILE_STATUS))
     glAttachShader(program, vs)
 
-    glLinkProgram(program)	
+    glLinkProgram(program)
     assert_equal(GL_TRUE, glGetProgramiv(program, GL_LINK_STATUS))
     glUseProgram(program)
 
@@ -385,7 +384,7 @@ void main() {
     glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
     glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 4*4, nil, GL_STREAM_READ)
 
-    # fv	
+    # fv
     glPixelMapfv(GL_PIXEL_MAP_I_TO_I, [1, 2, 3, 4])
     glGetPixelMapfv(GL_PIXEL_MAP_I_TO_I, 0)
 
@@ -401,7 +400,7 @@ void main() {
     assert_equal([5, 6, 7, 8].pack("I*"), data)
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
-    # usv	
+    # usv
     glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 4*2, nil, GL_STREAM_READ)
 
     glPixelMapusv(GL_PIXEL_MAP_I_TO_I, [9, 10, 11, 12])
@@ -487,7 +486,7 @@ void main() {
   end
 
   def test_pixelpack_minmax
-    glEnable(GL_MINMAX)		
+    glEnable(GL_MINMAX)
 
     glMinmax(GL_MINMAX, GL_RGB8, GL_FALSE)
 
@@ -549,6 +548,4 @@ void main() {
     glDeleteBuffers(buffers)
     glDeleteTextures(textures)
   end
-
 end
-

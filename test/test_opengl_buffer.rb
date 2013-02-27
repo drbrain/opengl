@@ -6,11 +6,9 @@ class TestOpenGLBuffer < OpenGL::TestCase
     buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
-
     glBufferData GL_ARRAY_BUFFER, 5, 'hello', GL_STREAM_READ
 
     buf = OpenGL::Buffer.map GL_ARRAY_BUFFER, GL_READ_ONLY
-
     assert_equal 'hello', buf.read(5)
 
   ensure
@@ -21,11 +19,9 @@ class TestOpenGLBuffer < OpenGL::TestCase
     buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
-
     glBufferData GL_ARRAY_BUFFER, 5, 'hello', GL_STREAM_READ
 
     buf = OpenGL::Buffer.map GL_ARRAY_BUFFER, GL_READ_ONLY
-
     assert_equal 'he', buf.read(2)
   ensure
     buf.unmap
@@ -35,11 +31,9 @@ class TestOpenGLBuffer < OpenGL::TestCase
     buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
-
     glBufferData GL_ARRAY_BUFFER, 5, 'hello', GL_STREAM_READ
 
     buf = OpenGL::Buffer.map GL_ARRAY_BUFFER, GL_READ_ONLY
-
     assert_equal 'el', buf.read(2, 1)
   ensure
     buf.unmap
@@ -49,7 +43,6 @@ class TestOpenGLBuffer < OpenGL::TestCase
     buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
-
     glBufferData GL_ARRAY_BUFFER, 5, 'hello', GL_STREAM_READ
 
     buf = OpenGL::Buffer.map GL_ARRAY_BUFFER, GL_READ_ONLY
@@ -67,19 +60,15 @@ class TestOpenGLBuffer < OpenGL::TestCase
     buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
-
     glBufferData GL_ARRAY_BUFFER, 5, 'hello', GL_STREAM_READ
 
     buf = OpenGL::Buffer.map GL_ARRAY_BUFFER, GL_READ_WRITE
 
     buf.write 'world'
-
     assert_equal 'world', buf.read(5)
 
     buf.unmap
-
     assert_equal 'world', glGetBufferSubData(GL_ARRAY_BUFFER, 0, 5)
-
   ensure
     buf.unmap
   end
@@ -88,7 +77,6 @@ class TestOpenGLBuffer < OpenGL::TestCase
     buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
-
     glBufferData GL_ARRAY_BUFFER, 5, 'hello', GL_STREAM_READ
 
     buf = OpenGL::Buffer.map GL_ARRAY_BUFFER, GL_READ_WRITE
@@ -98,7 +86,6 @@ class TestOpenGLBuffer < OpenGL::TestCase
     end
 
     assert_equal 'cannot write nil to buffer', e.message
-
   ensure
     buf.unmap
   end
@@ -107,13 +94,11 @@ class TestOpenGLBuffer < OpenGL::TestCase
     buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
-
     glBufferData GL_ARRAY_BUFFER, 5, 'hello', GL_STREAM_READ
 
     buf = OpenGL::Buffer.map GL_ARRAY_BUFFER, GL_READ_WRITE
 
     buf.write 'O', 4
-
     assert_equal 'hellO', buf.read(5)
   ensure
     buf.unmap
@@ -132,6 +117,4 @@ class TestOpenGLBuffer < OpenGL::TestCase
 
     assert_equal 'write to unmapped buffer', e.message
   end
-
 end
-

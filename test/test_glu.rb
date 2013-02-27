@@ -105,7 +105,7 @@ class TestGlu < OpenGL::TestCase
     view = glGetDoublev(GL_VIEWPORT)
     pos = gluUnProject(WINDOW_SIZE, WINDOW_SIZE, 1, mp, mm, view)
     assert_equal([1, 1, 1], pos)
-    assert_raises ArgumentError do	pos = gluUnProject(WINDOW_SIZE, WINDOW_SIZE, 1, mp, [1, 2, 3, 4], view) end
+    assert_raises ArgumentError do  pos = gluUnProject(WINDOW_SIZE, WINDOW_SIZE, 1, mp, [1, 2, 3, 4], view) end
   end
 
   def test_glupickmatrix
@@ -205,7 +205,7 @@ class TestGlu < OpenGL::TestCase
 
     # generate surface control points
     ctlpoints =  Array.new(4).collect { Array.new(4).collect { Array.new(3, nil) } } # 4*4*3 array
-    0.upto(3)	do |u|
+    0.upto(3)  do |u|
       0.upto(3) do |v|
         ctlpoints[u][v][0]=2.0*(u-1.5)
         ctlpoints[u][v][1]=2.0*(v-1.5)
@@ -304,6 +304,4 @@ class TestGlu < OpenGL::TestCase
     assert_equal 1, ecount
     assert_equal 9, vcount
   end
-
 end
-

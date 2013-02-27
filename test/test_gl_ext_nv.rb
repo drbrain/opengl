@@ -1,4 +1,3 @@
-
 # Copyright (C) 2007 Jan Dvorak <jan.dvorak@kraxnet.cz>
 #
 # This program is distributed under the terms of the MIT license.
@@ -29,7 +28,7 @@ class TestGlExtNv < OpenGL::TestCase
     glBindProgramNV(GL_VERTEX_PROGRAM_NV, programs[1])
     glLoadProgramNV(GL_VERTEX_STATE_PROGRAM_NV, programs[0], program)
     assert_equal(program, glGetProgramStringNV(programs[0], GL_PROGRAM_STRING_NV))
-    assert_equal(true, glIsProgramNV(programs[0]))	
+    assert_equal(true, glIsProgramNV(programs[0]))
 
     assert_equal(program.size, glGetProgramivNV(programs[0],GL_PROGRAM_LENGTH_NV))
 
@@ -347,6 +346,4 @@ END
     glPointParameterivNV(GL_POINT_SPRITE_R_MODE_NV, [GL_S])
     assert_equal(GL_S, glGetIntegerv(GL_POINT_SPRITE_R_MODE_NV))
   end
-
 end
-
