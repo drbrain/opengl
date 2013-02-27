@@ -7,6 +7,8 @@
 * glMaterial: Before converting using to_a, check if conversion is possible.
 * Fix incorrect conversion of bool arguments to functions, they were getting
   converted from C instead of to C (`GL_TRUE/true` got converted to `41`).
+* Fix: some parts of GL_EXT_gpu_shader4 were checking for GL_ARB_vertex_shader
+support instead of GL_EXT_gpu_shader4.
 
 === 0.8.0 / 2013-02-03
 

@@ -553,7 +553,7 @@ VALUE obj,arg1,arg2;
   VALUE buffer;
   VALUE retary;
   LOAD_GL_FUNC(glGetActiveUniformARB, "GL_ARB_shader_objects");
-  LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_EXT_sahder_objects");
+  LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_shader_objects");
   program = (GLuint)NUM2UINT(arg1);
   index = (GLuint)NUM2UINT(arg2);
   fptr_glGetObjectParameterivARB(program,GL_OBJECT_ACTIVE_UNIFORM_MAX_LENGTH_ARB,&max_size);
