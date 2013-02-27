@@ -172,7 +172,7 @@ gl_MapBuffer(VALUE self, VALUE _target, VALUE _access) {
 	if (buffer_ptr == NULL || size <= 0)
 		return Qnil;
 
-  return rb_str_new(buffer_ptr, size);
+	return rb_str_new(buffer_ptr, size);
 }
 
 static GLboolean (APIENTRY * fptr_glUnmapBuffer)(GLenum);

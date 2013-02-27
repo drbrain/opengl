@@ -161,7 +161,7 @@ VALUE obj,arg1,arg2;
 
 	fptr_glGetActiveUniform(program,index,max_size,&written,&uniform_size,&uniform_type,RSTRING_PTR(buffer));
 
-  rb_str_set_len(buffer, strnlen(RSTRING_PTR(buffer), max_size));
+	rb_str_set_len(buffer, strnlen(RSTRING_PTR(buffer), max_size));
 	retary = rb_ary_new2(3);
 	rb_ary_push(retary, INT2NUM(uniform_size));
 	rb_ary_push(retary, INT2NUM(uniform_type));
@@ -188,8 +188,8 @@ VALUE obj,arg1;
 		return Qnil;
 	shaders = ALLOC_N(GLuint,shaders_num);
 	fptr_glGetAttachedShaders(program,shaders_num,&count,shaders);
-  RET_ARRAY_OR_SINGLE_FREE("glGetAttachedShaders", count, RETCONV_GLuint,
-      shaders);
+	RET_ARRAY_OR_SINGLE_FREE("glGetAttachedShaders", count, RETCONV_GLuint,
+			shaders);
 }
 
 static GLint (APIENTRY * fptr_glGetAttribLocation)(GLuint, GLchar *);
@@ -306,7 +306,7 @@ VALUE obj,arg1,arg2;
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetUniformLocation(program, RSTRING_PTR(arg2));
 
-  CHECK_GLERROR_FROM("glGetUniformLocation");
+	CHECK_GLERROR_FROM("glGetUniformLocation");
 	return INT2NUM(ret);
 }
 
@@ -387,8 +387,8 @@ VALUE obj,arg1,arg2;
 	else
 		size = 1;
 	fptr_glGetVertexAttribiv(index,pname,params);
-  RET_ARRAY_OR_SINGLE_BOOL("glGetVertexAttribiv", size, cond_GLBOOL2RUBY,
-      pname, params);
+	RET_ARRAY_OR_SINGLE_BOOL("glGetVertexAttribiv", size, cond_GLBOOL2RUBY,
+			pname, params);
 }
 
 

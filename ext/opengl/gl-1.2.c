@@ -147,8 +147,8 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	fptr_glGetColorTableParameterfv(target,pname,params);
-  RET_ARRAY_OR_SINGLE("glGetColorTableParameterfv", size, RETCONV_GLfloat,
-      params);
+	RET_ARRAY_OR_SINGLE("glGetColorTableParameterfv", size, RETCONV_GLfloat,
+			params);
 }
 
 static void (APIENTRY * fptr_glGetColorTableParameteriv)(GLenum,GLenum,GLint *);
@@ -173,8 +173,8 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	fptr_glGetColorTableParameteriv(target,pname,params);
-  RET_ARRAY_OR_SINGLE("glGetColorTableParameteriv", size, RETCONV_GLint,
-      params);
+	RET_ARRAY_OR_SINGLE("glGetColorTableParameteriv", size, RETCONV_GLint,
+			params);
 }
 
 static void (APIENTRY * fptr_glGetColorTable)(GLenum,GLenum,GLenum,GLvoid *);
@@ -348,8 +348,8 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	fptr_glGetConvolutionParameterfv(target,pname,params);
-  RET_ARRAY_OR_SINGLE("glGetConvolutionParamaterfv", size, RETCONV_GLfloat,
-      params);
+	RET_ARRAY_OR_SINGLE("glGetConvolutionParamaterfv", size, RETCONV_GLfloat,
+			params);
 }
 
 static void (APIENTRY * fptr_glGetConvolutionParameteriv)(GLenum,GLenum,GLint *);
@@ -375,8 +375,8 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	fptr_glGetConvolutionParameteriv(target,pname,params);
-  RET_ARRAY_OR_SINGLE("glGetConvolutionParameteriv", size, RETCONV_GLint,
-      params);
+	RET_ARRAY_OR_SINGLE("glGetConvolutionParameteriv", size, RETCONV_GLint,
+			params);
 }
 
 static void (APIENTRY * fptr_glGetConvolutionFilter)(GLenum,GLenum,GLenum,GLvoid *);
@@ -709,7 +709,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glTexImage3D( target, level, internalFormat, width, height,
-					  depth, border, format, type,(GLvoid *)NUM2LONG(arg10));
+						depth, border, format, type,(GLvoid *)NUM2LONG(arg10));
 		CHECK_GLERROR_FROM("glTexImage3D");
 		return Qnil;
 	}
@@ -728,7 +728,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 		pixels = RSTRING_PTR(data);
 	}
 	fptr_glTexImage3D( target, level, internalFormat, width, height,
-				  depth, border, format, type,pixels);
+					depth, border, format, type,pixels);
 	CHECK_GLERROR_FROM("glTexImage3D");
 	return Qnil;
 }

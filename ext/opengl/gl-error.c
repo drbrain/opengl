@@ -31,16 +31,16 @@ void check_for_glerror(const char *caller)
 		return;
 	} else { /* process errors */
 		const char *error_string;
-    const char *from = "";
+		const char *from = "";
 		int queued_errors = 0;
 		char message[BUFSIZE];
 		VALUE exc;
 
-    if (caller) {
-      from = " for ";
-    } else {
-      caller = "";
-    }
+		if (caller) {
+			from = " for ";
+		} else {
+			caller = "";
+		}
 	
 		/* check for queued errors */
 		for(queued_errors = 0;
@@ -64,7 +64,7 @@ void check_for_glerror(const char *caller)
 			snprintf(message, BUFSIZE, "%s%s%s", error_string, from, caller);
 		} else {
 			snprintf(message, BUFSIZE, "%s%s%s [%i queued error(s) cleaned]",
-          error_string, from, caller, queued_errors);
+					error_string, from, caller, queued_errors);
 		}
 
 		exc = rb_funcall(Class_GLError, rb_intern("new"), 2, rb_str_new2(message), INT2NUM(error));

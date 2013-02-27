@@ -100,10 +100,10 @@ VALUE obj,arg1,arg2,arg3;
 	GLenum mode;
 	GLint *ary1;
 	GLsizei *ary2;
-  int len1,len2;
+	int len1,len2;
 	LOAD_GL_FUNC(glMultiDrawArrays, "1.4");
-  len1 = (int)RARRAY_LENINT(arg2);
-  len2 = (int)RARRAY_LENINT(arg3);
+	len1 = (int)RARRAY_LENINT(arg2);
+	len2 = (int)RARRAY_LENINT(arg3);
 	if (len1!=len2)
 			rb_raise(rb_eArgError, "Passed arrays must have same length");
 	mode = (GLenum)NUM2INT(arg1);

@@ -16,15 +16,15 @@
 /* Functions and macros for datatype conversion between Ruby and C */
 
 /*
-   Fast inline conversion functions as a replacement for the ones in libruby.
-   FIXNUM_P is simple logical AND check so it comes first, TYPE() is simple function,
-   and specified in header file so it can be inlined. For conversion, FIX2LONG is
-   simple right shift, and RFLOAT()-> just pointer dereference. For converting
-   Fixnum and Float types (which accounts for 99.9% of things you would want to pass
-   to OpenGL), there is large performance boost as result.
+	Fast inline conversion functions as a replacement for the ones in libruby.
+	FIXNUM_P is simple logical AND check so it comes first, TYPE() is simple function,
+	and specified in header file so it can be inlined. For conversion, FIX2LONG is
+	simple right shift, and RFLOAT()-> just pointer dereference. For converting
+	Fixnum and Float types (which accounts for 99.9% of things you would want to pass
+	to OpenGL), there is large performance boost as result.
 
-	 Also ruby 'true' and 'false' are converted to GL_TRUE/GL_FALSE for compatibility, and
-	 finally, we fallback to library functions for any other data types (and error handling).
+	Also ruby 'true' and 'false' are converted to GL_TRUE/GL_FALSE for compatibility, and
+	finally, we fallback to library functions for any other data types (and error handling).
 */
 
 #if HAVE_STRUCT_RFLOAT_FLOAT_VALUE
@@ -66,13 +66,11 @@ FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG)
 #undef FASTCONV
 
 #define RUBY2GLENUM(x) \
-    (x) == Qtrue ? GL_TRUE : (((x) == Qfalse) ? GL_FALSE : NUM2INT(x))
+	(x) == Qtrue ? GL_TRUE : (((x) == Qfalse) ? GL_FALSE : NUM2INT(x))
 
 /* For conversion between ruby and GL boolean values */
-/* note: according to the specs, we return true if we
-   get a non-false value (GL_TRUE or a number).      */ 
 #define GLBOOL2RUBY(x) \
-    (x) == GL_TRUE ? Qtrue : ((x)==GL_FALSE ? Qfalse : INT2NUM((x)))
+	(x) == GL_TRUE ? Qtrue : ((x)==GL_FALSE ? Qfalse : INT2NUM((x)))
 #define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
 
 #define cond_GLBOOL2RUBY_FUNC(_name_,_type_,_conv_) \
@@ -126,15 +124,15 @@ VALUE arg; \
 GL##_type_ cary[]; \
 long maxlen; \
 { \
-    long i; \
-    VALUE ary = rb_Array(arg); \
-    if (maxlen < 1) \
-        maxlen = RARRAY_LEN(ary); \
-    else \
-        maxlen = maxlen < RARRAY_LEN(ary) ? maxlen : RARRAY_LEN(ary); \
-    for (i=0; i < maxlen; i++) \
-        cary[i] = (GL##_type_)_convert_(rb_ary_entry(ary,i)); \
-    return i; \
+	long i; \
+	VALUE ary = rb_Array(arg); \
+	if (maxlen < 1) \
+		maxlen = RARRAY_LEN(ary); \
+	else \
+		maxlen = maxlen < RARRAY_LEN(ary) ? maxlen : RARRAY_LEN(ary); \
+	for (i=0; i < maxlen; i++) \
+		cary[i] = (GL##_type_)_convert_(rb_ary_entry(ary,i)); \
+	return i; \
 }
 
 ARY2CTYPE(int,NUM2INT)
@@ -203,32 +201,32 @@ ARY2CMATCNT(float)
 #define FREE(_x_) xfree(_x_);
 
 #define RET_ARRAY_OR_SINGLE(_name_, _size_, _conv_, _params_) \
-    RET_ARRAY_OR_SINGLE_FUNC(_name_, _size_, _conv_, _params_, EMPTY)
+	RET_ARRAY_OR_SINGLE_FUNC(_name_, _size_, _conv_, _params_, EMPTY)
 
 #define RET_ARRAY_OR_SINGLE_FREE(_name, _size_, _conv_, _params_) \
-    RET_ARRAY_OR_SINGLE_FUNC(_name, _size_, _conv_, _params_, FREE(_params_))
+	RET_ARRAY_OR_SINGLE_FUNC(_name, _size_, _conv_, _params_, FREE(_params_))
 
 #define RET_ARRAY_OR_SINGLE_FUNC(_name_, _size_, _conv_, _params_, _extra_) \
 do { \
-  int iter; \
-  VALUE return_array; \
-  if (_size_ == 1) { \
-    return_array = _conv_(_params_[0]); \
-  } else { \
-    return_array = rb_ary_new2(_size_); \
-    for(iter=0;iter<_size_;iter++) \
-    rb_ary_push(return_array, _conv_(_params_[iter])); \
-  } \
-  _extra_ \
-  CHECK_GLERROR_FROM(_name_); \
-  return return_array; \
+	int iter; \
+	VALUE return_array; \
+	if (_size_ == 1) { \
+		return_array = _conv_(_params_[0]); \
+	} else { \
+		return_array = rb_ary_new2(_size_); \
+		for(iter=0;iter<_size_;iter++) \
+		rb_ary_push(return_array, _conv_(_params_[iter])); \
+	} \
+	_extra_ \
+	CHECK_GLERROR_FROM(_name_); \
+	return return_array; \
 } while (0)
 
 #define RET_ARRAY_OR_SINGLE_BOOL(_name_, _size_, _conv_, _enum_, _params_) \
-    RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, EMPTY)
+	RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, EMPTY)
 
 #define RET_ARRAY_OR_SINGLE_BOOL_FREE(_name_, _size_, _conv_, _enum_, _params_) \
-    RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, FREE(_params_))
+	RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, FREE(_params_))
 
 #define RET_ARRAY_OR_SINGLE_BOOL_FUNC(_name_, _size_, _conv_, _enum_, _params_, _extra_) \
 do { \
@@ -245,4 +243,3 @@ do { \
 	CHECK_GLERROR_FROM(_name_); \
 	return return_array; \
 } while (0)
-

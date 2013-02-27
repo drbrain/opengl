@@ -202,190 +202,190 @@ VALUE inside_begin_end = Qfalse;
 static VALUE
 gl_Enable1(VALUE caps)
 {
-  long i;
+	long i;
 
-  for (i = 0; i < RARRAY_LEN(caps); i++) {
-    glEnable(CONV_GLenum(rb_ary_entry(caps, i)));
+	for (i = 0; i < RARRAY_LEN(caps); i++) {
+		glEnable(CONV_GLenum(rb_ary_entry(caps, i)));
 
-    CHECK_GLERROR_FROM("glEnable");
-  }
+		CHECK_GLERROR_FROM("glEnable");
+	}
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_Enable0(VALUE caps)
 {
-  gl_Enable1(caps);
+	gl_Enable1(caps);
 
-  if (rb_block_given_p())
-    rb_yield(Qundef);
+	if (rb_block_given_p())
+		rb_yield(Qundef);
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_Disable1(VALUE caps)
 {
-  long i;
-  for (i = 0; i < RARRAY_LEN(caps); i++) {
-    glDisable(CONV_GLenum(rb_ary_entry(caps, i)));
+	long i;
+	for (i = 0; i < RARRAY_LEN(caps); i++) {
+		glDisable(CONV_GLenum(rb_ary_entry(caps, i)));
 
-    CHECK_GLERROR_FROM("glDisable");
-  }
+		CHECK_GLERROR_FROM("glDisable");
+	}
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_Disable0(VALUE caps)
 {
-  gl_Disable1(caps);
+	gl_Disable1(caps);
 
-  if (rb_block_given_p())
-    rb_yield(Qundef);
+	if (rb_block_given_p())
+		rb_yield(Qundef);
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_Enable(int argc, VALUE *argv, VALUE self)
 {
-  int i;
-  VALUE caps, rev;
+	int i;
+	VALUE caps, rev;
 
-  rb_scan_args(argc, argv, "1*", NULL, NULL);
+	rb_scan_args(argc, argv, "1*", NULL, NULL);
 
-  caps = rb_ary_new2(argc);
+	caps = rb_ary_new2(argc);
 
-  for (i = 0; i < argc; i++)
-    rb_ary_push(caps, argv[i]);
+	for (i = 0; i < argc; i++)
+		rb_ary_push(caps, argv[i]);
 
-  rev = rb_ary_reverse(caps);
+	rev = rb_ary_reverse(caps);
 
-  if (rb_block_given_p())
-    return rb_ensure(gl_Enable0, caps, gl_Disable1, rev);
-  else
-    gl_Enable0(caps);
+	if (rb_block_given_p())
+		return rb_ensure(gl_Enable0, caps, gl_Disable1, rev);
+	else
+		gl_Enable0(caps);
 
-  return Qnil;	
+	return Qnil;
 }
 
 static VALUE
 gl_Disable(int argc, VALUE *argv, VALUE self)
 {
-  int i;
-  VALUE caps, rev;
+	int i;
+	VALUE caps, rev;
 
-  rb_scan_args(argc, argv, "1*", NULL, NULL);
+	rb_scan_args(argc, argv, "1*", NULL, NULL);
 
-  caps = rb_ary_new2(argc);
+	caps = rb_ary_new2(argc);
 
-  for (i = 0; i < argc; i++)
-    rb_ary_push(caps, argv[i]);
+	for (i = 0; i < argc; i++)
+		rb_ary_push(caps, argv[i]);
 
-  rev = rb_ary_reverse(caps);
+	rev = rb_ary_reverse(caps);
 
-  if (rb_block_given_p())
-    return rb_ensure(gl_Disable0, caps, gl_Enable1, rev);
-  else
-    gl_Disable0(caps);
+	if (rb_block_given_p())
+		return rb_ensure(gl_Disable0, caps, gl_Enable1, rev);
+	else
+		gl_Disable0(caps);
 
-  return Qnil;	
+	return Qnil;
 }
 
 static VALUE
 gl_EnableClientState1(VALUE ary)
 {
-  long i;
-  for (i = 0; i < RARRAY_LEN(ary); i++) {
-    glEnableClientState(CONV_GLenum(rb_ary_entry(ary, i)));
+	long i;
+	for (i = 0; i < RARRAY_LEN(ary); i++) {
+		glEnableClientState(CONV_GLenum(rb_ary_entry(ary, i)));
 
-    CHECK_GLERROR_FROM("glEnableClientState");
-  }
+		CHECK_GLERROR_FROM("glEnableClientState");
+	}
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_EnableClientState0(VALUE ary)
 {
-  gl_EnableClientState1(ary);
+	gl_EnableClientState1(ary);
 
-  if (rb_block_given_p())
-    rb_yield(Qundef);
+	if (rb_block_given_p())
+		rb_yield(Qundef);
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_DisableClientState1(VALUE ary)
 {
-  long i;
-  for (i = 0; i < RARRAY_LEN(ary); i++) {
-    glDisableClientState(CONV_GLenum(rb_ary_entry(ary, i)));
+	long i;
+	for (i = 0; i < RARRAY_LEN(ary); i++) {
+		glDisableClientState(CONV_GLenum(rb_ary_entry(ary, i)));
 
-    CHECK_GLERROR_FROM("glDisableClientState");
-  }
+		CHECK_GLERROR_FROM("glDisableClientState");
+	}
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_DisableClientState0(VALUE ary)
 {
-  gl_DisableClientState1(ary);
+	gl_DisableClientState1(ary);
 
-  if (rb_block_given_p())
-    rb_yield(Qundef);
+	if (rb_block_given_p())
+		rb_yield(Qundef);
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_EnableClientState(int argc, VALUE *argv, VALUE self)
 {
-  int i;
-  VALUE ary, rev;
+	int i;
+	VALUE ary, rev;
 
-  rb_scan_args(argc, argv, "1*", NULL, NULL);
+	rb_scan_args(argc, argv, "1*", NULL, NULL);
 
-  ary = rb_ary_new2(argc);
+	ary = rb_ary_new2(argc);
 
-  for (i = 0; i < argc; i++)
-    rb_ary_push(ary, argv[i]);
+	for (i = 0; i < argc; i++)
+		rb_ary_push(ary, argv[i]);
 
-  rev = rb_ary_reverse(ary);
+	rev = rb_ary_reverse(ary);
 
-  if (rb_block_given_p())
-    return rb_ensure(gl_EnableClientState0, ary, gl_DisableClientState1, rev);
-  else
-    gl_EnableClientState0(ary);
+	if (rb_block_given_p())
+		return rb_ensure(gl_EnableClientState0, ary, gl_DisableClientState1, rev);
+	else
+		gl_EnableClientState0(ary);
 
-  return Qnil;	
+	return Qnil;
 }
 
 static VALUE
 gl_DisableClientState(int argc, VALUE *argv, VALUE self)
 {
-  int i;
-  VALUE ary, rev;
+	int i;
+	VALUE ary, rev;
 
-  rb_scan_args(argc, argv, "1*", NULL, NULL);
+	rb_scan_args(argc, argv, "1*", NULL, NULL);
 
-  ary = rb_ary_new2(argc);
+	ary = rb_ary_new2(argc);
 
-  for (i = 0; i < argc; i++)
-    rb_ary_push(ary, argv[i]);
+	for (i = 0; i < argc; i++)
+		rb_ary_push(ary, argv[i]);
 
-  rev = rb_ary_reverse(ary);
+	rev = rb_ary_reverse(ary);
 
-  if (rb_block_given_p())
-    return rb_ensure(gl_DisableClientState0, ary, gl_EnableClientState1, rev);
-  else
-    gl_DisableClientState0(ary);
+	if (rb_block_given_p())
+		return rb_ensure(gl_DisableClientState0, ary, gl_EnableClientState1, rev);
+	else
+		gl_DisableClientState0(ary);
 
-  return Qnil;	
+	return Qnil;
 }
 
 static VALUE
@@ -393,10 +393,10 @@ gl_Begin0(GLenum mode)
 {
 	glBegin(mode);
 
-  if (rb_block_given_p())
-    rb_yield(Qundef);
+	if (rb_block_given_p())
+		rb_yield(Qundef);
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
@@ -408,91 +408,91 @@ gl_End(VALUE self)
 
 	CHECK_GLERROR_FROM("glEnd");
 
-	return Qnil;	
+	return Qnil;
 }
 
 static VALUE
 gl_Begin(VALUE self, VALUE mode)
 {
-  GLenum begin_mode = CONV_GLenum(mode);
+	GLenum begin_mode = CONV_GLenum(mode);
 	inside_begin_end = Qtrue;
 
-  if (rb_block_given_p())
-    return rb_ensure(gl_Begin0, (VALUE)begin_mode, gl_End, self);
-  else
-	  gl_Begin0(begin_mode);
+	if (rb_block_given_p())
+		return rb_ensure(gl_Begin0, (VALUE)begin_mode, gl_End, self);
+	else
+		gl_Begin0(begin_mode);
 
-	return Qnil;	
+	return Qnil;
 }
 
 static VALUE
 gl_PopMatrix(VALUE self)
 {
-  glPopMatrix();
+	glPopMatrix();
 
-  CHECK_GLERROR_FROM("glPopMatrix");
+	CHECK_GLERROR_FROM("glPopMatrix");
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_PushMatrix0(void)
 {
-  glPushMatrix();
+	glPushMatrix();
 
-  if (rb_block_given_p())
-    rb_yield(Qnil);
+	if (rb_block_given_p())
+		rb_yield(Qnil);
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_PushMatrix(VALUE self)
 {
-  if (rb_block_given_p())
-    return rb_ensure(gl_PushMatrix0, (VALUE)NULL, gl_PopMatrix, self);
-  else
-    glPushMatrix();
+	if (rb_block_given_p())
+		return rb_ensure(gl_PushMatrix0, (VALUE)NULL, gl_PopMatrix, self);
+	else
+		glPushMatrix();
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_NewList0(VALUE args)
 {
-  GLuint list;
-  GLenum mode;
+	GLuint list;
+	GLenum mode;
 
-  list = (GLuint)NUM2UINT(rb_ary_entry(args, 0));
-  mode = RUBY2GLENUM(rb_ary_entry(args, 1));
+	list = (GLuint)NUM2UINT(rb_ary_entry(args, 0));
+	mode = RUBY2GLENUM(rb_ary_entry(args, 1));
 
-  glNewList(list, mode);
+	glNewList(list, mode);
 
-  if (rb_block_given_p())
-    rb_yield(Qundef);
+	if (rb_block_given_p())
+		rb_yield(Qundef);
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_EndList(VALUE self)
 {
-  glEndList();
+	glEndList();
 
-  return Qnil;
+	return Qnil;
 }
 
 static VALUE
 gl_NewList(VALUE self, VALUE list, VALUE mode)
 {
-  VALUE args = rb_ary_new2(2);
-  rb_ary_push(args, list);
-  rb_ary_push(args, mode);
+	VALUE args = rb_ary_new2(2);
+	rb_ary_push(args, list);
+	rb_ary_push(args, mode);
 
-  if (rb_block_given_p())
-    return rb_ensure(gl_NewList0, args, gl_EndList, self);
-  else
-	  gl_NewList0(args);
+	if (rb_block_given_p())
+		return rb_ensure(gl_NewList0, args, gl_EndList, self);
+	else
+		gl_NewList0(args);
 
 	return Qnil;	
 }
@@ -1326,7 +1326,7 @@ VALUE obj,arg1; \
 	case GL_CONSTANT_COLOR1_NV: \
 	case GL_TEXTURE_COLOR_WRITEMASK_SGIS: \
 	case GL_FLOAT_CLEAR_COLOR_VALUE_NV: \
-  case GL_RGBA_SIGNED_COMPONENTS_EXT: \
+	case GL_RGBA_SIGNED_COMPONENTS_EXT: \
 		nitems = 4; \
 		break; \
 	case GL_CURRENT_NORMAL: \
@@ -1651,7 +1651,7 @@ VALUE obj; \
 		case 1: \
 			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING)) \
 				rb_raise(rb_eArgError, \
-            "Pixel pack buffer bound, but offset argument missing"); \
+						"Pixel pack buffer bound, but offset argument missing"); \
 \
 			map = (GLenum)NUM2INT(args[0]); \
 			switch(map) { \
@@ -1673,8 +1673,8 @@ VALUE obj; \
 			CHECK_GLERROR_FROM("glGetIntegerv"); \
 			values = ALLOC_N(_vartype_,size); \
 			glGetPixelMap##_type_##v(map,values); \
-      RET_ARRAY_OR_SINGLE_FREE("glGetPixelMap" #_type_ "v", size, _convert_, \
-          values); \
+			RET_ARRAY_OR_SINGLE_FREE("glGetPixelMap" #_type_ "v", size, _convert_, \
+					values); \
 			break; \
 		case 2: \
 			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING)) \
@@ -1922,8 +1922,8 @@ VALUE obj,arg1,arg2;
 			break;
 	}
 	glGetTexParameteriv(target,pname,params);
-  RET_ARRAY_OR_SINGLE_BOOL("glGetTexParameteriv", size, cond_GLBOOL2RUBY,
-      pname, params);
+	RET_ARRAY_OR_SINGLE_BOOL("glGetTexParameteriv", size, cond_GLBOOL2RUBY,
+			pname, params);
 }
 
 static VALUE
@@ -2330,7 +2330,7 @@ VALUE obj; \
 	VALUE ary; \
 	switch (num = rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
 	case 1: \
-    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
+		ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 3: \
 			gl_Color3##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
@@ -2376,7 +2376,7 @@ VALUE obj; \
 	VALUE ary; \
 	switch (num = rb_scan_args(argc, argv, "12", &args[0], &args[1], &args[2])) { \
 	case 1: \
-    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
+		ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 3: \
 			gl_Normal3##_type_(obj,RARRAY_PTR(ary)[0], RARRAY_PTR(ary)[1],RARRAY_PTR(ary)[2]); \
@@ -2413,7 +2413,7 @@ VALUE obj; \
 	VALUE ary; \
 	switch (num = rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
 	case 1: \
-    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
+		ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 2: \
 			gl_RasterPos2##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1]); \
@@ -2461,19 +2461,19 @@ VALUE obj; \
 	VALUE ary1, ary2; \
 	switch (num = rb_scan_args(argc, argv, "22", &args[0], &args[1], &args[2], &args[3])) { \
 	case 2: \
-    ary1 = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
-    ary2 = rb_convert_type(args[1], T_ARRAY, "Array", "to_a"); \
-    if (RARRAY_LEN(ary1) != 2) \
+		ary1 = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
+		ary2 = rb_convert_type(args[1], T_ARRAY, "Array", "to_a"); \
+		if (RARRAY_LEN(ary1) != 2) \
 			rb_raise(rb_eArgError, "first array must be of length 2 (was %li)", \
-          RARRAY_LEN(ary1)); \
+					RARRAY_LEN(ary1)); \
 \
-    if (RARRAY_LEN(ary2) != 2) \
+		if (RARRAY_LEN(ary2) != 2) \
 			rb_raise(rb_eArgError, "second array must be of length 2 (was %li)", \
-          RARRAY_LEN(ary2)); \
+					RARRAY_LEN(ary2)); \
 \
-    gl_Rect##_type_(obj, \
-        RARRAY_PTR(ary1)[0], RARRAY_PTR(ary1)[1], \
-        RARRAY_PTR(ary2)[0], RARRAY_PTR(ary2)[1]); \
+		gl_Rect##_type_(obj, \
+				RARRAY_PTR(ary1)[0], RARRAY_PTR(ary1)[1], \
+				RARRAY_PTR(ary2)[0], RARRAY_PTR(ary2)[1]); \
 		break; \
 	case 4: \
 		gl_Rect##_type_(obj,args[0], args[1], args[2], args[3]); \
@@ -2502,7 +2502,7 @@ VALUE obj; \
 	VALUE ary; \
 	switch (num = rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
 	case 1: \
-    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
+		ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 1: \
 			gl_TexCoord1##_type_(obj,RARRAY_PTR(ary)[0]); \
@@ -2553,7 +2553,7 @@ VALUE obj; \
 	VALUE ary; \
 	switch (rb_scan_args(argc, argv, "13", &args[0], &args[1], &args[2], &args[3])) { \
 	case 1: \
-    ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
+		ary = rb_convert_type(args[0], T_ARRAY, "Array", "to_a"); \
 		switch (RARRAY_LEN(ary)) { \
 			case 2: \
 			gl_Vertex2##_type_(obj,RARRAY_PTR(ary)[0],RARRAY_PTR(ary)[1]); \
@@ -2607,15 +2607,15 @@ VALUE obj,arg1,arg2;
 static VALUE
 gl_Material(VALUE self, VALUE face, VALUE pname, VALUE param)
 {
-  VALUE ary;
+	VALUE ary;
 
 	if (RB_TYPE_P(param, T_ARRAY)) {
 		gl_Materialfv(self, face, pname, param);
-  } else if (rb_respond_to(param, "to_a") && (ary = rb_convert_type(param, T_ARRAY, "Array", "to_a"))) {
+	} else if (rb_respond_to(param, "to_a") && (ary = rb_convert_type(param, T_ARRAY, "Array", "to_a"))) {
 		gl_Materialfv(self, face, pname, ary);
-  } else {
+	} else {
 		gl_Materialf(self, face, pname, param);
-  }
+	}
 
 	return Qnil;
 }
@@ -3040,7 +3040,7 @@ void gl_init_functions_1_0__1_1(VALUE module)
 	rb_define_module_function(module, "glVertex4sv", gl_Vertexsv, -1);
 
 	/* these simply calls normal or vector (*v) function depending on
-	   if array or single value is passed to them */
+		 if array or single value is passed to them */
 	rb_define_module_function(module, "glLightModel", gl_LightModel, 2);
 	rb_define_module_function(module, "glMaterial", gl_Material, 3);
 	rb_define_module_function(module, "glFog", gl_Fog, 2);
