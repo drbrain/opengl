@@ -28,7 +28,7 @@ static VALUE
 glut_InitContextFlags(obj,flags)
 VALUE obj,flags;
 {
-	glutInitContextVersion(NUM2INT(flags));
+	glutInitContextFlags(NUM2INT(flags));
 	return Qnil;
 }
 
@@ -46,4 +46,20 @@ void Init_glut_ext() {
 	rb_define_module_function(mGlut, "glutInitContextVersion", glut_InitContextVersion, 2);
 	rb_define_module_function(mGlut, "glutInitContextFlags", glut_InitContextFlags, 1);
 	rb_define_module_function(mGlut, "glutInitContextFlags", glut_InitContextFlags, 1);
+
+	/* Context-related flags */
+	rb_define_const(mGlut, "GLUT_INIT_MAJOR_VERSION", INT2NUM(GLUT_INIT_MAJOR_VERSION));
+	rb_define_const(mGlut, "GLUT_INIT_MINOR_VERSION", INT2NUM(GLUT_INIT_MINOR_VERSION));
+	rb_define_const(mGlut, "GLUT_INIT_FLAGS", INT2NUM(GLUT_INIT_FLAGS));
+	rb_define_const(mGlut, "GLUT_INIT_PROFILE", INT2NUM(GLUT_INIT_PROFILE));
+
+	/* Flags for glutInitContextFlags */
+	rb_define_const(mGlut, "GLUT_FORWARD_COMPATIBLE", INT2NUM(GLUT_FORWARD_COMPATIBLE));
+	rb_define_const(mGlut, "GLUT_DEBUG", INT2NUM(GLUT_DEBUG));
+
+	/* Flags for glutInitContextProfile */
+	rb_define_const(mGlut, "GLUT_CORE_PROFILE", INT2NUM(GLUT_CORE_PROFILE));
+	rb_define_const(mGlut, "GLUT_COMPATIBILITY_PROFILE", INT2NUM(GLUT_COMPATIBILITY_PROFILE));
+
+	
 }
