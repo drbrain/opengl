@@ -118,6 +118,7 @@ ext/opengl/glu-enums.h
 ext/opengl/glu.c
 ext/opengl/glut.c
 ext/opengl/glut_callbacks.c
+ext/opengl/glut_ext.c
 ext/opengl/opengl.c
 lib/gl.rb
 lib/glu.rb
