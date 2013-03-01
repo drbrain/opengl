@@ -545,7 +545,7 @@ GL_FUNC_LOAD_6(RenderbufferStorageMultisampleCoverageNV,GLvoid, GLenum,GLsizei,G
 
 void gl_init_functions_ext_nv(VALUE module)
 {
-/* #222 GL_NV_fence */
+	/* #222 GL_NV_fence */
 	rb_define_module_function(module, "glGenFencesNV", gl_GenFencesNV, 1);
 	rb_define_module_function(module, "glDeleteFencesNV", gl_DeleteFencesNV, 1);
 	rb_define_module_function(module, "glSetFenceNV", gl_SetFenceNV, 2);
@@ -554,7 +554,7 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glIsFenceNV", gl_IsFenceNV, 1);
 	rb_define_module_function(module, "glGetFenceivNV", gl_GetFenceivNV, 2);
 
-/* #233 GL_NV_vertex_program */
+	/* #233 GL_NV_vertex_program */
 	rb_define_module_function(module, "glLoadProgramNV", gl_LoadProgramNV, 3);
 	rb_define_module_function(module, "glGetProgramStringNV", gl_GetProgramStringNV, 2);
 	rb_define_module_function(module, "glGetProgramivNV", gl_GetProgramivNV, 2);
@@ -620,7 +620,7 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glRequestResidentProgramsNV", gl_RequestResidentProgramsNV, 1);
 	rb_define_module_function(module, "glAreProgramsResidentNV", gl_AreProgramsResidentNV, 1);
 
-/* #261 GL_NV_occlusion_query */
+	/* #261 GL_NV_occlusion_query */
 	rb_define_module_function(module, "glGenOcclusionQueriesNV", gl_GenOcclusionQueriesNV, 1);
 	rb_define_module_function(module, "glDeleteOcclusionQueriesNV", gl_DeleteOcclusionQueriesNV, 1);
 	rb_define_module_function(module, "glIsOcclusionQueryNV", gl_IsOcclusionQueryNV, 1);
@@ -629,11 +629,11 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glGetOcclusionQueryivNV", gl_GetOcclusionQueryivNV, 2);
 	rb_define_module_function(module, "glGetOcclusionQueryuivNV", gl_GetOcclusionQueryuivNV, 2);
 
-/* #262 GL_NV_point_sprite */
+	/* #262 GL_NV_point_sprite */
 	rb_define_module_function(module, "glPointParameteriNV", gl_PointParameteriNV, 2);
 	rb_define_module_function(module, "glPointParameterivNV", gl_PointParameterivNV, 2);
 
-/* #282 GL_NV_fragment_program */
+	/* #282 GL_NV_fragment_program */
 	rb_define_module_function(module, "glProgramNamedParameter4fNV", gl_ProgramNamedParameter4fNV, 6);
 	rb_define_module_function(module, "glProgramNamedParameter4dNV", gl_ProgramNamedParameter4dNV, 6);
 	rb_define_module_function(module, "glProgramNamedParameter4fvNV", gl_ProgramNamedParameter4fvNV, 3);
@@ -641,11 +641,11 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glGetProgramNamedParameterdvNV", gl_GetProgramNamedParameterdvNV, 2);
 	rb_define_module_function(module, "glGetProgramNamedParameterfvNV", gl_GetProgramNamedParameterfvNV, 2);
 
-/* #285 GL_NV_primitive_restart */
+	/* #285 GL_NV_primitive_restart */
 	rb_define_module_function(module, "glPrimitiveRestartNV", gl_PrimitiveRestartNV, 0);
 	rb_define_module_function(module, "glPrimitiveRestartIndexNV", gl_PrimitiveRestartIndexNV, 1);
 
-/* #322 GL_NV_gpu_program4 */
+	/* #322 GL_NV_gpu_program4 */
 	rb_define_module_function(module, "glProgramLocalParameterI4iNV", gl_ProgramLocalParameterI4iNV, 6);
 	rb_define_module_function(module, "glProgramLocalParameterI4uiNV", gl_ProgramLocalParameterI4uiNV, 6);
 	rb_define_module_function(module, "glProgramLocalParameterI4ivNV", gl_ProgramLocalParameterI4ivNV, 3);
@@ -663,18 +663,18 @@ void gl_init_functions_ext_nv(VALUE module)
 	rb_define_module_function(module, "glGetProgramEnvParameterIivNV", gl_GetProgramEnvParameterIivNV, 2);
 	rb_define_module_function(module, "glGetProgramEnvParameterIuivNV", gl_GetProgramEnvParameterIuivNV, 2);
 
-/* #323 GL_NV_geometry_program4 */
+	/* #323 GL_NV_geometry_program4 */
 	rb_define_module_function(module, "glProgramVertexLimitNV", gl_ProgramVertexLimitNV, 2);
 	rb_define_module_function(module, "glFramebufferTextureEXT", gl_FramebufferTextureEXT, 4);
 	rb_define_module_function(module, "glFramebufferTextureLayerEXT", gl_FramebufferTextureLayerEXT, 5);
 	rb_define_module_function(module, "glFramebufferTextureFaceEXT", gl_FramebufferTextureFaceEXT, 5);
 
-/* #334 GL_NV_depth_buffer_float */
+	/* #334 GL_NV_depth_buffer_float */
 	rb_define_module_function(module, "glDepthRangedNV", gl_DepthRangedNV, 2);
 	rb_define_module_function(module, "glClearDepthdNV", gl_ClearDepthdNV, 1);
 	rb_define_module_function(module, "glDepthBoundsdNV", gl_DepthBoundsdNV, 2);
 
-/* #336 GL_NV_framebuffer_multisample_coverage */
+	/* #336 GL_NV_framebuffer_multisample_coverage */
 	rb_define_module_function(module, "glRenderbufferStorageMultisampleCoverageNV", gl_RenderbufferStorageMultisampleCoverageNV, 6);
 
 }

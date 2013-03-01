@@ -334,6 +334,34 @@ GETTEXPARAMETER_VFUNC(GetTexParameterIiv,GLint,cond_GLBOOL2RUBY)
 GETTEXPARAMETER_VFUNC(GetTexParameterIuiv,GLuint,cond_GLBOOL2RUBY_U)
 #undef GETTEXPARAMETER_VFUNC
 
+/* #340 - GL_EXT_draw_buffers2 */
+GL_FUNC_LOAD_5(ColorMaski,GLvoid, GLuint,GLboolean,GLboolean,GLboolean,GLboolean, "3.0")
+
+#define GETINDEXED_FUNC(_name_,_type_,_conv_,_extension_) \
+static void (APIENTRY * fptr_gl##_name_)(GLenum,GLenum,_type_ *); \
+static VALUE \
+gl_##_name_(obj,arg1,arg2) \
+VALUE obj,arg1,arg2; \
+{ \
+	GLenum target; \
+	GLenum pname; \
+	_type_ result; \
+	GLint size; \
+	LOAD_GL_FUNC(gl##_name_, _extension_); \
+	target = (GLenum)NUM2INT(arg1); \
+	pname  = (GLuint)NUM2INT(arg2); \
+	fptr_gl##_name_(target,pname,&result); \
+	return _conv_(result); \
+}
+
+GETINDEXED_FUNC(GetBooleani_v, GLboolean, GLBOOL2RUBY, "3.0")
+GETINDEXED_FUNC(GetIntegeri_v, GLint, INT2NUM, "3.0")
+#undef GETINDEXED_FUNC
+
+GL_FUNC_LOAD_2(Enablei,GLvoid, GLenum,GLuint, "3.0")
+GL_FUNC_LOAD_2(Disablei,GLvoid, GLenum,GLuint, "3.0")
+GL_FUNC_LOAD_2(IsEnabledi,GLvoid, GLenum,GLuint, "3.0")
+
 void gl_init_functions_3_0(VALUE module)
 {
 	/* #326 - GL_EXT_gpu_shader4 */
@@ -416,4 +444,12 @@ void gl_init_functions_3_0(VALUE module)
 	rb_define_module_function(module, "glTexParameterIuiv", gl_TexParameterIuiv, 3);
 	rb_define_module_function(module, "glGetTexParameterIiv", gl_GetTexParameterIiv, 2);
 	rb_define_module_function(module, "glGetTexParameterIuiv", gl_GetTexParameterIuiv, 2);
+
+	/* #340 - GL_EXT_draw_buffers2 */
+	rb_define_module_function(module, "glColorMaski", gl_ColorMaski, 5);
+	rb_define_module_function(module, "glGetBooleani_v", gl_GetBooleani_v, 2);
+	rb_define_module_function(module, "glGetIntegeri_v", gl_GetIntegeri_v, 2);
+	rb_define_module_function(module, "glEnablei", gl_Enablei, 2);
+	rb_define_module_function(module, "glDisablei", gl_Disablei, 2);
+	rb_define_module_function(module, "glIsEnabledi", gl_IsEnabledi, 2);
 }
