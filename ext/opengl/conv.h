@@ -66,12 +66,14 @@ FASTCONV(num2uint,unsigned long,FIX2ULONG,(unsigned int)NUM2ULONG)
 #undef FASTCONV
 
 #define RUBY2GLENUM(x) \
-	(x) == Qtrue ? GL_TRUE : (((x) == Qfalse) ? GL_FALSE : NUM2INT(x))
+	(x) == Qtrue ? GL_TRUE : ((x) == Qfalse ? GL_FALSE : NUM2INT(x))
 
 /* For conversion between ruby and GL boolean values */
 #define GLBOOL2RUBY(x) \
 	(x) == GL_TRUE ? Qtrue : ((x)==GL_FALSE ? Qfalse : INT2NUM((x)))
-#define RUBYBOOL2GL(x) (x)==Qtrue? GL_TRUE : GL_FALSE
+
+#define RUBYBOOL2GL(x) \
+	(x) == Qtrue ? GL_TRUE : GL_FALSE
 
 #define cond_GLBOOL2RUBY_FUNC(_name_,_type_,_conv_) \
 static inline VALUE _name_(GLenum pname,_type_ value) \
