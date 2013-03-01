@@ -100,6 +100,7 @@ ext/opengl/gl-1.4.c
 ext/opengl/gl-1.5.c
 ext/opengl/gl-2.0.c
 ext/opengl/gl-2.1.c
+ext/opengl/gl-3.0.c
 ext/opengl/gl-enums.c
 ext/opengl/gl-enums.h
 ext/opengl/gl-error.c
