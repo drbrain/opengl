@@ -89,12 +89,7 @@ begin
     :prefix => "GL_"
   }
 
-  glu_enums = {:c => "../ext/opengl/glu-enums.c",:h => "../ext/opengl/glu-enums.h",
-    :sources => ["http://oss.sgi.com/cgi-bin/cvsweb.cgi/~checkout~/projects/ogl-sample/main/doc/registry/specs/enumglu.spec"],
-    :prefix => "GLU_"
-  }
-
-  task_list = [gl_enums, glu_enums]
+  task_list = [gl_enums]
 
   # main loop
   task_list.each do |task|
