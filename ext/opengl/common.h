@@ -31,10 +31,6 @@
 #include <OpenGL/gl.h>
 #endif
 
-#ifdef HAVE_OPENGL_GLU_H
-#include <OpenGL/glu.h>
-#endif
-
 #ifdef HAVE_GLUT_GLUT_H
 #include <GLUT/freeglut.h>
 #endif
@@ -55,10 +51,6 @@
 #include <GL/gl.h>
 #endif
 
-#ifdef HAVE_GL_GLU_H
-#include <GL/glu.h>
-#endif
-
 #ifdef HAVE_GL_GLUT_H
 #include <GL/freeglut.h>
 #endif
@@ -69,7 +61,6 @@
 
 #include "gl-types.h"
 #include "gl-enums.h"
-#include "glu-enums.h"
 #include "gl-error.h"
 
 #include "funcdef.h"

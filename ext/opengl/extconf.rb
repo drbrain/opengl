@@ -25,13 +25,10 @@ end
 
 ok =
   (have_library('opengl32.lib', 'glVertex3d') &&
-   have_library('glu32.lib',    'gluLookAt') &&
    have_library('glut32.lib',   'gluSolidTeapot')) ||
   (have_library('opengl32') &&
-   have_library('glu32') &&
    have_library('glut')) ||
   (have_library('GL',   'glVertex3d') &&
-   have_library('GLU',  'gluLookAt') &&
    have_library('glut', 'glutSolidTeapot')) ||
   (have_framework('OpenGL') &&
    have_framework('GLUT') &&
@@ -40,10 +37,6 @@ ok =
 ok &&=
   have_header('GL/gl.h') ||
   have_header('OpenGL/gl.h') # OS X
-
-ok &&=
-  have_header('GL/glu.h') ||
-  have_header('OpenGL/glu.h') # OS X
 
 ok &&=
   have_header('GL/glut.h') ||
