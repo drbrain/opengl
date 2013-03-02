@@ -17,15 +17,52 @@
 
 /* 
 	GL_NV_conditional_render
-	GL_APPLE_flush_buffer_range
+	GL_APPLE_flush_buffer_range -> actually ARB_map_buffer_range
+
+	GL_EXT_framebuffer_object -> GL_ARB_framebuffer_object
 
 	GL_NV_half_float
 
-	GL_EXT_draw_buffers2
 	GL_EXT_transform_feedback
-	GL_APPLE_vertex_array_object
+	GL_APPLE_vertex_array_object --> ARB_vertex_array_object
+
+	-- New commands in OpenGL 3.0:
+
+	ClearBufferiv(buffer, drawbuffer, value)
+		return		void
+		param		buffer		GLenum in value
+		param		drawbuffer	DrawBufferName in value
+		param		value		Int32 in array [COMPSIZE(buffer)]
+
+	ClearBufferuiv(buffer, drawbuffer, value)
+		return		void
+		param		buffer		GLenum in value
+		param		drawbuffer	DrawBufferName in value
+		param		value		UInt32 in array [COMPSIZE(buffer)]
+
+	ClearBufferfv(buffer, drawbuffer, value)
+		return		void
+		param		buffer		GLenum in value
+		param		drawbuffer	DrawBufferName in value
+		param		value		Float32 in array [COMPSIZE(buffer)]
+
+	ClearBufferfi(buffer, drawbuffer, depth, stencil)
+		return		void
+		param		buffer		GLenum in value
+		param		drawbuffer	DrawBufferName in value
+		param		depth		Float32 in value
+		param		stencil		Int32 in value
+
+	GetStringi(name, index)
+		return		String
+		param		name		GLenum in value
+		param		index		UInt32 in value
 
 */
+
+/* GL_NV_conditional_render */
+GL_FUNC_LOAD_2(BeginConditionalRender,GLvoid, GLuint, GLenum, "3.0")
+GL_FUNC_LOAD_0(EndConditionalRender,GLvoid, "3.0")
 
 /* #326 - GL_EXT_gpu_shader4 */
 GL_FUNC_LOAD_2(VertexAttribI1i,GLvoid, GLuint,GLint, "3.0")
@@ -215,7 +252,7 @@ static VALUE gl_GetFragDataLocation(VALUE obj,VALUE arg1,VALUE arg2)
 
 /* GL_NV_conditional_render */
 
-/* GL_APPLE_flush_buffer_range */
+/* ARB_map_buffer_range */
 
 /* #39 GL_ARB_color_buffer_float */
 
@@ -227,7 +264,7 @@ GL_FUNC_LOAD_2(DepthRanged,GLvoid, GLdouble,GLdouble, "3.0")
 GL_FUNC_LOAD_1(ClearDepthd,GLvoid, GLdouble, "3.0")
 GL_FUNC_LOAD_2(DepthBoundsd,GLvoid, GLdouble,GLdouble, "3.0")
 
-/* #310 - GL_EXT_framebuffer_object */
+/* GL_ARB_framebuffer_object */
 GL_FUNC_LOAD_1(IsRenderbuffer,GLboolean, GLuint, "3.0")
 GL_FUNC_LOAD_2(BindRenderbuffer,GLvoid, GLenum,GLuint, "3.0")
 GL_FUNC_LOAD_4(RenderbufferStorage,GLvoid, GLenum,GLenum,GLsizei,GLsizei, "3.0")
@@ -252,7 +289,7 @@ GL_FUNC_LOAD_1(CheckFramebufferStatus,GLenum, GLenum, "3.0")
 GL_FUNC_LOAD_5(FramebufferTexture1D,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint, "3.0")
 GL_FUNC_LOAD_5(FramebufferTexture2D,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint, "3.0")
 GL_FUNC_LOAD_6(FramebufferTexture3D,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint,GLint, "3.0")
-
+GL_FUNC_LOAD_5(FramebufferTextureLayer,GLvoid, GLenum,GLenum,GLuint,GLint,GLint, "3.0")
 GL_FUNC_LOAD_4(FramebufferRenderbuffer,GLvoid, GLuint,GLuint,GLuint,GLuint, "3.0")
 
 static void (APIENTRY * fptr_glGetFramebufferAttachmentParameteriv)(GLenum,GLenum,GLenum,GLint *);
@@ -364,6 +401,10 @@ GL_FUNC_LOAD_2(IsEnabledi,GLvoid, GLenum,GLuint, "3.0")
 
 void gl_init_functions_3_0(VALUE module)
 {
+	/* GL_NV_conditional_render */
+	rb_define_module_function(module, "glBeginConditionalRender", gl_BeginConditionalRender, 2);
+	rb_define_module_function(module, "glEndConditionalRender", gl_EndConditionalRender, 0);
+
 	/* #326 - GL_EXT_gpu_shader4 */
 	rb_define_module_function(module, "glVertexAttribI1i", gl_VertexAttribI1i, 2);
 	rb_define_module_function(module, "glVertexAttribI2i", gl_VertexAttribI2i, 3);
@@ -428,6 +469,7 @@ void gl_init_functions_3_0(VALUE module)
 	rb_define_module_function(module, "glFramebufferTexture2D", gl_FramebufferTexture2D, 5);
 	rb_define_module_function(module, "glFramebufferTexture3D", gl_FramebufferTexture3D, 6);
 	rb_define_module_function(module, "glFramebufferRenderbuffer", gl_FramebufferRenderbuffer, 4);
+	rb_define_module_function(module, "glFramebufferTextureLayer", gl_FramebufferRenderbuffer, 5);
 	rb_define_module_function(module, "glGetFramebufferAttachmentParameteriv", gl_GetFramebufferAttachmentParameteriv, 3);
 	rb_define_module_function(module, "glGenerateMipmap", gl_GenerateMipmap, 1);
 
