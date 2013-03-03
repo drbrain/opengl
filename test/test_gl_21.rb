@@ -80,7 +80,7 @@ void main() {
     refute_equal(-1, glGetUniformLocation(program, "testmat43"),
                  "testmat43 missing!")
 
-    uniforms = Hash.new do |_, k| raise "invalid uniform #{k}" end
+    uniforms = Hash.new { |_, k| raise "invalid uniform #{k}" }
     (0...glGetProgramiv(program, GL_ACTIVE_UNIFORMS)).each do |i|
       uniform = glGetActiveUniform program, i
       uniforms[uniform.last] = i

@@ -16,7 +16,6 @@
 #include "common.h"
 
 /* 
-	GL_NV_conditional_render
 	GL_APPLE_flush_buffer_range -> actually ARB_map_buffer_range
 
 	GL_EXT_framebuffer_object -> GL_ARB_framebuffer_object
@@ -249,8 +248,6 @@ static VALUE gl_GetFragDataLocation(VALUE obj,VALUE arg1,VALUE arg2)
 	CHECK_GLERROR_FROM("glGetFragDataLocation");
 	return INT2NUM(ret);
 }
-
-/* GL_NV_conditional_render */
 
 /* ARB_map_buffer_range */
 
