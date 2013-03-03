@@ -21,8 +21,8 @@ end
 
 require 'minitest/autorun'
 require 'gl'
-require 'glut'
 require 'glu'
+require 'glut'
 require 'matrix'
 
 include Gl

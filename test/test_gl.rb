@@ -14,10 +14,6 @@
 #
 
 require 'opengl/test_case'
-require 'gl'
-require 'glut'
-include Gl
-include Glut
 
 class TestGl < OpenGL::TestCase
   def test_isavailable
