@@ -22,9 +22,11 @@ end
 require 'minitest/autorun'
 require 'gl'
 require 'glut'
+require 'glu'
 require 'matrix'
 
 include Gl
+include Glu
 include Glut
 
 Gl.enable_error_checking

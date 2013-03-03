@@ -15,32 +15,18 @@ end unless respond_to? :have_framework
 
 if ENV['CROSS_COMPILING']
   dir_config("installed")
-
-  $defs.push "-DFREEGLUT_EXPORTS"
-
-  # libfreeglut is linked to gdi32 and winmm
-  have_library( 'gdi32', 'CreateDC' ) && append_library( $libs, 'gdi32' )
-  have_library( 'winmm', 'timeBeginPeriod' ) && append_library( $libs, 'winmm' )
 end
 
 ok =
-  (have_library('opengl32.lib', 'glVertex3d') &&
-   have_library('glut32.lib',   'gluSolidTeapot')) ||
-  (have_library('opengl32') &&
-   have_library('glut')) ||
-  (have_library('GL',   'glVertex3d') &&
-   have_library('glut', 'glutSolidTeapot')) ||
+  have_library('opengl32.lib', 'glVertex3d') ||
+  have_library('opengl32') ||
+  have_library('GL',   'glVertex3d') ||
   (have_framework('OpenGL') &&
-   have_framework('GLUT') &&
    have_framework('Cocoa'))
 
 ok &&=
   have_header('GL/gl.h') ||
   have_header('OpenGL/gl.h') # OS X
-
-ok &&=
-  have_header('GL/glut.h') ||
-  have_header('GLUT/glut.h') # OS X
 
 have_header 'GL/glx.h'  # *NIX only?
 have_header 'dlfcn.h'   # OS X dynamic loader
@@ -55,10 +41,6 @@ have_struct_member 'struct RFloat', 'float_value'
 
 have_type 'int64_t', 'stdint.h'
 have_type 'uint64_t', 'stdint.h'
-
-if String === ?a then
-  $defs.push "-DHAVE_SINGLE_BYTE_STRINGS"
-end
 
 if ok then
   create_header

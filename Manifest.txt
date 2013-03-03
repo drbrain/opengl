@@ -6,7 +6,6 @@ MIT-LICENSE
 Manifest.txt
 README.rdoc
 Rakefile
-Rakefile.cross
 examples/NeHe/NeHe.png
 examples/NeHe/crate.png
 examples/NeHe/glass.png
@@ -114,12 +113,8 @@ ext/opengl/gl-ext-nv.c
 ext/opengl/gl-types.h
 ext/opengl/gl.c
 ext/opengl/gl_buffer.c
-ext/opengl/glut.c
-ext/opengl/glut_callbacks.c
-ext/opengl/glut_ext.c
 ext/opengl/opengl.c
 lib/gl.rb
-lib/glut.rb
 lib/opengl.rb
 lib/opengl/test_case.rb
 test/test_gl.rb

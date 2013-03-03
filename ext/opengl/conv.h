@@ -99,9 +99,6 @@ static inline VALUE _name_(GLenum pname,_type_ value) \
 	case GL_TEXTURE_FLOAT_COMPONENTS_NV: \
 	case GL_SHADER_CONSISTENT_NV: \
 	case GL_TEXTURE_COMPARE_SGIX: \
-	case GLU_TESS_BOUNDARY_ONLY: \
-	case GLU_CULLING: \
-	case GLU_AUTO_LOAD_MATRIX: \
 		return GLBOOL2RUBY(value); \
 	default: \
 		return _conv_(value); \

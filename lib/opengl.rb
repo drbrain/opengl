@@ -26,7 +26,7 @@ end
 
 require 'opengl/opengl'
 
-include Gl,Glut
+include Gl
 
 # (Gl.)glVertex -> GL.Vertex
 # (Gl::)GL_TRUE -> GL::TRUE
@@ -44,25 +44,6 @@ module GL
 
   Gl.methods( false ).each do |mn|
     n = mn.to_s.sub(/^gl/,'')
-    alias_method( n, mn )
-    public( n )
-  end
-end
-
-# (Glut.)glutInit -> GLUT.Init
-# (Glut::)GLUT_RGBA -> GLUT::RGBA
-module GLUT
-  extend self
-  include Glut
-
-  Glut.constants.each do |cn|
-    n = cn.to_s.sub(/^GLUT_/,'')
-    next if n =~ /^[0-9]/
-    const_set( n, Glut.const_get( cn ) )
-  end
-
-  Glut.methods( false ).each do |mn|
-    n = mn.to_s.sub(/^glut/,'')
     alias_method( n, mn )
     public( n )
   end

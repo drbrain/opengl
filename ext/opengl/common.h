@@ -31,10 +31,6 @@
 #include <OpenGL/gl.h>
 #endif
 
-#ifdef HAVE_GLUT_GLUT_H
-#include <GLUT/freeglut.h>
-#endif
-
 #ifdef HAVE_DLFCN_H
 #include <dlfcn.h>
 #endif
@@ -49,10 +45,6 @@
 
 #ifdef HAVE_GL_GL_H
 #include <GL/gl.h>
-#endif
-
-#ifdef HAVE_GL_GLUT_H
-#include <GL/freeglut.h>
 #endif
 
 #ifdef HAVE_GL_GLX_H
@@ -72,10 +64,6 @@
 
 #ifndef CALLBACK
 #define CALLBACK
-#endif
-
-#ifndef GLUTCALLBACK
-#define GLUTCALLBACK
 #endif
 
 #ifdef HAVE_WINDOWS_H
@@ -436,18 +424,5 @@ static inline VALUE pack_array_or_pass_string(GLenum type,VALUE ary)
 
 	return rb_funcall(ary,rb_intern("pack"),1,rb_str_new2(type_str));
 }
-
-/* GLUT */
-
-#define GLUT_SIMPLE_FUNCTION(_name_) \
-static VALUE \
-glut_##_name_(obj) \
-VALUE obj; \
-{ \
-    glut##_name_(); \
-    return Qnil; \
-}
-
-VALUE rb_glut_check_callback(VALUE, VALUE);
 
 #endif
