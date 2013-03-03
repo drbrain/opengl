@@ -9,8 +9,13 @@ email  :: mailto:ruby-opengl-devel@rubyforge.org
 
 == Description
 
-An OpenGL wrapper for Ruby. opengl contains bindings for OpenGL and the
-GLU and GLUT libraries.
+An OpenGL wrapper for Ruby. opengl contains bindings for OpenGL.
+
+Be sure to check out 
+{GLU}[https://github.com/archSeer/glu], 
+{GLUT}[https://github.com/archSeer/glut] and 
+{GLFW}[https://github.com/archSeer/glfw]
+gems.
 
 == Features and Problems
 
@@ -32,6 +37,8 @@ GLU and GLUT libraries.
 Note that the tests have the adverse effect of testing the underlying OpenGL
 implementation, so depending on your GL provider, drivers or OS, the tests may
 fail, crash, or not run at all, without affecting your ability to use the bindings.
+
+Tests require both glut and glu gem.
 
 With our test suite, we were able to uncover and help fix upstream mesa bugs:
 
@@ -59,10 +66,8 @@ and generate the RDoc.
 == Cross compiling for Windows
 
 Using rake-compiler a cross compiled opengl gem can be build on a Linux or MacOS X
-host for the win32 platform. The generated gem is statically linked against
-libfreeglut. Freeglut is downloaded and compiled from the sources.
-There are no runtime dependencies to any but the standard Windows
-DLLs.
+host for the win32 platform. There are no runtime dependencies to any but the
+standard Windows DLLs.
 
 Install mingw32 or w64 using the instructions in rake-compiler's README.
 For Debian/Ubuntu it is <tt>apt-get install gcc-mingw-w64</tt> .
@@ -77,7 +82,7 @@ Download and cross compile opengl for win32:
 
 or with custom versions:
 
-  rake cross native gem RUBY_CC_VERSION=1.9.3 LIBFREEGLUT_VERSION=2.8.0
+  rake cross native gem RUBY_CC_VERSION=1.9.3
 
 If everything works, there should be ruby-opengl-VERSION-x86-mingw32.gem in the pkg
 directory.
