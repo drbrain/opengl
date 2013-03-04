@@ -21,8 +21,6 @@
 
 GL_FUNC_LOAD_4(BlendColor,GLvoid, GLclampf,GLclampf,GLclampf,GLclampf, "1.2")
 GL_FUNC_LOAD_1(BlendEquation,GLvoid, GLenum, "1.2")
-GL_FUNC_LOAD_5(CopyColorTable,GLvoid, GLenum,GLenum,GLint,GLint,GLsizei, "1.2")
-GL_FUNC_LOAD_5(CopyColorSubTable,GLvoid, GLenum,GLsizei,GLint,GLint,GLsizei, "1.2")
 GL_FUNC_LOAD_9(CopyTexSubImage3D,GLvoid, GLenum,GLint,GLint,GLint,GLint,GLint,GLint,GLsizei,GLsizei, "1.2")
 
 static void (APIENTRY * fptr_glDrawRangeElements)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
@@ -49,176 +47,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 		fptr_glDrawRangeElements(mode, start, end, count, type, RSTRING_PTR(data));
 	}
 	CHECK_GLERROR_FROM("glDrawRangeElements");
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glColorTable)(GLenum,GLenum,GLsizei,GLenum,GLenum,GLvoid*);
-static VALUE
-gl_ColorTable(obj,arg1,arg2,arg3,arg4,arg5,arg6)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
-{
-	GLenum target;
-	GLenum internalformat;
-	GLsizei width;
-	GLenum format;
-	GLenum type;
-	LOAD_GL_FUNC(glColorTable, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	internalformat = (GLenum)NUM2INT(arg2);
-	width = (GLsizei)NUM2UINT(arg3);
-	format = (GLenum)NUM2INT(arg4);
-	type = (GLenum)NUM2INT(arg5);
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glColorTable(target,internalformat,width,format,type,(GLvoid *)NUM2LONG(arg6));
-	} else {
-		VALUE data;
-		data = pack_array_or_pass_string(type,arg6);
-		CheckDataSize(type,format,width,data);
-		fptr_glColorTable(target,internalformat,width,format,type,(GLvoid*)RSTRING_PTR(data));
-	}
-	CHECK_GLERROR_FROM("glColorTable");
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glColorTableParameterfv)(GLenum,GLenum,const GLfloat*);
-static VALUE
-gl_ColorTableParameterfv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLfloat params[4] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
-	LOAD_GL_FUNC(glColorTableParameterfv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	Check_Type(arg3,T_ARRAY);
-	ary2cflt(arg3,params,4);
-	fptr_glColorTableParameterfv(target,pname,params);
-	CHECK_GLERROR_FROM("glColorTableParameterfv");
-	return Qnil;
-}
-
-static void (APIENTRY * fptr_glColorTableParameteriv)(GLenum,GLenum,const GLint*);
-static VALUE
-gl_ColorTableParameteriv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLint params[4] = {0,0,0,0};
-	LOAD_GL_FUNC(glColorTableParameteriv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	Check_Type(arg3,T_ARRAY);
-	ary2cint(arg3,params,4);
-	fptr_glColorTableParameteriv(target,pname,params);
-	CHECK_GLERROR_FROM("glColorTableParameteriv");
-	return Qnil;
-}
-
-
-static void (APIENTRY * fptr_glGetColorTableParameterfv)(GLenum,GLenum,GLfloat *);
-static VALUE
-gl_GetColorTableParameterfv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum pname;
-	GLfloat params[4] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
-	GLsizei size;
-	LOAD_GL_FUNC(glGetColorTableParameterfv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	switch (pname) {
-		case GL_COLOR_TABLE_SCALE:
-		case GL_COLOR_TABLE_BIAS:
-			size = 4;
-			break;
-		default:
-			size = 1;
-			break;
-	}
-	fptr_glGetColorTableParameterfv(target,pname,params);
-	RET_ARRAY_OR_SINGLE("glGetColorTableParameterfv", size, RETCONV_GLfloat,
-			params);
-}
-
-static void (APIENTRY * fptr_glGetColorTableParameteriv)(GLenum,GLenum,GLint *);
-static VALUE
-gl_GetColorTableParameteriv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum pname;
-	GLint params[4] = {0,0,0,0};
-	GLsizei size;
-	LOAD_GL_FUNC(glGetColorTableParameteriv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	switch (pname) {
-		case GL_COLOR_TABLE_SCALE:
-		case GL_COLOR_TABLE_BIAS:
-			size = 4;
-			break;
-		default:
-			size = 1;
-			break;
-	}
-	fptr_glGetColorTableParameteriv(target,pname,params);
-	RET_ARRAY_OR_SINGLE("glGetColorTableParameteriv", size, RETCONV_GLint,
-			params);
-}
-
-static void (APIENTRY * fptr_glGetColorTable)(GLenum,GLenum,GLenum,GLvoid *);
-static VALUE
-gl_GetColorTable(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum format;
-	GLenum type;
-	GLsizei width = 0;
-	VALUE data;
-	LOAD_GL_FUNC(glGetColorTable, "1.2");
-	LOAD_GL_FUNC(glGetColorTableParameteriv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	format = (GLenum)NUM2INT(arg2);
-	type = (GLenum)NUM2INT(arg3);
-	fptr_glGetColorTableParameteriv(target,GL_COLOR_TABLE_WIDTH,&width);
-	CHECK_GLERROR_FROM("glGetColorTableParameteriv");
-	data = allocate_buffer_with_string(GetDataSize(type,format,width));
-	FORCE_PIXEL_STORE_MODE
-	fptr_glGetColorTable(target,format,type,(GLvoid*)RSTRING_PTR(data));	
-	RESTORE_PIXEL_STORE_MODE
-	CHECK_GLERROR_FROM("glGetColorTable");
-	return data;
-}
-
-static void (APIENTRY * fptr_glColorSubTable)(GLenum,GLsizei,GLsizei,GLenum,GLenum,const GLvoid *data);
-static VALUE
-gl_ColorSubTable(obj,arg1,arg2,arg3,arg4,arg5,arg6)
-VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
-{
-	GLenum target;
-	GLsizei start;
-	GLsizei count;
-	GLenum format;
-	GLenum type;
-	LOAD_GL_FUNC(glColorSubTable, "1.2");
-	target = (GLenum)NUM2INT(arg1);	
-	start = (GLsizei)NUM2UINT(arg2);	
-	count = (GLsizei)NUM2UINT(arg3);	
-	format = (GLenum)NUM2INT(arg4);	
-	type = (GLenum)NUM2INT(arg5);	
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-		fptr_glColorSubTable(target,start,count,format,type,(GLvoid *)NUM2LONG(arg6));
-	} else {
-		VALUE data;
-		data = pack_array_or_pass_string(type,arg6);
-		CheckDataSize(type,format,count,data);
-		fptr_glColorSubTable(target,start,count,format,type,RSTRING_PTR(data));
-	}
-	CHECK_GLERROR_FROM("glColorSubTable");
 	return Qnil;
 }
 
@@ -321,15 +149,6 @@ void gl_init_functions_1_2(VALUE module)
 	rb_define_module_function(module, "glBlendColor", gl_BlendColor, 4);
 	rb_define_module_function(module, "glBlendEquation", gl_BlendEquation, 1);
 	rb_define_module_function(module, "glDrawRangeElements", gl_DrawRangeElements, 6);
-	rb_define_module_function(module, "glColorTable", gl_ColorTable, 6);
-	rb_define_module_function(module, "glColorTableParameterfv", gl_ColorTableParameterfv, 3);
-	rb_define_module_function(module, "glColorTableParameteriv", gl_ColorTableParameteriv, 3);
-	rb_define_module_function(module, "glCopyColorTable", gl_CopyColorTable, 5);
-	rb_define_module_function(module, "glGetColorTable", gl_GetColorTable, 3);
-	rb_define_module_function(module, "glGetColorTableParameterfv", gl_GetColorTableParameterfv, 2);
-	rb_define_module_function(module, "glGetColorTableParameteriv", gl_GetColorTableParameteriv, 2);
-	rb_define_module_function(module, "glColorSubTable", gl_ColorSubTable, 6);
-	rb_define_module_function(module, "glCopyColorSubTable", gl_CopyColorSubTable, 5);
 	rb_define_module_function(module, "glTexImage3D", gl_TexImage3D, 10);
 	rb_define_module_function(module, "glTexSubImage3D", gl_TexSubImage3D, 11);
 	rb_define_module_function(module, "glCopyTexSubImage3D", gl_CopyTexSubImage3D, 9);

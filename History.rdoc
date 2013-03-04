@@ -12,6 +12,10 @@ support instead of GL_EXT_gpu_shader4.
 * Fix ProgramVertexLimitNV checked for GL_NV_gpu_program4 support instead of
 GL_EXT_geometry_shader4.
 
+* Dropped support for 1.2 optional ARB_imaging subset. It is deprecated and
+support for it was dropped from all major drivers. Continuing support for it
+would lead to developers using deprecated coding practices.
+
 * Glu is deprecated. Split into a seperate gem.
 
 * OpenGL 3.0 support
