@@ -153,46 +153,6 @@ void main() {
     glDeleteBuffers(buffers)
   end
 
-  def test_pixelunpack_color_convolution
-    ct = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
-    ct2 = ([1]*3+[0]*3+[1]*3+[0]*3).pack("f*")
-
-    buffers = glGenBuffers(2)
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, 4*3*4, ct, GL_DYNAMIC_DRAW)
-
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, 4*3*4, ct2, GL_DYNAMIC_DRAW)
-
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
-    glColorTable(GL_COLOR_TABLE, GL_RGB8, 4, GL_RGB, GL_FLOAT, 0)
-    assert_equal(ct, glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT))
-    glConvolutionFilter1D(GL_CONVOLUTION_1D, GL_RGB8, 4, GL_RGB, GL_FLOAT, 0)
-    assert_equal(ct, glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT))
-
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[1])
-    glColorSubTable(GL_COLOR_TABLE, 0, 4, GL_RGB, GL_FLOAT, 0)
-    assert_equal(ct2, glGetColorTable(GL_COLOR_TABLE, GL_RGB, GL_FLOAT))
-    glConvolutionFilter2D(GL_CONVOLUTION_2D, GL_RGB8, 2, 2, GL_RGB, GL_FLOAT, 0)
-    assert_equal(ct2, glGetConvolutionFilter(GL_CONVOLUTION_2D, GL_RGB, GL_FLOAT))
-
-    glDeleteBuffers(buffers)
-  end
-
-  def test_pixelunpack_separable
-    sf_a = ([0]*3+[1]*3).pack("f*")
-    sf_b = ([1]*3+[0]*3).pack("f*")
-
-    buffers = glGenBuffers(1)
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, (2*3*4)*2, sf_a + sf_b, GL_DYNAMIC_DRAW)
-
-    glSeparableFilter2D(GL_SEPARABLE_2D, GL_RGB8, 2, 2, GL_RGB, GL_FLOAT, 0, 2*3*4)
-    assert_equal([sf_a, sf_b], glGetSeparableFilter(GL_SEPARABLE_2D, GL_RGB, GL_FLOAT))
-
-    glDeleteBuffers(buffers)
-  end
-
   def test_pixelunpack_drawpixels
     glClearColor(0, 0, 0, 0)
     glClear(GL_COLOR_BUFFER_BIT)
@@ -428,80 +388,6 @@ void main() {
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
 
     glDeleteBuffers(buffers)
-  end
-
-  def test_pixelpack_separablefilter
-    sf_a = ([0]*3+[1]*3).pack("f*")
-    sf_b = ([1]*3+[0]*3).pack("f*")
-
-    buffers = glGenBuffers(1)
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 6*4 + 6*4, nil, GL_STREAM_READ)
-
-    glSeparableFilter2D(GL_SEPARABLE_2D, GL_RGB8, 2, 2, GL_RGB, GL_FLOAT, sf_a, sf_b)
-    glGetSeparableFilter(GL_SEPARABLE_2D, GL_RGB, GL_FLOAT, 0, 6*4, 0)
-
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(sf_a + sf_b, data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
-
-    glDeleteBuffers(buffers)
-  end
-
-  def test_pixelpack_convolutionfilter
-    cf = ([0]*3+[1]*3+[0]*3+[1]*3).pack("f*")
-
-    buffers = glGenBuffers(1)
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 3*4*4, nil, GL_STREAM_READ)
-
-    glConvolutionFilter1D(GL_CONVOLUTION_1D, GL_RGB8, 4, GL_RGB, GL_FLOAT, cf)
-
-    glGetConvolutionFilter(GL_CONVOLUTION_1D, GL_RGB, GL_FLOAT, 0)
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal(cf, data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
-
-    glDeleteBuffers(buffers)
-  end
-
-  def test_pixelpack_histogram
-    glEnable(GL_HISTOGRAM)
-
-    glHistogram(GL_HISTOGRAM, 1, GL_RGB8, GL_FALSE)
-
-    buffers = glGenBuffers(1)
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 3*4, nil, GL_STREAM_READ)
-
-    glDrawPixels(2, 1, GL_RGB, GL_FLOAT, [1, 1, 1, 1, 1, 1].pack("f*"))
-    glGetHistogram(GL_HISTOGRAM, GL_FALSE, GL_RGB, GL_FLOAT, 0)
-
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal([2, 2, 2], data.unpack("f*"))
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
-
-    glDeleteBuffers(buffers)
-    glDisable(GL_HISTOGRAM)
-  end
-
-  def test_pixelpack_minmax
-    glEnable(GL_MINMAX)
-
-    glMinmax(GL_MINMAX, GL_RGB8, GL_FALSE)
-
-    buffers = glGenBuffers(1)
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 6*4, nil, GL_STREAM_READ)
-
-    glDrawPixels(2, 1, GL_RGB, GL_FLOAT, [0, 0, 0, 1, 1, 1].pack("f*"))
-    glGetMinmax(GL_MINMAX, GL_FALSE, GL_RGB, GL_FLOAT, 0)
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
-    assert_equal([0, 0, 0, 1, 1, 1], data.unpack("f*"))
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
-
-    glDeleteBuffers(buffers)
-    glDisable(GL_MINMAX)
   end
 
   def test_pixelpack_teximage
