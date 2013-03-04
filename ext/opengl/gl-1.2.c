@@ -23,10 +23,6 @@ GL_FUNC_LOAD_4(BlendColor,GLvoid, GLclampf,GLclampf,GLclampf,GLclampf, "1.2")
 GL_FUNC_LOAD_1(BlendEquation,GLvoid, GLenum, "1.2")
 GL_FUNC_LOAD_5(CopyColorTable,GLvoid, GLenum,GLenum,GLint,GLint,GLsizei, "1.2")
 GL_FUNC_LOAD_5(CopyColorSubTable,GLvoid, GLenum,GLsizei,GLint,GLint,GLsizei, "1.2")
-GL_FUNC_LOAD_4(Histogram,GLvoid, GLenum,GLsizei,GLenum,GLboolean, "1.2")
-GL_FUNC_LOAD_3(Minmax,GLvoid, GLenum,GLenum,GLboolean, "1.2")
-GL_FUNC_LOAD_1(ResetHistogram,GLvoid, GLenum, "1.2")
-GL_FUNC_LOAD_1(ResetMinmax,GLvoid, GLenum, "1.2")
 GL_FUNC_LOAD_9(CopyTexSubImage3D,GLvoid, GLenum,GLint,GLint,GLint,GLint,GLint,GLint,GLsizei,GLsizei, "1.2")
 
 static void (APIENTRY * fptr_glDrawRangeElements)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
@@ -226,166 +222,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glGetHistogramParameterfv)(GLenum,GLenum,GLfloat *);
-static VALUE
-gl_GetHistogramParameterfv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLfloat params = (GLfloat)0.0;
-	LOAD_GL_FUNC(glGetHistogramParameterfv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	fptr_glGetHistogramParameterfv(target,pname,&params);
-	CHECK_GLERROR_FROM("glGetHistogramParameterfv");
-	return RETCONV_GLfloat(params);
-}
-
-static void (APIENTRY * fptr_glGetHistogramParameteriv)(GLenum,GLenum,GLint *);
-static VALUE
-gl_GetHistogramParameteriv(obj,arg1,arg2,arg3)
-VALUE obj,arg1,arg2,arg3;
-{
-	GLenum target;
-	GLenum pname;
-	GLint params = 0;
-	LOAD_GL_FUNC(glGetHistogramParameteriv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	fptr_glGetHistogramParameteriv(target,pname,&params);
-	CHECK_GLERROR_FROM("glGetHistogramParameteriv");
-	return cond_GLBOOL2RUBY(pname,params);
-}
-
-static void (APIENTRY * fptr_glGetHistogram)(GLenum,GLboolean,GLenum,GLenum,GLvoid*);
-static VALUE
-gl_GetHistogram(argc,argv,obj)
-int argc;
-VALUE *argv;
-VALUE obj;
-{
-	GLenum target;
-	GLboolean reset;
-	GLenum format;
-	GLenum type;
-	GLint size = 0;
-	VALUE data;
-	VALUE args[5];
-	int numargs;
-	LOAD_GL_FUNC(glGetHistogram, "1.2");
-	LOAD_GL_FUNC(glGetHistogramParameteriv, "1.2");
-	numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
-	target = (GLenum)NUM2INT(args[0]);
-	reset = (GLboolean)RUBYBOOL2GL(args[1]);
-	format = (GLenum)NUM2INT(args[2]);
-	type = (GLenum)NUM2INT(args[3]);
-
-	switch(numargs) {
-		default:
-		case 4:
-			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
-				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
-
-			fptr_glGetHistogramParameteriv(target,GL_HISTOGRAM_WIDTH,&size);
-			CHECK_GLERROR_FROM("glGetHistogramParameteriv");
-			data = allocate_buffer_with_string(GetDataSize(type,format,size));
-			FORCE_PIXEL_STORE_MODE
-			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)RSTRING_PTR(data));
-			RESTORE_PIXEL_STORE_MODE
-			CHECK_GLERROR_FROM("glGetHistogram");
-			return data;
-			break;
-		case 5:
-			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
-				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
-
-			FORCE_PIXEL_STORE_MODE
-			fptr_glGetHistogram(target,reset,format,type,(GLvoid*)NUM2LONG(args[4]));
-			RESTORE_PIXEL_STORE_MODE
-			CHECK_GLERROR_FROM("glGetHistogram");
-			return Qnil;
-	}
-}
-
-static void (APIENTRY * fptr_glGetMinmax)(GLenum,GLboolean,GLenum,GLenum,GLvoid *);
-static VALUE
-gl_GetMinmax(argc,argv,obj)
-int argc;
-VALUE *argv;
-VALUE obj;
-{
-	GLenum target;
-	GLboolean reset;
-	GLenum format;
-	GLenum type;
-	VALUE data;
-	VALUE args[5];
-	int numargs;
-	LOAD_GL_FUNC(glGetMinmax, "1.2");
-	numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
-	target = (GLenum)NUM2INT(args[0]);
-	reset = (GLboolean)RUBYBOOL2GL(args[1]);
-	format = (GLenum)NUM2INT(args[2]);
-	type = (GLenum)NUM2INT(args[3]);
-
-	switch(numargs) {
-		default:
-		case 4:
-			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
-				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
-
-			data = allocate_buffer_with_string(GetDataSize(type,format,2));
-			FORCE_PIXEL_STORE_MODE
-			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)RSTRING_PTR(data));
-			RESTORE_PIXEL_STORE_MODE
-			CHECK_GLERROR_FROM("glGetMinmax");
-			return data;
-			break;
-		case 5:
-			if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
-				rb_raise(rb_eArgError, "Pixel pack buffer not bound");
-
-			FORCE_PIXEL_STORE_MODE
-			fptr_glGetMinmax(target,reset,format,type,(GLvoid*)NUM2LONG(args[4]));
-			RESTORE_PIXEL_STORE_MODE
-			CHECK_GLERROR_FROM("glGetMinmax");
-			return Qnil;
-	}
-}
-
-static void (APIENTRY * fptr_glGetMinmaxParameterfv)(GLenum,GLenum,GLfloat *);
-static VALUE
-gl_GetMinmaxParameterfv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum pname;
-	GLfloat params = (GLfloat)0.0;
-	LOAD_GL_FUNC(glGetMinmaxParameterfv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	fptr_glGetMinmaxParameterfv(target,pname,&params);
-	CHECK_GLERROR_FROM("glGetMinmaxParameterfv");
-	return RETCONV_GLfloat(params);
-}
-
-static void (APIENTRY * fptr_glGetMinmaxParameteriv)(GLenum,GLenum,GLint *);
-static VALUE
-gl_GetMinmaxParameteriv(obj,arg1,arg2)
-VALUE obj,arg1,arg2;
-{
-	GLenum target;
-	GLenum pname;
-	GLint params = 0;
-	LOAD_GL_FUNC(glGetMinmaxParameteriv, "1.2");
-	target = (GLenum)NUM2INT(arg1);
-	pname = (GLenum)NUM2INT(arg2);
-	fptr_glGetMinmaxParameteriv(target,pname,&params);
-	CHECK_GLERROR_FROM("glGetMinmaxParameteriv");
-	return cond_GLBOOL2RUBY(pname,params);
-}
-
 static void (APIENTRY * fptr_glTexImage3D)(GLenum,GLint,GLint,GLsizei,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*);
 static VALUE
 gl_TexImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10)
@@ -494,16 +330,6 @@ void gl_init_functions_1_2(VALUE module)
 	rb_define_module_function(module, "glGetColorTableParameteriv", gl_GetColorTableParameteriv, 2);
 	rb_define_module_function(module, "glColorSubTable", gl_ColorSubTable, 6);
 	rb_define_module_function(module, "glCopyColorSubTable", gl_CopyColorSubTable, 5);
-	rb_define_module_function(module, "glGetHistogram", gl_GetHistogram, -1);
-	rb_define_module_function(module, "glGetHistogramParameterfv", gl_GetHistogramParameterfv, 2);
-	rb_define_module_function(module, "glGetHistogramParameteriv", gl_GetHistogramParameteriv, 2);
-	rb_define_module_function(module, "glGetMinmax", gl_GetMinmax, -1);
-	rb_define_module_function(module, "glGetMinmaxParameterfv", gl_GetMinmaxParameterfv, 2);
-	rb_define_module_function(module, "glGetMinmaxParameteriv", gl_GetMinmaxParameteriv, 2);
-	rb_define_module_function(module, "glHistogram", gl_Histogram, 4);
-	rb_define_module_function(module, "glMinmax", gl_Minmax, 3);
-	rb_define_module_function(module, "glResetHistogram", gl_ResetHistogram, 1);
-	rb_define_module_function(module, "glResetMinmax", gl_ResetMinmax, 1);
 	rb_define_module_function(module, "glTexImage3D", gl_TexImage3D, 10);
 	rb_define_module_function(module, "glTexSubImage3D", gl_TexSubImage3D, 11);
 	rb_define_module_function(module, "glCopyTexSubImage3D", gl_CopyTexSubImage3D, 9);
