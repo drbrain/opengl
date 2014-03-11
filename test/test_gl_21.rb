@@ -86,7 +86,6 @@ void main() {
       uniforms[uniform.last] = i
     end
 
-    skip "glUniformMatrix2x3fv complains but I don't know why"
     glUniformMatrix2x3fv(uniforms["testmat23"], GL_FALSE, [0, 1, 1, 0, 0, 1])
     assert_equal([0, 1, 1, 0, 0, 1], glGetUniformfv(program, uniforms["testmat23"]))
     glUniformMatrix3x2fv(uniforms["testmat32"], GL_FALSE, [1, 0, 0, 1, 1, 0])
@@ -135,7 +134,7 @@ void main() {
   end
 
   def test_pixelunpack_bitmap
-    skip("Segfaults until upstream fixes it")
+    skip("Segfaults on Mesa until upstream fixes it")
     glOrtho(0, WINDOW_SIZE, 0, WINDOW_SIZE, 0, -1)
 
     bitmap = [ 0x55 ] * 8 # 64 bits (8x8 bitmap), stipple pattern
