@@ -44,7 +44,7 @@ Rake::ExtensionTask.new 'opengl', hoe.spec do |ext|
   ext.lib_dir = 'lib/opengl'
 
   ext.cross_compile = true
-  ext.cross_platform = ['i386-mingw32']
+  ext.cross_platform = ['i386-mingw32', 'x64-mingw32']
 end
 
 task :test => :compile
