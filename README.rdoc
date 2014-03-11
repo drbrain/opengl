@@ -1,20 +1,19 @@
 = opengl
 
-{<img src="https://travis-ci.org/archSeer/opengl.png?branch=master" alt="Build Status" />}[https://travis-ci.org/archSeer/opengl]
+{<img src="https://travis-ci.org/larskanis/opengl.png?branch=master" alt="Build Status" />}[https://travis-ci.org/larskanis/opengl]
 
-source :: https://github.com/archSeer/opengl
-docs   :: http://archseer.github.com/opengl
-bugs   :: https://github.com/archSeer/opengl/issues
+source :: https://github.com/larskanis/opengl
+docs   :: http://larskanis.github.com/opengl
+bugs   :: https://github.com/larskanis/opengl/issues
 email  :: mailto:ruby-opengl-devel@rubyforge.org
 
 == Description
 
 An OpenGL wrapper for Ruby. opengl contains bindings for OpenGL.
 
-Be sure to check out 
-{GLU}[https://github.com/archSeer/glu], 
-{GLUT}[https://github.com/archSeer/glut] and 
-{GLFW}[https://github.com/archSeer/glfw]
+Be sure to check out
+{GLU}[https://github.com/larskanis/glu] and
+{GLUT}[https://github.com/larskanis/glut]
 gems.
 
 == Features and Problems
@@ -29,8 +28,8 @@ gems.
 == Requirements
 
 * Ruby 1.9.2+
-  *  see {0.7}[https://github.com/archSeer/opengl/tree/0.7] for Ruby 1.8.x compatible branch
-* OpenGL, GLU and (free-)GLUT development files installed
+  *  see {0.7}[https://github.com/larskanis/opengl/tree/0.7] for Ruby 1.8.x compatible branch
+* OpenGL development files installed
 
 == Tests
 
@@ -65,28 +64,11 @@ and generate the RDoc.
 
 == Cross compiling for Windows
 
-Using rake-compiler a cross compiled opengl gem can be build on a Linux or MacOS X
-host for the win32 platform. There are no runtime dependencies to any but the
-standard Windows DLLs.
-
-Install mingw32 or w64 using the instructions in rake-compiler's README.
-For Debian/Ubuntu it is <tt>apt-get install gcc-mingw-w64</tt> .
-
-Download and cross compile ruby 1.9 for win32 with:
-
-  rake-compiler cross-ruby VERSION=1.9.3-p0
-
-Download and cross compile opengl for win32:
-
-  rake cross native gem
-
-or with custom versions:
-
-  rake cross native gem RUBY_CC_VERSION=1.9.3
-
-If everything works, there should be ruby-opengl-VERSION-x86-mingw32.gem in the pkg
-directory.
-
+Using rake-compiler a cross compiled opengl gem can be build in a
+{rake-compiler-dev-box}[https://github.com/tjschuck/rake-compiler-dev-box]
+the win32 platform. There are no runtime dependencies to any but the
+standard Windows DLLs. Use the standard package_win32_fat_binary
+script.
 
 == License
 

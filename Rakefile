@@ -19,7 +19,7 @@ require 'rake/extensiontask'
 
 hoe = Hoe.spec 'opengl' do
   developer 'Eric Hodel', 'drbrain@segment7.net'
-  developer 'Lars Kanis',  ''
+  developer 'Lars Kanis',  'lars@greiz-reinsdorf.de'
   developer 'Blaž Hrastnik', 'speed.the.bboy@gmail.com'
   developer 'Alain Hoang', ''
   developer 'Jan Dvorak',  ''
