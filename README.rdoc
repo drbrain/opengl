@@ -1,11 +1,11 @@
 = opengl
 
-{<img src="https://travis-ci.org/larskanis/opengl.png?branch=master" alt="Build Status" />}[https://travis-ci.org/larskanis/opengl]
-
 source :: https://github.com/larskanis/opengl
 docs   :: http://larskanis.github.com/opengl
 bugs   :: https://github.com/larskanis/opengl/issues
 email  :: mailto:ruby-opengl-devel@rubyforge.org
+
+{<img src="https://travis-ci.org/larskanis/opengl.png?branch=master" alt="Build Status" />}[https://travis-ci.org/larskanis/opengl]
 
 == Description
 
