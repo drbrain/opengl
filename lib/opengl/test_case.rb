@@ -64,7 +64,7 @@ class OpenGL::TestCase < MiniTest::Unit::TestCase
 
     # in case there is an GL error that escaped error checking routines ...
     error = glGetError
-    assert_equal error, 0, gluErrorString(error)
+    assert_equal 0, error, gluErrorString(error)
 
     glutDestroyWindow @window
   end

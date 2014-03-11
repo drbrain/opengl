@@ -131,7 +131,7 @@ class TestGl13 < OpenGL::TestCase
 
     begin
       glCompressedTexSubImage3D(GL_TEXTURE_3D,0, 0,0,0, 2,2,1, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 16, image_2)
-      assert_equal(image_2, lGetCompressedTexImage(GL_TEXTURE_3D,0))
+      assert_equal(image_2, glGetCompressedTexImage(GL_TEXTURE_3D,0))
     rescue Gl::Error => err
       assert(err.id == GL_INVALID_ENUM || err.id == GL_INVALID_OPERATION)
     end

@@ -31,33 +31,33 @@ class TestGlExtArb < OpenGL::TestCase
 
     glMatrixMode(GL_MODELVIEW)
     glLoadTransposeMatrixfARB(m_a)
-    assert_equal m_a, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
+    assert_each_in_delta m_a, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
 
     glLoadTransposeMatrixdARB(m_b)
-    assert_equal m_b, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
+    assert_each_in_delta m_b, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
 
     glLoadIdentity()
     glMultTransposeMatrixfARB(m_a)
-    assert_equal m_a, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
+    assert_each_in_delta m_a, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
 
     glLoadIdentity()
     glMultTransposeMatrixdARB(m_b)
-    assert_equal m_b, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
+    assert_each_in_delta m_b, glGetDoublev(GL_TRANSPOSE_MODELVIEW_MATRIX_ARB)
 
     # 2
     m = Matrix.rows([[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 16]])
     glMatrixMode(GL_MODELVIEW)
     glLoadTransposeMatrixfARB(m)
-    assert_equal m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
+    assert_each_in_delta m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
     glLoadIdentity()
     glLoadTransposeMatrixdARB(m)
-    assert_equal m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
+    assert_each_in_delta m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
     glLoadIdentity()
     glMultTransposeMatrixfARB(m)
-    assert_equal m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
+    assert_each_in_delta m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
     glLoadIdentity()
     glMultTransposeMatrixdARB(m)
-    assert_equal m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
+    assert_each_in_delta m.to_a.transpose, glGetDoublev(GL_MODELVIEW_MATRIX)
 
     assert_raises ArgumentError do glLoadTransposeMatrixfARB([1, 2, 3, 4]) end
     assert_raises ArgumentError do glLoadTransposeMatrixdARB([1, 2, 3, 4]) end
@@ -215,48 +215,48 @@ class TestGlExtArb < OpenGL::TestCase
     supported? "GL_ARB_window_pos"
     # 2
     glWindowPos2dARB(1.0, 2.0)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos2dvARB([2.0, 1.0])
-    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos2fARB(1.0, 2.0)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos2fvARB([2.0, 1.0])
-    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos2iARB(1, 2)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos2ivARB([2, 1])
-    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos2sARB(1, 2)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos2svARB([2, 1])
-    assert_equal([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([2, 1, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
 
     # 3
     glWindowPos3dARB(1.0, 2.0, 0.5)
-    assert_equal([1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos3dvARB([3.0, 2.0, 1.0])
-    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos3fARB(1.0, 2.0, 0.5)
-    assert_equal([1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([1, 2, 0.5, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos3fvARB([3.0, 2.0, 1.0])
-    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos3iARB(1, 2, 0)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos3ivARB([3, 2, 1])
-    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos3sARB(1, 2, 0)
-    assert_equal([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([1, 2, 0, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
     glWindowPos3svARB([3, 2, 1])
-    assert_equal([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
+    assert_each_in_delta([3, 2, 1, 1], glGetDoublev(GL_CURRENT_RASTER_POSITION))
   end
 
   def test_gl_arb_pointparameter
     supported? "GL_ARB_point_parameters"
     glPointParameterfARB(GL_POINT_SIZE_MIN, 1.0)
-    assert_equal 1.0, glGetDoublev(GL_POINT_SIZE_MIN)
+    assert_in_delta 1.0, glGetDoublev(GL_POINT_SIZE_MIN)
 
     glPointParameterfvARB(GL_POINT_DISTANCE_ATTENUATION, [1, 0, 1])
-    assert_equal([1, 0, 1], glGetDoublev(GL_POINT_DISTANCE_ATTENUATION))
+    assert_each_in_delta([1, 0, 1], glGetDoublev(GL_POINT_DISTANCE_ATTENUATION))
   end
 
   def test_gl_arb_occlusion_query
