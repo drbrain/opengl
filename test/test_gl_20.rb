@@ -229,15 +229,9 @@ uniform ivec3 testivec3;
 uniform ivec4 testivec4;
 
 void main() {
-  testvec1;
-  testvec2;
-  testvec3;
-  testvec4;
-  testivec1;
-  testivec2;
-  testivec3;
-  testivec4;
-  gl_Position = ftransform();
+  gl_Position = ftransform() *
+    testvec1 * testvec2[0] * testvec3[0] * testvec4[0] *
+    float(testivec1) * float(testivec2[0]) * float(testivec3[0]) * float(testivec4[0]);
 }
     SHADER
 
