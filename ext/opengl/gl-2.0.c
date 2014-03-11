@@ -1,17 +1,17 @@
 /*
-* Copyright (C) 2007 Jan Dvorak <jan.dvorak@kraxnet.cz>
-*
-* This program is distributed under the terms of the MIT license.
-* See the included MIT-LICENSE file for the terms of this license.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Copyright (C) 2007 Jan Dvorak <jan.dvorak@kraxnet.cz>
+ *
+ * This program is distributed under the terms of the MIT license.
+ * See the included MIT-LICENSE file for the terms of this license.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #include "common.h"
 
@@ -124,10 +124,13 @@ VALUE obj,arg1,arg2;
   index = (GLuint)NUM2UINT(arg2);
   fptr_glGetProgramiv(program,GL_ACTIVE_ATTRIBUTE_MAX_LENGTH,&max_size);
   CHECK_GLERROR_FROM("glGetProgramiv");
-  if (max_size==0)
-    rb_raise(rb_eTypeError, "Can't determine maximum attribute name length");
+  /* Can't determine maximum attribute name length, so presume it */
+  if (max_size==0) max_size = 256;
   buffer = allocate_buffer_with_string(max_size-1);
+
   fptr_glGetActiveAttrib(program,index,max_size,&written,&attrib_size,&attrib_type,RSTRING_PTR(buffer));
+
+  rb_str_set_len(buffer, written);
   retary = rb_ary_new2(3);
   rb_ary_push(retary, INT2NUM(attrib_size));
   rb_ary_push(retary, INT2NUM(attrib_type));
@@ -155,13 +158,13 @@ VALUE obj,arg1,arg2;
   index = (GLuint)NUM2UINT(arg2);
   fptr_glGetProgramiv(program,GL_ACTIVE_UNIFORM_MAX_LENGTH,&max_size);
   CHECK_GLERROR_FROM("glGetProgramiv");
-  if (max_size==0)
-    rb_raise(rb_eTypeError, "Can't determine maximum uniform name length");
+  /* Can't determine maximum uniform name length, so presume it */
+  if (max_size==0) max_size = 256;
   buffer = allocate_buffer_with_string(max_size-1);
 
   fptr_glGetActiveUniform(program,index,max_size,&written,&uniform_size,&uniform_type,RSTRING_PTR(buffer));
 
-  rb_str_set_len(buffer, strnlen(RSTRING_PTR(buffer), max_size));
+  rb_str_set_len(buffer, written);
   retary = rb_ary_new2(3);
   rb_ary_push(retary, INT2NUM(uniform_size));
   rb_ary_push(retary, INT2NUM(uniform_type));
@@ -468,7 +471,7 @@ VALUE obj,arg1,arg2,arg3; \
   GLint location; \
   GLsizei count; \
   GLboolean transpose; \
-  GLfloat *value;	\
+  GLfloat *value; \
   LOAD_GL_FUNC(gl##_name_, "2.0"); \
   location = (GLint)NUM2INT(arg1); \
   count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3), rb_intern("flatten"), 0)); \
