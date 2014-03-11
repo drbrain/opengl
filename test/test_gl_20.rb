@@ -343,10 +343,7 @@ uniform mat3 testmat3;
 uniform mat4 testmat4;
 
 void main() {
-  testmat2;
-  testmat3;
-  testmat4;
-  gl_Position = ftransform();
+  gl_Position = ftransform() * testmat2[0][0] * testmat3[0][0] * testmat4[0][0];
 }
     SHADER
 
@@ -382,22 +379,21 @@ void main() {
       uniforms[uniform.last] = i
     end
 
-    glUniformMatrix2fv(uniforms['testmat2'], GL_TRUE, [0, 1, 1, 0])
+    glUniformMatrix2fv(uniforms['testmat2'], GL_TRUE, [0, 1, 2, 3])
 
-    assert_each_in_delta([0, 1, 1, 0],
+    assert_each_in_delta([0, 2, 1, 3],
                          glGetUniformfv(program, uniforms['testmat2']))
 
-    skip "glUniformMatrix3fv complains but I don't know why"
     glUniformMatrix3fv(uniforms['testmat3'], GL_TRUE,
-                       [1, 1, 1, 1, 1, 1, 1, 1, 1])
+                       [0, 1, 2, 3, 4, 5, 6, 7, 8])
 
-    assert_each_in_delta([1, 0, 0, 1, 0, 0, 0, 0, 0],
+    assert_each_in_delta([0, 3, 6, 1, 4, 7, 2, 5, 8],
                          glGetUniformfv(program, uniforms['testmat3']))
 
     glUniformMatrix4fv(uniforms['testmat4'], GL_TRUE,
-                       [0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0])
+                       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 
-    assert_each_in_delta([0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0],
+    assert_each_in_delta([0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15],
                          glGetUniformfv(program, uniforms['testmat4']))
   ensure
     glDeleteProgram program
