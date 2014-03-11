@@ -31,6 +31,8 @@ hoe = Hoe.spec 'opengl' do
   self.extra_rdoc_files = FileList['*.rdoc']
 
   extra_dev_deps << ['rake-compiler', '~> 0.7', '>= 0.7.9']
+  extra_dev_deps << ['glu', '~> 8.1']
+  extra_dev_deps << ['glut', '~> 8.1']
 
   self.spec_extras = {
     :extensions            => %w[ext/opengl/extconf.rb],
