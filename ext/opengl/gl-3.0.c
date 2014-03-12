@@ -15,7 +15,7 @@
 
 #include "common.h"
 
-/* 
+/*
 	GL_APPLE_flush_buffer_range -> actually ARB_map_buffer_range
 
 	GL_EXT_framebuffer_object -> GL_ARB_framebuffer_object
@@ -380,7 +380,6 @@ VALUE obj,arg1,arg2; \
 	GLenum target; \
 	GLenum pname; \
 	_type_ result; \
-	GLint size; \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	target = (GLenum)NUM2INT(arg1); \
 	pname  = (GLuint)NUM2INT(arg2); \
@@ -466,7 +465,7 @@ void gl_init_functions_3_0(VALUE module)
 	rb_define_module_function(module, "glFramebufferTexture2D", gl_FramebufferTexture2D, 5);
 	rb_define_module_function(module, "glFramebufferTexture3D", gl_FramebufferTexture3D, 6);
 	rb_define_module_function(module, "glFramebufferRenderbuffer", gl_FramebufferRenderbuffer, 4);
-	rb_define_module_function(module, "glFramebufferTextureLayer", gl_FramebufferRenderbuffer, 5);
+	rb_define_module_function(module, "glFramebufferTextureLayer", gl_FramebufferTextureLayer, 5);
 	rb_define_module_function(module, "glGetFramebufferAttachmentParameteriv", gl_GetFramebufferAttachmentParameteriv, 3);
 	rb_define_module_function(module, "glGenerateMipmap", gl_GenerateMipmap, 1);
 
