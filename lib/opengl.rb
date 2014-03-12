@@ -24,7 +24,12 @@ module OpenGL
   VERSION = '0.9.0'
 end
 
-require 'opengl/opengl'
+begin
+  RUBY_VERSION =~ /(\d+.\d+)/
+  require "opengl/#{$1}/opengl"
+rescue LoadError
+  require 'opengl/opengl'
+end
 
 include Gl
 
