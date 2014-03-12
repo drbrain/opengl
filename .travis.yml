@@ -1,9 +1,13 @@
 language: ruby
 rvm:
 #   - "1.9.3"
-  - "2.0.0"
+  - "2.1"
+  - "rbx"
 #   - jruby-19mode # JRuby in 1.9 mode
 #   - rbx-19mode
+matrix:
+  allow_failures:
+    - rvm: rbx
 before_install:
   - sudo apt-get install xpra xserver-xorg-video-dummy freeglut3-dev;
   - gem install hoe rake-compiler glut glu;
