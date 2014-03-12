@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 #-*-ruby-*-
 #
 # Copyright (C) 2006 John M. Gabriele <jmg3000@gmail.com>
