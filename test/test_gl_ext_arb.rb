@@ -333,18 +333,11 @@ uniform int testivec1;
 uniform ivec2 testivec2;
 uniform ivec3 testivec3;
 uniform ivec4 testivec4;
-void main() {
-  testvec1;
-  test;
-  testvec2.x;
-  testvec3.x;
-  testivec1;
-  testivec2.x;
-  testivec3.x;
-  testivec4.x;
-  testvec4;
 
-  gl_Position = ftransform();
+void main() {
+  gl_Position = ftransform() * test[0] *
+      testvec1 * testvec2.x * testvec3.x * testvec4.x *
+      float(testivec1) * float(testivec2.x) * float(testivec3.x) * float(testivec4.x);
 }
     SHADER
 
@@ -484,17 +477,9 @@ uniform ivec3 testivec3;
 uniform ivec4 testivec4;
 
 void main() {
-  testvec1;
-  test;
-  testvec2.x;
-  testvec3.x;
-  testivec1;
-  testivec2.x;
-  testivec3.x;
-  testivec4.x;
-  testvec4;
-
-  gl_Position = ftransform();
+  gl_Position = ftransform() * test[0] *
+      testvec1 * testvec2.x * testvec3.x * testvec4.x *
+      float(testivec1) * float(testivec2.x) * float(testivec3.x) * float(testivec4.x);
 }
     SHADER
 
@@ -516,7 +501,7 @@ void main() {
     glUseProgramObjectARB(program)
 
     assert_equal 2, glGetAttribLocationARB(program, "test")
-    assert_equal [1, GL_FLOAT_VEC4, "gl_Vertex"], glGetActiveAttribARB(program, 0)
+    assert_equal [1, GL_FLOAT_VEC4, "gl_Vertex"], glGetActiveAttribARB(program, 1)
 
     glDeleteObjectARB(vs)
     glDeleteObjectARB(program)
