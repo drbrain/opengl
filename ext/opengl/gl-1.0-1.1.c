@@ -2611,7 +2611,7 @@ gl_Material(VALUE self, VALUE face, VALUE pname, VALUE param)
 
   if (RB_TYPE_P(param, T_ARRAY)) {
     gl_Materialfv(self, face, pname, param);
-  } else if (rb_respond_to(param, "to_a") && (ary = rb_convert_type(param, T_ARRAY, "Array", "to_a"))) {
+  } else if (rb_respond_to(param, rb_intern("to_a")) && (ary = rb_convert_type(param, T_ARRAY, "Array", "to_a"))) {
     gl_Materialfv(self, face, pname, ary);
   } else {
     gl_Materialf(self, face, pname, param);
