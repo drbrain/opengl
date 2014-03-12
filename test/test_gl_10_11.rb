@@ -919,10 +919,10 @@ class TestGl10_11 < OpenGL::TestCase
     glRectsv([0, 0], [1, 1])
 
     count = glRenderMode GL_RENDER
-    data = buf.unpack("f*")
+    data = buf.unpack("f*")[0, count]
 
     # eight 3d polygons with four points
-    assert_equal 8 * (4 * 3 + 2), count
+    assert_equal 16 * (3 * 3 + 2), count
   end
 
   def test_glrectv
