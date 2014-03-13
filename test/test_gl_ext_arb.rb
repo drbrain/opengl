@@ -441,19 +441,18 @@ void main() {
       uniforms[uniform.last] = i
     end
 
-    glUniformMatrix2fvARB(uniforms['testmat2'], GL_TRUE, [0, 1, 1, 0])
-    assert_each_in_delta([0, 1, 1, 0],
+    glUniformMatrix2fvARB(uniforms['testmat2'], GL_TRUE, [0, 1, 2, 3])
+    assert_each_in_delta([0, 2, 1, 3],
                          glGetUniformfvARB(program, uniforms['testmat2']))
 
-    skip "glUniformMatrix3fvARB complains but I don't know why"
     glUniformMatrix3fvARB(uniforms['testmat3'], GL_TRUE,
-                          [0, 1, 0, 1, 0, 1, 0, 1, 0])
-    assert_each_in_delta([0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                          [0, 1, 2, 3, 4, 5, 6, 7, 8])
+    assert_each_in_delta([0, 3, 6, 1, 4, 7, 2, 5, 8],
                          glGetUniformfvARB(program, uniforms['testmat3']))
 
     glUniformMatrix4fvARB(uniforms['testmat4'], GL_TRUE,
-                          [0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0])
-    assert_each_in_delta([0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0],
+                          [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+    assert_each_in_delta([0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15],
                          glGetUniformfvARB(program, uniforms['testmat4']))
 
     glDeleteObjectARB(vs)
