@@ -31,6 +31,8 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $particleTime = 0
@@ -63,7 +65,7 @@ SCALE_FACTOR = 0.01
 SCALE_INCREMENT = 0.5
 TIMER_FREQUENCY_MILLIS = 20
 
-VELOCITY_ARRAY = 3
+VELOCITY_ARRAY = 5
 START_TIME_ARRAY = 4
 
 $clearColor = [[0,0,0,1], [0.2,0.2,0.3,1], [0.7,0.7,0.7,1]]
