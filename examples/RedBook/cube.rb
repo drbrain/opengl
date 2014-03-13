@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby -rubygems
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $light_diffuse = [1.0, 0.0, 0.0, 1.0]

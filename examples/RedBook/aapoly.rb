@@ -40,6 +40,8 @@
 # function is used.
 # Pressing the 't' key turns the antialiasing on and off.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $polySmooth = true

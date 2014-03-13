@@ -13,6 +13,8 @@
 # Conversion to ruby by Jan Dvorak <jan.dvorak@kraxnet.cz>
 
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 require 'mathn'

@@ -49,6 +49,8 @@
 #  The scene is then redrawn with the light in a new position.
 
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'rational'
 require 'mathn'
 include Gl,Glu,Glut

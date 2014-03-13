@@ -1,5 +1,6 @@
 require 'opengl'
-include Gl,Glu,Glut
+require 'glut'
+include Gl,Glut
 
 display = Proc.new do
   glClear(GL_COLOR_BUFFER_BIT)

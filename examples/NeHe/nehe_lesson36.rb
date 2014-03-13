@@ -1,6 +1,11 @@
+#!/usr/bin/env ruby
+
 # Nehe Lesson 36 Code
 # modified from immediate mode to use vertex arrays for helix drawing
 require 'opengl'
+require 'glu'
+require 'glut'
+
 include Gl,Glu,Glut
 include Math
 

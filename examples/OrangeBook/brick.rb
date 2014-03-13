@@ -36,6 +36,8 @@
 # .vert are vertex shaders, and files ending in .frag are fragment shaders.
 
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $rotl = 1 * Math::PI / 180

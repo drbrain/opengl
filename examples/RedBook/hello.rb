@@ -37,6 +37,8 @@
 # hello.c
 # This is a simple, introductory OpenGL program.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 display = Proc.new do

@@ -39,6 +39,8 @@
 # two diagonal lines to form an X when 'r' is typed in the window,
 # the lines are rotated in opposite directions.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

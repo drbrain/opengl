@@ -43,6 +43,8 @@
 # correspond to the ASCII values of the characters.
 # Use of glCallLists() is demonstrated.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

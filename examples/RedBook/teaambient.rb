@@ -40,6 +40,8 @@
 # This program renders three lighted, shaded teapots, with
 # different ambient values.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 # Initialize light source and lighting model.

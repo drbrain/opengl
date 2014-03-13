@@ -41,6 +41,8 @@
 # Several objects are drawn using different material characteristics.
 # A single light source illuminates the objects.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 # Initialize z-buffer, projection matrix, light source,

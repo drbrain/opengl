@@ -39,6 +39,8 @@
 # Pressing the left mouse button rotates the rectangle.
 # Pressing the middle mouse button stops the rotation.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'rational'
 include Gl,Glu,Glut
 

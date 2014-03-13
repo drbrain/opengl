@@ -44,6 +44,8 @@
 # In this program, there is a fixed density value, as well
 # as fixed start and end values for the linear fog.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

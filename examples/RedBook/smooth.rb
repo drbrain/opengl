@@ -39,6 +39,8 @@
 # A smooth shaded polygon is drawn in a 2-D projection.
 
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 def init

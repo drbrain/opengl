@@ -49,6 +49,8 @@
 # the green triangle causes one hit with the name 1, and
 # the yellow triangles cause one hit with the name 3.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 # draw a triangle with vertices at (x1, y1), (x2, y2)

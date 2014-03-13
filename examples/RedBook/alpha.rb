@@ -39,6 +39,8 @@
 # to demonstrate the effect order has on alpha blending results.
 # Use the 't' key to toggle the order of drawing polygons.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

@@ -1,4 +1,8 @@
+#!/usr/bin/env ruby
+
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'chunky_png'
 
 class Lesson11

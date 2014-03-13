@@ -18,6 +18,8 @@
 #
 
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 # extend Array class with new function

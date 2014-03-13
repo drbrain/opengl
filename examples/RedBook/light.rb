@@ -1,6 +1,8 @@
 # This example comes from the Red Book chapter 5, example 5-1 light.c
 
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 
 def init

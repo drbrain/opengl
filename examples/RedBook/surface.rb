@@ -40,6 +40,8 @@
 # symmetrical hill.
 #
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $ctlpoints = Array.new(4).collect { Array.new(4).collect { Array.new(3, nil) } } # 4*4*3 array

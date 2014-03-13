@@ -40,6 +40,8 @@
 # routines accFrustum() and accPerspective().
 
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $j8 = [

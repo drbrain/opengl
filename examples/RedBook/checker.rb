@@ -41,6 +41,8 @@
 # two rectangles.  This program clamps the texture, if
 # the texture coordinates fall outside 0.0 and 1.0.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

@@ -1,9 +1,11 @@
-#!/usr/bin/env ruby -rubygems
+#!/usr/bin/env ruby
 # Name:  nehe_lesson04.rb
 # Purpose: An implementation of NeHe's OpenGL Lesson #04
 #          using ruby-opengl  http://nehe.gamedev.net/
 
 require 'opengl'
+require 'glu'
+require 'glut'
 
 # Add GL and GLUT namespaces in to make porting easier
 include Gl

@@ -45,6 +45,8 @@
 # If running this program on OpenGL 1.0, texture objects are
 # not used.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

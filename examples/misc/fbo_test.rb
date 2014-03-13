@@ -10,7 +10,9 @@
 
 # Set up standard libs
 require 'opengl'
-include Gl,Glut
+require 'glu'
+require 'glut'
+include Gl,Glu,Glut
 
 # Set up constants
 PROGRAM = "OpenGL Benchmark - Ruby Bindings"

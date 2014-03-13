@@ -40,6 +40,8 @@
 # Interaction:  pressing the d and y keys (day and year)
 # alters the rotation of the planet around the sun.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'rational'
 include Gl,Glu,Glut
 

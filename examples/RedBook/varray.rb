@@ -37,6 +37,8 @@
 # varray.c
 # This program demonstrates vertex arrays.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 POINTER=1

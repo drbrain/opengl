@@ -39,6 +39,8 @@
 # This program demonstrates using glBindTexture() by
 # creating and managing two textures.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

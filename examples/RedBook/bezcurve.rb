@@ -38,6 +38,8 @@
 # This program uses evaluators to draw a Bezier curve.
 
 require "opengl"
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $ctrlpoints = [

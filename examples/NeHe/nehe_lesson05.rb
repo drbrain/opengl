@@ -1,4 +1,8 @@
+#!/usr/bin/env ruby
+
 require 'opengl'
+require 'glu'
+require 'glut'
 
 class Lesson05
   include Gl

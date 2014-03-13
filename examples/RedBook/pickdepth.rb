@@ -46,6 +46,8 @@
 #  are "picked."  Pay special attention to the depth
 #  value range, which is returned.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 def myinit

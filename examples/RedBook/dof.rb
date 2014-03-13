@@ -44,6 +44,8 @@
 # the viewing volume is at the same position, each time.  In
 # this case, the gold teapot remains in focus.
 require 'opengl'
+require 'glu'
+require 'glut'
 require_relative 'jitter'
 include Gl,Glu,Glut
 

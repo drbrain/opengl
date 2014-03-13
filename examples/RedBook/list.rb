@@ -39,6 +39,8 @@
 #  display list.  Note that attributes, such as current
 #  color and matrix, are changed.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

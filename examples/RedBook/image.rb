@@ -45,6 +45,8 @@
 # factors are reset.  If you press the 'z' or 'Z' keys, you change
 # the zoom factors.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

@@ -40,6 +40,8 @@
 # This program uses evaluators to generate a curved
 # surface and automatically generated texture coordinates.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $ctrlpoints = [

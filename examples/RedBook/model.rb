@@ -37,6 +37,8 @@
 #  model.c
 #  This program demonstrates modeling transformations
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

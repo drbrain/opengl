@@ -40,6 +40,8 @@
 # Interaction:  pressing the s and e keys (shoulder and elbow)
 # alters the rotation of the robot arm.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

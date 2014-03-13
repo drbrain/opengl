@@ -40,6 +40,8 @@
 # Then feedback mode is entered, and the same lines are
 # drawn.  The results in the feedback buffer are printed.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 #  Initialize lighting.

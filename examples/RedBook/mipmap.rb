@@ -43,6 +43,8 @@
 # Thus, the quadrilateral which is drawn is drawn with several
 # different colors.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

@@ -48,6 +48,8 @@
 # Pressing the 'x' key switches it back to x = 0.
 
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

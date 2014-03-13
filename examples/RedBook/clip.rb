@@ -37,6 +37,8 @@
 # clip.c
 # This program demonstrates arbitrary clipping planes.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

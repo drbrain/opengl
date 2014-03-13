@@ -46,6 +46,8 @@
 # star.  Also note that removing the TessProperty for the
 # star will make the interior unshaded (WINDING_ODD).
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $startList = nil

@@ -41,6 +41,8 @@
 # transparent object through the opaque object.  Press
 # the 'r' key to reset the scene.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 MAXZ=1.0

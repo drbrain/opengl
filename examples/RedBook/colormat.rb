@@ -39,6 +39,8 @@
 # ColorMaterial mode.  Interaction:  pressing the
 # mouse buttons will change the diffuse reflection values.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

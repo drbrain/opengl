@@ -40,6 +40,8 @@
 # This program demonstrates lots of material properties.
 # A single light source illuminates the objects.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 # Initialize depth buffer, projection matrix, light source, and lighting

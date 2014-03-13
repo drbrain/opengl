@@ -39,6 +39,8 @@
 # accanti.c
 
 require 'opengl'
+require 'glu'
+require 'glut'
 require_relative 'jitter'
 include Gl,Glu,Glut
 

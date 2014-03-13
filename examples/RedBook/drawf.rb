@@ -38,6 +38,8 @@
 # Draws the bitmapped letter F on the screen (several times).
 # This demonstrates use of the glBitmap() call.
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 $rasters = [

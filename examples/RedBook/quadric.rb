@@ -41,6 +41,8 @@
 # Note that the cylinder has no top or bottom and the circle
 # has a hole in it.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

@@ -41,6 +41,8 @@
 # intensity (brightness) to give clues to distance.
 # Fog is used to achieve this effect.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

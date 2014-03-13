@@ -38,6 +38,8 @@
 # This program demonstrates geometric primitives and
 # their attributes.
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'mathn'
 include Gl,Glu,Glut
 

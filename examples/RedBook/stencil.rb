@@ -43,6 +43,8 @@
 # (a sphere) is drawn in a different color.
 #
 require 'opengl'
+require 'glu'
+require 'glut'
 require 'rational'
 include Gl,Glu,Glut
 

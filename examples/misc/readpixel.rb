@@ -1,4 +1,6 @@
 require 'opengl'
+require 'glu'
+require 'glut'
 include Gl,Glu,Glut
 
 begin
