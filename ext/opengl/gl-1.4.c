@@ -80,7 +80,7 @@ VALUE obj,arg1,arg2,arg3;
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_FogCoord_ptr = arg3;
-		fptr_glFogCoordPointer(type, stride, (const GLvoid*)NUM2LONG(arg3));
+		fptr_glFogCoordPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg3);
@@ -171,7 +171,7 @@ VALUE obj;
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
 				counts[i] = (GLsizei)NUM2INT(rb_ary_entry(args[2],i));
-				indices[i] = (GLvoid *)NUM2LONG(rb_ary_entry(args[3],i));
+				indices[i] = (GLvoid *)NUM2SIZET(rb_ary_entry(args[3],i));
 			}
 			fptr_glMultiDrawElements(mode,counts,type,indices,size);
 			xfree(counts);
@@ -198,7 +198,7 @@ VALUE obj,arg1,arg2;
 	else
 		size = 1;
 	ary2cflt(arg2,params,size);
-	fptr_glPointParameterfv(pname,params);	
+	fptr_glPointParameterfv(pname,params);
 	CHECK_GLERROR_FROM("glPointParameterfv");
 	return Qnil;
 }
@@ -219,7 +219,7 @@ VALUE obj,arg1,arg2;
 	else
 		size = 1;
 	ary2cint(arg2,params,size);
-	fptr_glPointParameteriv(pname,params);	
+	fptr_glPointParameteriv(pname,params);
 	CHECK_GLERROR_FROM("glPointParameteriv");
 	return Qnil;
 }
@@ -262,7 +262,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	stride = (GLsizei)NUM2UINT(arg3);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_SecondaryColor_ptr = arg4;
-		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)NUM2LONG(arg4));
+		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)NUM2SIZET(arg4));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg4);

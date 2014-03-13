@@ -147,7 +147,7 @@ static VALUE gl_VertexAttribIPointer(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribIPointer(index,size,type,stride,(GLvoid *)NUM2LONG(arg5));
+		fptr_glVertexAttribIPointer(index,size,type,stride,(GLvoid *)NUM2SIZET(arg5));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg5);

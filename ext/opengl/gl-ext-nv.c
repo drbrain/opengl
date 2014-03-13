@@ -70,7 +70,7 @@ static VALUE gl_GetProgramStringNV(VALUE obj,VALUE arg1,VALUE arg2)
 	CHECK_GLERROR_FROM("glGetProgramivNV");
 	if (len<=0)
 		return rb_str_new2("");
-	
+
 	buffer = ALLOC_N(GLchar,len+1);
 	memset(buffer,0,sizeof(GLchar) * (len+1));
 		fptr_glGetProgramStringNV(NUM2INT(arg1),NUM2INT(arg2),buffer);
@@ -118,7 +118,7 @@ static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)NUM2LONG(arg5));
+		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)NUM2SIZET(arg5));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg5);
@@ -355,7 +355,7 @@ static VALUE gl_RequestResidentProgramsNV(VALUE obj,VALUE arg1)
 		GLuint *programs;
 		n = (GLsizei)RARRAY_LENINT(arg1);
 		programs = ALLOC_N(GLuint,n);
-		ary2cuint(arg1,programs,n); 
+		ary2cuint(arg1,programs,n);
 		fptr_glRequestResidentProgramsNV( n, programs);
 		xfree(programs);
 	} else {
@@ -382,7 +382,7 @@ static VALUE gl_AreProgramsResidentNV(VALUE obj,VALUE arg1)
 	size = (GLsizei)RARRAY_LENINT(ary);
 	programs = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
-	ary2cuint(ary,programs,size);	
+	ary2cuint(ary,programs,size);
 	r = fptr_glAreProgramsResidentNV(size,programs,residences);
 	retary = rb_ary_new2(size);
 	if (r==GL_TRUE) { /* all are resident */

@@ -53,7 +53,7 @@ rb_gl_buffer_addr(VALUE self) {
 
 	TypedData_Get_Struct(self, struct buffer, &buffer_type, buf);
 
-	return ULONG2NUM((unsigned long)buf->ptr);
+	return SIZET2NUM((size_t)buf->ptr);
 }
 
 static VALUE
@@ -78,17 +78,17 @@ rb_gl_buffer_read(int argc, VALUE *argv, VALUE self) {
 	if (buf->len == 0 && NIL_P(_length))
 		rb_raise(rb_eArgError, "length must be provided for unbounded buffer");
 
-	length = NUM2ULONG(_length);
+	length = NUM2SIZET(_length);
 
 	if (NIL_P(_offset)) {
 		offset = 0;
 	} else {
-		offset = NUM2ULONG(_offset);
+		offset = NUM2SIZET(_offset);
 	}
 
 	if (buf->len != 0 && length + offset > buf->len)
-		rb_raise(rb_eArgError, "read to %ld past end of buffer %ld",
-				length + offset, buf->len);
+		rb_raise(rb_eArgError, "read to %lu past end of buffer %lu",
+				(unsigned long)(length + offset), (unsigned long)buf->len);
 
 	return rb_str_new((char *)buf->ptr + offset, length);
 }
@@ -147,12 +147,12 @@ rb_gl_buffer_write(int argc, VALUE *argv, VALUE self) {
 	if (NIL_P(_offset)) {
 		offset = 0;
 	} else {
-		offset = NUM2ULONG(_offset);
+		offset = NUM2SIZET(_offset);
 	}
 
 	if (buf->len != 0 && length + offset > buf->len)
-		rb_raise(rb_eArgError, "write to %ld past end of buffer %ld",
-				length + offset, buf->len);
+		rb_raise(rb_eArgError, "write to %lu past end of buffer %lu",
+				(unsigned long)(length + offset), (unsigned long)buf->len);
 
 	memcpy((char *)buf->ptr + offset, RSTRING_PTR(_data), RSTRING_LEN(_data));
 

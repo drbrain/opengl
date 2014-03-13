@@ -4336,8 +4336,8 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_TEXT_FRAGMENT_SHADER_ATI", INT2NUM(GL_TEXT_FRAGMENT_SHADER_ATI));
 	rb_define_const(module, "GL_TIMEOUT_EXPIRED", INT2NUM(GL_TIMEOUT_EXPIRED));
 	rb_define_const(module, "GL_TIMEOUT_EXPIRED_APPLE", INT2NUM(GL_TIMEOUT_EXPIRED_APPLE));
-	rb_define_const(module, "GL_TIMEOUT_IGNORED", INT2NUM(GL_TIMEOUT_IGNORED));
-	rb_define_const(module, "GL_TIMEOUT_IGNORED_APPLE", INT2NUM(GL_TIMEOUT_IGNORED_APPLE));
+	rb_define_const(module, "GL_TIMEOUT_IGNORED", LL2NUM(GL_TIMEOUT_IGNORED));
+	rb_define_const(module, "GL_TIMEOUT_IGNORED_APPLE", LL2NUM(GL_TIMEOUT_IGNORED_APPLE));
 	rb_define_const(module, "GL_TIMESTAMP", INT2NUM(GL_TIMESTAMP));
 	rb_define_const(module, "GL_TIME_ELAPSED", INT2NUM(GL_TIME_ELAPSED));
 	rb_define_const(module, "GL_TIME_ELAPSED_EXT", INT2NUM(GL_TIME_ELAPSED_EXT));

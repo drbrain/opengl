@@ -551,7 +551,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
     g_VertexAttrib_ptr[index] = arg6;
-    fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)NUM2LONG(arg6));
+    fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)NUM2SIZET(arg6));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg6);

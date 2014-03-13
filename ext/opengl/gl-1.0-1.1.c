@@ -529,7 +529,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
   xmove = (GLfloat)NUM2DBL(arg5);
   ymove = (GLfloat)NUM2DBL(arg6);
   if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glBitmap(width, height, xorig, yorig, xmove, ymove, (GLubyte *)NUM2LONG(arg7));
+    glBitmap(width, height, xorig, yorig, xmove, ymove, (GLubyte *)NUM2SIZET(arg7));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg7);
@@ -743,7 +743,7 @@ gl_PolygonStipple(obj,arg1)
 VALUE obj,arg1;
 {
   if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glPolygonStipple((GLubyte *)NUM2LONG(arg1));
+    glPolygonStipple((GLubyte *)NUM2SIZET(arg1));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg1);
@@ -810,7 +810,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
   type = (GLenum)NUM2INT(arg7);
 
   if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glTexImage1D(target,level,components,width,border,format,type,(GLvoid *)NUM2LONG(arg8));
+    glTexImage1D(target,level,components,width,border,format,type,(GLvoid *)NUM2SIZET(arg8));
     CHECK_GLERROR_FROM("glTexImage1D");
     return Qnil;
   }
@@ -851,7 +851,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
   type = (GLenum)NUM2INT(arg8);
 
   if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glTexImage2D(target,level,components,width,height,border,format,type,(GLvoid *)NUM2LONG(arg9));
+    glTexImage2D(target,level,components,width,height,border,format,type,(GLvoid *)NUM2SIZET(arg9));
     CHECK_GLERROR_FROM("glTexImage2D");
     return Qnil;
   }
@@ -1184,7 +1184,7 @@ VALUE obj; \
         rb_raise(rb_eArgError, "Pixel unpack buffer not bound"); \
       map = (GLenum)NUM2INT(args[0]);	 \
       size = (GLsizei)NUM2INT(args[1]); \
-      glPixelMap##_type_##v(map,size,(GLvoid *)NUM2LONG(args[2])); \
+      glPixelMap##_type_##v(map,size,(GLvoid *)NUM2SIZET(args[2])); \
       break; \
   } \
   CHECK_GLERROR_FROM("glPixelMap" #_type_ "v"); \
@@ -1236,7 +1236,7 @@ VALUE obj;
       if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
         rb_raise(rb_eArgError, "Pixel pack buffer not bound");
       FORCE_PIXEL_STORE_MODE
-      glReadPixels(x,y,width,height,format,type,(GLvoid*)NUM2LONG(args[6]));
+      glReadPixels(x,y,width,height,format,type,(GLvoid*)NUM2SIZET(args[6]));
       RESTORE_PIXEL_STORE_MODE
       CHECK_GLERROR_FROM("glReadPixels");
       return Qnil;
@@ -1258,7 +1258,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
   format = (GLenum)NUM2INT(arg3);
   type = (GLenum)NUM2INT(arg4);
   if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glDrawPixels(width,height,format,type,(GLvoid *)NUM2LONG(arg5));
+    glDrawPixels(width,height,format,type,(GLvoid *)NUM2SIZET(arg5));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg5);
@@ -1681,7 +1681,7 @@ VALUE obj; \
         rb_raise(rb_eArgError, "Pixel pack buffer not bound"); \
 \
       map = (GLenum)NUM2INT(args[0]); \
-      glGetPixelMap##_type_##v(map,(GLvoid*)NUM2LONG(args[1])); \
+      glGetPixelMap##_type_##v(map,(GLvoid*)NUM2SIZET(args[1])); \
       CHECK_GLERROR_FROM("glGetPixelMap" #_type_ "v"); \
       return Qnil; \
   } \
@@ -1714,7 +1714,7 @@ VALUE obj;
     case 1:
       if (!CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
         rb_raise(rb_eArgError, "Pixel pack buffer not bound");
-      glGetPolygonStipple((GLvoid *)NUM2LONG(args[0]));
+      glGetPolygonStipple((GLvoid *)NUM2SIZET(args[0]));
       CHECK_GLERROR_FROM("glGetPolygonStipple");
       return Qnil;
   }
@@ -1868,7 +1868,7 @@ VALUE obj;
         rb_raise(rb_eArgError, "Pixel pack buffer not bound");
 
       FORCE_PIXEL_STORE_MODE
-      glGetTexImage(tex,lod,format,type,(GLvoid*)NUM2LONG(args[4]));
+      glGetTexImage(tex,lod,format,type,(GLvoid*)NUM2SIZET(args[4]));
       RESTORE_PIXEL_STORE_MODE
       CHECK_GLERROR_FROM("glGetTexImage");
     return Qnil;
@@ -2025,7 +2025,7 @@ VALUE obj, arg1, arg2, arg3, arg4; \
   stride = (GLsizei)NUM2UINT(arg3); \
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) { \
     g_##_func_##_ptr = arg4; \
-    gl##_func_##Pointer(size, type, stride, (const GLvoid*)NUM2LONG(arg4)); \
+    gl##_func_##Pointer(size, type, stride, (const GLvoid*)NUM2SIZET(arg4)); \
   } else { \
     VALUE data; \
     data = pack_array_or_pass_string(type,arg4); \
@@ -2054,7 +2054,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
   count = (GLsizei)NUM2UINT(arg2);
   type = (GLenum)NUM2INT(arg3);
   if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
-    glDrawElements(mode, count, type, (const GLvoid*)NUM2LONG(arg4));
+    glDrawElements(mode, count, type, (const GLvoid*)NUM2SIZET(arg4));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg4);
@@ -2072,7 +2072,7 @@ VALUE obj,arg1,arg2;
   stride = (GLsizei)NUM2UINT(arg1);
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
     g_EdgeFlag_ptr = arg2;
-    glEdgeFlagPointer(stride, (const GLvoid*) NUM2LONG(arg2));
+    glEdgeFlagPointer(stride, (const GLvoid*) NUM2SIZET(arg2));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg2);
@@ -2128,7 +2128,7 @@ VALUE obj,arg1,arg2,arg3;
   stride = (GLsizei)NUM2UINT(arg2);
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
     g_Index_ptr = arg3;
-    glIndexPointer(type, stride, (const GLvoid*)NUM2LONG(arg3));
+    glIndexPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg3);
@@ -2166,7 +2166,7 @@ VALUE obj,arg1,arg2,arg3;
   stride = (GLsizei)NUM2UINT(arg2);
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
     g_Normal_ptr = arg3;
-    glNormalPointer(type, stride, (const GLvoid*)NUM2LONG(arg3));
+    glNormalPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg3);
@@ -2198,7 +2198,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
   type = (GLenum)NUM2INT(arg6);
 
   if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glTexSubImage1D(target,level,xoffset,width,format,type,(GLvoid *)NUM2LONG(arg7));
+    glTexSubImage1D(target,level,xoffset,width,format,type,(GLvoid *)NUM2SIZET(arg7));
     CHECK_GLERROR_FROM("glTexSubImage1D");
     return Qnil;
   }
@@ -2234,7 +2234,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
   type = (GLenum)NUM2INT(arg8);
 
   if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,(GLvoid *)NUM2LONG(arg9));
+    glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,(GLvoid *)NUM2SIZET(arg9));
     CHECK_GLERROR_FROM("glTexSubImage2D");
     return Qnil;
   }

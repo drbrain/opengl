@@ -45,8 +45,8 @@ VALUE obj,arg1,arg2;
 		rb_raise(rb_eArgError, "passed arrays must have the same length");
 	textures = ALLOC_N(GLuint,size);
 	priorities = ALLOC_N(GLclampf,size);
-	ary2cuint(arg1,textures,size);	
-	ary2cflt(arg2,priorities,size);	
+	ary2cuint(arg1,textures,size);
+	ary2cflt(arg2,priorities,size);
 	fptr_glPrioritizeTexturesEXT(size,textures,priorities);
 	xfree(textures);
 	xfree(priorities);
@@ -71,7 +71,7 @@ VALUE obj,arg1;
 	size = (GLsizei)RARRAY_LENINT(ary);
 	textures = ALLOC_N(GLuint,size);
 	residences = ALLOC_N(GLboolean,size);
-	ary2cuint(ary,textures,size);	
+	ary2cuint(ary,textures,size);
 	r = fptr_glAreTexturesResidentEXT(size,textures,residences);
 	retary = rb_ary_new2(size);
 	if (r==GL_TRUE) { /* all are resident */
@@ -162,7 +162,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	stride = (GLsizei)NUM2UINT(arg3);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_SecondaryColor_ptr = arg4;
-		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)NUM2LONG(arg4));
+		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)NUM2SIZET(arg4));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg4);
@@ -196,7 +196,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	count = (GLsizei)NUM2UINT(arg4);
 	type = (GLenum)NUM2INT(arg5);
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
-		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, (GLvoid *)NUM2LONG(arg6));
+		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, (GLvoid *)NUM2SIZET(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);
@@ -287,7 +287,7 @@ VALUE obj;
 			indices = ALLOC_N(GLvoid*,size);
 			for (i=0;i<size;i++) {
 				counts[i] = NUM2INT(rb_ary_entry(args[2],i));
-				indices[i] = (GLvoid *)NUM2LONG(rb_ary_entry(args[3],i));
+				indices[i] = (GLvoid *)NUM2SIZET(rb_ary_entry(args[3],i));
 			}
 			fptr_glMultiDrawElementsEXT(mode,counts,type,indices,size);
 			xfree(counts);
@@ -331,7 +331,7 @@ VALUE obj,arg1,arg2,arg3;
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_FogCoord_ptr = arg3;
-		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)NUM2LONG(arg3));
+		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)NUM2SIZET(arg3));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg3);
@@ -534,7 +534,7 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
 		g_VertexAttrib_ptr[index] = arg5;
-		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)NUM2LONG(arg5));
+		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)NUM2SIZET(arg5));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg5);
@@ -653,7 +653,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	type = (GLenum)NUM2INT(arg3);
 	primcount = (GLsizei)NUM2INT(arg5);
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
-		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)NUM2LONG(arg4), primcount);
+		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)NUM2SIZET(arg4), primcount);
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg4);

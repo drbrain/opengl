@@ -40,7 +40,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	count = (GLsizei)NUM2UINT(arg4);
 	type = (GLenum)NUM2INT(arg5);
 	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
-		fptr_glDrawRangeElements(mode, start, end, count, type, (GLvoid *)NUM2LONG(arg6));
+		fptr_glDrawRangeElements(mode, start, end, count, type, (GLvoid *)NUM2SIZET(arg6));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg6);
@@ -78,7 +78,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glTexImage3D( target, level, internalFormat, width, height,
-						depth, border, format, type,(GLvoid *)NUM2LONG(arg10));
+						depth, border, format, type,(GLvoid *)NUM2SIZET(arg10));
 		CHECK_GLERROR_FROM("glTexImage3D");
 		return Qnil;
 	}
@@ -131,7 +131,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 				width, height, depth,
-				format, type, (GLvoid *)NUM2LONG(arg11));
+				format, type, (GLvoid *)NUM2SIZET(arg11));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg11);

@@ -176,7 +176,7 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
 
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
     g_VertexAttrib_ptr[index] = arg6;
-    fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)NUM2LONG(arg6));
+    fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)NUM2SIZET(arg6));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg6);
