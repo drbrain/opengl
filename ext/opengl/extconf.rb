@@ -18,11 +18,10 @@ if ENV['CROSS_COMPILING']
 end
 
 ok =
+  (have_framework('OpenGL') && have_framework('Cocoa')) ||
   have_library('opengl32.lib', 'glVertex3d') ||
   have_library('opengl32') ||
-  have_library('GL',   'glVertex3d') ||
-  (have_framework('OpenGL') &&
-   have_framework('Cocoa'))
+  have_library('GL',   'glVertex3d')
 
 ok &&=
   have_header('GL/gl.h') ||
