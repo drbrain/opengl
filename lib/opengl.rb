@@ -31,8 +31,6 @@ rescue LoadError
   require 'opengl/opengl'
 end
 
-include Gl
-
 # (Gl.)glVertex -> GL.Vertex
 # (Gl::)GL_TRUE -> GL::TRUE
 module GL
