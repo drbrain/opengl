@@ -1,4 +1,9 @@
-=== git
+=== 0.9.0 / 2014-03-14
+
+* Split glu and glut into seperate gems.
+* Add OpenGL 3.0 support.
+* Add x64-mingw platform for cross build and add ruby-2.0.0 to binary gems.
+* Don't pollute the global namespace. Use GL namespace.
 
 * Replace UINT2FIX with UINT2NUM since UINT2FIX is not defined in MRI ruby.
 * Don't return the terminating null from C in GetProgramInfoLog.
@@ -11,14 +16,13 @@
 support instead of GL_EXT_gpu_shader4.
 * Fix ProgramVertexLimitNV checked for GL_NV_gpu_program4 support instead of
 GL_EXT_geometry_shader4.
+* Fix build with Ruby-2.0 on OS X Mavericks.
 
 * Dropped support for 1.2 optional ARB_imaging subset. It is deprecated and
 support for it was dropped from all major drivers. Continuing support for it
 would lead to developers using deprecated coding practices.
 
-* Glu is deprecated. Split into a seperate gem.
-
-* OpenGL 3.0 support
+* Fix several test cases.
 
 === 0.8.0 / 2013-02-03
 
