@@ -45,7 +45,7 @@ Rake::ExtensionTask.new 'opengl', hoe.spec do |ext|
   ext.lib_dir = 'lib/opengl'
 
   ext.cross_compile = true
-  ext.cross_platform = ['i386-mingw32', 'x64-mingw32']
+  ext.cross_platform = ['x86-mingw32', 'x64-mingw32']
 end
 
 task :test => :compile
@@ -58,3 +58,13 @@ task :gen_glext_list do
 	sh "./utils/extlistgen.rb", "doc/extensions.txt.in", "doc/extensions.txt", *GLEXT_VERSIONS
 end
 
+# To reduce the gem file size strip mingw32 dlls before packaging
+ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|
+  task "copy:opengl:x86-mingw32:#{ruby_version}" do |t|
+    sh "i686-w64-mingw32-strip -S tmp/x86-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so"
+  end
+
+  task "copy:opengl:x64-mingw32:#{ruby_version}" do |t|
+    sh "x86_64-w64-mingw32-strip -S tmp/x64-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so"
+  end
+end
