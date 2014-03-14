@@ -1,6 +1,7 @@
 .autotest
 .gemtest
 .gitignore
+.travis.yml
 History.rdoc
 MIT-LICENSE
 Manifest.txt
@@ -117,6 +118,7 @@ ext/opengl/opengl.c
 lib/gl.rb
 lib/opengl.rb
 lib/opengl/test_case.rb
+test/dummy.xorg.conf
 test/test_gl.rb
 test/test_gl_10_11.rb
 test/test_gl_12.rb
