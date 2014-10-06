@@ -1,3 +1,7 @@
+=== 0.9.1 / 2014-10-06
+
+* Add ruby-2.1 to binary windows gems.
+
 === 0.9.0 / 2014-03-14
 
 * Split glu and glut into seperate gems.
