@@ -29,8 +29,11 @@
 
 #if HAVE_STRUCT_RFLOAT_FLOAT_VALUE
 #define	FLOAT_VAL_ACCESS(val) RFLOAT(val)->float_value
-#else
+#elif defined(RFLOAT)
 #define	FLOAT_VAL_ACCESS(val) RFLOAT(val)->value
+#else
+/* struct RFloat isn't available in ruby 2.2 */
+#define FLOAT_VAL_ACCESS(val) RFLOAT_VALUE(val)
 #endif
 
 #define FASTCONV(_name_,_type_,_convfix_,_convfallback_) \
