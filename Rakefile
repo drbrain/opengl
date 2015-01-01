@@ -60,11 +60,11 @@ end
 
 # To reduce the gem file size strip mingw32 dlls before packaging
 ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|
-  task "copy:opengl:x86-mingw32:#{ruby_version}" do |t|
+  task "tmp/x86-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so" do |t|
     sh "i686-w64-mingw32-strip -S tmp/x86-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so"
   end
 
-  task "copy:opengl:x64-mingw32:#{ruby_version}" do |t|
+  task "tmp/x64-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so" do |t|
     sh "x86_64-w64-mingw32-strip -S tmp/x64-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so"
   end
 end
