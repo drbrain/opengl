@@ -20,7 +20,7 @@
 # Thanks to Ilmari Heikkinen for a previous "reversed" version of this code,
 # and to Bill Kelly for a version before that one.
 
-module OpenGL
+module Gl
   VERSION = '0.9.2'
 end
 
