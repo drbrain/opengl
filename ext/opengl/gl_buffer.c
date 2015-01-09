@@ -160,9 +160,8 @@ rb_gl_buffer_write(int argc, VALUE *argv, VALUE self) {
 }
 
 void
-gl_init_buffer(void) {
-	VALUE mOpenGL = rb_path2class("OpenGL");
-	VALUE cBuffer = rb_define_class_under(mOpenGL, "Buffer", rb_cObject);
+gl_init_buffer(VALUE module) {
+	VALUE cBuffer = rb_define_class_under(module, "Buffer", rb_cObject);
 
 	rb_undef_alloc_func(cBuffer);
 	rb_define_singleton_method(cBuffer, "map", rb_gl_buffer_s_map, 2);

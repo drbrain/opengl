@@ -17,8 +17,6 @@
 
 #include "common.h"
 
-static VALUE module;
-
 void gl_init_enums(VALUE);
 void gl_init_functions_1_0__1_1(VALUE);
 void gl_init_functions_1_2(VALUE);
@@ -34,7 +32,7 @@ void gl_init_functions_ext_ati(VALUE);
 void gl_init_functions_ext_ext(VALUE);
 void gl_init_functions_ext_gremedy(VALUE);
 void gl_init_functions_ext_nv(VALUE);
-void gl_init_buffer(void);
+void gl_init_buffer(VALUE);
 
 static int opengl_version[2]; /* major, minor */
 static char *opengl_extensions = NULL;
@@ -86,7 +84,7 @@ const char *GetOpenglExtensions(void)
 			opengl_extensions[len+1] = '\0';
 		}
 	}
-	return opengl_extensions;	
+	return opengl_extensions;
 }
 
 /* Checks if extension is supported by the current OpenGL implementation
@@ -181,16 +179,9 @@ GLint CheckBufferBinding(GLint buffer)
 	return result;
 }
 
-DLLEXPORT void Init_gl()
+DLLEXPORT void Init_gl(VALUE module)
 {
-  VALUE mOpenGL = rb_path2class("OpenGL");
-	VALUE version = rb_const_get(mOpenGL, rb_intern("VERSION"));
-
-  gl_init_buffer();
-
-	module = rb_define_module("Gl");
-
-  /* TODO remove */
+	VALUE version = rb_const_get(module, rb_intern("VERSION"));
 	rb_define_const(module, "BINDINGS_VERSION", version);
 	rb_define_const(module, "RUBY_OPENGL_VERSION", version);
 
@@ -210,6 +201,8 @@ DLLEXPORT void Init_gl()
 	gl_init_functions_ext_ext(module);
 	gl_init_functions_ext_gremedy(module);
 	gl_init_functions_ext_nv(module);
+	gl_init_buffer(module);
+
 
 	rb_define_module_function(module, "is_available?", IsAvailable, 1);
 	rb_define_module_function(module, "is_supported?", IsAvailable, 1);

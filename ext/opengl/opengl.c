@@ -1,7 +1,9 @@
 #include "common.h"
 
-void Init_gl(void);
+void Init_gl(VALUE);
 
 DLLEXPORT void Init_opengl() {
-	Init_gl();
+	VALUE module = rb_define_module("Gl");
+
+	Init_gl(module);
 }
