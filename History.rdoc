@@ -1,3 +1,8 @@
+=== 0.9.2 / 2015-01-05
+
+* Fix compatibility with Ruby-2.2.0.
+* Add ruby-2.2 to binary windows gems.
+
 === 0.9.1 / 2014-10-06
 
 * Add ruby-2.1 to binary windows gems.

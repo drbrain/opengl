@@ -21,7 +21,7 @@
 # and to Bill Kelly for a version before that one.
 
 module OpenGL
-  VERSION = '0.9.1'
+  VERSION = '0.9.2'
 end
 
 begin
