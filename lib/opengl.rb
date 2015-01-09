@@ -21,7 +21,8 @@
 # and to Bill Kelly for a version before that one.
 
 module Gl
-  VERSION = '0.9.2'
+  BINDINGS_VERSION = '0.9.2'
+  RUBY_OPENGL_VERSION = BINDINGS_VERSION
 end
 
 begin

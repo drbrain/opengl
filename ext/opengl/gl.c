@@ -181,10 +181,6 @@ GLint CheckBufferBinding(GLint buffer)
 
 void Init_gl(VALUE module)
 {
-	VALUE version = rb_const_get(module, rb_intern("VERSION"));
-	rb_define_const(module, "BINDINGS_VERSION", version);
-	rb_define_const(module, "RUBY_OPENGL_VERSION", version);
-
 	gl_init_error(module);
 	gl_init_enums(module);
 	gl_init_functions_1_0__1_1(module);
