@@ -179,7 +179,7 @@ GLint CheckBufferBinding(GLint buffer)
 	return result;
 }
 
-DLLEXPORT void Init_gl(VALUE module)
+void Init_gl(VALUE module)
 {
 	VALUE version = rb_const_get(module, rb_intern("VERSION"));
 	rb_define_const(module, "BINDINGS_VERSION", version);
