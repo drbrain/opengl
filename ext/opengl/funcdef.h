@@ -270,22 +270,7 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 }
 
 #define GL_FUNC_GENOBJECTS(_name_) \
-	static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
-{ \
-	GLsizei n; \
-	GLuint *objects; \
-	VALUE ret; \
-	GLsizei i; \
-	n = CONV_GLsizei(arg1); \
-	objects = ALLOC_N(GLuint, n); \
-	gl##_name_(n,objects); \
-	ret = rb_ary_new2(n); \
-	for (i = 0; i < n; i++) \
-	rb_ary_push(ret, RETCONV_GLuint(objects[i])); \
-	xfree(objects); \
-	CHECK_GLERROR_FROM("gl" #_name_); \
-	return ret; \
-}
+  GL_FUNC_GENOBJECTS_LOAD(_name_,"1.1")
 
 #define GL_FUNC_DELETEOBJECTS_LOAD(_name_,_ver_) \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
@@ -310,23 +295,6 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 }
 
 #define GL_FUNC_DELETEOBJECTS(_name_) \
-	static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
-{ \
-	GLsizei n; \
-	if (TYPE(arg1)==T_ARRAY) { \
-		GLuint *objects; \
-		n = (GLsizei)RARRAY_LENINT(arg1); \
-		objects = ALLOC_N(GLuint,n); \
-		ary2cuint(arg1,objects,n);  \
-		gl##_name_(n,objects); \
-		xfree(objects); \
-	} else { \
-		GLuint object; \
-		object = CONV_GLsizei(arg1); \
-		gl##_name_(1,&object);  \
-	} \
-	CHECK_GLERROR_FROM("gl" #_name_); \
-	return Qnil; \
-}
+  GL_FUNC_DELETEOBJECTS_LOAD(_name_,"1.1")
 
 #endif
