@@ -114,7 +114,8 @@ ext/opengl/gl-ext-nv.c
 ext/opengl/gl-types.h
 ext/opengl/gl.c
 ext/opengl/gl_buffer.c
-ext/opengl/loader.c
+ext/opengl/glimpl.c
+ext/opengl/glimpl.h
 ext/opengl/opengl.c
 lib/gl.rb
 lib/opengl.rb

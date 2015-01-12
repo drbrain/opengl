@@ -11,8 +11,6 @@
 #include <GL/glx.h>
 #endif
 
-#include "fptr_struct.h"
-
 void *load_gl_function(const char *name,int raise)
 {
         void *func_ptr = NULL;
@@ -52,9 +50,20 @@ void *load_gl_function(const char *name,int raise)
         return func_ptr;
 }
 
-struct glfunc_ptrs glfunc_ptrs;
+struct glimpl glimpl;
 
-void gl_init_loader(VALUE module)
+void gl_init_glimpl(VALUE module)
 {
-  memset( &glfunc_ptrs, 0, sizeof(glfunc_ptrs));
+  memset( &glimpl, 0, sizeof(glimpl));
+
+  rb_global_variable(&glimpl.current_sel_buffer);
+  rb_global_variable(&glimpl.current_feed_buffer);
+  rb_global_variable(&glimpl.Vertex_ptr);
+  rb_global_variable(&glimpl.Normal_ptr);
+  rb_global_variable(&glimpl.Color_ptr);
+  rb_global_variable(&glimpl.Index_ptr);
+  rb_global_variable(&glimpl.TexCoord_ptr);
+  rb_global_variable(&glimpl.EdgeFlag_ptr);
+  rb_global_variable(&glimpl.FogCoord_ptr);
+  rb_global_variable(&glimpl.SecondaryColor_ptr);
 }

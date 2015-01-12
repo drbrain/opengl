@@ -26,11 +26,6 @@
 	code.
  */
 
-#ifndef GLFUNC_MAGIC_START
-#include "fptr_struct.h"
-extern struct glfunc_ptrs glfunc_ptrs;
-#endif
-
 /*
  * Loads the function pointer for function _NAME_ on first call to the
  * function, or raises a NotImplementedError if the OpenGL version is less
@@ -38,7 +33,8 @@ extern struct glfunc_ptrs glfunc_ptrs;
  */
 #define LOAD_GL_FUNC(_NAME_, _VEREXT_) \
 	do { \
-		if (glfunc_ptrs._NAME_==NULL) { \
+    fptr_##_NAME_ = GET_GLIMPL_VARIABLE(glfuncs._NAME_); \
+		if (fptr_##_NAME_==NULL) { \
 			if (CheckVersionExtension(_VEREXT_) == GL_FALSE) { \
 				if (isdigit(_VEREXT_[0])) { \
 					rb_raise(rb_eNotImpError, \
@@ -49,9 +45,9 @@ extern struct glfunc_ptrs glfunc_ptrs;
 				} \
 			} \
 			\
-			glfunc_ptrs._NAME_ = load_gl_function(#_NAME_, 1); \
+			fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
+			SET_GLIMPL_VARIABLE(glfuncs._NAME_,fptr_##_NAME_); \
 		} \
-		fptr_##_NAME_ = glfunc_ptrs._NAME_; \
 	} while (0)
 
 #if defined(GLFUNC_MAGIC_START)

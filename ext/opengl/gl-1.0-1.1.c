@@ -951,34 +951,36 @@ VALUE obj,arg1,arg2,arg3;
   CHECK_GLERROR_FROM("glTexGeniv");
   return Qnil;
 }
-static VALUE g_current_feed_buffer;
 static VALUE
 gl_FeedbackBuffer(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
   GLsizei size;
   GLenum type;
+  VALUE current_feed_buffer;
   size = (GLsizei)NUM2UINT(arg1);
   type = (GLenum)NUM2INT(arg2);
-  g_current_feed_buffer = allocate_buffer_with_string(sizeof(GLfloat)*size);
-  rb_str_freeze(g_current_feed_buffer);
-  glFeedbackBuffer(size, type, (GLfloat*)RSTRING_PTR(g_current_feed_buffer));
+  current_feed_buffer = allocate_buffer_with_string(sizeof(GLfloat)*size);
+  rb_str_freeze(current_feed_buffer);
+  glFeedbackBuffer(size, type, (GLfloat*)RSTRING_PTR(current_feed_buffer));
   CHECK_GLERROR_FROM("glFeedbackBuffer");
-  return g_current_feed_buffer;
+  SET_GLIMPL_VARIABLE(current_feed_buffer, current_feed_buffer);
+  return current_feed_buffer;
 }
 
-static VALUE g_current_sel_buffer;
 static VALUE
 gl_SelectBuffer(obj,arg1)
 VALUE obj,arg1;
 {
   GLsizei size;
+  VALUE current_sel_buffer;
   size = (GLsizei)NUM2UINT(arg1);
-  g_current_sel_buffer = allocate_buffer_with_string(sizeof(GLuint)*size);
-  rb_str_freeze(g_current_sel_buffer);
-  glSelectBuffer(size, (GLuint*)RSTRING_PTR(g_current_sel_buffer));
+  current_sel_buffer = allocate_buffer_with_string(sizeof(GLuint)*size);
+  rb_str_freeze(current_sel_buffer);
+  glSelectBuffer(size, (GLuint*)RSTRING_PTR(current_sel_buffer));
   CHECK_GLERROR_FROM("glSelectBuffer");
-  return g_current_sel_buffer;
+  SET_GLIMPL_VARIABLE(current_sel_buffer, current_sel_buffer);
+  return current_sel_buffer;
 }
 
 
@@ -2004,14 +2006,6 @@ VALUE obj,arg1;
 }
 
 
-static VALUE g_Vertex_ptr;
-static VALUE g_Normal_ptr;
-static VALUE g_Color_ptr;
-static VALUE g_Index_ptr;
-static VALUE g_TexCoord_ptr;
-static VALUE g_EdgeFlag_ptr;
-VALUE g_FogCoord_ptr; /* OpenGL 1.4 */
-VALUE g_SecondaryColor_ptr; /* OpenGL 1.4 */
 #define POINTER_FUNC(_func_) \
 static VALUE \
 gl_##_func_##Pointer(obj, arg1, arg2, arg3, arg4) \
@@ -2024,13 +2018,13 @@ VALUE obj, arg1, arg2, arg3, arg4; \
   type = (GLenum)NUM2INT(arg2); \
   stride = (GLsizei)NUM2UINT(arg3); \
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) { \
-    g_##_func_##_ptr = arg4; \
+    SET_GLIMPL_VARIABLE(_func_##_ptr, arg4); \
     gl##_func_##Pointer(size, type, stride, (const GLvoid*)NUM2SIZET(arg4)); \
   } else { \
     VALUE data; \
     data = pack_array_or_pass_string(type,arg4); \
     rb_str_freeze(data); \
-    g_##_func_##_ptr = data; \
+    SET_GLIMPL_VARIABLE(_func_##_ptr, data); \
     gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING_PTR(data)); \
   } \
   CHECK_GLERROR_FROM("gl" #_func_ "Pointer"); \
@@ -2071,13 +2065,13 @@ VALUE obj,arg1,arg2;
   GLsizei stride;
   stride = (GLsizei)NUM2UINT(arg1);
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-    g_EdgeFlag_ptr = arg2;
+    SET_GLIMPL_VARIABLE(EdgeFlag_ptr, arg2);
     glEdgeFlagPointer(stride, (const GLvoid*) NUM2SIZET(arg2));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg2);
     rb_str_freeze(data);
-    g_EdgeFlag_ptr = data;
+    SET_GLIMPL_VARIABLE(EdgeFlag_ptr, data);
     glEdgeFlagPointer(stride, (const GLvoid*)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glEdgeFlagPointer");
@@ -2092,25 +2086,25 @@ VALUE obj,arg1;
   pname = (GLenum)NUM2INT(arg1);
   switch (pname) {
     case GL_VERTEX_ARRAY_POINTER:
-      return g_Vertex_ptr;
+      return GET_GLIMPL_VARIABLE(Vertex_ptr);
     case GL_NORMAL_ARRAY_POINTER:
-      return g_Normal_ptr;
+      return GET_GLIMPL_VARIABLE(Normal_ptr);
     case GL_COLOR_ARRAY_POINTER:
-      return g_Color_ptr;
+      return GET_GLIMPL_VARIABLE(Color_ptr);
     case GL_INDEX_ARRAY_POINTER:
-      return g_Index_ptr;
+      return GET_GLIMPL_VARIABLE(Index_ptr);
     case GL_TEXTURE_COORD_ARRAY_POINTER:
-      return g_TexCoord_ptr;
+      return GET_GLIMPL_VARIABLE(TexCoord_ptr);
     case GL_EDGE_FLAG_ARRAY_POINTER:
-      return g_EdgeFlag_ptr;
+      return GET_GLIMPL_VARIABLE(EdgeFlag_ptr);
     case GL_FOG_COORD_ARRAY_POINTER:
-      return g_FogCoord_ptr;
+      return GET_GLIMPL_VARIABLE(FogCoord_ptr);
     case GL_SECONDARY_COLOR_ARRAY_POINTER:
-      return g_SecondaryColor_ptr;
+      return GET_GLIMPL_VARIABLE(SecondaryColor_ptr);
     case GL_FEEDBACK_BUFFER_POINTER:
-      return g_current_feed_buffer;
+      return GET_GLIMPL_VARIABLE(current_feed_buffer);
     case GL_SELECTION_BUFFER_POINTER:
-      return g_current_sel_buffer;
+      return GET_GLIMPL_VARIABLE(current_sel_buffer);
     default:
       rb_raise(rb_eArgError, "Invalid pname %d",pname);
       break; /* not reached */
@@ -2127,12 +2121,12 @@ VALUE obj,arg1,arg2,arg3;
   type = (GLenum)NUM2INT(arg1);
   stride = (GLsizei)NUM2UINT(arg2);
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-    g_Index_ptr = arg3;
+    SET_GLIMPL_VARIABLE(Index_ptr, arg3);
     glIndexPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg3);
-    g_Index_ptr = data;
+    SET_GLIMPL_VARIABLE(Index_ptr, data);
     glIndexPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glIndexPointer");
@@ -2165,13 +2159,13 @@ VALUE obj,arg1,arg2,arg3;
   type = (GLenum)NUM2INT(arg1);
   stride = (GLsizei)NUM2UINT(arg2);
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-    g_Normal_ptr = arg3;
+    SET_GLIMPL_VARIABLE(Normal_ptr, arg3);
     glNormalPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg3);
     rb_str_freeze(data);
-    g_Normal_ptr = data;
+    SET_GLIMPL_VARIABLE(Normal_ptr, data);
     glNormalPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glNormalPointer");
@@ -2683,9 +2677,6 @@ VALUE obj,arg1,arg2,arg3;
 /* init */
 void gl_init_functions_1_0__1_1(VALUE module)
 {
-  g_FogCoord_ptr = 0; /* for use in gl-1.4.c */
-  g_SecondaryColor_ptr = 0; /* for use in gl-1.4.c */
-
   /* OpenGL 1.0 functions */
   rb_define_module_function(module, "glNewList", gl_NewList, 2);
   rb_define_module_function(module, "glEndList", gl_EndList, 0);
@@ -3061,15 +3052,4 @@ void gl_init_functions_1_0__1_1(VALUE module)
   rb_define_module_function(module, "glIndex", gl_Indexi, 1);
   rb_define_module_function(module, "glGetMaterial", gl_GetMaterialfv, 2);
   rb_define_module_function(module, "glGetDouble", gl_GetDoublev, 1);
-
-  rb_global_variable(&g_current_sel_buffer);
-  rb_global_variable(&g_current_feed_buffer);
-  rb_global_variable(&g_Vertex_ptr);
-  rb_global_variable(&g_Normal_ptr);
-  rb_global_variable(&g_Color_ptr);
-  rb_global_variable(&g_Index_ptr);
-  rb_global_variable(&g_TexCoord_ptr);
-  rb_global_variable(&g_EdgeFlag_ptr);
-  rb_global_variable(&g_FogCoord_ptr);
-  rb_global_variable(&g_SecondaryColor_ptr);
 }

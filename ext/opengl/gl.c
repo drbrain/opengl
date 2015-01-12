@@ -33,7 +33,7 @@ void gl_init_functions_ext_ext(VALUE);
 void gl_init_functions_ext_gremedy(VALUE);
 void gl_init_functions_ext_nv(VALUE);
 void gl_init_buffer(VALUE);
-void gl_init_loader(VALUE);
+void gl_init_glimpl(VALUE);
 
 static int opengl_version[2]; /* major, minor */
 static char *opengl_extensions = NULL;
@@ -199,7 +199,7 @@ void Init_gl(VALUE module)
 	gl_init_functions_ext_gremedy(module);
 	gl_init_functions_ext_nv(module);
 	gl_init_buffer(module);
-  gl_init_loader(module);
+  gl_init_glimpl(module);
 
 
 	rb_define_module_function(module, "is_available?", IsAvailable, 1);

@@ -63,33 +63,32 @@ end
 cfiles = Dir["ext/opengl/*.c"]
 file "ext/opengl/fptr_struct.h" => (cfiles + ["ext/opengl/funcdef.h"]) do |t|
 
-  File.open(t.name, "w") do |fptr_struct|
-    fptr_struct.puts <<-EOT
-      #ifndef _FPTR_STRUCT_H_
-      #define _FPTR_STRUCT_H_
-      struct glfunc_ptrs {
-    EOT
-    funcs = cfiles.map do |cfile|
-      args = RbConfig::CONFIG['CC'], "-E", cfile,
-          "-DGLFUNC_MAGIC_START=glfunc-", "-DGLFUNC_MAGIC_END=-glfunc",
-          "-I#{RbConfig::CONFIG['rubyhdrdir']}", "-I#{RbConfig::CONFIG['rubyarchhdrdir']}"
+  funcs = cfiles.map do |cfile|
+    args = RbConfig::CONFIG['CC'], "-E", cfile,
+        "-DGLFUNC_MAGIC_START=glfunc-", "-DGLFUNC_MAGIC_END=-glfunc",
+        "-I#{RbConfig::CONFIG['rubyhdrdir']}", "-I#{RbConfig::CONFIG['rubyarchhdrdir']}"
 
-      puts args.join(" ")
+    puts args.join(" ")
 
-      IO.popen(args) do |i|
-        i.read.scan(/glfunc- (.*?) -glfunc/).map{|m| "#{m[0]};\n" }
-      end
+    IO.popen(args) do |i|
+      i.read.scan(/glfunc- (.*?) -glfunc/).map{|m| "#{m[0]};\n" }
     end
-
-    funcs.flatten.uniq.each do |func|
-      fptr_struct.puts func
-    end
-
-    fptr_struct.puts <<-EOT
-      };
-      #endif
-    EOT
   end
+
+  out = <<-EOT
+    #ifndef _FPTR_STRUCT_H_
+    #define _FPTR_STRUCT_H_
+    struct glfunc_ptrs {
+  EOT
+  funcs.flatten.uniq.each do |func|
+    out << func
+  end
+  out << <<-EOT
+    };
+    #endif
+  EOT
+
+  IO.write(t.name, out) if IO.read(t.name) != out
 end
 
 task "ext/opengl/extconf.rb" => "ext/opengl/fptr_struct.h"

@@ -147,7 +147,6 @@ GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3ubvEXT,GLubyte,ary2cubyte)
 GLSECONDARYCOLOREXT_VFUNC(SecondaryColor3usvEXT,GLushort,ary2cushort)
 #undef GLSECONDARYCOLOREXT_VFUNC
 
-extern VALUE g_SecondaryColor_ptr;
 static VALUE
 gl_SecondaryColorPointerEXT(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -161,13 +160,13 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	type = (GLenum)NUM2INT(arg2);
 	stride = (GLsizei)NUM2UINT(arg3);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-		g_SecondaryColor_ptr = arg4;
+		SET_GLIMPL_VARIABLE(SecondaryColor_ptr, arg4);
 		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)NUM2SIZET(arg4));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg4);
 		rb_str_freeze(data);
-		g_SecondaryColor_ptr = data;
+		SET_GLIMPL_VARIABLE(SecondaryColor_ptr, data);
 		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR_FROM("glSecondaryColorPointerEXT");
@@ -318,7 +317,6 @@ GLFOGCOORD_VFUNC(FogCoordfvEXT,GLfloat,ary2cflt)
 GLFOGCOORD_VFUNC(FogCoorddvEXT,GLdouble,ary2cdbl)
 #undef GLFOGCOORD_VFUNC
 
-extern VALUE g_FogCoord_ptr;
 static VALUE
 gl_FogCoordPointerEXT(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -330,13 +328,13 @@ VALUE obj,arg1,arg2,arg3;
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-		g_FogCoord_ptr = arg3;
+		SET_GLIMPL_VARIABLE(FogCoord_ptr, arg3);
 		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)NUM2SIZET(arg3));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg3);
 		rb_str_freeze(data);
-		g_FogCoord_ptr = data;
+		SET_GLIMPL_VARIABLE(FogCoord_ptr, data);
 		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR_FROM("glFogCoordPointerEXT");
@@ -513,8 +511,6 @@ GETVERTEXATTRIB_FUNC(GetVertexAttribIivEXT,GLint,cond_GLBOOL2RUBY,"GL_EXT_gpu_sh
 GETVERTEXATTRIB_FUNC(GetVertexAttribIuivEXT,GLuint,cond_GLBOOL2RUBY_U,"GL_EXT_gpu_shader4")
 #undef GETVERTEXATTRIB_FUNC
 
-extern VALUE g_VertexAttrib_ptr[];
-
 static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
 {
 	GLuint index;
@@ -533,13 +529,13 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-		g_VertexAttrib_ptr[index] = arg5;
+		SET_GLIMPL_VARIABLE(VertexAttrib_ptr[index], arg5);
 		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)NUM2SIZET(arg5));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg5);
 		rb_str_freeze(data);
-		g_VertexAttrib_ptr[index] = data;
+		SET_GLIMPL_VARIABLE(VertexAttrib_ptr[index], data);
 		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 

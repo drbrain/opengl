@@ -48,6 +48,7 @@
 
 #include "funcdef.h"
 #include "conv.h"
+#include "glimpl.h"
 
 #ifndef APIENTRY
 #define APIENTRY
@@ -73,14 +74,6 @@
 #endif
 
 /* */
-
-#if defined(GLFUNC_MAGIC_START)
-  #define DECL_CONTEXT_VARIABLE(_decl_) \
-    GLFUNC_MAGIC_START _decl_ GLFUNC_MAGIC_END
-#else
-  #define DECL_CONTEXT_VARIABLE(_decl_) \
-    _decl_
-#endif
 
 /* at least GL_MAX_VERTEX_ATTRIBS - usually 16 or 32 on today's high-end cards */
 #define _MAX_VERTEX_ATTRIBS 64

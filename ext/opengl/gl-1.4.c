@@ -67,7 +67,6 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-extern VALUE g_FogCoord_ptr;
 static VALUE
 gl_FogCoordPointer(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -79,13 +78,13 @@ VALUE obj,arg1,arg2,arg3;
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-		g_FogCoord_ptr = arg3;
+		SET_GLIMPL_VARIABLE(FogCoord_ptr, arg3);
 		fptr_glFogCoordPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg3);
 		rb_str_freeze(data);
-		g_FogCoord_ptr = data;
+		SET_GLIMPL_VARIABLE(FogCoord_ptr, data);
 		fptr_glFogCoordPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR_FROM("glFogCoordPointer");
@@ -247,7 +246,6 @@ GLSECONDARYCOLOR_VFUNC(SecondaryColor3ubv,GLubyte,ary2cubyte)
 GLSECONDARYCOLOR_VFUNC(SecondaryColor3usv,GLushort,ary2cushort)
 #undef GLSECONDARYCOLOR_VFUNC
 
-extern VALUE g_SecondaryColor_ptr;
 static VALUE
 gl_SecondaryColorPointer(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -261,13 +259,13 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	type = (GLenum)NUM2INT(arg2);
 	stride = (GLsizei)NUM2UINT(arg3);
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-		g_SecondaryColor_ptr = arg4;
+		SET_GLIMPL_VARIABLE(SecondaryColor_ptr, arg4);
 		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)NUM2SIZET(arg4));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg4);
 		rb_str_freeze(data);
-		g_SecondaryColor_ptr = data;
+		SET_GLIMPL_VARIABLE(SecondaryColor_ptr, data);
 		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)RSTRING_PTR(data));
 	}
 	CHECK_GLERROR_FROM("glSecondaryColorPointer");
