@@ -11,6 +11,8 @@
 #include <GL/glx.h>
 #endif
 
+#include "fptr_struct.h"
+
 void *load_gl_function(const char *name,int raise)
 {
         void *func_ptr = NULL;
@@ -48,4 +50,11 @@ void *load_gl_function(const char *name,int raise)
                 rb_raise(rb_eNotImpError,"Function %s is not available on this system",name);
 
         return func_ptr;
+}
+
+struct glfunc_ptrs glfunc_ptrs;
+
+void gl_init_loader(VALUE module)
+{
+  memset( &glfunc_ptrs, 0, sizeof(glfunc_ptrs));
 }

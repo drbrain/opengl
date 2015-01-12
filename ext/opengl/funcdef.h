@@ -13,6 +13,9 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifndef _FUNCDEF_H_
+#define _FUNCDEF_H_
+
 /*
 	These macros are for simplification of function definition, as passing
 	arguments from/to OpenGL usually follows the same few patterns. It would
@@ -23,6 +26,11 @@
 	code.
  */
 
+#ifndef GLFUNC_MAGIC_START
+#include "fptr_struct.h"
+extern struct glfunc_ptrs glfunc_ptrs;
+#endif
+
 /*
  * Loads the function pointer for function _NAME_ on first call to the
  * function, or raises a NotImplementedError if the OpenGL version is less
@@ -30,7 +38,7 @@
  */
 #define LOAD_GL_FUNC(_NAME_, _VEREXT_) \
 	do { \
-		if (fptr_##_NAME_==NULL) { \
+		if (glfunc_ptrs._NAME_==NULL) { \
 			if (CheckVersionExtension(_VEREXT_) == GL_FALSE) { \
 				if (isdigit(_VEREXT_[0])) { \
 					rb_raise(rb_eNotImpError, \
@@ -41,11 +49,20 @@
 				} \
 			} \
 			\
-			fptr_##_NAME_ = load_gl_function(#_NAME_, 1); \
+			glfunc_ptrs._NAME_ = load_gl_function(#_NAME_, 1); \
 		} \
+		fptr_##_NAME_ = glfunc_ptrs._NAME_; \
 	} while (0)
 
-/* 
+#if defined(GLFUNC_MAGIC_START)
+  #define DECL_GL_FUNC_PTR(_returntype_,_name_,_args_) \
+    GLFUNC_MAGIC_START _returntype_ (APIENTRY * _name_)_args_ GLFUNC_MAGIC_END
+#else
+  #define DECL_GL_FUNC_PTR(_returntype_,_name_,_args_) \
+    _returntype_ (APIENTRY * fptr_##_name_)_args_ = NULL
+#endif
+
+/*
 	Macroset for defining simple functions, i.e. functions that take n arguments and
 	pass them to GL API function without any additional processing.
 
@@ -148,7 +165,7 @@
 #define PROTOPARAM9(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4,p5,p6,p7,p8,p9
 #define PROTOPARAM10(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10) p1,p2,p3,p4,p5,p6,p7,p8,p9,p10
 
-#define CALLCONV0(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) 
+#define CALLCONV0(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10)
 #define CALLCONV1(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1)
 #define CALLCONV2(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2)
 #define CALLCONV3(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3)
@@ -161,12 +178,12 @@
 #define CALLCONV10(cv1,cv2,cv3,cv4,cv5,cv6,cv7,cv8,cv9,cv10) CONV_##cv1(arg1),CONV_##cv2(arg2),CONV_##cv3(arg3),CONV_##cv4(arg4),CONV_##cv5(arg5),CONV_##cv6(arg6),CONV_##cv7(arg7),CONV_##cv8(arg8),CONV_##cv9(arg9),CONV_##cv10(arg10)
 
 #define GL_FUNC_LOAD(_num_,_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,_ver_) \
-	static _returntype_ (APIENTRY * fptr_gl##_name_)(PROTOPARAM##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
 static VALUE \
 gl_##_name_(obj ARGLIST##_num_) \
 VALUE obj ARGLIST##_num_; \
 { \
 	RETDECL_##_returntype_ \
+	DECL_GL_FUNC_PTR(_returntype_,gl##_name_,(PROTOPARAM##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10))); \
 	LOAD_GL_FUNC(gl##_name_,_ver_); \
 	RETSTAT_##_returntype_ fptr_gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
 	CHECK_GLERROR_FROM("gl" #_name_); \
@@ -233,13 +250,13 @@ VALUE obj ARGLIST##_num_; \
 /* Templates for glGen* and glDelete* */
 
 #define GL_FUNC_GENOBJECTS_LOAD(_name_,_ver_) \
-	static void (APIENTRY * fptr_gl##_name_)(GLsizei,GLuint *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	GLsizei n; \
 	GLuint *objects; \
 	VALUE ret; \
 	GLsizei i; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLsizei,GLuint *)); \
 	LOAD_GL_FUNC(gl##_name_,_ver_); \
 	n = CONV_GLsizei(arg1); \
 	objects = ALLOC_N(GLuint, n); \
@@ -271,10 +288,10 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 }
 
 #define GL_FUNC_DELETEOBJECTS_LOAD(_name_,_ver_) \
-	static void (APIENTRY * fptr_gl##_name_)(GLsizei,const GLuint *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	GLsizei n; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLsizei,const GLuint *)); \
 	LOAD_GL_FUNC(gl##_name_,_ver_); \
 	if (TYPE(arg1)==T_ARRAY) { \
 		GLuint *objects; \
@@ -311,3 +328,5 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 	CHECK_GLERROR_FROM("gl" #_name_); \
 	return Qnil; \
 }
+
+#endif

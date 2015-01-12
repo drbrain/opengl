@@ -19,12 +19,12 @@
 
 /* #3 GL_ARB_transpose_matrix */
 #define TRANSPOSEMATRIX_FUNC(_name_,_type_,_conv_) \
-static void (APIENTRY * fptr_gl##_name_)(const _type_[]); \
 static VALUE \
 gl_##_name_(obj,arg1) \
 VALUE obj,arg1; \
 { \
   _type_ m[4*4]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(const _type_[])); \
   LOAD_GL_FUNC(gl##_name_, "GL_ARB_transpose_matrix"); \
   _conv_(arg1, m, 4, 4); \
   fptr_gl##_name_(m); \
@@ -45,12 +45,12 @@ GL_FUNC_LOAD_2(SampleCoverageARB,GLvoid, GLclampf,GLboolean, "GL_ARB_multisample
 /* #14 GL_ARB_point_parameters */
 GL_FUNC_LOAD_2(PointParameterfARB,GLvoid, GLenum,GLfloat, "GL_ARB_point_parameters")
 
-static void (APIENTRY * fptr_glPointParameterfvARB)(GLenum,GLfloat *);
 static VALUE gl_PointParameterfvARB(VALUE obj,VALUE arg1,VALUE arg2)
 {
   GLfloat params[3] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
   GLenum pname;
   GLint size;
+  DECL_GL_FUNC_PTR(GLvoid,glPointParameterfvARB,(GLenum,GLfloat *));
   LOAD_GL_FUNC(glPointParameterfvARB, "GL_ARB_point_parameters");
   pname = NUM2UINT(arg1);
   Check_Type(arg2,T_ARRAY);
@@ -75,10 +75,10 @@ GL_FUNC_LOAD_3(WindowPos3iARB,GLvoid, GLint,GLint,GLint, "GL_ARB_window_pos")
 GL_FUNC_LOAD_3(WindowPos3sARB,GLvoid, GLshort,GLshort,GLshort, "GL_ARB_window_pos")
 
 #define WINDOWPOSFUNCV(_name_,_type_,_conv_,_size_,_ext_) \
-static void (APIENTRY * fptr_gl##_name_)(const _type_ *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
   _type_ cary[_size_]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(const _type_ *)); \
   LOAD_GL_FUNC(gl##_name_, _ext_); \
   Check_Type(arg1,T_ARRAY); \
   if (RARRAY_LEN(arg1) != _size_) \
@@ -101,9 +101,9 @@ WINDOWPOSFUNCV(WindowPos3svARB,GLshort,ary2cshort,3,"GL_ARB_window_pos")
 
 
 /* #26 GL_ARB_vertex_program */
-static void (APIENTRY * fptr_glProgramStringARB)(GLenum,GLenum,GLsizei,const void *);
 static VALUE gl_ProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
+  DECL_GL_FUNC_PTR(GLvoid,glProgramStringARB,(GLenum,GLenum,GLsizei,const void *));
   LOAD_GL_FUNC(glProgramStringARB, "GL_ARB_vertex_program");
   Check_Type(arg3,T_STRING);
   fptr_glProgramStringARB((GLenum)NUM2INT(arg1),(GLenum)NUM2INT(arg2),(GLsizei)RSTRING_LENINT(arg3),RSTRING_PTR(arg3));
@@ -111,23 +111,24 @@ static VALUE gl_ProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
   return Qnil;
 }
 
-static void (APIENTRY * fptr_glGetProgramivARB)(GLenum,GLenum,GLint *);
 static VALUE gl_GetProgramivARB(VALUE obj,VALUE arg1,VALUE arg2)
 {
   GLint ret = 0;
+  DECL_GL_FUNC_PTR(GLvoid,glGetProgramivARB,(GLenum,GLenum,GLint *));
   LOAD_GL_FUNC(glGetProgramivARB, "GL_ARB_vertex_program");
   fptr_glGetProgramivARB(NUM2INT(arg1),NUM2INT(arg2),&ret);
   CHECK_GLERROR_FROM("glGetProgramivARB");
   return cond_GLBOOL2RUBY(NUM2INT(arg2),ret);
 }
 
-static void (APIENTRY * fptr_glGetProgramStringARB)(GLenum,GLenum,void *string);
 static VALUE gl_GetProgramStringARB(VALUE obj,VALUE arg1,VALUE arg2)
 {
   GLsizei len = 0;
   char *buffer;
   VALUE ret_buffer;
 
+  DECL_GL_FUNC_PTR(GLvoid,glGetProgramStringARB,(GLenum,GLenum,void *string));
+  DECL_GL_FUNC_PTR(GLvoid,glGetProgramivARB,(GLenum,GLenum,GLint *));
   LOAD_GL_FUNC(glGetProgramStringARB, "GL_ARB_vertex_program");
   LOAD_GL_FUNC(glGetProgramivARB, "GL_ARB_vertex_program");
 
@@ -155,7 +156,6 @@ GL_FUNC_LOAD_1(DisableVertexAttribArrayARB,GLvoid, GLuint, "GL_ARB_vertex_progra
 
 extern VALUE g_VertexAttrib_ptr[];
 
-static void (APIENTRY * fptr_glVertexAttribPointerARB)(GLuint,GLint,GLenum,GLboolean,GLsizei,const GLvoid *);
 static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5,VALUE arg6)
 {
   GLuint index;
@@ -164,6 +164,7 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
   GLboolean normalized;
   GLsizei stride;
 
+  DECL_GL_FUNC_PTR(GLvoid,glVertexAttribPointerARB,(GLuint,GLint,GLenum,GLboolean,GLsizei,const GLvoid *));
   LOAD_GL_FUNC(glVertexAttribPointerARB, "GL_ARB_vertex_program");
 
   index = (GLuint)NUM2UINT(arg1);
@@ -190,12 +191,12 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
 }
 
 
-static void (APIENTRY * fptr_glGetVertexAttribPointervARB)(GLuint,GLenum,GLvoid **);
 static VALUE
 gl_GetVertexAttribPointervARB(obj,arg1)
 VALUE obj,arg1;
 {
   GLuint index;
+  DECL_GL_FUNC_PTR(GLvoid,glGetVertexAttribPointervARB,(GLuint,GLenum,GLvoid **));
   LOAD_GL_FUNC(glGetVertexAttribPointervARB, "GL_ARB_vertex_program");
   index =(GLuint) NUM2INT(arg1);
   if (index>_MAX_VERTEX_ATTRIBS)
@@ -210,12 +211,12 @@ GL_FUNC_LOAD_6(ProgramLocalParameter4dARB,GLvoid, GLenum,GLuint,GLdouble,GLdoubl
 GL_FUNC_LOAD_6(ProgramLocalParameter4fARB,GLvoid, GLenum,GLuint,GLfloat,GLfloat,GLfloat,GLfloat, "GL_ARB_vertex_program")
 
 #define PROGRAMPARAM_FUNC_V(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,const _type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
   _type_ cary[4]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLuint,const _type_ *)); \
   LOAD_GL_FUNC(gl##_name_, _extension_); \
   _conv_(arg3,cary,4); \
   fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
@@ -230,12 +231,12 @@ PROGRAMPARAM_FUNC_V(ProgramLocalParameter4fvARB,GLfloat,ary2cflt,"GL_ARB_vertex_
 #undef PROGRAMPARAM_FUNC_V
 
 #define GETPROGRAMPARAM_FUNC(_name_,_type_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
   _type_ cary[4] = {(_type_)0.0,(_type_)0.0,(_type_)0.0,(_type_)0.0}; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLuint,_type_ *)); \
   LOAD_GL_FUNC(gl##_name_, _extension_); \
   fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
   RET_ARRAY_OR_SINGLE("gl" #_name_, 4, RETCONV_##_type_, cary); \
@@ -263,13 +264,13 @@ GL_FUNC_LOAD_5(VertexAttrib4sARB,GLvoid, GLuint,GLshort,GLshort,GLshort,GLshort,
 GL_FUNC_LOAD_5(VertexAttrib4NubARB,GLvoid, GLuint,GLubyte,GLubyte,GLubyte,GLubyte, "GL_ARB_vertex_program")
 
 #define VERTEXATTRIB_FUNC_V(_name_,_type_,_conv_,_size_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
   GLuint index; \
   _type_ v[_size_]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,_type_ *)); \
   LOAD_GL_FUNC(gl##_name_, _extension_); \
   index = (GLuint)NUM2UINT(arg1); \
   _conv_(arg2,v,_size_); \
@@ -304,7 +305,6 @@ VERTEXATTRIB_FUNC_V(VertexAttrib1svARB,GLshort,ary2cshort,1,"GL_ARB_vertex_progr
 #undef VERTEXATTRIB_FUNC_V
 
 #define GETVERTEXATTRIB_FUNC(_name_,_type_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -313,6 +313,7 @@ VALUE obj,arg1,arg2; \
   GLenum pname; \
   _type_ params[4] = {0,0,0,0}; \
   GLint size; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLenum,_type_ *)); \
   LOAD_GL_FUNC(gl##_name_, _extension_); \
   index = (GLuint)NUM2UINT(arg1); \
   pname = (GLenum)NUM2INT(arg2); \
@@ -329,7 +330,6 @@ GETVERTEXATTRIB_FUNC(GetVertexAttribfvARB,GLfloat,"GL_ARB_vertex_program")
 //GETVERTEXATTRIB_FUNC(GetVertexAttribivARB,GLint,INT2NUM,"GL_ARB_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
 
-static void (APIENTRY * fptr_glGetVertexAttribivARB)(GLuint,GLenum,GLint *);
 static VALUE
 gl_GetVertexAttribivARB(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -338,6 +338,7 @@ VALUE obj,arg1,arg2;
   GLenum pname;
   GLint params[4] = {0,0,0,0};
   GLint size;
+  DECL_GL_FUNC_PTR(GLvoid,glGetVertexAttribivARB,(GLuint,GLenum,GLint *));
   LOAD_GL_FUNC(glGetVertexAttribivARB, "GL_ARB_vertex_program");
   index = (GLuint)NUM2UINT(arg1);
   pname = (GLenum)NUM2INT(arg2);
@@ -359,10 +360,10 @@ GL_FUNC_LOAD_2(BeginQueryARB,GLvoid, GLuint,GLuint, "GL_ARB_occlusion_query")
 GL_FUNC_LOAD_1(EndQueryARB,GLvoid, GLenum, "GL_ARB_occlusion_query")
 
 #define GETQUERY_FUNC(_name_,_type_,_conv_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 { \
   _type_ ret = 0; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLenum,_type_ *)); \
   LOAD_GL_FUNC(gl##_name_, "GL_ARB_occlusion_query"); \
   fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
   CHECK_GLERROR_FROM("gl" #_name_); \
@@ -386,7 +387,6 @@ GL_FUNC_LOAD_1(GetHandleARB,GLuint, GLenum, "GL_ARB_shader_objects")
 GL_FUNC_LOAD_1(CreateShaderObjectARB,GLuint, GLenum, "GL_ARB_shader_objects")
 GL_FUNC_LOAD_0(CreateProgramObjectARB,GLuint, "GL_ARB_shader_objects")
 
-static void (APIENTRY * fptr_glShaderSourceARB)(GLuint,GLsizei,GLchar**,GLint *);
 static VALUE
 gl_ShaderSourceARB(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -394,6 +394,7 @@ VALUE obj,arg1,arg2;
   GLuint shader;
   GLint length;
   GLchar *str;
+  DECL_GL_FUNC_PTR(GLvoid,glShaderSourceARB,(GLuint,GLsizei,GLchar**,GLint *));
   LOAD_GL_FUNC(glShaderSourceARB, "GL_ARB_shader_objects");
   shader = (GLuint)NUM2UINT(arg1);
   Check_Type(arg2,T_STRING);
@@ -414,7 +415,6 @@ GL_FUNC_LOAD_4(Uniform3iARB,GLvoid, GLint,GLint,GLint,GLint, "GL_ARB_shader_obje
 GL_FUNC_LOAD_5(Uniform4iARB,GLvoid, GLint,GLint,GLint,GLint,GLint, "GL_ARB_shader_objects")
 
 #define GLUNIFORM_VFUNC(_name_,_type_,_conv_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,const _type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -422,6 +422,7 @@ VALUE obj,arg1,arg2; \
   GLint location; \
   GLsizei count; \
   _type_ *value; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLint,GLsizei,const _type_ *)); \
   LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
   Check_Type(arg2,T_ARRAY); \
   count = (GLsizei)RARRAY_LENINT(arg2); \
@@ -447,7 +448,6 @@ GLUNIFORM_VFUNC(Uniform4ivARB,GLint,ary2cint,4)
 #undef GLUNIFORM_VFUNC
 
 #define UNIFORMMATRIX_FUNC(_name_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,GLboolean,GLfloat *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
@@ -456,6 +456,7 @@ VALUE obj,arg1,arg2,arg3; \
   GLsizei count; \
   GLboolean transpose; \
   GLfloat *value;  \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLint,GLsizei,GLboolean,GLfloat *)); \
   LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
   location = (GLint)NUM2INT(arg1); \
   count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \
@@ -474,7 +475,6 @@ UNIFORMMATRIX_FUNC(UniformMatrix4fvARB,4)
 #undef UNIFORMMATRIX_FUNC
 
 #define GETOBJECTPARAMETER_FUNC(_name_,_type_,_conv_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -482,6 +482,7 @@ VALUE obj,arg1,arg2; \
   GLuint program; \
   GLenum pname; \
   _type_ params = 0; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLenum,_type_ *)); \
   LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
   program = (GLuint)NUM2UINT(arg1); \
   pname = (GLenum)NUM2INT(arg2); \
@@ -495,7 +496,6 @@ GETOBJECTPARAMETER_FUNC(GetObjectParameterfvARB,GLfloat,cond_GLBOOL2RUBY_F)
 
 #undef GETOBJECTPARAMETER_FUNC
 
-static void (APIENTRY * fptr_glGetInfoLogARB)(GLuint,GLsizei,GLsizei *,GLchar *);
 static VALUE
 gl_GetInfoLogARB(obj,arg1)
 VALUE obj,arg1;
@@ -504,6 +504,8 @@ VALUE obj,arg1;
   GLint max_size = 0;
   GLsizei ret_length = 0;
   VALUE buffer;
+  DECL_GL_FUNC_PTR(GLvoid,glGetInfoLogARB,(GLuint,GLsizei,GLsizei *,GLchar *));
+  DECL_GL_FUNC_PTR(GLvoid,glGetObjectParameterivARB,(GLuint,GLenum,GLint *));
   LOAD_GL_FUNC(glGetInfoLogARB, "GL_ARB_shader_objects");
   LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_shader_objects");
   program = (GLuint)NUM2UINT(arg1);
@@ -517,7 +519,6 @@ VALUE obj,arg1;
   return buffer;
 }
 
-static void (APIENTRY * fptr_glGetShaderSourceARB)(GLuint,GLsizei,GLsizei *,GLchar *);
 static VALUE
 gl_GetShaderSourceARB(obj,arg1)
 VALUE obj,arg1;
@@ -526,6 +527,8 @@ VALUE obj,arg1;
   GLint max_size = 0;
   GLsizei ret_length = 0;
   VALUE buffer;
+  DECL_GL_FUNC_PTR(GLvoid,glGetShaderSourceARB,(GLuint,GLsizei,GLsizei *,GLchar *));
+  DECL_GL_FUNC_PTR(GLvoid,glGetObjectParameterivARB,(GLuint,GLenum,GLint *));
   LOAD_GL_FUNC(glGetShaderSourceARB, "GL_ARB_shader_objects");
   LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_shader_objects");
   shader = (GLuint)NUM2UINT(arg1);
@@ -539,7 +542,6 @@ VALUE obj,arg1;
   return buffer;
 }
 
-static void (APIENTRY * fptr_glGetActiveUniformARB)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
 static VALUE
 gl_GetActiveUniformARB(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -552,6 +554,8 @@ VALUE obj,arg1,arg2;
   GLenum uniform_type = 0;
   VALUE buffer;
   VALUE retary;
+  DECL_GL_FUNC_PTR(GLvoid,glGetActiveUniformARB,(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*));
+  DECL_GL_FUNC_PTR(GLvoid,glGetObjectParameterivARB,(GLuint,GLenum,GLint *));
   LOAD_GL_FUNC(glGetActiveUniformARB, "GL_ARB_shader_objects");
   LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_shader_objects");
   program = (GLuint)NUM2UINT(arg1);
@@ -574,7 +578,6 @@ VALUE obj,arg1,arg2;
 }
 
 #define GETUNIFORM_FUNC(_name_,_type_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -586,6 +589,8 @@ VALUE obj,arg1,arg2; \
   GLenum uniform_type = 0; \
   GLint uniform_size = 0; \
 \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLint,_type_ *)); \
+  DECL_GL_FUNC_PTR(GLvoid,glGetActiveUniformARB,(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*)); \
   LOAD_GL_FUNC(gl##_name_, "GL_ARB_shader_objects"); \
   LOAD_GL_FUNC(glGetActiveUniformARB, "GL_ARB_shader_objects"); \
   program = (GLuint)NUM2UINT(arg1); \
@@ -608,13 +613,13 @@ GETUNIFORM_FUNC(GetUniformfvARB,GLfloat)
 GETUNIFORM_FUNC(GetUniformivARB,GLint)
 #undef GETUNIFORM_FUNC
 
-static GLint (APIENTRY * fptr_glGetUniformLocationARB)(GLuint,const GLchar*);
 static VALUE
 gl_GetUniformLocationARB(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
   GLuint program;
   GLint ret;
+  DECL_GL_FUNC_PTR(GLint,glGetUniformLocationARB,(GLuint,const GLchar*));
   LOAD_GL_FUNC(glGetUniformLocationARB, "GL_ARB_shader_objects");
   program=(GLuint)NUM2UINT(arg1);
   Check_Type(arg2,T_STRING);
@@ -623,7 +628,6 @@ VALUE obj,arg1,arg2;
   return INT2NUM(ret);
 }
 
-static void (APIENTRY * fptr_glGetAttachedObjectsARB)(GLuint,GLsizei,GLsizei *,GLuint *);
 static VALUE
 gl_GetAttachedObjectsARB(obj,arg1)
 VALUE obj,arg1;
@@ -632,6 +636,8 @@ VALUE obj,arg1;
   GLint shaders_num = 0;
   GLuint *shaders;
   GLsizei count = 0;
+  DECL_GL_FUNC_PTR(GLvoid,glGetAttachedObjectsARB,(GLuint,GLsizei,GLsizei *,GLuint *));
+  DECL_GL_FUNC_PTR(GLvoid,glGetObjectParameterivARB,(GLuint,GLenum,GLint *));
   LOAD_GL_FUNC(glGetAttachedObjectsARB, "GL_ARB_shader_objects");
   LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_shader_objects");
   program = (GLuint)NUM2UINT(arg1);
@@ -647,13 +653,13 @@ VALUE obj,arg1;
 
 /* #31 GL_ARB_vertex_shader */
 
-static void (APIENTRY * fptr_glBindAttribLocationARB)(GLuint,GLuint,GLchar *);
 static VALUE
 gl_BindAttribLocationARB(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
   GLuint program;
   GLuint index;
+  DECL_GL_FUNC_PTR(GLvoid,glBindAttribLocationARB,(GLuint,GLuint,GLchar *));
   LOAD_GL_FUNC(glBindAttribLocationARB, "GL_ARB_vertex_shader");
   program = (GLuint)NUM2UINT(arg1);
   index = (GLuint)NUM2UINT(arg2);
@@ -663,7 +669,6 @@ VALUE obj,arg1,arg2,arg3;
   return Qnil;
 }
 
-static void (APIENTRY * fptr_glGetActiveAttribARB)(GLuint,GLuint,GLsizei,GLsizei *,GLint *,GLenum *,GLchar *);
 static VALUE
 gl_GetActiveAttribARB(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -676,6 +681,8 @@ VALUE obj,arg1,arg2;
   GLenum attrib_type = 0;
   VALUE buffer;
   VALUE retary;
+  DECL_GL_FUNC_PTR(GLvoid,glGetActiveAttribARB,(GLuint,GLuint,GLsizei,GLsizei *,GLint *,GLenum *,GLchar *));
+  DECL_GL_FUNC_PTR(GLvoid,glGetObjectParameterivARB,(GLuint,GLenum,GLint *));
   LOAD_GL_FUNC(glGetActiveAttribARB, "GL_ARB_vertex_shader");
   LOAD_GL_FUNC(glGetObjectParameterivARB, "GL_ARB_vertex_shader");
   program = (GLuint)NUM2UINT(arg1);
@@ -697,13 +704,13 @@ VALUE obj,arg1,arg2;
   return retary;
 }
 
-static GLint (APIENTRY * fptr_glGetAttribLocationARB)(GLuint,const GLchar*);
 static VALUE
 gl_GetAttribLocationARB(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
   GLuint program;
   GLint ret;
+  DECL_GL_FUNC_PTR(GLint,glGetAttribLocationARB,(GLuint,const GLchar*));
   LOAD_GL_FUNC(glGetAttribLocationARB, "GL_ARB_shader_objects");
   program=(GLuint)NUM2UINT(arg1);
   Check_Type(arg2,T_STRING);

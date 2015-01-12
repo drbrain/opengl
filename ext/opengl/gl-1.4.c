@@ -39,12 +39,12 @@ GL_FUNC_LOAD_3(WindowPos3f,GLvoid, GLfloat,GLfloat,GLfloat, "1.4")
 GL_FUNC_LOAD_3(WindowPos3i,GLvoid, GLint,GLint,GLint, "1.4")
 GL_FUNC_LOAD_3(WindowPos3s,GLvoid, GLshort,GLshort,GLshort, "1.4")
 
-static void (APIENTRY * fptr_glFogCoordfv)(GLfloat *);
 static VALUE
 gl_FogCoordfv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLfloat coord;
+  DECL_GL_FUNC_PTR(GLvoid,glFogCoordfv,(GLfloat *));
 	LOAD_GL_FUNC(glFogCoordfv, "1.4");
 	Check_Type(arg1,T_ARRAY);
 	ary2cflt(arg1,&coord,1);
@@ -53,12 +53,12 @@ VALUE obj,arg1;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glFogCoorddv)(GLdouble *);
 static VALUE
 gl_FogCoorddv(obj,arg1)
 VALUE obj,arg1;
 {
 	GLdouble coord;
+  DECL_GL_FUNC_PTR(GLvoid,glFogCoorddv,(GLdouble *));
 	LOAD_GL_FUNC(glFogCoorddv, "1.4");
 	Check_Type(arg1,T_ARRAY);
 	ary2cdbl(arg1,&coord,1);
@@ -68,13 +68,13 @@ VALUE obj,arg1;
 }
 
 extern VALUE g_FogCoord_ptr;
-static void (APIENTRY * fptr_glFogCoordPointer)(GLenum,GLsizei,const GLvoid *);
 static VALUE
 gl_FogCoordPointer(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
 {
 	GLenum type;
 	GLsizei stride;
+  DECL_GL_FUNC_PTR(GLvoid,glFogCoordPointer,(GLenum,GLsizei,const GLvoid *));
 	LOAD_GL_FUNC(glFogCoordPointer, "1.4");
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
@@ -92,7 +92,6 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glMultiDrawArrays)(GLenum,GLint*,GLsizei*,GLsizei);
 static VALUE
 gl_MultiDrawArrays(obj,arg1,arg2,arg3)
 VALUE obj,arg1,arg2,arg3;
@@ -101,6 +100,7 @@ VALUE obj,arg1,arg2,arg3;
 	GLint *ary1;
 	GLsizei *ary2;
 	int len1,len2;
+  DECL_GL_FUNC_PTR(GLvoid,glMultiDrawArrays,(GLenum,GLint*,GLsizei*,GLsizei));
 	LOAD_GL_FUNC(glMultiDrawArrays, "1.4");
 	len1 = (int)RARRAY_LENINT(arg2);
 	len2 = (int)RARRAY_LENINT(arg3);
@@ -118,7 +118,6 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glMultiDrawElements)(GLenum,const GLsizei *,GLenum,GLvoid **,GLsizei);
 static VALUE
 gl_MultiDrawElements(argc,argv,obj)
 int argc;
@@ -132,6 +131,7 @@ VALUE obj;
 	GLint size;
 	int i;
 	VALUE ary, args[4];
+  DECL_GL_FUNC_PTR(GLvoid,glMultiDrawElements,(GLenum,const GLsizei *,GLenum,GLvoid **,GLsizei));
 	LOAD_GL_FUNC(glMultiDrawElements, "1.4");
 	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
 		default:
@@ -182,7 +182,6 @@ VALUE obj;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glPointParameterfv)(GLenum,GLfloat *);
 static VALUE
 gl_PointParameterfv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -190,6 +189,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLfloat params[3] = {(GLfloat)0.0,(GLfloat)0.0,(GLfloat)0.0};
 	GLint size;
+  DECL_GL_FUNC_PTR(GLvoid,glPointParameterfv,(GLenum,GLfloat *));
 	LOAD_GL_FUNC(glPointParameterfv, "1.4");
 	pname = (GLenum)NUM2INT(arg1);
 	Check_Type(arg2,T_ARRAY);
@@ -203,7 +203,6 @@ VALUE obj,arg1,arg2;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glPointParameteriv)(GLenum,GLint *);
 static VALUE
 gl_PointParameteriv(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -211,6 +210,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[3] = {0,0,0};
 	GLint size;
+  DECL_GL_FUNC_PTR(GLvoid,glPointParameteriv,(GLenum,GLint *));
 	LOAD_GL_FUNC(glPointParameteriv, "1.4");
 	pname = (GLenum)NUM2INT(arg1);
 	Check_Type(arg2,T_ARRAY);
@@ -225,10 +225,10 @@ VALUE obj,arg1,arg2;
 }
 
 #define GLSECONDARYCOLOR_VFUNC(_name_,_type_,_conv_) \
-static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
 VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	_type_ cary[3] = {0,0,0}; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, "1.4"); \
 	Check_Type(arg1,T_ARRAY); \
 	_conv_(arg1,cary,3); \
@@ -248,7 +248,6 @@ GLSECONDARYCOLOR_VFUNC(SecondaryColor3usv,GLushort,ary2cushort)
 #undef GLSECONDARYCOLOR_VFUNC
 
 extern VALUE g_SecondaryColor_ptr;
-static void (APIENTRY * fptr_glSecondaryColorPointer)(GLint,GLenum,GLsizei,const GLvoid *);
 static VALUE
 gl_SecondaryColorPointer(obj,arg1,arg2,arg3,arg4)
 VALUE obj,arg1,arg2,arg3,arg4;
@@ -256,6 +255,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	GLint size;
 	GLenum type;
 	GLsizei stride;
+  DECL_GL_FUNC_PTR(GLvoid,glSecondaryColorPointer,(GLint,GLenum,GLsizei,const GLvoid *));
 	LOAD_GL_FUNC(glSecondaryColorPointer, "1.4");
 	size = (GLint)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
@@ -275,10 +275,10 @@ VALUE obj,arg1,arg2,arg3,arg4;
 }
 
 #define GLWINDOWPOS_VFUNC(_name_,_type_,_size_,_conv_) \
-static void (APIENTRY * fptr_gl##_name_)(_type_ *); \
 VALUE gl_##_name_(VALUE obj,VALUE arg1) \
 { \
 	_type_ cary[3] = {0,0,0}; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, "1.4"); \
 	Check_Type(arg1,T_ARRAY); \
 	_conv_(arg1,cary,_size_); \

@@ -25,10 +25,10 @@ GL_FUNC_LOAD_1(TestFenceNV,GLboolean, GLuint,"GL_NV_fence")
 GL_FUNC_LOAD_1(IsFenceNV,GLboolean, GLuint,"GL_NV_fence")
 GL_FUNC_LOAD_1(FinishFenceNV,GLvoid, GLuint,"GL_NV_fence")
 
-static void (APIENTRY * fptr_glGetFenceivNV)(GLuint,GLenum,GLint *);
 static VALUE gl_GetFenceivNV(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint ret = 0;
+  DECL_GL_FUNC_PTR(GLvoid,glGetFenceivNV,(GLuint,GLenum,GLint *));
 	LOAD_GL_FUNC(glGetFenceivNV, "GL_NV_fence");
 	fptr_glGetFenceivNV(NUM2INT(arg1),NUM2INT(arg2),&ret);
 	CHECK_GLERROR_FROM("glGetFenceivNV");
@@ -36,9 +36,9 @@ static VALUE gl_GetFenceivNV(VALUE obj,VALUE arg1,VALUE arg2)
 }
 
 /* #233 GL_NV_vertex_program */
-static void (APIENTRY * fptr_glLoadProgramNV)(GLenum,GLuint,GLsizei,const GLubyte *);
 static VALUE gl_LoadProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
+  DECL_GL_FUNC_PTR(GLvoid,glLoadProgramNV,(GLenum,GLuint,GLsizei,const GLubyte *));
 	LOAD_GL_FUNC(glLoadProgramNV, "GL_NV_vertex_program");
 	Check_Type(arg3,T_STRING);
 	fptr_glLoadProgramNV((GLenum)NUM2INT(arg1),(GLuint)NUM2UINT(arg2),(GLsizei)RSTRING_LENINT(arg3),(GLubyte *)RSTRING_PTR(arg3));
@@ -46,23 +46,24 @@ static VALUE gl_LoadProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glGetProgramivNV)(GLuint,GLenum,GLint *);
 static VALUE gl_GetProgramivNV(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint ret = 0;
+  DECL_GL_FUNC_PTR(GLvoid,glGetProgramivNV,(GLuint,GLenum,GLint *));
 	LOAD_GL_FUNC(glGetProgramivNV, "GL_NV_vertex_program");
 	fptr_glGetProgramivNV(NUM2INT(arg1),NUM2INT(arg2),&ret);
 	CHECK_GLERROR_FROM("glGetProgramivNV");
 	return cond_GLBOOL2RUBY(NUM2INT(arg2),ret);
 }
 
-static void (APIENTRY * fptr_glGetProgramStringNV)(GLuint,GLenum,void *string);
 static VALUE gl_GetProgramStringNV(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLsizei len = 0;
 	char *buffer;
 	VALUE ret_buffer;
 
+  DECL_GL_FUNC_PTR(GLvoid,glGetProgramStringNV,(GLuint,GLenum,void *string));
+  DECL_GL_FUNC_PTR(GLvoid,glGetProgramivNV,(GLuint,GLenum,GLint *));
 	LOAD_GL_FUNC(glGetProgramStringNV, "GL_NV_vertex_program");
 	LOAD_GL_FUNC(glGetProgramivNV, "GL_NV_vertex_program");
 
@@ -86,10 +87,10 @@ GL_FUNC_LOAD_1(IsProgramNV,GLboolean, GLuint,"GL_NV_vertex_program")
 GL_FUNC_GENOBJECTS_LOAD(GenProgramsNV,"GL_NV_vertex_program")
 GL_FUNC_DELETEOBJECTS_LOAD(DeleteProgramsNV,"GL_NV_vertex_program")
 
-static void (APIENTRY * fptr_glExecuteProgramNV)(GLenum,GLuint,const GLfloat *);
 static VALUE gl_ExecuteProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
 	GLfloat params[4] = {0,0,0,0};
+  DECL_GL_FUNC_PTR(GLvoid,glExecuteProgramNV,(GLenum,GLuint,const GLfloat *));
 	LOAD_GL_FUNC(glExecuteProgramNV, "GL_NV_vertex_program");
 	ary2cflt(arg3,params,4);
 	fptr_glExecuteProgramNV(NUM2UINT(arg1),NUM2UINT(arg2),params);
@@ -99,7 +100,6 @@ static VALUE gl_ExecuteProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 
 extern VALUE g_VertexAttrib_ptr[];
 
-static void (APIENTRY * fptr_glVertexAttribPointerNV)(GLuint,GLint,GLenum,GLsizei,const GLvoid *);
 static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
 {
 	GLuint index;
@@ -107,6 +107,7 @@ static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3
 	GLenum type;
 	GLsizei stride;
 
+  DECL_GL_FUNC_PTR(GLvoid,glVertexAttribPointerNV,(GLuint,GLint,GLenum,GLsizei,const GLvoid *));
 	LOAD_GL_FUNC(glVertexAttribPointerNV, "GL_NV_vertex_program");
 
 	index = (GLuint)NUM2UINT(arg1);
@@ -132,12 +133,12 @@ static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3
 }
 
 
-static void (APIENTRY * fptr_glGetVertexAttribPointervNV)(GLuint,GLenum,GLvoid **);
 static VALUE
 gl_GetVertexAttribPointervNV(obj,arg1)
 VALUE obj,arg1;
 {
 	GLuint index;
+  DECL_GL_FUNC_PTR(GLvoid,glGetVertexAttribPointervNV,(GLuint,GLenum,GLvoid **));
 	LOAD_GL_FUNC(glGetVertexAttribPointervNV, "GL_NV_vertex_program");
 	index =(GLuint) NUM2INT(arg1);
 	if (index>_MAX_VERTEX_ATTRIBS)
@@ -150,12 +151,12 @@ GL_FUNC_LOAD_6(ProgramParameter4dNV,GLvoid, GLenum,GLuint,GLdouble,GLdouble,GLdo
 GL_FUNC_LOAD_6(ProgramParameter4fNV,GLvoid, GLenum,GLuint,GLfloat,GLfloat,GLfloat,GLfloat, "GL_NV_vertex_program")
 
 #define PROGRAMPARAM_FUNC_V(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,const _type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ cary[4]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLuint,const _type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	_conv_(arg3,cary,4); \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
@@ -167,12 +168,12 @@ PROGRAMPARAM_FUNC_V(ProgramParameter4dvNV,GLdouble,ary2cdbl,"GL_NV_vertex_progra
 PROGRAMPARAM_FUNC_V(ProgramParameter4fvNV,GLfloat,ary2cflt,"GL_NV_vertex_program")
 
 #define GETPROGRAMPARAM_FUNC(_name_,_type_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ cary[4] = {(_type_)0.0, (_type_)0.0, (_type_)0.0, (_type_)0.0}; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLuint,GLenum,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),cary); \
 	RET_ARRAY_OR_SINGLE("gl" #_name_, 4, RETCONV_##_type_, cary); \
@@ -183,13 +184,13 @@ GETPROGRAMPARAM_FUNC(GetProgramParameterfvNV,GLfloat,"GL_NV_vertex_program")
 #undef GETPROGRAMPARAM_FUNC
 
 #define PROGRAMPARAM_MULTI_FUNC_V(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,GLuint,const _type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ *cary; \
 	GLuint len; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLuint,GLuint,const _type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	len = (GLuint)RARRAY_LENINT(rb_Array(arg3)); \
 	if (len<=0 || (len % 4) != 0) \
@@ -220,13 +221,13 @@ GL_FUNC_LOAD_5(VertexAttrib4sNV,GLvoid, GLuint,GLshort,GLshort,GLshort,GLshort, 
 GL_FUNC_LOAD_5(VertexAttrib4ubNV,GLvoid, GLuint,GLubyte,GLubyte,GLubyte,GLubyte, "GL_NV_vertex_program")
 
 #define VERTEXATTRIB_FUNC_V(_name_,_type_,_conv_,_size_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	GLuint index; \
 	_type_ v[_size_]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	index = (GLuint)NUM2UINT(arg1); \
 	_conv_(arg2,v,_size_); \
@@ -251,7 +252,6 @@ VERTEXATTRIB_FUNC_V(VertexAttrib1svNV,GLshort,ary2cshort,1,"GL_NV_vertex_program
 #undef VERTEXATTRIB_FUNC_V
 
 #define VERTEXATTRIB_MULTI_FUNC_V(_name_,_type_,_conv_,_size_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLsizei,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -259,6 +259,7 @@ VALUE obj,arg1,arg2; \
 	GLuint index; \
 	_type_ *cary; \
 	GLsizei len; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLsizei,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	len = (GLsizei)RARRAY_LENINT(rb_Array(arg2)); \
 	if (len<=0 || (len % _size_) != 0) \
@@ -288,7 +289,6 @@ VERTEXATTRIB_MULTI_FUNC_V(VertexAttribs1svNV,GLshort,ary2cshort,1,"GL_NV_vertex_
 #undef VERTEXATTRIB_MULTI_FUNC_V
 
 #define GETVERTEXATTRIB_FUNC(_name_,_type_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -297,6 +297,7 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLenum,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
@@ -312,7 +313,6 @@ GETVERTEXATTRIB_FUNC(GetVertexAttribdvNV,GLdouble,"GL_NV_vertex_program")
 GETVERTEXATTRIB_FUNC(GetVertexAttribfvNV,GLfloat,"GL_NV_vertex_program")
 #undef GETVERTEXATTRIB_FUNC
 
-static void (APIENTRY * fptr_glGetVertexAttribivNV)(GLuint,GLenum,GLint *);
 static VALUE
 gl_GetVertexAttribivNV(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
@@ -321,6 +321,7 @@ VALUE obj,arg1,arg2;
 	GLenum pname;
 	GLint params[4] = {0,0,0,0};
 	GLint size;
+  DECL_GL_FUNC_PTR(GLvoid,glGetVertexAttribivNV,(GLuint,GLenum,GLint *));
 	LOAD_GL_FUNC(glGetVertexAttribivNV, "GL_NV_vertex_program");
 	index = (GLuint)NUM2UINT(arg1);
 	pname = (GLenum)NUM2INT(arg2);
@@ -336,19 +337,19 @@ VALUE obj,arg1,arg2;
 
 GL_FUNC_LOAD_4(TrackMatrixNV,GLvoid, GLenum,GLuint,GLenum,GLenum, "GL_NV_vertex_program")
 
-static void (APIENTRY * fptr_glGetTrackMatrixivNV)(GLenum,GLuint,GLenum,GLint *);
 static VALUE gl_GetTrackMatrixivNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
 	GLint ret = 0;
+  DECL_GL_FUNC_PTR(GLvoid,glGetTrackMatrixivNV,(GLenum,GLuint,GLenum,GLint *));
 	LOAD_GL_FUNC(glGetTrackMatrixivNV, "GL_NV_vertex_program");
 	fptr_glGetTrackMatrixivNV(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),&ret);
 	CHECK_GLERROR_FROM("glGetTrackMatrixivNV");
 	return INT2NUM(ret);
 }
 
-static void (APIENTRY * fptr_glRequestResidentProgramsNV)(GLsizei, GLuint *);
 static VALUE gl_RequestResidentProgramsNV(VALUE obj,VALUE arg1)
 {
+  DECL_GL_FUNC_PTR(GLvoid,glRequestResidentProgramsNV,(GLsizei, GLuint *));
 	LOAD_GL_FUNC(glRequestResidentProgramsNV, "GL_NV_vertex_program");
 	if (TYPE(arg1)==T_ARRAY) {
 		GLsizei n;
@@ -367,7 +368,6 @@ static VALUE gl_RequestResidentProgramsNV(VALUE obj,VALUE arg1)
 	return Qnil;
 }
 
-static GLboolean (APIENTRY * fptr_glAreProgramsResidentNV)(GLsizei, const GLuint *, GLboolean *);
 static VALUE gl_AreProgramsResidentNV(VALUE obj,VALUE arg1)
 {
 	GLuint *programs;
@@ -377,6 +377,7 @@ static VALUE gl_AreProgramsResidentNV(VALUE obj,VALUE arg1)
 	VALUE retary;
 	VALUE ary;
 	int i;
+  DECL_GL_FUNC_PTR(GLboolean,glAreProgramsResidentNV,(GLsizei, const GLuint *, GLboolean *));
 	LOAD_GL_FUNC(glAreProgramsResidentNV, "GL_NV_vertex_program");
 	ary = rb_Array(arg1);
 	size = (GLsizei)RARRAY_LENINT(ary);
@@ -406,10 +407,10 @@ GL_FUNC_LOAD_1(BeginOcclusionQueryNV,GLvoid, GLuint, "GL_NV_occlusion_query")
 GL_FUNC_LOAD_0(EndOcclusionQueryNV,GLvoid, "GL_NV_occlusion_query")
 
 #define GETOCCLUSIONQUERY_FUNC(_name_,_type_,_conv_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 { \
 	_type_ ret = 0; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLenum,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, "GL_NV_occlusion_query"); \
 	fptr_gl##_name_(NUM2INT(arg1),NUM2INT(arg2),&ret); \
 	CHECK_GLERROR_FROM("gl" #_name_); \
@@ -423,10 +424,10 @@ GETOCCLUSIONQUERY_FUNC(GetOcclusionQueryuivNV,GLuint,cond_GLBOOL2RUBY_U)
 /* #262 GL_NV_point_sprite */
 GL_FUNC_LOAD_2(PointParameteriNV,GLvoid, GLenum,GLint, "GL_NV_point_sprite")
 
-static void (APIENTRY * fptr_glPointParameterivNV)(GLenum,const GLint *);
 static VALUE gl_PointParameterivNV(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint param = 0;
+  DECL_GL_FUNC_PTR(GLvoid,glPointParameterivNV,(GLenum,const GLint *));
 	LOAD_GL_FUNC(glPointParameterivNV, "GL_NV_point_sprite");
 	ary2cint(arg2,&param,1);
 	fptr_glPointParameterivNV(NUM2UINT(arg1),&param);
@@ -436,11 +437,11 @@ static VALUE gl_PointParameterivNV(VALUE obj,VALUE arg1,VALUE arg2)
 
 /* #282 GL_NV_fragment_program */
 #define PROGRAMNAMEDPARAM_FUNC(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLsizei,const GLubyte *,_type_,_type_,_type_,_type_); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3,arg4,arg5,arg6) \
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6; \
 { \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLsizei,const GLubyte *,_type_,_type_,_type_,_type_)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	Check_Type(arg2,T_STRING); \
 	fptr_gl##_name_((GLuint)NUM2UINT(arg1),(GLsizei)RSTRING_LENINT(arg2),(GLubyte *)RSTRING_PTR(arg2),(_type_)_conv_(arg3),(_type_)_conv_(arg4),(_type_)_conv_(arg5),(_type_)_conv_(arg6)); \
@@ -453,12 +454,12 @@ PROGRAMNAMEDPARAM_FUNC(ProgramNamedParameter4fNV,GLfloat,NUM2DBL,"GL_NV_fragment
 #undef PROGRAMNAMEDPARAM_FUNC
 
 #define PROGRAMNAMEDPARAM_FUNC_V(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLsizei,const GLubyte *,const _type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
 { \
 	_type_ cary[4]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLsizei,const GLubyte *,const _type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	Check_Type(arg2,T_STRING); \
 	_conv_(arg3,cary,4); \
@@ -472,12 +473,12 @@ PROGRAMNAMEDPARAM_FUNC_V(ProgramNamedParameter4fvNV,GLfloat,ary2cflt,"GL_NV_vert
 #undef PROGRAMNAMEDPARAM_FUNC_V
 
 #define GETPROGRAMNAMEDPARAM_FUNC(_name_,_type_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLsizei,const GLubyte *,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ cary[4] = {(_type_)0.0, (_type_)0.0, (_type_)0.0, (_type_)0.0}; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLsizei,const GLubyte *,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	Check_Type(arg2,T_STRING); \
 	fptr_gl##_name_((GLuint)NUM2UINT(arg1),(GLsizei)RSTRING_LENINT(arg2),(GLubyte *)RSTRING_PTR(arg2),cary); \
@@ -512,12 +513,12 @@ PROGRAMPARAM_MULTI_FUNC_V(ProgramEnvParametersI4uivNV,GLuint,ary2cuint,"GL_NV_gp
 #undef PROGRAMPARAM_FUNC_V
 
 #define GETPROGRAMPARAM_FUNC_2(_name_,_type_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLuint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ cary[4] = {(_type_)0.0, (_type_)0.0, (_type_)0.0, (_type_)0.0}; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLuint,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	fptr_gl##_name_(NUM2UINT(arg1),NUM2UINT(arg2),cary); \
 	RET_ARRAY_OR_SINGLE("gl" #_name_, 4, RETCONV_##_type_, cary); \

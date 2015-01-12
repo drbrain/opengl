@@ -16,7 +16,6 @@
 #include "common.h"
 
 #define UNIFORMMATRIX_FUNC(_x_,_y_) \
-static void (APIENTRY * fptr_glUniformMatrix##_x_##x##_y_##fv)(GLint,GLsizei,GLboolean,GLfloat *); \
 static VALUE \
 gl_UniformMatrix##_x_##x##_y_##fv(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
@@ -25,6 +24,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLsizei count; \
 	GLboolean transpose; \
 	GLfloat *value;	\
+	DECL_GL_FUNC_PTR(GLvoid,glUniformMatrix##_x_##x##_y_##fv,(GLint,GLsizei,GLboolean,GLfloat *)); \
 	LOAD_GL_FUNC(glUniformMatrix##_x_##x##_y_##fv,"2.1"); \
 	location = (GLint)NUM2INT(arg1); \
 	count = (GLsizei)RARRAY_LENINT(rb_funcall(rb_Array(arg3),rb_intern("flatten"),0)); \

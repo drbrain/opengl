@@ -23,7 +23,6 @@ GL_FUNC_LOAD_4(BlendColor,GLvoid, GLclampf,GLclampf,GLclampf,GLclampf, "1.2")
 GL_FUNC_LOAD_1(BlendEquation,GLvoid, GLenum, "1.2")
 GL_FUNC_LOAD_9(CopyTexSubImage3D,GLvoid, GLenum,GLint,GLint,GLint,GLint,GLint,GLint,GLsizei,GLsizei, "1.2")
 
-static void (APIENTRY * fptr_glDrawRangeElements)(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*);
 static VALUE
 gl_DrawRangeElements(obj,arg1,arg2,arg3,arg4,arg5,arg6)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
@@ -33,6 +32,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	GLuint end;
 	GLsizei count;
 	GLenum type;
+  DECL_GL_FUNC_PTR(GLvoid,glDrawRangeElements,(GLenum,GLuint,GLuint,GLsizei,GLenum,GLvoid*));
 	LOAD_GL_FUNC(glDrawRangeElements, "1.2");
 	mode = (GLenum)NUM2INT(arg1);
 	start = (GLuint)NUM2UINT(arg2);
@@ -50,7 +50,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glTexImage3D)(GLenum,GLint,GLint,GLsizei,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*);
 static VALUE
 gl_TexImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
@@ -65,6 +64,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	GLenum format;
 	GLenum type;
 	const char *pixels;
+  DECL_GL_FUNC_PTR(GLvoid,glTexImage3D,(GLenum,GLint,GLint,GLsizei,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*));
 	LOAD_GL_FUNC(glTexImage3D, "1.2");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -102,7 +102,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLenum,const GLvoid*);
 static VALUE
 gl_TexSubImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
@@ -117,6 +116,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	GLsizei depth;
 	GLenum format;
 	GLenum type;
+  DECL_GL_FUNC_PTR(GLvoid,glTexSubImage3D,(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLenum,const GLvoid*));
 	LOAD_GL_FUNC(glTexSubImage3D, "1.2");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);

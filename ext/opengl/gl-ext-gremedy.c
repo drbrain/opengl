@@ -18,9 +18,9 @@
 /* Graphic Remedy extensions */
 
 /* #311 GL_GREMEDY_string_marker */
-static void (APIENTRY * fptr_glStringMarkerGREMEDY)(GLsizei,const void *);
 static VALUE gl_StringMarkerGREMEDY(VALUE obj,VALUE arg1)
 {
+  DECL_GL_FUNC_PTR(GLvoid,glStringMarkerGREMEDY,(GLsizei,const void *));
 	LOAD_GL_FUNC(glStringMarkerGREMEDY, "GL_GREMEDY_string_marker");
 	Check_Type(arg1,T_STRING);
 	fptr_glStringMarkerGREMEDY((GLsizei)RSTRING_LENINT(arg1),RSTRING_PTR(arg1));

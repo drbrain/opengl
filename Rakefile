@@ -39,6 +39,8 @@ hoe = Hoe.spec 'opengl' do
     :extensions            => %w[ext/opengl/extconf.rb],
     :required_ruby_version => '>= 1.9.2',
   }
+  spec_extras[:files] = File.read_utf("Manifest.txt").split(/\r?\n\r?/)
+  spec_extras[:files] << "ext/opengl/fptr_struct.h"
 end
 
 Rake::ExtensionTask.new 'opengl', hoe.spec do |ext|
@@ -57,6 +59,40 @@ desc 'Generate supported extension list.'
 task :gen_glext_list do
 	sh "./utils/extlistgen.rb", "doc/extensions.txt.in", "doc/extensions.txt", *GLEXT_VERSIONS
 end
+
+cfiles = Dir["ext/opengl/*.c"]
+file "ext/opengl/fptr_struct.h" => (cfiles + ["ext/opengl/funcdef.h"]) do |t|
+
+  File.open(t.name, "w") do |fptr_struct|
+    fptr_struct.puts <<-EOT
+      #ifndef _FPTR_STRUCT_H_
+      #define _FPTR_STRUCT_H_
+      struct glfunc_ptrs {
+    EOT
+    funcs = cfiles.map do |cfile|
+      args = RbConfig::CONFIG['CC'], "-E", cfile,
+          "-DGLFUNC_MAGIC_START=glfunc-", "-DGLFUNC_MAGIC_END=-glfunc",
+          "-I#{RbConfig::CONFIG['rubyhdrdir']}", "-I#{RbConfig::CONFIG['rubyarchhdrdir']}"
+
+      puts args.join(" ")
+
+      IO.popen(args) do |i|
+        i.read.scan(/glfunc- (.*?) -glfunc/).map{|m| "#{m[0]};\n" }
+      end
+    end
+
+    funcs.flatten.uniq.each do |func|
+      fptr_struct.puts func
+    end
+
+    fptr_struct.puts <<-EOT
+      };
+      #endif
+    EOT
+  end
+end
+
+task "ext/opengl/extconf.rb" => "ext/opengl/fptr_struct.h"
 
 # To reduce the gem file size strip mingw32 dlls before packaging
 ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|

@@ -95,12 +95,12 @@ GLMULTITEXCOORD_VFUNC(s)
 #undef GLTEXCOORD_VFUNC
 
 #define TRANSPOSEMATRIX_FUNC(_name_,_type_) \
-static void (APIENTRY * fptr_gl##_name_)(const _type_[]); \
 static VALUE \
 gl_##_name_(obj,arg1) \
 VALUE obj,arg1; \
 { \
 	_type_ m[4*4]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(const _type_[])); \
 	LOAD_GL_FUNC(gl##_name_, "1.3"); \
 	ary2cmat##_type_(arg1, m, 4, 4); \
 	fptr_gl##_name_(m); \
@@ -115,7 +115,6 @@ TRANSPOSEMATRIX_FUNC(MultTransposeMatrixd,double)
 
 #undef TRANSPOSEMATRIX_FUNC
 
-static void (APIENTRY * fptr_glCompressedTexImage3D)(GLenum,GLint,GLenum,GLsizei,GLsizei,GLsizei,GLint,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
@@ -129,6 +128,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
+  DECL_GL_FUNC_PTR(GLvoid,glCompressedTexImage3D,(GLenum,GLint,GLenum,GLsizei,GLsizei,GLsizei,GLint,GLsizei,GLvoid*));
 	LOAD_GL_FUNC(glCompressedTexImage3D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -159,7 +159,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glCompressedTexImage2D)(GLenum,GLint,GLenum,GLsizei,GLsizei,GLint,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexImage2D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
@@ -172,6 +171,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
+  DECL_GL_FUNC_PTR(GLvoid,glCompressedTexImage2D,(GLenum,GLint,GLenum,GLsizei,GLsizei,GLint,GLsizei,GLvoid*));
 	LOAD_GL_FUNC(glCompressedTexImage2D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -201,7 +201,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glCompressedTexImage1D)(GLenum,GLint,GLenum,GLsizei,GLint,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexImage1D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
@@ -213,6 +212,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLint border;
 	GLsizei imagesize;
 	GLvoid *pixels;
+  DECL_GL_FUNC_PTR(GLvoid,glCompressedTexImage1D,(GLenum,GLint,GLenum,GLsizei,GLint,GLsizei,GLvoid*));
 	LOAD_GL_FUNC(glCompressedTexImage1D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -241,7 +241,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glCompressedTexSubImage3D)(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexSubImage3D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
@@ -257,6 +256,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
+  DECL_GL_FUNC_PTR(GLvoid,glCompressedTexSubImage3D,(GLenum,GLint,GLint,GLint,GLint,GLsizei,GLsizei,GLsizei,GLenum,GLsizei,GLvoid*));
 	LOAD_GL_FUNC(glCompressedTexSubImage3D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -283,7 +283,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glCompressedTexSubImage2D)(GLenum,GLint,GLint,GLint,GLsizei,GLsizei,GLenum,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexSubImage2D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
@@ -297,6 +296,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
+  DECL_GL_FUNC_PTR(GLvoid,glCompressedTexSubImage2D,(GLenum,GLint,GLint,GLint,GLsizei,GLsizei,GLenum,GLsizei,GLvoid*));
 	LOAD_GL_FUNC(glCompressedTexSubImage2D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -320,7 +320,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glCompressedTexSubImage1D)(GLenum,GLint,GLint,GLsizei,GLenum,GLsizei,GLvoid*);
 static VALUE
 gl_CompressedTexSubImage1D(obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
@@ -332,6 +331,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	GLenum format;
 	GLsizei imagesize;
 	GLvoid *pixels;
+  DECL_GL_FUNC_PTR(GLvoid,glCompressedTexSubImage1D,(GLenum,GLint,GLint,GLsizei,GLenum,GLsizei,GLvoid*));
 	LOAD_GL_FUNC(glCompressedTexSubImage1D, "1.3");
 	target = (GLenum)NUM2INT(arg1);
 	level = (GLint)NUM2INT(arg2);
@@ -353,7 +353,6 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	return Qnil;
 }
 
-static void (APIENTRY * fptr_glGetCompressedTexImage)(GLenum,GLint,GLvoid*);
 static VALUE
 gl_GetCompressedTexImage(argc,argv,obj)
 int argc;
@@ -366,6 +365,7 @@ VALUE obj;
 	VALUE data;
 	VALUE args[3];
 	int numargs;
+  DECL_GL_FUNC_PTR(GLvoid,glGetCompressedTexImage,(GLenum,GLint,GLvoid*));
 	LOAD_GL_FUNC(glGetCompressedTexImage, "1.3");
 	numargs = rb_scan_args(argc, argv, "21", &args[0], &args[1], &args[2]);
 	target = (GLenum)NUM2INT(args[0]);

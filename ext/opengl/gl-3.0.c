@@ -74,12 +74,12 @@ GL_FUNC_LOAD_4(VertexAttribI3ui,GLvoid, GLuint,GLuint,GLuint,GLuint, "3.0")
 GL_FUNC_LOAD_5(VertexAttribI4ui,GLvoid, GLuint,GLuint,GLuint,GLuint,GLuint, "3.0")
 
 #define GLVERTEXATTRIB_VFUNC(_name_,_type_,_conv_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,const _type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
 { \
 	_type_ value[_size_]; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,const _type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, "3.0"); \
 	_conv_(arg2,value,_size_); \
 	fptr_gl##_name_(NUM2UINT(arg1),value); \
@@ -102,7 +102,6 @@ GLVERTEXATTRIB_VFUNC(VertexAttribI4usv,GLushort,ary2cushort,4)
 #undef GLVERTEXATTRIB_VFUNC
 
 #define GETVERTEXATTRIB_FUNC(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -111,6 +110,7 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	GLint size; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLenum,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	index = (GLuint)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
@@ -128,7 +128,6 @@ GETVERTEXATTRIB_FUNC(GetVertexAttribIuiv,GLuint,cond_GLBOOL2RUBY_U,"3.0")
 
 extern VALUE g_VertexAttrib_ptr[];
 
-static void (APIENTRY * fptr_glVertexAttribIPointer)(GLuint,GLint,GLenum,GLsizei,const GLvoid *);
 static VALUE gl_VertexAttribIPointer(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
 {
 	GLuint index;
@@ -136,6 +135,7 @@ static VALUE gl_VertexAttribIPointer(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,
 	GLenum type;
 	GLsizei stride;
 
+  DECL_GL_FUNC_PTR(GLvoid,glVertexAttribIPointer,(GLuint,GLint,GLenum,GLsizei,const GLvoid *));
 	LOAD_GL_FUNC(glVertexAttribIPointer, "3.0");
 
 	index = (GLuint)NUM2UINT(arg1);
@@ -166,7 +166,6 @@ GL_FUNC_LOAD_4(Uniform3ui,GLvoid, GLint,GLuint,GLuint,GLuint, "3.0")
 GL_FUNC_LOAD_5(Uniform4ui,GLvoid, GLint,GLuint,GLuint,GLuint,GLuint, "3.0")
 
 #define GLUNIFORM_VFUNC(_name_,_type_,_conv_,_size_) \
-static void (APIENTRY * fptr_gl##_name_)(GLint,GLsizei,const _type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -174,6 +173,7 @@ VALUE obj,arg1,arg2; \
 	GLint location; \
 	GLsizei count; \
 	_type_ *value; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLint,GLsizei,const _type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, "3.0"); \
 	Check_Type(arg2,T_ARRAY); \
 	count = (GLsizei)RARRAY_LENINT(arg2); \
@@ -194,9 +194,7 @@ GLUNIFORM_VFUNC(Uniform3uiv,GLuint,ary2cuint,3)
 GLUNIFORM_VFUNC(Uniform4uiv,GLuint,ary2cuint,4)
 #undef GLUNIFORM_VFUNC
 
-static void (APIENTRY * fptr_glGetActiveUniformARB)(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*);
 #define GETUNIFORM_FUNC(_name_,_type_) \
-static void (APIENTRY * fptr_gl##_name_)(GLuint,GLint,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -208,6 +206,8 @@ VALUE obj,arg1,arg2; \
 	GLenum uniform_type = 0; \
 	GLint uniform_size = 0; \
 \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLuint,GLint,_type_ *)); \
+  DECL_GL_FUNC_PTR(GLvoid,glGetActiveUniformARB,(GLuint,GLuint,GLsizei,GLsizei*,GLint*,GLenum*,GLchar*)); \
 	LOAD_GL_FUNC(gl##_name_, "3.0"); \
 	LOAD_GL_FUNC(glGetActiveUniformARB, "3.0"); \
 	program = (GLuint)NUM2UINT(arg1); \
@@ -228,9 +228,9 @@ VALUE obj,arg1,arg2; \
 GETUNIFORM_FUNC(GetUniformuiv,GLuint)
 #undef GETUNIFORM_FUNC
 
-static void (APIENTRY * fptr_glBindFragDataLocation)(GLuint,GLuint,const GLchar *);
 static VALUE gl_BindFragDataLocation(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 {
+  DECL_GL_FUNC_PTR(GLvoid,glBindFragDataLocation,(GLuint,GLuint,const GLchar *));
 	LOAD_GL_FUNC(glBindFragDataLocation, "3.0");
 	Check_Type(arg3,T_STRING);
 	fptr_glBindFragDataLocation(NUM2UINT(arg1),NUM2UINT(arg2),RSTRING_PTR(arg3));
@@ -238,10 +238,10 @@ static VALUE gl_BindFragDataLocation(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 	return Qnil;
 }
 
-static GLint (APIENTRY * fptr_glGetFragDataLocation)(GLuint,const GLchar *);
 static VALUE gl_GetFragDataLocation(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint ret;
+  DECL_GL_FUNC_PTR(GLint,glGetFragDataLocation,(GLuint,const GLchar *));
 	LOAD_GL_FUNC(glGetFragDataLocation, "3.0");
 	Check_Type(arg2,T_STRING);
 	ret = fptr_glGetFragDataLocation(NUM2UINT(arg1),RSTRING_PTR(arg2));
@@ -268,10 +268,10 @@ GL_FUNC_LOAD_4(RenderbufferStorage,GLvoid, GLenum,GLenum,GLsizei,GLsizei, "3.0")
 GL_FUNC_GENOBJECTS_LOAD(GenRenderbuffers,"3.0")
 GL_FUNC_DELETEOBJECTS_LOAD(DeleteRenderbuffers,"3.0")
 
-static void (APIENTRY * fptr_glGetRenderbufferParameteriv)(GLenum,GLenum,GLint *);
 static VALUE gl_GetRenderbufferParameteriv(VALUE obj,VALUE arg1,VALUE arg2)
 {
 	GLint param = 0;
+  DECL_GL_FUNC_PTR(GLvoid,glGetRenderbufferParameteriv,(GLenum,GLenum,GLint *));
 	LOAD_GL_FUNC(glGetRenderbufferParameteriv, "3.0");
 	fptr_glGetRenderbufferParameteriv(NUM2UINT(arg1),NUM2UINT(arg2),&param);
 	CHECK_GLERROR_FROM("glGetRenderbufferParameteriv");
@@ -289,10 +289,10 @@ GL_FUNC_LOAD_6(FramebufferTexture3D,GLvoid, GLenum,GLenum,GLenum,GLuint,GLint,GL
 GL_FUNC_LOAD_5(FramebufferTextureLayer,GLvoid, GLenum,GLenum,GLuint,GLint,GLint, "3.0")
 GL_FUNC_LOAD_4(FramebufferRenderbuffer,GLvoid, GLuint,GLuint,GLuint,GLuint, "3.0")
 
-static void (APIENTRY * fptr_glGetFramebufferAttachmentParameteriv)(GLenum,GLenum,GLenum,GLint *);
 static VALUE gl_GetFramebufferAttachmentParameteriv(VALUE obj,VALUE arg1, VALUE arg2, VALUE arg3)
 {
 	GLint ret = 0;
+  DECL_GL_FUNC_PTR(GLvoid,glGetFramebufferAttachmentParameteriv,(GLenum,GLenum,GLenum,GLint *));
 	LOAD_GL_FUNC(glGetFramebufferAttachmentParameteriv, "3.0");
 	fptr_glGetFramebufferAttachmentParameteriv(NUM2UINT(arg1),NUM2UINT(arg2),NUM2UINT(arg3),&ret);
 	CHECK_GLERROR_FROM("glGetFramebufferAttachmentParameteriv");
@@ -314,7 +314,6 @@ GL_FUNC_LOAD_4(ClearColorIi,GLvoid, GLint,GLint,GLint,GLint, "3.0")
 GL_FUNC_LOAD_4(ClearColorIui,GLvoid, GLuint,GLuint,GLuint,GLuint, "3.0")
 
 #define TEXPARAMETER_VFUNC(_name_,_type_,_conv_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2,arg3) \
 VALUE obj,arg1,arg2,arg3; \
@@ -322,6 +321,7 @@ VALUE obj,arg1,arg2,arg3; \
 	GLenum target; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLenum,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, "3.0"); \
 	target = (GLenum)NUM2UINT(arg1); \
 	pname = (GLenum)NUM2UINT(arg2); \
@@ -337,7 +337,6 @@ TEXPARAMETER_VFUNC(TexParameterIuiv,GLuint,ary2cuint)
 #undef TEXPARAMETER_VFUNC
 
 #define GETTEXPARAMETER_VFUNC(_name_,_type_,_conv_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -346,6 +345,7 @@ VALUE obj,arg1,arg2; \
 	GLenum pname; \
 	_type_ params[4] = {0,0,0,0}; \
 	int size; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLenum,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, "3.0"); \
 	target = (GLenum)NUM2INT(arg1); \
 	pname = (GLenum)NUM2INT(arg2); \
@@ -372,7 +372,6 @@ GETTEXPARAMETER_VFUNC(GetTexParameterIuiv,GLuint,cond_GLBOOL2RUBY_U)
 GL_FUNC_LOAD_5(ColorMaski,GLvoid, GLuint,GLboolean,GLboolean,GLboolean,GLboolean, "3.0")
 
 #define GETINDEXED_FUNC(_name_,_type_,_conv_,_extension_) \
-static void (APIENTRY * fptr_gl##_name_)(GLenum,GLenum,_type_ *); \
 static VALUE \
 gl_##_name_(obj,arg1,arg2) \
 VALUE obj,arg1,arg2; \
@@ -380,6 +379,7 @@ VALUE obj,arg1,arg2; \
 	GLenum target; \
 	GLenum pname; \
 	_type_ result; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum,GLenum,_type_ *)); \
 	LOAD_GL_FUNC(gl##_name_, _extension_); \
 	target = (GLenum)NUM2INT(arg1); \
 	pname  = (GLuint)NUM2INT(arg2); \

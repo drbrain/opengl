@@ -18,13 +18,13 @@
 /* OpenGL ATI extensions */
 
 /* #277 GL_ATI_draw_buffers */
-static void (APIENTRY * fptr_glDrawBuffersATI)(GLsizei,const GLenum *);
 static VALUE gl_DrawBuffersATI(VALUE obj,VALUE arg1)
 {
 	GLsizei size;
 	GLenum *buffers;
+  DECL_GL_FUNC_PTR(GLvoid,glDrawBuffersATI,(GLsizei,const GLenum *));
 	LOAD_GL_FUNC(glDrawBuffersATI, "GL_ATI_draw_buffers");
-	Check_Type(arg1,T_ARRAY); 
+	Check_Type(arg1,T_ARRAY);
 	size = (GLsizei)RARRAY_LENINT(arg1);
 	buffers = ALLOC_N(GLenum,size);
 	ary2cuint(arg1,buffers,size);
