@@ -66,4 +66,15 @@ void gl_init_glimpl(VALUE module)
   rb_global_variable(&glimpl.EdgeFlag_ptr);
   rb_global_variable(&glimpl.FogCoord_ptr);
   rb_global_variable(&glimpl.SecondaryColor_ptr);
+  rb_global_variable(&glimpl.error_checking);
+  rb_global_variable(&glimpl.inside_begin_end);
+
+  {
+    int i;
+    for (i=0;i<_MAX_VERTEX_ATTRIBS;i++)
+      rb_global_variable(&glimpl.VertexAttrib_ptr[i]);
+  }
+
+  glimpl.error_checking = Qtrue;
+  glimpl.inside_begin_end = Qfalse;
 }

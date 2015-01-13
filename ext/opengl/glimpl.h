@@ -11,6 +11,10 @@
 #define SET_GLIMPL_VARIABLE(_name_,_val_) \
   glimpl._name_ = (_val_)
 
+/* at least GL_MAX_VERTEX_ATTRIBS - usually 16 or 32 on today's high-end cards */
+#define _MAX_VERTEX_ATTRIBS 64
+
+
 struct glimpl {
   struct glfunc_ptrs glfuncs;
 
@@ -24,7 +28,10 @@ struct glimpl {
   VALUE EdgeFlag_ptr;
   VALUE FogCoord_ptr; /* OpenGL 1.4 */
   VALUE SecondaryColor_ptr; /* OpenGL 1.4 */
-  VALUE VertexAttrib_ptr[];
+  VALUE VertexAttrib_ptr[_MAX_VERTEX_ATTRIBS];
+
+  VALUE error_checking;
+  VALUE inside_begin_end;
 };
 
 extern struct glimpl glimpl;

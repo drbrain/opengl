@@ -401,9 +401,6 @@ VALUE obj,arg1,arg2;
       pname, params);
 }
 
-
-VALUE g_VertexAttrib_ptr[_MAX_VERTEX_ATTRIBS];
-
 static VALUE
 gl_GetVertexAttribPointerv(obj,arg1)
 VALUE obj,arg1;
@@ -415,7 +412,7 @@ VALUE obj,arg1;
   if (index>_MAX_VERTEX_ATTRIBS)
     rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
-  return g_VertexAttrib_ptr[index];
+  return GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index];
 }
 
 static VALUE
@@ -557,13 +554,13 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
     rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-    g_VertexAttrib_ptr[index] = arg6;
+    GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = arg6;
     fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)NUM2SIZET(arg6));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg6);
     rb_str_freeze(data);
-    g_VertexAttrib_ptr[index] = data;
+    GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = data;
     fptr_glVertexAttribPointer(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glVertexAttribPointer");
@@ -665,10 +662,4 @@ void gl_init_functions_2_0(VALUE module)
   rb_define_module_function(module, "glVertexAttrib4fv", gl_VertexAttrib4fv, 2);
   rb_define_module_function(module, "glVertexAttrib4sv", gl_VertexAttrib4sv, 2);
   rb_define_module_function(module, "glVertexAttribPointer", gl_VertexAttribPointer, 6);
-
-  {
-    int i;
-    for (i=0;i<_MAX_VERTEX_ATTRIBS;i++)
-      rb_global_variable(&g_VertexAttrib_ptr[i]);
-  }
 }

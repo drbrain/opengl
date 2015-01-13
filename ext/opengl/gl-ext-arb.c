@@ -154,8 +154,6 @@ GL_FUNC_LOAD_1(IsProgramARB,GLboolean, GLuint, "GL_ARB_vertex_program")
 GL_FUNC_LOAD_1(EnableVertexAttribArrayARB,GLvoid, GLuint, "GL_ARB_vertex_program")
 GL_FUNC_LOAD_1(DisableVertexAttribArrayARB,GLvoid, GLuint, "GL_ARB_vertex_program")
 
-extern VALUE g_VertexAttrib_ptr[];
-
 static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5,VALUE arg6)
 {
   GLuint index;
@@ -176,13 +174,13 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
     rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
   if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-    g_VertexAttrib_ptr[index] = arg6;
+    GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = arg6;
     fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)NUM2SIZET(arg6));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg6);
     rb_str_freeze(data);
-    g_VertexAttrib_ptr[index] = data;
+    GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = data;
     fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)RSTRING_PTR(data));
   }
 
@@ -202,7 +200,7 @@ VALUE obj,arg1;
   if (index>_MAX_VERTEX_ATTRIBS)
     rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
-  return g_VertexAttrib_ptr[index];
+  return GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index];
 }
 
 GL_FUNC_LOAD_6(ProgramEnvParameter4dARB,GLvoid, GLenum,GLuint,GLdouble,GLdouble,GLdouble,GLdouble, "GL_ARB_vertex_program")

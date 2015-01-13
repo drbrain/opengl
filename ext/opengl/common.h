@@ -75,11 +75,6 @@
 
 /* */
 
-/* at least GL_MAX_VERTEX_ATTRIBS - usually 16 or 32 on today's high-end cards */
-#define _MAX_VERTEX_ATTRIBS 64
-
-extern VALUE cProc;
-
 /* For now we do not honor pixel store modes, so we need to
   force them to defaults on each affected function call for
   correct size requirement calculations */

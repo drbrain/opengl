@@ -126,8 +126,6 @@ GETVERTEXATTRIB_FUNC(GetVertexAttribIiv,GLint,cond_GLBOOL2RUBY,"3.0")
 GETVERTEXATTRIB_FUNC(GetVertexAttribIuiv,GLuint,cond_GLBOOL2RUBY_U,"3.0")
 #undef GETVERTEXATTRIB_FUNC
 
-extern VALUE g_VertexAttrib_ptr[];
-
 static VALUE gl_VertexAttribIPointer(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
 {
 	GLuint index;
@@ -146,13 +144,13 @@ static VALUE gl_VertexAttribIPointer(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-		g_VertexAttrib_ptr[index] = arg5;
+		GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = arg5;
 		fptr_glVertexAttribIPointer(index,size,type,stride,(GLvoid *)NUM2SIZET(arg5));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg5);
 		rb_str_freeze(data);
-		g_VertexAttrib_ptr[index] = data;
+		GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = data;
 		fptr_glVertexAttribIPointer(index,size,type,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 

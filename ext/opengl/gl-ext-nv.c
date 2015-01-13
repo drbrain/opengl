@@ -98,8 +98,6 @@ static VALUE gl_ExecuteProgramNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3)
 	return Qnil;
 }
 
-extern VALUE g_VertexAttrib_ptr[];
-
 static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3,VALUE arg4,VALUE arg5)
 {
 	GLuint index;
@@ -118,13 +116,13 @@ static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
 	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
-		g_VertexAttrib_ptr[index] = arg5;
+		GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = arg5;
 		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)NUM2SIZET(arg5));
 	} else {
 		VALUE data;
 		data = pack_array_or_pass_string(type,arg5);
 		rb_str_freeze(data);
-		g_VertexAttrib_ptr[index] = data;
+		GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = data;
 		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)RSTRING_PTR(data));
 	}
 
@@ -144,7 +142,7 @@ VALUE obj,arg1;
 	if (index>_MAX_VERTEX_ATTRIBS)
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
-	return g_VertexAttrib_ptr[index];
+	return GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index];
 }
 
 GL_FUNC_LOAD_6(ProgramParameter4dNV,GLvoid, GLenum,GLuint,GLdouble,GLdouble,GLdouble,GLdouble, "GL_NV_vertex_program")

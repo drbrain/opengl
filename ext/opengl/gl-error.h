@@ -15,14 +15,11 @@
 
 void gl_init_error(VALUE);
 
-extern VALUE error_checking;
-extern VALUE inside_begin_end;
-
 void check_for_glerror(const char *);
 
 #define CHECK_GLERROR_FROM(caller) \
 	do { \
-		if (error_checking == Qtrue && inside_begin_end == Qfalse) \
+		if (GET_GLIMPL_VARIABLE(error_checking) == Qtrue && GET_GLIMPL_VARIABLE(inside_begin_end) == Qfalse) \
 			check_for_glerror(caller); \
 	} while (0)
 

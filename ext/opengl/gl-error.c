@@ -15,8 +15,6 @@
 
 #include "common.h"
 
-VALUE error_checking = Qtrue;
-
 VALUE Class_GLError;
 
 #define BUFSIZE 256
@@ -41,13 +39,13 @@ void check_for_glerror(const char *caller)
 		} else {
 			caller = "";
 		}
-	
+
 		/* check for queued errors */
 		for(queued_errors = 0;
 				glGetError()!=GL_NO_ERROR;
 				queued_errors++)
 			;
-		
+
 		switch(error) {
 			case GL_INVALID_ENUM: error_string = "invalid enumerant"; break;
 			case GL_INVALID_VALUE: error_string = "invalid value"; break;
@@ -59,7 +57,7 @@ void check_for_glerror(const char *caller)
 			case GL_INVALID_FRAMEBUFFER_OPERATION_EXT: error_string = "invalid framebuffer operation"; break;
 			default: error_string = "unknown error"; break;
 		}
-		
+
 		if (queued_errors==0) {
 			snprintf(message, BUFSIZE, "%s%s%s", error_string, from, caller);
 		} else {
@@ -82,19 +80,19 @@ VALUE GLError_initialize(VALUE obj,VALUE message, VALUE error_id)
 
 static VALUE enable_error_checking(VALUE obj)
 {
-	error_checking = Qtrue;
+	SET_GLIMPL_VARIABLE(error_checking, Qtrue);
 	return Qnil;
 }
 
 static VALUE disable_error_checking(VALUE obj)
 {
-	error_checking = Qfalse;
+	SET_GLIMPL_VARIABLE(error_checking, Qfalse);
 	return Qnil;
 }
 
 static VALUE is_error_checking_enabled(VALUE obj)
 {
-	return error_checking;
+	return GET_GLIMPL_VARIABLE(error_checking);
 }
 
 void gl_init_error(VALUE module)
@@ -107,6 +105,4 @@ void gl_init_error(VALUE module)
 	rb_define_module_function(module, "enable_error_checking", enable_error_checking, 0);
 	rb_define_module_function(module, "disable_error_checking", disable_error_checking, 0);
 	rb_define_module_function(module, "is_error_checking_enabled?", is_error_checking_enabled, 0);
-
-	rb_global_variable(&error_checking);
 }
