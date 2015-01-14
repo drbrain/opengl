@@ -42,8 +42,11 @@ void gl_init_glimpl(VALUE);
 const int *GetOpenglVersion(VALUE obj)
 {
   int *opengl_version = GET_GLIMPL_VARIABLE(opengl_version);
+  DECL_GL_FUNC_PTR(const GLubyte *,glGetString,(GLenum name));
+
+  LOAD_GL_FUNC(glGetString, NULL);
   if (opengl_version[0]==0) { /* not cached, query */
-    const char *vstr = (const char *) glGetString(GL_VERSION);
+    const char *vstr = (const char *) fptr_glGetString(GL_VERSION);
     CHECK_GLERROR_FROM("glGetString");
     if (vstr){
       int v0, v1;
@@ -76,9 +79,12 @@ GLboolean CheckOpenglVersion(VALUE obj, int major, int minor)
  */
 const char *GetOpenglExtensions(VALUE obj)
 {
-  char *opengl_extensions = GET_GLIMPL_VARIABLE(opengl_extensions);;
+  char *opengl_extensions = GET_GLIMPL_VARIABLE(opengl_extensions);
+  DECL_GL_FUNC_PTR(const GLubyte *,glGetString,(GLenum name));
+
+  LOAD_GL_FUNC(glGetString, NULL);
   if (opengl_extensions == NULL) {
-    const char *estr = (const char *) glGetString(GL_EXTENSIONS);
+    const char *estr = (const char *) fptr_glGetString(GL_EXTENSIONS);
     CHECK_GLERROR_FROM("glGetString");
     if (estr) {
       long len = strlen(estr);
@@ -161,6 +167,9 @@ IsAvailable(VALUE obj, VALUE arg1)
 GLint CheckBufferBinding(VALUE obj, GLint buffer)
 {
 	GLint result = 0;
+  DECL_GL_FUNC_PTR(void,glGetIntegerv,(GLenum pname, GLint *params));
+
+  LOAD_GL_FUNC(glGetIntegerv, NULL);
 
 	/* check if the buffer functionality is supported */
 	switch(buffer) {
@@ -178,7 +187,7 @@ GLint CheckBufferBinding(VALUE obj, GLint buffer)
 			rb_raise(rb_eRuntimeError,"Internal Error: buffer type '%i' does not exist", buffer);
 			break;
 	}
-	glGetIntegerv(buffer,&result);
+	fptr_glGetIntegerv(buffer,&result);
 	CHECK_GLERROR_FROM("glGetIntegerv");
 	return result;
 }

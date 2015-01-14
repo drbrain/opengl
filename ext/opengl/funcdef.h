@@ -33,15 +33,16 @@
  */
 #define LOAD_GL_FUNC(_NAME_, _VEREXT_) \
 	do { \
+    const char *verext = (_VEREXT_); \
     fptr_##_NAME_ = GET_GLIMPL_VARIABLE(glfuncs._NAME_); \
 		if (fptr_##_NAME_==NULL) { \
-			if (CheckVersionExtension(obj, _VEREXT_) == GL_FALSE) { \
-				if (isdigit(_VEREXT_[0])) { \
+			if (verext && CheckVersionExtension(obj, verext) == GL_FALSE) { \
+				if (isdigit(verext[0])) { \
 					rb_raise(rb_eNotImpError, \
-						"OpenGL version %s is not available on this system",_VEREXT_); \
+						"OpenGL version %s is not available on this system",verext); \
 				} else { \
 					rb_raise(rb_eNotImpError, \
-						"Extension %s is not available on this system",_VEREXT_); \
+						"Extension %s is not available on this system",verext); \
 				} \
 			} \
 			\

@@ -19,11 +19,13 @@ VALUE Class_GLError;
 
 #define BUFSIZE 256
 
-void check_for_glerror(VALUE self, const char *caller)
+void check_for_glerror(VALUE obj, const char *caller)
 {
 	GLenum error;
+  DECL_GL_FUNC_PTR(GLenum,glGetError,(void));
 
-	error = glGetError();
+  LOAD_GL_FUNC(glGetError, NULL);
+	error = fptr_glGetError();
 
 	if (error==GL_NO_ERROR) { /* no errors == instant return */
 		return;
@@ -42,7 +44,7 @@ void check_for_glerror(VALUE self, const char *caller)
 
 		/* check for queued errors */
 		for(queued_errors = 0;
-				glGetError()!=GL_NO_ERROR;
+				fptr_glGetError()!=GL_NO_ERROR;
 				queued_errors++)
 			;
 
