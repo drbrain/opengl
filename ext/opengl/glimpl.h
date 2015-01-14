@@ -6,17 +6,21 @@
 #endif
 
 #define GET_GLIMPL_VARIABLE(_name_) \
-  glimpl._name_
+  (((struct glimpl *)DATA_PTR(obj))->_name_)
 
 #define SET_GLIMPL_VARIABLE(_name_,_val_) \
-  glimpl._name_ = (_val_)
+  ((struct glimpl *)DATA_PTR(obj))->_name_ = (_val_)
 
 /* at least GL_MAX_VERTEX_ATTRIBS - usually 16 or 32 on today's high-end cards */
 #define _MAX_VERTEX_ATTRIBS 64
 
+extern VALUE g_default_glimpl;
 
 struct glimpl {
   struct glfunc_ptrs glfuncs;
+
+  int opengl_version[2]; /* major, minor */
+  char *opengl_extensions;
 
   VALUE current_feed_buffer;
   VALUE current_sel_buffer;
@@ -33,8 +37,6 @@ struct glimpl {
   VALUE error_checking;
   VALUE inside_begin_end;
 };
-
-extern struct glimpl glimpl;
 
 
 #endif /* _GLIMPL_H_ */

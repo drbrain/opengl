@@ -20,16 +20,33 @@
 # Thanks to Ilmari Heikkinen for a previous "reversed" version of this code,
 # and to Bill Kelly for a version before that one.
 
-module Gl
-  BINDINGS_VERSION = '0.9.2'
-  RUBY_OPENGL_VERSION = BINDINGS_VERSION
-end
-
 begin
   RUBY_VERSION =~ /(\d+.\d+)/
   require "opengl/#{$1}/opengl"
 rescue LoadError
   require 'opengl/opengl'
+end
+
+module Gl
+  BINDINGS_VERSION = '0.9.2'
+  RUBY_OPENGL_VERSION = BINDINGS_VERSION
+
+  meths = Gl::Implementation.instance_methods.select{|mn| mn=~/^gl/ }
+  meths += %w[is_available? is_supported?
+              extension_available? extension_supported?
+              version_available? version_supported?
+              enable_error_checking disable_error_checking is_error_checking_enabled?
+             ]
+
+  meths.each do |mn|
+    define_singleton_method(mn) do |*args,&block|
+      Gl.default_implementation.send(mn, *args, &block)
+    end
+    define_method(mn) do |*args,&block|
+      Gl.default_implementation.send(mn, *args, &block)
+    end
+    private mn
+  end
 end
 
 # (Gl.)glVertex -> GL.Vertex

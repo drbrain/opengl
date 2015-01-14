@@ -19,7 +19,7 @@ VALUE Class_GLError;
 
 #define BUFSIZE 256
 
-void check_for_glerror(const char *caller)
+void check_for_glerror(VALUE self, const char *caller)
 {
 	GLenum error;
 
@@ -95,14 +95,14 @@ static VALUE is_error_checking_enabled(VALUE obj)
 	return GET_GLIMPL_VARIABLE(error_checking);
 }
 
-void gl_init_error(VALUE module)
+void gl_init_error(VALUE klass, VALUE module)
 {
 	Class_GLError = rb_define_class_under(module, "Error", rb_eStandardError);
 
 	rb_define_method(Class_GLError, "initialize", GLError_initialize, 2);
 	rb_define_attr(Class_GLError, "id", 1, 0);
 
-	rb_define_module_function(module, "enable_error_checking", enable_error_checking, 0);
-	rb_define_module_function(module, "disable_error_checking", disable_error_checking, 0);
-	rb_define_module_function(module, "is_error_checking_enabled?", is_error_checking_enabled, 0);
+	rb_define_method(klass, "enable_error_checking", enable_error_checking, 0);
+	rb_define_method(klass, "disable_error_checking", disable_error_checking, 0);
+	rb_define_method(klass, "is_error_checking_enabled?", is_error_checking_enabled, 0);
 }

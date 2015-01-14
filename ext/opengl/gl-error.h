@@ -13,13 +13,13 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-void gl_init_error(VALUE);
+void gl_init_error(VALUE, VALUE);
 
-void check_for_glerror(const char *);
+void check_for_glerror(VALUE self, const char *);
 
 #define CHECK_GLERROR_FROM(caller) \
 	do { \
 		if (GET_GLIMPL_VARIABLE(error_checking) == Qtrue && GET_GLIMPL_VARIABLE(inside_begin_end) == Qfalse) \
-			check_for_glerror(caller); \
+			check_for_glerror(obj, caller); \
 	} while (0)
 

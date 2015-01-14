@@ -77,7 +77,7 @@ VALUE obj,arg1,arg2,arg3;
 	LOAD_GL_FUNC(glFogCoordPointer, "1.4");
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
-	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
 		SET_GLIMPL_VARIABLE(FogCoord_ptr, arg3);
 		fptr_glFogCoordPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
 	} else {
@@ -135,7 +135,7 @@ VALUE obj;
 	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
 		default:
 		case 3:
-			if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+			if (CHECK_BUFFER_BINDING(GL_ELEMENT_ARRAY_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Element array buffer bound, but offsets array missing");
 			mode = (GLenum)NUM2INT(args[0]);
 			type = (GLenum)NUM2INT(args[1]);
@@ -155,7 +155,7 @@ VALUE obj;
 			xfree(indices);
 			break;
 		case 4:
-			if (!CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+			if (!CHECK_BUFFER_BINDING(GL_ELEMENT_ARRAY_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Element array buffer not bound");
 			mode = (GLenum)NUM2INT(args[0]);
 			type = (GLenum)NUM2INT(args[1]);
@@ -258,7 +258,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	size = (GLint)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
 	stride = (GLsizei)NUM2UINT(arg3);
-	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
 		SET_GLIMPL_VARIABLE(SecondaryColor_ptr, arg4);
 		fptr_glSecondaryColorPointer(size,type, stride, (const GLvoid*)NUM2SIZET(arg4));
 	} else {
@@ -296,51 +296,51 @@ GLWINDOWPOS_VFUNC(WindowPos3sv,GLshort,3,ary2cshort)
 #undef GLWINDOWPOS_VFUNC
 
 
-void gl_init_functions_1_4(VALUE module)
+void gl_init_functions_1_4(VALUE klass)
 {
-	rb_define_module_function(module, "glBlendFuncSeparate", gl_BlendFuncSeparate, 4);
-	rb_define_module_function(module, "glFogCoordf", gl_FogCoordf, 1);
-	rb_define_module_function(module, "glFogCoordfv", gl_FogCoordfv, 1);
-	rb_define_module_function(module, "glFogCoordd", gl_FogCoordd, 1);
-	rb_define_module_function(module, "glFogCoorddv", gl_FogCoorddv, 1);
-	rb_define_module_function(module, "glFogCoordPointer", gl_FogCoordPointer, 3);
-	rb_define_module_function(module, "glMultiDrawArrays", gl_MultiDrawArrays, 3);
-	rb_define_module_function(module, "glMultiDrawElements", gl_MultiDrawElements, -1);
-	rb_define_module_function(module, "glPointParameterf", gl_PointParameterf, 2);
-	rb_define_module_function(module, "glPointParameterfv", gl_PointParameterfv, 2);
-	rb_define_module_function(module, "glPointParameteri", gl_PointParameteri, 2);
-	rb_define_module_function(module, "glPointParameteriv", gl_PointParameteriv, 2);
-	rb_define_module_function(module, "glSecondaryColor3b", gl_SecondaryColor3b, 3);
-	rb_define_module_function(module, "glSecondaryColor3d", gl_SecondaryColor3d, 3);
-	rb_define_module_function(module, "glSecondaryColor3f", gl_SecondaryColor3f, 3);
-	rb_define_module_function(module, "glSecondaryColor3i", gl_SecondaryColor3i, 3);
-	rb_define_module_function(module, "glSecondaryColor3s", gl_SecondaryColor3s, 3);
-	rb_define_module_function(module, "glSecondaryColor3ub", gl_SecondaryColor3ub, 3);
-	rb_define_module_function(module, "glSecondaryColor3ui", gl_SecondaryColor3ui, 3);
-	rb_define_module_function(module, "glSecondaryColor3us", gl_SecondaryColor3us, 3);
-	rb_define_module_function(module, "glSecondaryColor3bv", gl_SecondaryColor3bv, 1);
-	rb_define_module_function(module, "glSecondaryColor3dv", gl_SecondaryColor3dv, 1);
-	rb_define_module_function(module, "glSecondaryColor3fv", gl_SecondaryColor3fv, 1);
-	rb_define_module_function(module, "glSecondaryColor3iv", gl_SecondaryColor3iv, 1);
-	rb_define_module_function(module, "glSecondaryColor3sv", gl_SecondaryColor3sv, 1);
-	rb_define_module_function(module, "glSecondaryColor3ubv", gl_SecondaryColor3ubv, 1);
-	rb_define_module_function(module, "glSecondaryColor3uiv", gl_SecondaryColor3uiv, 1);
-	rb_define_module_function(module, "glSecondaryColor3usv", gl_SecondaryColor3usv, 1);
-	rb_define_module_function(module, "glSecondaryColorPointer", gl_SecondaryColorPointer, 4);
-	rb_define_module_function(module, "glWindowPos2d", gl_WindowPos2d, 2);
-	rb_define_module_function(module, "glWindowPos2f", gl_WindowPos2f, 2);
-	rb_define_module_function(module, "glWindowPos2i", gl_WindowPos2i, 2);
-	rb_define_module_function(module, "glWindowPos2s", gl_WindowPos2s, 2);
-	rb_define_module_function(module, "glWindowPos3d", gl_WindowPos3d, 3);
-	rb_define_module_function(module, "glWindowPos3f", gl_WindowPos3f, 3);
-	rb_define_module_function(module, "glWindowPos3i", gl_WindowPos3i, 3);
-	rb_define_module_function(module, "glWindowPos3s", gl_WindowPos3s, 3);
-	rb_define_module_function(module, "glWindowPos2dv", gl_WindowPos2dv, 1);
-	rb_define_module_function(module, "glWindowPos2fv", gl_WindowPos2fv, 1);
-	rb_define_module_function(module, "glWindowPos2iv", gl_WindowPos2iv, 1);
-	rb_define_module_function(module, "glWindowPos2sv", gl_WindowPos2sv, 1);
-	rb_define_module_function(module, "glWindowPos3dv", gl_WindowPos3dv, 1);
-	rb_define_module_function(module, "glWindowPos3fv", gl_WindowPos3fv, 1);
-	rb_define_module_function(module, "glWindowPos3iv", gl_WindowPos3iv, 1);
-	rb_define_module_function(module, "glWindowPos3sv", gl_WindowPos3sv, 1);
+	rb_define_method(klass, "glBlendFuncSeparate", gl_BlendFuncSeparate, 4);
+	rb_define_method(klass, "glFogCoordf", gl_FogCoordf, 1);
+	rb_define_method(klass, "glFogCoordfv", gl_FogCoordfv, 1);
+	rb_define_method(klass, "glFogCoordd", gl_FogCoordd, 1);
+	rb_define_method(klass, "glFogCoorddv", gl_FogCoorddv, 1);
+	rb_define_method(klass, "glFogCoordPointer", gl_FogCoordPointer, 3);
+	rb_define_method(klass, "glMultiDrawArrays", gl_MultiDrawArrays, 3);
+	rb_define_method(klass, "glMultiDrawElements", gl_MultiDrawElements, -1);
+	rb_define_method(klass, "glPointParameterf", gl_PointParameterf, 2);
+	rb_define_method(klass, "glPointParameterfv", gl_PointParameterfv, 2);
+	rb_define_method(klass, "glPointParameteri", gl_PointParameteri, 2);
+	rb_define_method(klass, "glPointParameteriv", gl_PointParameteriv, 2);
+	rb_define_method(klass, "glSecondaryColor3b", gl_SecondaryColor3b, 3);
+	rb_define_method(klass, "glSecondaryColor3d", gl_SecondaryColor3d, 3);
+	rb_define_method(klass, "glSecondaryColor3f", gl_SecondaryColor3f, 3);
+	rb_define_method(klass, "glSecondaryColor3i", gl_SecondaryColor3i, 3);
+	rb_define_method(klass, "glSecondaryColor3s", gl_SecondaryColor3s, 3);
+	rb_define_method(klass, "glSecondaryColor3ub", gl_SecondaryColor3ub, 3);
+	rb_define_method(klass, "glSecondaryColor3ui", gl_SecondaryColor3ui, 3);
+	rb_define_method(klass, "glSecondaryColor3us", gl_SecondaryColor3us, 3);
+	rb_define_method(klass, "glSecondaryColor3bv", gl_SecondaryColor3bv, 1);
+	rb_define_method(klass, "glSecondaryColor3dv", gl_SecondaryColor3dv, 1);
+	rb_define_method(klass, "glSecondaryColor3fv", gl_SecondaryColor3fv, 1);
+	rb_define_method(klass, "glSecondaryColor3iv", gl_SecondaryColor3iv, 1);
+	rb_define_method(klass, "glSecondaryColor3sv", gl_SecondaryColor3sv, 1);
+	rb_define_method(klass, "glSecondaryColor3ubv", gl_SecondaryColor3ubv, 1);
+	rb_define_method(klass, "glSecondaryColor3uiv", gl_SecondaryColor3uiv, 1);
+	rb_define_method(klass, "glSecondaryColor3usv", gl_SecondaryColor3usv, 1);
+	rb_define_method(klass, "glSecondaryColorPointer", gl_SecondaryColorPointer, 4);
+	rb_define_method(klass, "glWindowPos2d", gl_WindowPos2d, 2);
+	rb_define_method(klass, "glWindowPos2f", gl_WindowPos2f, 2);
+	rb_define_method(klass, "glWindowPos2i", gl_WindowPos2i, 2);
+	rb_define_method(klass, "glWindowPos2s", gl_WindowPos2s, 2);
+	rb_define_method(klass, "glWindowPos3d", gl_WindowPos3d, 3);
+	rb_define_method(klass, "glWindowPos3f", gl_WindowPos3f, 3);
+	rb_define_method(klass, "glWindowPos3i", gl_WindowPos3i, 3);
+	rb_define_method(klass, "glWindowPos3s", gl_WindowPos3s, 3);
+	rb_define_method(klass, "glWindowPos2dv", gl_WindowPos2dv, 1);
+	rb_define_method(klass, "glWindowPos2fv", gl_WindowPos2fv, 1);
+	rb_define_method(klass, "glWindowPos2iv", gl_WindowPos2iv, 1);
+	rb_define_method(klass, "glWindowPos2sv", gl_WindowPos2sv, 1);
+	rb_define_method(klass, "glWindowPos3dv", gl_WindowPos3dv, 1);
+	rb_define_method(klass, "glWindowPos3fv", gl_WindowPos3fv, 1);
+	rb_define_method(klass, "glWindowPos3iv", gl_WindowPos3iv, 1);
+	rb_define_method(klass, "glWindowPos3sv", gl_WindowPos3sv, 1);
 }

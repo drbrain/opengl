@@ -46,12 +46,12 @@ UNIFORMMATRIX_FUNC(4,3)
 
 #undef UNIFORMMATRIX_FUNC
 
-void gl_init_functions_2_1(VALUE module)
+void gl_init_functions_2_1(VALUE klass)
 {
-	rb_define_module_function(module, "glUniformMatrix2x3fv", gl_UniformMatrix2x3fv, 3);
-	rb_define_module_function(module, "glUniformMatrix3x2fv", gl_UniformMatrix3x2fv, 3);
-	rb_define_module_function(module, "glUniformMatrix2x4fv", gl_UniformMatrix2x4fv, 3);
-	rb_define_module_function(module, "glUniformMatrix4x2fv", gl_UniformMatrix4x2fv, 3);
-	rb_define_module_function(module, "glUniformMatrix3x4fv", gl_UniformMatrix3x4fv, 3);
-	rb_define_module_function(module, "glUniformMatrix4x3fv", gl_UniformMatrix4x3fv, 3);
+	rb_define_method(klass, "glUniformMatrix2x3fv", gl_UniformMatrix2x3fv, 3);
+	rb_define_method(klass, "glUniformMatrix3x2fv", gl_UniformMatrix3x2fv, 3);
+	rb_define_method(klass, "glUniformMatrix2x4fv", gl_UniformMatrix2x4fv, 3);
+	rb_define_method(klass, "glUniformMatrix4x2fv", gl_UniformMatrix4x2fv, 3);
+	rb_define_method(klass, "glUniformMatrix3x4fv", gl_UniformMatrix3x4fv, 3);
+	rb_define_method(klass, "glUniformMatrix4x3fv", gl_UniformMatrix4x3fv, 3);
 }

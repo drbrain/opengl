@@ -31,11 +31,11 @@ static VALUE gl_StringMarkerGREMEDY(VALUE obj,VALUE arg1)
 /* #345 GL_GREMEDY_frame_terminator */
 GL_FUNC_LOAD_0(FrameTerminatorGREMEDY,GLvoid, "GL_GREMEDY_frame_terminator")
 
-void gl_init_functions_ext_gremedy(VALUE module)
+void gl_init_functions_ext_gremedy(VALUE klass)
 {
 /* #311 GL_GREMEDY_string_marker */
-	rb_define_module_function(module, "glStringMarkerGREMEDY", gl_StringMarkerGREMEDY, 1);
+	rb_define_method(klass, "glStringMarkerGREMEDY", gl_StringMarkerGREMEDY, 1);
 
 /* #345 GL_GREMEDY_frame_terminator */
-	rb_define_module_function(module, "glFrameTerminatorGREMEDY", gl_FrameTerminatorGREMEDY, 0);
+	rb_define_method(klass, "glFrameTerminatorGREMEDY", gl_FrameTerminatorGREMEDY, 0);
 }

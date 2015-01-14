@@ -115,7 +115,7 @@ static VALUE gl_VertexAttribPointerNV(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg3
 	if (index>_MAX_VERTEX_ATTRIBS)
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
-	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
 		GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = arg5;
 		fptr_glVertexAttribPointerNV(index,size,type,stride,(GLvoid *)NUM2SIZET(arg5));
 	} else {
@@ -542,138 +542,138 @@ GL_FUNC_LOAD_2(DepthBoundsdNV,GLvoid, GLdouble,GLdouble, "GL_NV_depth_buffer_flo
 /* #336 GL_NV_framebuffer_multisample_coverage */
 GL_FUNC_LOAD_6(RenderbufferStorageMultisampleCoverageNV,GLvoid, GLenum,GLsizei,GLsizei,GLenum,GLsizei,GLsizei, "GL_NV_framebuffer_multisample_coverage")
 
-void gl_init_functions_ext_nv(VALUE module)
+void gl_init_functions_ext_nv(VALUE klass)
 {
 	/* #222 GL_NV_fence */
-	rb_define_module_function(module, "glGenFencesNV", gl_GenFencesNV, 1);
-	rb_define_module_function(module, "glDeleteFencesNV", gl_DeleteFencesNV, 1);
-	rb_define_module_function(module, "glSetFenceNV", gl_SetFenceNV, 2);
-	rb_define_module_function(module, "glTestFenceNV", gl_TestFenceNV, 1);
-	rb_define_module_function(module, "glFinishFenceNV", gl_FinishFenceNV, 1);
-	rb_define_module_function(module, "glIsFenceNV", gl_IsFenceNV, 1);
-	rb_define_module_function(module, "glGetFenceivNV", gl_GetFenceivNV, 2);
+	rb_define_method(klass, "glGenFencesNV", gl_GenFencesNV, 1);
+	rb_define_method(klass, "glDeleteFencesNV", gl_DeleteFencesNV, 1);
+	rb_define_method(klass, "glSetFenceNV", gl_SetFenceNV, 2);
+	rb_define_method(klass, "glTestFenceNV", gl_TestFenceNV, 1);
+	rb_define_method(klass, "glFinishFenceNV", gl_FinishFenceNV, 1);
+	rb_define_method(klass, "glIsFenceNV", gl_IsFenceNV, 1);
+	rb_define_method(klass, "glGetFenceivNV", gl_GetFenceivNV, 2);
 
 	/* #233 GL_NV_vertex_program */
-	rb_define_module_function(module, "glLoadProgramNV", gl_LoadProgramNV, 3);
-	rb_define_module_function(module, "glGetProgramStringNV", gl_GetProgramStringNV, 2);
-	rb_define_module_function(module, "glGetProgramivNV", gl_GetProgramivNV, 2);
-	rb_define_module_function(module, "glBindProgramNV", gl_BindProgramNV, 2);
-	rb_define_module_function(module, "glGenProgramsNV", gl_GenProgramsNV, 1);
-	rb_define_module_function(module, "glDeleteProgramsNV", gl_DeleteProgramsNV, 1);
-	rb_define_module_function(module, "glIsProgramNV", gl_IsProgramNV, 1);
-	rb_define_module_function(module, "glExecuteProgramNV", gl_ExecuteProgramNV, 3);
-	rb_define_module_function(module, "glVertexAttribPointerNV", gl_VertexAttribPointerNV, 5);
-	rb_define_module_function(module, "glGetVertexAttribPointervNV", gl_GetVertexAttribPointervNV, 1);
-	rb_define_module_function(module, "glProgramParameter4dNV", gl_ProgramParameter4dNV, 6);
-	rb_define_module_function(module, "glProgramParameter4fNV", gl_ProgramParameter4fNV, 6);
-	rb_define_module_function(module, "glProgramParameter4dvNV", gl_ProgramParameter4dvNV, 3);
-	rb_define_module_function(module, "glProgramParameter4fvNV", gl_ProgramParameter4fvNV, 3);
-	rb_define_module_function(module, "glProgramParameters4dvNV", gl_ProgramParameters4dvNV, 3);
-	rb_define_module_function(module, "glProgramParameters4fvNV", gl_ProgramParameters4fvNV, 3);
-	rb_define_module_function(module, "glGetProgramParameterdvNV", gl_GetProgramParameterdvNV, 3);
-	rb_define_module_function(module, "glGetProgramParameterfvNV", gl_GetProgramParameterfvNV, 3);
-	rb_define_module_function(module, "glVertexAttrib1dNV", gl_VertexAttrib1dNV, 2);
-	rb_define_module_function(module, "glVertexAttrib1fNV", gl_VertexAttrib1fNV, 2);
-	rb_define_module_function(module, "glVertexAttrib1sNV", gl_VertexAttrib1sNV, 2);
-	rb_define_module_function(module, "glVertexAttrib2dNV", gl_VertexAttrib2dNV, 3);
-	rb_define_module_function(module, "glVertexAttrib2fNV", gl_VertexAttrib2fNV, 3);
-	rb_define_module_function(module, "glVertexAttrib2sNV", gl_VertexAttrib2sNV, 3);
-	rb_define_module_function(module, "glVertexAttrib3dNV", gl_VertexAttrib3dNV, 4);
-	rb_define_module_function(module, "glVertexAttrib3fNV", gl_VertexAttrib3fNV, 4);
-	rb_define_module_function(module, "glVertexAttrib3sNV", gl_VertexAttrib3sNV, 4);
-	rb_define_module_function(module, "glVertexAttrib4dNV", gl_VertexAttrib4dNV, 5);
-	rb_define_module_function(module, "glVertexAttrib4fNV", gl_VertexAttrib4fNV, 5);
-	rb_define_module_function(module, "glVertexAttrib4sNV", gl_VertexAttrib4sNV, 5);
-	rb_define_module_function(module, "glVertexAttrib4ubNV", gl_VertexAttrib4ubNV, 5);
-	rb_define_module_function(module, "glVertexAttrib1dvNV", gl_VertexAttrib1dvNV, 2);
-	rb_define_module_function(module, "glVertexAttrib1fvNV", gl_VertexAttrib1fvNV, 2);
-	rb_define_module_function(module, "glVertexAttrib1svNV", gl_VertexAttrib1svNV, 2);
-	rb_define_module_function(module, "glVertexAttrib2dvNV", gl_VertexAttrib2dvNV, 2);
-	rb_define_module_function(module, "glVertexAttrib2fvNV", gl_VertexAttrib2fvNV, 2);
-	rb_define_module_function(module, "glVertexAttrib2svNV", gl_VertexAttrib2svNV, 2);
-	rb_define_module_function(module, "glVertexAttrib3dvNV", gl_VertexAttrib3dvNV, 2);
-	rb_define_module_function(module, "glVertexAttrib3fvNV", gl_VertexAttrib3fvNV, 2);
-	rb_define_module_function(module, "glVertexAttrib3svNV", gl_VertexAttrib3svNV, 2);
-	rb_define_module_function(module, "glVertexAttrib4dvNV", gl_VertexAttrib4dvNV, 2);
-	rb_define_module_function(module, "glVertexAttrib4fvNV", gl_VertexAttrib4fvNV, 2);
-	rb_define_module_function(module, "glVertexAttrib4svNV", gl_VertexAttrib4svNV, 2);
-	rb_define_module_function(module, "glVertexAttrib4ubvNV", gl_VertexAttrib4ubvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs1dvNV", gl_VertexAttribs1dvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs1fvNV", gl_VertexAttribs1fvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs1svNV", gl_VertexAttribs1svNV, 2);
-	rb_define_module_function(module, "glVertexAttribs2dvNV", gl_VertexAttribs2dvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs2fvNV", gl_VertexAttribs2fvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs2svNV", gl_VertexAttribs2svNV, 2);
-	rb_define_module_function(module, "glVertexAttribs3dvNV", gl_VertexAttribs3dvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs3fvNV", gl_VertexAttribs3fvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs3svNV", gl_VertexAttribs3svNV, 2);
-	rb_define_module_function(module, "glVertexAttribs4dvNV", gl_VertexAttribs4dvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs4fvNV", gl_VertexAttribs4fvNV, 2);
-	rb_define_module_function(module, "glVertexAttribs4svNV", gl_VertexAttribs4svNV, 2);
-	rb_define_module_function(module, "glVertexAttribs4ubvNV", gl_VertexAttribs4ubvNV, 2);
-	rb_define_module_function(module, "glGetVertexAttribdvNV", gl_GetVertexAttribdvNV, 2);
-	rb_define_module_function(module, "glGetVertexAttribfvNV", gl_GetVertexAttribfvNV, 2);
-	rb_define_module_function(module, "glGetVertexAttribivNV", gl_GetVertexAttribivNV, 2);
-	rb_define_module_function(module, "glTrackMatrixNV", gl_TrackMatrixNV, 4);
-	rb_define_module_function(module, "glGetTrackMatrixivNV", gl_GetTrackMatrixivNV, 3);
-	rb_define_module_function(module, "glRequestResidentProgramsNV", gl_RequestResidentProgramsNV, 1);
-	rb_define_module_function(module, "glAreProgramsResidentNV", gl_AreProgramsResidentNV, 1);
+	rb_define_method(klass, "glLoadProgramNV", gl_LoadProgramNV, 3);
+	rb_define_method(klass, "glGetProgramStringNV", gl_GetProgramStringNV, 2);
+	rb_define_method(klass, "glGetProgramivNV", gl_GetProgramivNV, 2);
+	rb_define_method(klass, "glBindProgramNV", gl_BindProgramNV, 2);
+	rb_define_method(klass, "glGenProgramsNV", gl_GenProgramsNV, 1);
+	rb_define_method(klass, "glDeleteProgramsNV", gl_DeleteProgramsNV, 1);
+	rb_define_method(klass, "glIsProgramNV", gl_IsProgramNV, 1);
+	rb_define_method(klass, "glExecuteProgramNV", gl_ExecuteProgramNV, 3);
+	rb_define_method(klass, "glVertexAttribPointerNV", gl_VertexAttribPointerNV, 5);
+	rb_define_method(klass, "glGetVertexAttribPointervNV", gl_GetVertexAttribPointervNV, 1);
+	rb_define_method(klass, "glProgramParameter4dNV", gl_ProgramParameter4dNV, 6);
+	rb_define_method(klass, "glProgramParameter4fNV", gl_ProgramParameter4fNV, 6);
+	rb_define_method(klass, "glProgramParameter4dvNV", gl_ProgramParameter4dvNV, 3);
+	rb_define_method(klass, "glProgramParameter4fvNV", gl_ProgramParameter4fvNV, 3);
+	rb_define_method(klass, "glProgramParameters4dvNV", gl_ProgramParameters4dvNV, 3);
+	rb_define_method(klass, "glProgramParameters4fvNV", gl_ProgramParameters4fvNV, 3);
+	rb_define_method(klass, "glGetProgramParameterdvNV", gl_GetProgramParameterdvNV, 3);
+	rb_define_method(klass, "glGetProgramParameterfvNV", gl_GetProgramParameterfvNV, 3);
+	rb_define_method(klass, "glVertexAttrib1dNV", gl_VertexAttrib1dNV, 2);
+	rb_define_method(klass, "glVertexAttrib1fNV", gl_VertexAttrib1fNV, 2);
+	rb_define_method(klass, "glVertexAttrib1sNV", gl_VertexAttrib1sNV, 2);
+	rb_define_method(klass, "glVertexAttrib2dNV", gl_VertexAttrib2dNV, 3);
+	rb_define_method(klass, "glVertexAttrib2fNV", gl_VertexAttrib2fNV, 3);
+	rb_define_method(klass, "glVertexAttrib2sNV", gl_VertexAttrib2sNV, 3);
+	rb_define_method(klass, "glVertexAttrib3dNV", gl_VertexAttrib3dNV, 4);
+	rb_define_method(klass, "glVertexAttrib3fNV", gl_VertexAttrib3fNV, 4);
+	rb_define_method(klass, "glVertexAttrib3sNV", gl_VertexAttrib3sNV, 4);
+	rb_define_method(klass, "glVertexAttrib4dNV", gl_VertexAttrib4dNV, 5);
+	rb_define_method(klass, "glVertexAttrib4fNV", gl_VertexAttrib4fNV, 5);
+	rb_define_method(klass, "glVertexAttrib4sNV", gl_VertexAttrib4sNV, 5);
+	rb_define_method(klass, "glVertexAttrib4ubNV", gl_VertexAttrib4ubNV, 5);
+	rb_define_method(klass, "glVertexAttrib1dvNV", gl_VertexAttrib1dvNV, 2);
+	rb_define_method(klass, "glVertexAttrib1fvNV", gl_VertexAttrib1fvNV, 2);
+	rb_define_method(klass, "glVertexAttrib1svNV", gl_VertexAttrib1svNV, 2);
+	rb_define_method(klass, "glVertexAttrib2dvNV", gl_VertexAttrib2dvNV, 2);
+	rb_define_method(klass, "glVertexAttrib2fvNV", gl_VertexAttrib2fvNV, 2);
+	rb_define_method(klass, "glVertexAttrib2svNV", gl_VertexAttrib2svNV, 2);
+	rb_define_method(klass, "glVertexAttrib3dvNV", gl_VertexAttrib3dvNV, 2);
+	rb_define_method(klass, "glVertexAttrib3fvNV", gl_VertexAttrib3fvNV, 2);
+	rb_define_method(klass, "glVertexAttrib3svNV", gl_VertexAttrib3svNV, 2);
+	rb_define_method(klass, "glVertexAttrib4dvNV", gl_VertexAttrib4dvNV, 2);
+	rb_define_method(klass, "glVertexAttrib4fvNV", gl_VertexAttrib4fvNV, 2);
+	rb_define_method(klass, "glVertexAttrib4svNV", gl_VertexAttrib4svNV, 2);
+	rb_define_method(klass, "glVertexAttrib4ubvNV", gl_VertexAttrib4ubvNV, 2);
+	rb_define_method(klass, "glVertexAttribs1dvNV", gl_VertexAttribs1dvNV, 2);
+	rb_define_method(klass, "glVertexAttribs1fvNV", gl_VertexAttribs1fvNV, 2);
+	rb_define_method(klass, "glVertexAttribs1svNV", gl_VertexAttribs1svNV, 2);
+	rb_define_method(klass, "glVertexAttribs2dvNV", gl_VertexAttribs2dvNV, 2);
+	rb_define_method(klass, "glVertexAttribs2fvNV", gl_VertexAttribs2fvNV, 2);
+	rb_define_method(klass, "glVertexAttribs2svNV", gl_VertexAttribs2svNV, 2);
+	rb_define_method(klass, "glVertexAttribs3dvNV", gl_VertexAttribs3dvNV, 2);
+	rb_define_method(klass, "glVertexAttribs3fvNV", gl_VertexAttribs3fvNV, 2);
+	rb_define_method(klass, "glVertexAttribs3svNV", gl_VertexAttribs3svNV, 2);
+	rb_define_method(klass, "glVertexAttribs4dvNV", gl_VertexAttribs4dvNV, 2);
+	rb_define_method(klass, "glVertexAttribs4fvNV", gl_VertexAttribs4fvNV, 2);
+	rb_define_method(klass, "glVertexAttribs4svNV", gl_VertexAttribs4svNV, 2);
+	rb_define_method(klass, "glVertexAttribs4ubvNV", gl_VertexAttribs4ubvNV, 2);
+	rb_define_method(klass, "glGetVertexAttribdvNV", gl_GetVertexAttribdvNV, 2);
+	rb_define_method(klass, "glGetVertexAttribfvNV", gl_GetVertexAttribfvNV, 2);
+	rb_define_method(klass, "glGetVertexAttribivNV", gl_GetVertexAttribivNV, 2);
+	rb_define_method(klass, "glTrackMatrixNV", gl_TrackMatrixNV, 4);
+	rb_define_method(klass, "glGetTrackMatrixivNV", gl_GetTrackMatrixivNV, 3);
+	rb_define_method(klass, "glRequestResidentProgramsNV", gl_RequestResidentProgramsNV, 1);
+	rb_define_method(klass, "glAreProgramsResidentNV", gl_AreProgramsResidentNV, 1);
 
 	/* #261 GL_NV_occlusion_query */
-	rb_define_module_function(module, "glGenOcclusionQueriesNV", gl_GenOcclusionQueriesNV, 1);
-	rb_define_module_function(module, "glDeleteOcclusionQueriesNV", gl_DeleteOcclusionQueriesNV, 1);
-	rb_define_module_function(module, "glIsOcclusionQueryNV", gl_IsOcclusionQueryNV, 1);
-	rb_define_module_function(module, "glBeginOcclusionQueryNV", gl_BeginOcclusionQueryNV, 1);
-	rb_define_module_function(module, "glEndOcclusionQueryNV", gl_EndOcclusionQueryNV, 0);
-	rb_define_module_function(module, "glGetOcclusionQueryivNV", gl_GetOcclusionQueryivNV, 2);
-	rb_define_module_function(module, "glGetOcclusionQueryuivNV", gl_GetOcclusionQueryuivNV, 2);
+	rb_define_method(klass, "glGenOcclusionQueriesNV", gl_GenOcclusionQueriesNV, 1);
+	rb_define_method(klass, "glDeleteOcclusionQueriesNV", gl_DeleteOcclusionQueriesNV, 1);
+	rb_define_method(klass, "glIsOcclusionQueryNV", gl_IsOcclusionQueryNV, 1);
+	rb_define_method(klass, "glBeginOcclusionQueryNV", gl_BeginOcclusionQueryNV, 1);
+	rb_define_method(klass, "glEndOcclusionQueryNV", gl_EndOcclusionQueryNV, 0);
+	rb_define_method(klass, "glGetOcclusionQueryivNV", gl_GetOcclusionQueryivNV, 2);
+	rb_define_method(klass, "glGetOcclusionQueryuivNV", gl_GetOcclusionQueryuivNV, 2);
 
 	/* #262 GL_NV_point_sprite */
-	rb_define_module_function(module, "glPointParameteriNV", gl_PointParameteriNV, 2);
-	rb_define_module_function(module, "glPointParameterivNV", gl_PointParameterivNV, 2);
+	rb_define_method(klass, "glPointParameteriNV", gl_PointParameteriNV, 2);
+	rb_define_method(klass, "glPointParameterivNV", gl_PointParameterivNV, 2);
 
 	/* #282 GL_NV_fragment_program */
-	rb_define_module_function(module, "glProgramNamedParameter4fNV", gl_ProgramNamedParameter4fNV, 6);
-	rb_define_module_function(module, "glProgramNamedParameter4dNV", gl_ProgramNamedParameter4dNV, 6);
-	rb_define_module_function(module, "glProgramNamedParameter4fvNV", gl_ProgramNamedParameter4fvNV, 3);
-	rb_define_module_function(module, "glProgramNamedParameter4dvNV", gl_ProgramNamedParameter4dvNV, 3);
-	rb_define_module_function(module, "glGetProgramNamedParameterdvNV", gl_GetProgramNamedParameterdvNV, 2);
-	rb_define_module_function(module, "glGetProgramNamedParameterfvNV", gl_GetProgramNamedParameterfvNV, 2);
+	rb_define_method(klass, "glProgramNamedParameter4fNV", gl_ProgramNamedParameter4fNV, 6);
+	rb_define_method(klass, "glProgramNamedParameter4dNV", gl_ProgramNamedParameter4dNV, 6);
+	rb_define_method(klass, "glProgramNamedParameter4fvNV", gl_ProgramNamedParameter4fvNV, 3);
+	rb_define_method(klass, "glProgramNamedParameter4dvNV", gl_ProgramNamedParameter4dvNV, 3);
+	rb_define_method(klass, "glGetProgramNamedParameterdvNV", gl_GetProgramNamedParameterdvNV, 2);
+	rb_define_method(klass, "glGetProgramNamedParameterfvNV", gl_GetProgramNamedParameterfvNV, 2);
 
 	/* #285 GL_NV_primitive_restart */
-	rb_define_module_function(module, "glPrimitiveRestartNV", gl_PrimitiveRestartNV, 0);
-	rb_define_module_function(module, "glPrimitiveRestartIndexNV", gl_PrimitiveRestartIndexNV, 1);
+	rb_define_method(klass, "glPrimitiveRestartNV", gl_PrimitiveRestartNV, 0);
+	rb_define_method(klass, "glPrimitiveRestartIndexNV", gl_PrimitiveRestartIndexNV, 1);
 
 	/* #322 GL_NV_gpu_program4 */
-	rb_define_module_function(module, "glProgramLocalParameterI4iNV", gl_ProgramLocalParameterI4iNV, 6);
-	rb_define_module_function(module, "glProgramLocalParameterI4uiNV", gl_ProgramLocalParameterI4uiNV, 6);
-	rb_define_module_function(module, "glProgramLocalParameterI4ivNV", gl_ProgramLocalParameterI4ivNV, 3);
-	rb_define_module_function(module, "glProgramLocalParameterI4uivNV", gl_ProgramLocalParameterI4uivNV, 3);
-	rb_define_module_function(module, "glProgramLocalParametersI4ivNV", gl_ProgramLocalParametersI4ivNV, 3);
-	rb_define_module_function(module, "glProgramLocalParametersI4uivNV", gl_ProgramLocalParametersI4uivNV, 3);
-	rb_define_module_function(module, "glGetProgramLocalParameterIivNV", gl_GetProgramLocalParameterIivNV, 2);
-	rb_define_module_function(module, "glGetProgramLocalParameterIuivNV", gl_GetProgramLocalParameterIuivNV, 2);
-	rb_define_module_function(module, "glProgramEnvParameterI4iNV", gl_ProgramEnvParameterI4iNV, 6);
-	rb_define_module_function(module, "glProgramEnvParameterI4uiNV", gl_ProgramEnvParameterI4uiNV, 6);
-	rb_define_module_function(module, "glProgramEnvParameterI4ivNV", gl_ProgramEnvParameterI4ivNV, 3);
-	rb_define_module_function(module, "glProgramEnvParameterI4uivNV", gl_ProgramEnvParameterI4uivNV, 3);
-	rb_define_module_function(module, "glProgramEnvParametersI4ivNV", gl_ProgramEnvParametersI4ivNV, 3);
-	rb_define_module_function(module, "glProgramEnvParametersI4uivNV", gl_ProgramEnvParametersI4uivNV, 3);
-	rb_define_module_function(module, "glGetProgramEnvParameterIivNV", gl_GetProgramEnvParameterIivNV, 2);
-	rb_define_module_function(module, "glGetProgramEnvParameterIuivNV", gl_GetProgramEnvParameterIuivNV, 2);
+	rb_define_method(klass, "glProgramLocalParameterI4iNV", gl_ProgramLocalParameterI4iNV, 6);
+	rb_define_method(klass, "glProgramLocalParameterI4uiNV", gl_ProgramLocalParameterI4uiNV, 6);
+	rb_define_method(klass, "glProgramLocalParameterI4ivNV", gl_ProgramLocalParameterI4ivNV, 3);
+	rb_define_method(klass, "glProgramLocalParameterI4uivNV", gl_ProgramLocalParameterI4uivNV, 3);
+	rb_define_method(klass, "glProgramLocalParametersI4ivNV", gl_ProgramLocalParametersI4ivNV, 3);
+	rb_define_method(klass, "glProgramLocalParametersI4uivNV", gl_ProgramLocalParametersI4uivNV, 3);
+	rb_define_method(klass, "glGetProgramLocalParameterIivNV", gl_GetProgramLocalParameterIivNV, 2);
+	rb_define_method(klass, "glGetProgramLocalParameterIuivNV", gl_GetProgramLocalParameterIuivNV, 2);
+	rb_define_method(klass, "glProgramEnvParameterI4iNV", gl_ProgramEnvParameterI4iNV, 6);
+	rb_define_method(klass, "glProgramEnvParameterI4uiNV", gl_ProgramEnvParameterI4uiNV, 6);
+	rb_define_method(klass, "glProgramEnvParameterI4ivNV", gl_ProgramEnvParameterI4ivNV, 3);
+	rb_define_method(klass, "glProgramEnvParameterI4uivNV", gl_ProgramEnvParameterI4uivNV, 3);
+	rb_define_method(klass, "glProgramEnvParametersI4ivNV", gl_ProgramEnvParametersI4ivNV, 3);
+	rb_define_method(klass, "glProgramEnvParametersI4uivNV", gl_ProgramEnvParametersI4uivNV, 3);
+	rb_define_method(klass, "glGetProgramEnvParameterIivNV", gl_GetProgramEnvParameterIivNV, 2);
+	rb_define_method(klass, "glGetProgramEnvParameterIuivNV", gl_GetProgramEnvParameterIuivNV, 2);
 
 	/* #323 GL_NV_geometry_program4 */
-	rb_define_module_function(module, "glProgramVertexLimitNV", gl_ProgramVertexLimitNV, 2);
-	rb_define_module_function(module, "glFramebufferTextureEXT", gl_FramebufferTextureEXT, 4);
-	rb_define_module_function(module, "glFramebufferTextureLayerEXT", gl_FramebufferTextureLayerEXT, 5);
-	rb_define_module_function(module, "glFramebufferTextureFaceEXT", gl_FramebufferTextureFaceEXT, 5);
+	rb_define_method(klass, "glProgramVertexLimitNV", gl_ProgramVertexLimitNV, 2);
+	rb_define_method(klass, "glFramebufferTextureEXT", gl_FramebufferTextureEXT, 4);
+	rb_define_method(klass, "glFramebufferTextureLayerEXT", gl_FramebufferTextureLayerEXT, 5);
+	rb_define_method(klass, "glFramebufferTextureFaceEXT", gl_FramebufferTextureFaceEXT, 5);
 
 	/* #334 GL_NV_depth_buffer_float */
-	rb_define_module_function(module, "glDepthRangedNV", gl_DepthRangedNV, 2);
-	rb_define_module_function(module, "glClearDepthdNV", gl_ClearDepthdNV, 1);
-	rb_define_module_function(module, "glDepthBoundsdNV", gl_DepthBoundsdNV, 2);
+	rb_define_method(klass, "glDepthRangedNV", gl_DepthRangedNV, 2);
+	rb_define_method(klass, "glClearDepthdNV", gl_ClearDepthdNV, 1);
+	rb_define_method(klass, "glDepthBoundsdNV", gl_DepthBoundsdNV, 2);
 
 	/* #336 GL_NV_framebuffer_multisample_coverage */
-	rb_define_module_function(module, "glRenderbufferStorageMultisampleCoverageNV", gl_RenderbufferStorageMultisampleCoverageNV, 6);
+	rb_define_method(klass, "glRenderbufferStorageMultisampleCoverageNV", gl_RenderbufferStorageMultisampleCoverageNV, 6);
 
 }

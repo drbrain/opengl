@@ -34,8 +34,8 @@ static VALUE gl_DrawBuffersATI(VALUE obj,VALUE arg1)
 	return Qnil;
 }
 
-void gl_init_functions_ext_ati(VALUE module)
+void gl_init_functions_ext_ati(VALUE klass)
 {
 /* #277 GL_ATI_draw_buffers */
-	rb_define_module_function(module, "glDrawBuffersATI", gl_DrawBuffersATI, 1);
+	rb_define_method(klass, "glDrawBuffersATI", gl_DrawBuffersATI, 1);
 }

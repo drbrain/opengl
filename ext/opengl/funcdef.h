@@ -35,7 +35,7 @@
 	do { \
     fptr_##_NAME_ = GET_GLIMPL_VARIABLE(glfuncs._NAME_); \
 		if (fptr_##_NAME_==NULL) { \
-			if (CheckVersionExtension(_VEREXT_) == GL_FALSE) { \
+			if (CheckVersionExtension(obj, _VEREXT_) == GL_FALSE) { \
 				if (isdigit(_VEREXT_[0])) { \
 					rb_raise(rb_eNotImpError, \
 						"OpenGL version %s is not available on this system",_VEREXT_); \

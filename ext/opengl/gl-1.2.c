@@ -39,7 +39,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	end = (GLuint)NUM2UINT(arg3);
 	count = (GLsizei)NUM2UINT(arg4);
 	type = (GLenum)NUM2INT(arg5);
-	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
 		fptr_glDrawRangeElements(mode, start, end, count, type, (GLvoid *)NUM2SIZET(arg6));
 	} else {
 		VALUE data;
@@ -76,7 +76,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
 	format = (GLenum)NUM2INT(arg8);
 	type = (GLenum)NUM2INT(arg9);
 
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glTexImage3D( target, level, internalFormat, width, height,
 						depth, border, format, type,(GLvoid *)NUM2SIZET(arg10));
 		CHECK_GLERROR_FROM("glTexImage3D");
@@ -128,7 +128,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	depth = (GLsizei)NUM2UINT(arg8);
 	format = (GLenum)NUM2INT(arg9);
 	type = (GLenum)NUM2INT(arg10);
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glTexSubImage3D( target, level, xoffset, yoffset, zoffset,
 				width, height, depth,
 				format, type, (GLvoid *)NUM2SIZET(arg11));
@@ -144,12 +144,12 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	return Qnil;
 }
 
-void gl_init_functions_1_2(VALUE module)
+void gl_init_functions_1_2(VALUE klass)
 {
-	rb_define_module_function(module, "glBlendColor", gl_BlendColor, 4);
-	rb_define_module_function(module, "glBlendEquation", gl_BlendEquation, 1);
-	rb_define_module_function(module, "glDrawRangeElements", gl_DrawRangeElements, 6);
-	rb_define_module_function(module, "glTexImage3D", gl_TexImage3D, 10);
-	rb_define_module_function(module, "glTexSubImage3D", gl_TexSubImage3D, 11);
-	rb_define_module_function(module, "glCopyTexSubImage3D", gl_CopyTexSubImage3D, 9);
+	rb_define_method(klass, "glBlendColor", gl_BlendColor, 4);
+	rb_define_method(klass, "glBlendEquation", gl_BlendEquation, 1);
+	rb_define_method(klass, "glDrawRangeElements", gl_DrawRangeElements, 6);
+	rb_define_method(klass, "glTexImage3D", gl_TexImage3D, 10);
+	rb_define_method(klass, "glTexSubImage3D", gl_TexSubImage3D, 11);
+	rb_define_method(klass, "glCopyTexSubImage3D", gl_CopyTexSubImage3D, 9);
 }

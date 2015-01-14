@@ -1,18 +1,25 @@
 #include "common.h"
 
-static GLvoid * (APIENTRY * fptr_glMapBuffer)(GLenum,GLenum);
-static GLboolean (APIENTRY * fptr_glUnmapBuffer)(GLenum);
-
 struct buffer {
-	GLenum target;
-	void *ptr;
-	GLsizeiptr len;
+  VALUE glimpl;
+  void *ptr;
+  GLsizeiptr len;
+  GLenum target;
 };
 
 static void
+buffer_mark(void *ptr)
+{
+  struct buffer *this = ptr;
+  rb_gc_mark(this->glimpl);
+}
+
+static void
 buffer_free(void *ptr) {
-	struct buffer *buf = ptr;
-	LOAD_GL_FUNC(glUnmapBuffer, "1.5");
+  struct buffer *buf = ptr;
+  VALUE obj = buf->glimpl;
+  DECL_GL_FUNC_PTR(GLboolean,glUnmapBuffer,(GLenum));
+  LOAD_GL_FUNC(glUnmapBuffer, "1.5");
 
 	if (buf->ptr != NULL)
 		fptr_glUnmapBuffer(buf->target);
@@ -26,16 +33,31 @@ buffer_memsize(const void *ptr) {
 
 static const rb_data_type_t buffer_type = {
 	"OpenGL/buffer",
-	{ NULL, buffer_free, buffer_memsize, },
+	{ buffer_mark, buffer_free, buffer_memsize, },
 };
 
 VALUE
-rb_gl_buffer_s_map(VALUE klass, VALUE _target, VALUE _access) {
-	struct buffer *buf = ALLOC(struct buffer);
+rb_gl_buffer_s_map(int argc, VALUE *argv, VALUE klass)
+{
+  VALUE _target;
+  VALUE _access;
+  VALUE obj;
+  struct buffer *buf;
+  DECL_GL_FUNC_PTR(GLvoid *,glMapBuffer,(GLenum,GLenum));
+
+  rb_scan_args(argc, argv, "21", &_target, &_access, &obj);
+  if(NIL_P(obj)){
+    obj = g_default_glimpl;
+  } else if(!rb_obj_is_kind_of(obj, rb_cGlimpl)){
+    rb_raise(rb_eArgError, "wrong argument type %s (expected kind of Gl::Implementation)", rb_obj_classname(obj));
+  }
+
+	buf = ALLOC(struct buffer);
 	LOAD_GL_FUNC(glMapBuffer, "1.5");
 
 	buf->target = RUBY2GLENUM(_target);
-	buf->len		= 0;
+	buf->len = 0;
+  buf->glimpl = obj;
 
 	buf->ptr = fptr_glMapBuffer(buf->target, RUBY2GLENUM(_access));
 
@@ -104,10 +126,14 @@ rb_gl_buffer_target(VALUE self) {
 
 static VALUE
 rb_gl_buffer_unmap(VALUE self) {
-	struct buffer *buf;
-	LOAD_GL_FUNC(glUnmapBuffer, "1.5");
+  struct buffer *buf;
+  VALUE obj;
+  DECL_GL_FUNC_PTR(GLboolean,glUnmapBuffer,(GLenum));
 
-	TypedData_Get_Struct(self, struct buffer, &buffer_type, buf);
+  TypedData_Get_Struct(self, struct buffer, &buffer_type, buf);
+  obj = buf->glimpl;
+
+  LOAD_GL_FUNC(glUnmapBuffer, "1.5");
 
 	if (!buf->ptr)
 		return self;
@@ -164,7 +190,7 @@ gl_init_buffer(VALUE module) {
 	VALUE cBuffer = rb_define_class_under(module, "Buffer", rb_cObject);
 
 	rb_undef_alloc_func(cBuffer);
-	rb_define_singleton_method(cBuffer, "map", rb_gl_buffer_s_map, 2);
+	rb_define_singleton_method(cBuffer, "map", rb_gl_buffer_s_map, -1);
 
 	rb_define_method(cBuffer, "addr", rb_gl_buffer_addr, 0);
 	rb_define_method(cBuffer, "length", rb_gl_buffer_length, 0);

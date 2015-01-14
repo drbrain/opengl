@@ -173,7 +173,7 @@ static VALUE gl_VertexAttribPointerARB(VALUE obj,VALUE arg1,VALUE arg2,VALUE arg
   if (index>_MAX_VERTEX_ATTRIBS)
     rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
-  if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+  if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
     GET_GLIMPL_VARIABLE(VertexAttrib_ptr)[index] = arg6;
     fptr_glVertexAttribPointerARB(index,size,type,normalized,stride,(GLvoid *)NUM2SIZET(arg6));
   } else {
@@ -721,160 +721,160 @@ VALUE obj,arg1,arg2;
 /* #39 GL_ARB_color_buffer_float */
 GL_FUNC_LOAD_2(ClampColorARB,GLvoid, GLenum,GLenum, "GL_ARB_color_buffer_float")
 
-void gl_init_functions_ext_arb(VALUE module)
+void gl_init_functions_ext_arb(VALUE klass)
 {
 /* #3 GL_ARB_transpose_matrix */
-  rb_define_module_function(module, "glLoadTransposeMatrixfARB", gl_LoadTransposeMatrixfARB, 1);
-  rb_define_module_function(module, "glLoadTransposeMatrixdARB", gl_LoadTransposeMatrixdARB, 1);
-  rb_define_module_function(module, "glMultTransposeMatrixfARB", gl_MultTransposeMatrixfARB, 1);
-  rb_define_module_function(module, "glMultTransposeMatrixdARB", gl_MultTransposeMatrixdARB, 1);
+  rb_define_method(klass, "glLoadTransposeMatrixfARB", gl_LoadTransposeMatrixfARB, 1);
+  rb_define_method(klass, "glLoadTransposeMatrixdARB", gl_LoadTransposeMatrixdARB, 1);
+  rb_define_method(klass, "glMultTransposeMatrixfARB", gl_MultTransposeMatrixfARB, 1);
+  rb_define_method(klass, "glMultTransposeMatrixdARB", gl_MultTransposeMatrixdARB, 1);
 
 /* #5 GL_ARB_multisample */
-  rb_define_module_function(module, "glSampleCoverageARB", gl_SampleCoverageARB, 2);
+  rb_define_method(klass, "glSampleCoverageARB", gl_SampleCoverageARB, 2);
 
 /* #14 GL_ARB_point_parameters */
-  rb_define_module_function(module, "glPointParameterfARB", gl_PointParameterfARB, 2);
-  rb_define_module_function(module, "glPointParameterfvARB", gl_PointParameterfvARB, 2);
+  rb_define_method(klass, "glPointParameterfARB", gl_PointParameterfARB, 2);
+  rb_define_method(klass, "glPointParameterfvARB", gl_PointParameterfvARB, 2);
 
 /* #26 GL_ARB_window_pos */
-  rb_define_module_function(module, "glWindowPos2dARB", gl_WindowPos2dARB, 2);
-  rb_define_module_function(module, "glWindowPos2fARB", gl_WindowPos2fARB, 2);
-  rb_define_module_function(module, "glWindowPos2iARB", gl_WindowPos2iARB, 2);
-  rb_define_module_function(module, "glWindowPos2sARB", gl_WindowPos2sARB, 2);
-  rb_define_module_function(module, "glWindowPos3dARB", gl_WindowPos3dARB, 3);
-  rb_define_module_function(module, "glWindowPos3fARB", gl_WindowPos3fARB, 3);
-  rb_define_module_function(module, "glWindowPos3iARB", gl_WindowPos3iARB, 3);
-  rb_define_module_function(module, "glWindowPos3sARB", gl_WindowPos3sARB, 3);
+  rb_define_method(klass, "glWindowPos2dARB", gl_WindowPos2dARB, 2);
+  rb_define_method(klass, "glWindowPos2fARB", gl_WindowPos2fARB, 2);
+  rb_define_method(klass, "glWindowPos2iARB", gl_WindowPos2iARB, 2);
+  rb_define_method(klass, "glWindowPos2sARB", gl_WindowPos2sARB, 2);
+  rb_define_method(klass, "glWindowPos3dARB", gl_WindowPos3dARB, 3);
+  rb_define_method(klass, "glWindowPos3fARB", gl_WindowPos3fARB, 3);
+  rb_define_method(klass, "glWindowPos3iARB", gl_WindowPos3iARB, 3);
+  rb_define_method(klass, "glWindowPos3sARB", gl_WindowPos3sARB, 3);
 
-  rb_define_module_function(module, "glWindowPos2dvARB", gl_WindowPos2dvARB, 1);
-  rb_define_module_function(module, "glWindowPos2fvARB", gl_WindowPos2fvARB, 1);
-  rb_define_module_function(module, "glWindowPos2ivARB", gl_WindowPos2ivARB, 1);
-  rb_define_module_function(module, "glWindowPos2svARB", gl_WindowPos2svARB, 1);
-  rb_define_module_function(module, "glWindowPos3dvARB", gl_WindowPos3dvARB, 1);
-  rb_define_module_function(module, "glWindowPos3fvARB", gl_WindowPos3fvARB, 1);
-  rb_define_module_function(module, "glWindowPos3ivARB", gl_WindowPos3ivARB, 1);
-  rb_define_module_function(module, "glWindowPos3svARB", gl_WindowPos3svARB, 1);
+  rb_define_method(klass, "glWindowPos2dvARB", gl_WindowPos2dvARB, 1);
+  rb_define_method(klass, "glWindowPos2fvARB", gl_WindowPos2fvARB, 1);
+  rb_define_method(klass, "glWindowPos2ivARB", gl_WindowPos2ivARB, 1);
+  rb_define_method(klass, "glWindowPos2svARB", gl_WindowPos2svARB, 1);
+  rb_define_method(klass, "glWindowPos3dvARB", gl_WindowPos3dvARB, 1);
+  rb_define_method(klass, "glWindowPos3fvARB", gl_WindowPos3fvARB, 1);
+  rb_define_method(klass, "glWindowPos3ivARB", gl_WindowPos3ivARB, 1);
+  rb_define_method(klass, "glWindowPos3svARB", gl_WindowPos3svARB, 1);
 
 /* #26 GL_ARB_vertex_program */
-  rb_define_module_function(module, "glProgramStringARB", gl_ProgramStringARB, 3);
-  rb_define_module_function(module, "glGetProgramStringARB", gl_GetProgramStringARB, 2);
-  rb_define_module_function(module, "glGetProgramivARB", gl_GetProgramivARB, 2);
-  rb_define_module_function(module, "glBindProgramARB", gl_BindProgramARB, 2);
-  rb_define_module_function(module, "glGenProgramsARB", gl_GenProgramsARB, 1);
-  rb_define_module_function(module, "glDeleteProgramsARB", gl_DeleteProgramsARB, 1);
-  rb_define_module_function(module, "glIsProgramARB", gl_IsProgramARB, 1);
-  rb_define_module_function(module, "glEnableVertexAttribArrayARB", gl_EnableVertexAttribArrayARB, 1);
-  rb_define_module_function(module, "glDisableVertexAttribArrayARB", gl_DisableVertexAttribArrayARB, 1);
-  rb_define_module_function(module, "glVertexAttribPointerARB", gl_VertexAttribPointerARB, 6);
-  rb_define_module_function(module, "glGetVertexAttribPointervARB", gl_GetVertexAttribPointervARB, 1);
-  rb_define_module_function(module, "glProgramEnvParameter4dARB", gl_ProgramEnvParameter4dARB, 6);
-  rb_define_module_function(module, "glProgramEnvParameter4fARB", gl_ProgramEnvParameter4fARB, 6);
-  rb_define_module_function(module, "glProgramLocalParameter4dARB", gl_ProgramLocalParameter4dARB, 6);
-  rb_define_module_function(module, "glProgramLocalParameter4fARB", gl_ProgramLocalParameter4fARB, 6);
-  rb_define_module_function(module, "glProgramEnvParameter4dvARB", gl_ProgramEnvParameter4dvARB, 3);
-  rb_define_module_function(module, "glProgramEnvParameter4fvARB", gl_ProgramEnvParameter4fvARB, 3);
-  rb_define_module_function(module, "glProgramLocalParameter4dvARB", gl_ProgramLocalParameter4dvARB, 3);
-  rb_define_module_function(module, "glProgramLocalParameter4fvARB", gl_ProgramLocalParameter4fvARB, 3);
-  rb_define_module_function(module, "glGetProgramEnvParameterdvARB", gl_GetProgramEnvParameterdvARB, 2);
-  rb_define_module_function(module, "glGetProgramEnvParameterfvARB", gl_GetProgramEnvParameterfvARB, 2);
-  rb_define_module_function(module, "glGetProgramLocalParameterdvARB", gl_GetProgramLocalParameterdvARB, 2);
-  rb_define_module_function(module, "glGetProgramLocalParameterfvARB", gl_GetProgramLocalParameterfvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib1dARB", gl_VertexAttrib1dARB, 2);
-  rb_define_module_function(module, "glVertexAttrib1fARB", gl_VertexAttrib1fARB, 2);
-  rb_define_module_function(module, "glVertexAttrib1sARB", gl_VertexAttrib1sARB, 2);
-  rb_define_module_function(module, "glVertexAttrib2dARB", gl_VertexAttrib2dARB, 3);
-  rb_define_module_function(module, "glVertexAttrib2fARB", gl_VertexAttrib2fARB, 3);
-  rb_define_module_function(module, "glVertexAttrib2sARB", gl_VertexAttrib2sARB, 3);
-  rb_define_module_function(module, "glVertexAttrib3dARB", gl_VertexAttrib3dARB, 4);
-  rb_define_module_function(module, "glVertexAttrib3fARB", gl_VertexAttrib3fARB, 4);
-  rb_define_module_function(module, "glVertexAttrib3sARB", gl_VertexAttrib3sARB, 4);
-  rb_define_module_function(module, "glVertexAttrib4NbvARB", gl_VertexAttrib4NbvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4NivARB", gl_VertexAttrib4NivARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4NsvARB", gl_VertexAttrib4NsvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4NubARB", gl_VertexAttrib4NubARB, 5);
-  rb_define_module_function(module, "glVertexAttrib4NubvARB", gl_VertexAttrib4NubvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4NuivARB", gl_VertexAttrib4NuivARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4NusvARB", gl_VertexAttrib4NusvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4bvARB", gl_VertexAttrib4bvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4dARB", gl_VertexAttrib4dARB, 5);
-  rb_define_module_function(module, "glVertexAttrib4fARB", gl_VertexAttrib4fARB, 5);
-  rb_define_module_function(module, "glVertexAttrib4ivARB", gl_VertexAttrib4ivARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4sARB", gl_VertexAttrib4sARB, 5);
-  rb_define_module_function(module, "glVertexAttrib4ubvARB", gl_VertexAttrib4ubvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4uivARB", gl_VertexAttrib4uivARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4usvARB", gl_VertexAttrib4usvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib1dvARB", gl_VertexAttrib1dvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib1fvARB", gl_VertexAttrib1fvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib1svARB", gl_VertexAttrib1svARB, 2);
-  rb_define_module_function(module, "glVertexAttrib2dvARB", gl_VertexAttrib2dvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib2fvARB", gl_VertexAttrib2fvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib2svARB", gl_VertexAttrib2svARB, 2);
-  rb_define_module_function(module, "glVertexAttrib3dvARB", gl_VertexAttrib3dvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib3fvARB", gl_VertexAttrib3fvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib3svARB", gl_VertexAttrib3svARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4dvARB", gl_VertexAttrib4dvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4fvARB", gl_VertexAttrib4fvARB, 2);
-  rb_define_module_function(module, "glVertexAttrib4svARB", gl_VertexAttrib4svARB, 2);
-  rb_define_module_function(module, "glGetVertexAttribdvARB", gl_GetVertexAttribdvARB, 2);
-  rb_define_module_function(module, "glGetVertexAttribfvARB", gl_GetVertexAttribfvARB, 2);
-  rb_define_module_function(module, "glGetVertexAttribivARB", gl_GetVertexAttribivARB, 2);
+  rb_define_method(klass, "glProgramStringARB", gl_ProgramStringARB, 3);
+  rb_define_method(klass, "glGetProgramStringARB", gl_GetProgramStringARB, 2);
+  rb_define_method(klass, "glGetProgramivARB", gl_GetProgramivARB, 2);
+  rb_define_method(klass, "glBindProgramARB", gl_BindProgramARB, 2);
+  rb_define_method(klass, "glGenProgramsARB", gl_GenProgramsARB, 1);
+  rb_define_method(klass, "glDeleteProgramsARB", gl_DeleteProgramsARB, 1);
+  rb_define_method(klass, "glIsProgramARB", gl_IsProgramARB, 1);
+  rb_define_method(klass, "glEnableVertexAttribArrayARB", gl_EnableVertexAttribArrayARB, 1);
+  rb_define_method(klass, "glDisableVertexAttribArrayARB", gl_DisableVertexAttribArrayARB, 1);
+  rb_define_method(klass, "glVertexAttribPointerARB", gl_VertexAttribPointerARB, 6);
+  rb_define_method(klass, "glGetVertexAttribPointervARB", gl_GetVertexAttribPointervARB, 1);
+  rb_define_method(klass, "glProgramEnvParameter4dARB", gl_ProgramEnvParameter4dARB, 6);
+  rb_define_method(klass, "glProgramEnvParameter4fARB", gl_ProgramEnvParameter4fARB, 6);
+  rb_define_method(klass, "glProgramLocalParameter4dARB", gl_ProgramLocalParameter4dARB, 6);
+  rb_define_method(klass, "glProgramLocalParameter4fARB", gl_ProgramLocalParameter4fARB, 6);
+  rb_define_method(klass, "glProgramEnvParameter4dvARB", gl_ProgramEnvParameter4dvARB, 3);
+  rb_define_method(klass, "glProgramEnvParameter4fvARB", gl_ProgramEnvParameter4fvARB, 3);
+  rb_define_method(klass, "glProgramLocalParameter4dvARB", gl_ProgramLocalParameter4dvARB, 3);
+  rb_define_method(klass, "glProgramLocalParameter4fvARB", gl_ProgramLocalParameter4fvARB, 3);
+  rb_define_method(klass, "glGetProgramEnvParameterdvARB", gl_GetProgramEnvParameterdvARB, 2);
+  rb_define_method(klass, "glGetProgramEnvParameterfvARB", gl_GetProgramEnvParameterfvARB, 2);
+  rb_define_method(klass, "glGetProgramLocalParameterdvARB", gl_GetProgramLocalParameterdvARB, 2);
+  rb_define_method(klass, "glGetProgramLocalParameterfvARB", gl_GetProgramLocalParameterfvARB, 2);
+  rb_define_method(klass, "glVertexAttrib1dARB", gl_VertexAttrib1dARB, 2);
+  rb_define_method(klass, "glVertexAttrib1fARB", gl_VertexAttrib1fARB, 2);
+  rb_define_method(klass, "glVertexAttrib1sARB", gl_VertexAttrib1sARB, 2);
+  rb_define_method(klass, "glVertexAttrib2dARB", gl_VertexAttrib2dARB, 3);
+  rb_define_method(klass, "glVertexAttrib2fARB", gl_VertexAttrib2fARB, 3);
+  rb_define_method(klass, "glVertexAttrib2sARB", gl_VertexAttrib2sARB, 3);
+  rb_define_method(klass, "glVertexAttrib3dARB", gl_VertexAttrib3dARB, 4);
+  rb_define_method(klass, "glVertexAttrib3fARB", gl_VertexAttrib3fARB, 4);
+  rb_define_method(klass, "glVertexAttrib3sARB", gl_VertexAttrib3sARB, 4);
+  rb_define_method(klass, "glVertexAttrib4NbvARB", gl_VertexAttrib4NbvARB, 2);
+  rb_define_method(klass, "glVertexAttrib4NivARB", gl_VertexAttrib4NivARB, 2);
+  rb_define_method(klass, "glVertexAttrib4NsvARB", gl_VertexAttrib4NsvARB, 2);
+  rb_define_method(klass, "glVertexAttrib4NubARB", gl_VertexAttrib4NubARB, 5);
+  rb_define_method(klass, "glVertexAttrib4NubvARB", gl_VertexAttrib4NubvARB, 2);
+  rb_define_method(klass, "glVertexAttrib4NuivARB", gl_VertexAttrib4NuivARB, 2);
+  rb_define_method(klass, "glVertexAttrib4NusvARB", gl_VertexAttrib4NusvARB, 2);
+  rb_define_method(klass, "glVertexAttrib4bvARB", gl_VertexAttrib4bvARB, 2);
+  rb_define_method(klass, "glVertexAttrib4dARB", gl_VertexAttrib4dARB, 5);
+  rb_define_method(klass, "glVertexAttrib4fARB", gl_VertexAttrib4fARB, 5);
+  rb_define_method(klass, "glVertexAttrib4ivARB", gl_VertexAttrib4ivARB, 2);
+  rb_define_method(klass, "glVertexAttrib4sARB", gl_VertexAttrib4sARB, 5);
+  rb_define_method(klass, "glVertexAttrib4ubvARB", gl_VertexAttrib4ubvARB, 2);
+  rb_define_method(klass, "glVertexAttrib4uivARB", gl_VertexAttrib4uivARB, 2);
+  rb_define_method(klass, "glVertexAttrib4usvARB", gl_VertexAttrib4usvARB, 2);
+  rb_define_method(klass, "glVertexAttrib1dvARB", gl_VertexAttrib1dvARB, 2);
+  rb_define_method(klass, "glVertexAttrib1fvARB", gl_VertexAttrib1fvARB, 2);
+  rb_define_method(klass, "glVertexAttrib1svARB", gl_VertexAttrib1svARB, 2);
+  rb_define_method(klass, "glVertexAttrib2dvARB", gl_VertexAttrib2dvARB, 2);
+  rb_define_method(klass, "glVertexAttrib2fvARB", gl_VertexAttrib2fvARB, 2);
+  rb_define_method(klass, "glVertexAttrib2svARB", gl_VertexAttrib2svARB, 2);
+  rb_define_method(klass, "glVertexAttrib3dvARB", gl_VertexAttrib3dvARB, 2);
+  rb_define_method(klass, "glVertexAttrib3fvARB", gl_VertexAttrib3fvARB, 2);
+  rb_define_method(klass, "glVertexAttrib3svARB", gl_VertexAttrib3svARB, 2);
+  rb_define_method(klass, "glVertexAttrib4dvARB", gl_VertexAttrib4dvARB, 2);
+  rb_define_method(klass, "glVertexAttrib4fvARB", gl_VertexAttrib4fvARB, 2);
+  rb_define_method(klass, "glVertexAttrib4svARB", gl_VertexAttrib4svARB, 2);
+  rb_define_method(klass, "glGetVertexAttribdvARB", gl_GetVertexAttribdvARB, 2);
+  rb_define_method(klass, "glGetVertexAttribfvARB", gl_GetVertexAttribfvARB, 2);
+  rb_define_method(klass, "glGetVertexAttribivARB", gl_GetVertexAttribivARB, 2);
 
 /* #29 GL_ARB_occlusion_query */
-  rb_define_module_function(module, "glGenQueriesARB", gl_GenQueriesARB, 1);
-  rb_define_module_function(module, "glDeleteQueriesARB", gl_DeleteQueriesARB, 1);
-  rb_define_module_function(module, "glIsQueryARB", gl_IsQueryARB, 1);
-  rb_define_module_function(module, "glBeginQueryARB", gl_BeginQueryARB, 2);
-  rb_define_module_function(module, "glEndQueryARB", gl_EndQueryARB, 1);
-  rb_define_module_function(module, "glGetQueryivARB", gl_GetQueryivARB, 2);
-  rb_define_module_function(module, "glGetQueryObjectivARB", gl_GetQueryObjectivARB, 2);
-  rb_define_module_function(module, "glGetQueryObjectuivARB", gl_GetQueryObjectuivARB, 2);
+  rb_define_method(klass, "glGenQueriesARB", gl_GenQueriesARB, 1);
+  rb_define_method(klass, "glDeleteQueriesARB", gl_DeleteQueriesARB, 1);
+  rb_define_method(klass, "glIsQueryARB", gl_IsQueryARB, 1);
+  rb_define_method(klass, "glBeginQueryARB", gl_BeginQueryARB, 2);
+  rb_define_method(klass, "glEndQueryARB", gl_EndQueryARB, 1);
+  rb_define_method(klass, "glGetQueryivARB", gl_GetQueryivARB, 2);
+  rb_define_method(klass, "glGetQueryObjectivARB", gl_GetQueryObjectivARB, 2);
+  rb_define_method(klass, "glGetQueryObjectuivARB", gl_GetQueryObjectuivARB, 2);
 
 /* #30 GL_ARB_shader_objects */
-  rb_define_module_function(module, "glDeleteObjectARB", gl_DeleteObjectARB, 1);
-  rb_define_module_function(module, "glGetHandleARB", gl_GetHandleARB, 1);
-  rb_define_module_function(module, "glDetachObjectARB", gl_DetachObjectARB, 2);
-  rb_define_module_function(module, "glCreateShaderObjectARB", gl_CreateShaderObjectARB, 1);
-  rb_define_module_function(module, "glShaderSourceARB", gl_ShaderSourceARB, 2);
-  rb_define_module_function(module, "glCompileShaderARB", gl_CompileShaderARB, 1);
-  rb_define_module_function(module, "glCreateProgramObjectARB", gl_CreateProgramObjectARB, 0);
-  rb_define_module_function(module, "glAttachObjectARB", gl_AttachObjectARB, 2);
-  rb_define_module_function(module, "glLinkProgramARB", gl_LinkProgramARB, 1);
-  rb_define_module_function(module, "glUseProgramObjectARB", gl_UseProgramObjectARB, 1);
-  rb_define_module_function(module, "glValidateProgramARB", gl_ValidateProgramARB, 1);
-  rb_define_module_function(module, "glUniform1fARB", gl_Uniform1fARB, 2);
-  rb_define_module_function(module, "glUniform2fARB", gl_Uniform2fARB, 3);
-  rb_define_module_function(module, "glUniform3fARB", gl_Uniform3fARB, 4);
-  rb_define_module_function(module, "glUniform4fARB", gl_Uniform4fARB, 5);
-  rb_define_module_function(module, "glUniform1iARB", gl_Uniform1iARB, 2);
-  rb_define_module_function(module, "glUniform2iARB", gl_Uniform2iARB, 3);
-  rb_define_module_function(module, "glUniform3iARB", gl_Uniform3iARB, 4);
-  rb_define_module_function(module, "glUniform4iARB", gl_Uniform4iARB, 5);
-  rb_define_module_function(module, "glUniform1fvARB", gl_Uniform1fvARB, 2);
-  rb_define_module_function(module, "glUniform2fvARB", gl_Uniform2fvARB, 2);
-  rb_define_module_function(module, "glUniform3fvARB", gl_Uniform3fvARB, 2);
-  rb_define_module_function(module, "glUniform4fvARB", gl_Uniform4fvARB, 2);
-  rb_define_module_function(module, "glUniform1ivARB", gl_Uniform1ivARB, 2);
-  rb_define_module_function(module, "glUniform2ivARB", gl_Uniform2ivARB, 2);
-  rb_define_module_function(module, "glUniform3ivARB", gl_Uniform3ivARB, 2);
-  rb_define_module_function(module, "glUniform4ivARB", gl_Uniform4ivARB, 2);
-  rb_define_module_function(module, "glUniformMatrix2fvARB", gl_UniformMatrix2fvARB, 3);
-  rb_define_module_function(module, "glUniformMatrix3fvARB", gl_UniformMatrix3fvARB, 3);
-  rb_define_module_function(module, "glUniformMatrix4fvARB", gl_UniformMatrix4fvARB, 3);
-  rb_define_module_function(module, "glGetObjectParameterfvARB", gl_GetObjectParameterfvARB, 2);
-  rb_define_module_function(module, "glGetObjectParameterivARB", gl_GetObjectParameterivARB, 2);
-  rb_define_module_function(module, "glGetInfoLogARB", gl_GetInfoLogARB, 1);
-  rb_define_module_function(module, "glGetShaderSourceARB", gl_GetShaderSourceARB, 1);
-  rb_define_module_function(module, "glGetAttachedObjectsARB", gl_GetAttachedObjectsARB, 1);
-  rb_define_module_function(module, "glGetUniformLocationARB", gl_GetUniformLocationARB, 2);
-  rb_define_module_function(module, "glGetActiveUniformARB", gl_GetActiveUniformARB, 2);
-  rb_define_module_function(module, "glGetUniformfvARB", gl_GetUniformfvARB, 2);
-  rb_define_module_function(module, "glGetUniformivARB", gl_GetUniformivARB, 2);
+  rb_define_method(klass, "glDeleteObjectARB", gl_DeleteObjectARB, 1);
+  rb_define_method(klass, "glGetHandleARB", gl_GetHandleARB, 1);
+  rb_define_method(klass, "glDetachObjectARB", gl_DetachObjectARB, 2);
+  rb_define_method(klass, "glCreateShaderObjectARB", gl_CreateShaderObjectARB, 1);
+  rb_define_method(klass, "glShaderSourceARB", gl_ShaderSourceARB, 2);
+  rb_define_method(klass, "glCompileShaderARB", gl_CompileShaderARB, 1);
+  rb_define_method(klass, "glCreateProgramObjectARB", gl_CreateProgramObjectARB, 0);
+  rb_define_method(klass, "glAttachObjectARB", gl_AttachObjectARB, 2);
+  rb_define_method(klass, "glLinkProgramARB", gl_LinkProgramARB, 1);
+  rb_define_method(klass, "glUseProgramObjectARB", gl_UseProgramObjectARB, 1);
+  rb_define_method(klass, "glValidateProgramARB", gl_ValidateProgramARB, 1);
+  rb_define_method(klass, "glUniform1fARB", gl_Uniform1fARB, 2);
+  rb_define_method(klass, "glUniform2fARB", gl_Uniform2fARB, 3);
+  rb_define_method(klass, "glUniform3fARB", gl_Uniform3fARB, 4);
+  rb_define_method(klass, "glUniform4fARB", gl_Uniform4fARB, 5);
+  rb_define_method(klass, "glUniform1iARB", gl_Uniform1iARB, 2);
+  rb_define_method(klass, "glUniform2iARB", gl_Uniform2iARB, 3);
+  rb_define_method(klass, "glUniform3iARB", gl_Uniform3iARB, 4);
+  rb_define_method(klass, "glUniform4iARB", gl_Uniform4iARB, 5);
+  rb_define_method(klass, "glUniform1fvARB", gl_Uniform1fvARB, 2);
+  rb_define_method(klass, "glUniform2fvARB", gl_Uniform2fvARB, 2);
+  rb_define_method(klass, "glUniform3fvARB", gl_Uniform3fvARB, 2);
+  rb_define_method(klass, "glUniform4fvARB", gl_Uniform4fvARB, 2);
+  rb_define_method(klass, "glUniform1ivARB", gl_Uniform1ivARB, 2);
+  rb_define_method(klass, "glUniform2ivARB", gl_Uniform2ivARB, 2);
+  rb_define_method(klass, "glUniform3ivARB", gl_Uniform3ivARB, 2);
+  rb_define_method(klass, "glUniform4ivARB", gl_Uniform4ivARB, 2);
+  rb_define_method(klass, "glUniformMatrix2fvARB", gl_UniformMatrix2fvARB, 3);
+  rb_define_method(klass, "glUniformMatrix3fvARB", gl_UniformMatrix3fvARB, 3);
+  rb_define_method(klass, "glUniformMatrix4fvARB", gl_UniformMatrix4fvARB, 3);
+  rb_define_method(klass, "glGetObjectParameterfvARB", gl_GetObjectParameterfvARB, 2);
+  rb_define_method(klass, "glGetObjectParameterivARB", gl_GetObjectParameterivARB, 2);
+  rb_define_method(klass, "glGetInfoLogARB", gl_GetInfoLogARB, 1);
+  rb_define_method(klass, "glGetShaderSourceARB", gl_GetShaderSourceARB, 1);
+  rb_define_method(klass, "glGetAttachedObjectsARB", gl_GetAttachedObjectsARB, 1);
+  rb_define_method(klass, "glGetUniformLocationARB", gl_GetUniformLocationARB, 2);
+  rb_define_method(klass, "glGetActiveUniformARB", gl_GetActiveUniformARB, 2);
+  rb_define_method(klass, "glGetUniformfvARB", gl_GetUniformfvARB, 2);
+  rb_define_method(klass, "glGetUniformivARB", gl_GetUniformivARB, 2);
 
 /* #31 GL_ARB_vertex_shader */
-  rb_define_module_function(module, "glBindAttribLocationARB", gl_BindAttribLocationARB, 3);
-  rb_define_module_function(module, "glGetActiveAttribARB", gl_GetActiveAttribARB, 2);
-  rb_define_module_function(module, "glGetAttribLocationARB", gl_GetAttribLocationARB, 2);
+  rb_define_method(klass, "glBindAttribLocationARB", gl_BindAttribLocationARB, 3);
+  rb_define_method(klass, "glGetActiveAttribARB", gl_GetActiveAttribARB, 2);
+  rb_define_method(klass, "glGetAttribLocationARB", gl_GetAttribLocationARB, 2);
 
 /* #39 GL_ARB_color_buffer_float */
-  rb_define_module_function(module, "glClampColorARB", gl_ClampColorARB, 2);
+  rb_define_method(klass, "glClampColorARB", gl_ClampColorARB, 2);
 }

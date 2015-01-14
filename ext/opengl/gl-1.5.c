@@ -152,7 +152,7 @@ VALUE obj,arg1,arg2;
 }
 
 static VALUE
-gl_MapBuffer(VALUE self, VALUE _target, VALUE _access) {
+gl_MapBuffer(VALUE obj, VALUE _target, VALUE _access) {
 	GLenum target = CONV_GLenum(_target);
 	GLenum access = CONV_GLenum(_access);
 	GLint size = 0;
@@ -201,25 +201,25 @@ VALUE obj,arg1,arg2,arg3;
 	return Qnil;
 }
 
-void gl_init_functions_1_5(VALUE module)
+void gl_init_functions_1_5(VALUE klass)
 {
-	rb_define_module_function(module, "glGenQueries", gl_GenQueries, 1);
-	rb_define_module_function(module, "glDeleteQueries", gl_DeleteQueries, 1);
-	rb_define_module_function(module, "glIsQuery", gl_IsQuery, 1);
-	rb_define_module_function(module, "glBeginQuery", gl_BeginQuery, 2);
-	rb_define_module_function(module, "glEndQuery", gl_EndQuery, 1);
-	rb_define_module_function(module, "glGetQueryiv", gl_GetQueryiv, 2);
-	rb_define_module_function(module, "glGetQueryObjectiv", gl_GetQueryObjectiv, 2);
-	rb_define_module_function(module, "glGetQueryObjectuiv", gl_GetQueryObjectuiv, 2);
-	rb_define_module_function(module, "glBindBuffer", gl_BindBuffer, 2);
-	rb_define_module_function(module, "glDeleteBuffers", gl_DeleteBuffers, 1);
-	rb_define_module_function(module, "glGenBuffers", gl_GenBuffers, 1);
-	rb_define_module_function(module, "glIsBuffer", gl_IsBuffer, 1);
-	rb_define_module_function(module, "glBufferData", gl_BufferData, 4);
-	rb_define_module_function(module, "glBufferSubData", gl_BufferSubData, 4);
-	rb_define_module_function(module, "glGetBufferSubData", gl_GetBufferSubData, 3);
-	rb_define_module_function(module, "glMapBuffer", gl_MapBuffer, 2);
-	rb_define_module_function(module, "glUnmapBuffer", gl_UnmapBuffer, 1);
-	rb_define_module_function(module, "glGetBufferParameteriv", gl_GetBufferParameteriv, 2);
-	rb_define_module_function(module, "glGetBufferPointerv", gl_GetBufferPointerv, 3);
+	rb_define_method(klass, "glGenQueries", gl_GenQueries, 1);
+	rb_define_method(klass, "glDeleteQueries", gl_DeleteQueries, 1);
+	rb_define_method(klass, "glIsQuery", gl_IsQuery, 1);
+	rb_define_method(klass, "glBeginQuery", gl_BeginQuery, 2);
+	rb_define_method(klass, "glEndQuery", gl_EndQuery, 1);
+	rb_define_method(klass, "glGetQueryiv", gl_GetQueryiv, 2);
+	rb_define_method(klass, "glGetQueryObjectiv", gl_GetQueryObjectiv, 2);
+	rb_define_method(klass, "glGetQueryObjectuiv", gl_GetQueryObjectuiv, 2);
+	rb_define_method(klass, "glBindBuffer", gl_BindBuffer, 2);
+	rb_define_method(klass, "glDeleteBuffers", gl_DeleteBuffers, 1);
+	rb_define_method(klass, "glGenBuffers", gl_GenBuffers, 1);
+	rb_define_method(klass, "glIsBuffer", gl_IsBuffer, 1);
+	rb_define_method(klass, "glBufferData", gl_BufferData, 4);
+	rb_define_method(klass, "glBufferSubData", gl_BufferSubData, 4);
+	rb_define_method(klass, "glGetBufferSubData", gl_GetBufferSubData, 3);
+	rb_define_method(klass, "glMapBuffer", gl_MapBuffer, 2);
+	rb_define_method(klass, "glUnmapBuffer", gl_UnmapBuffer, 1);
+	rb_define_method(klass, "glGetBufferParameteriv", gl_GetBufferParameteriv, 2);
+	rb_define_method(klass, "glGetBufferPointerv", gl_GetBufferPointerv, 3);
 }

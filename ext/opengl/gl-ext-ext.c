@@ -159,7 +159,7 @@ VALUE obj,arg1,arg2,arg3,arg4;
 	size = (GLint)NUM2INT(arg1);
 	type = (GLenum)NUM2INT(arg2);
 	stride = (GLsizei)NUM2UINT(arg3);
-	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
 		SET_GLIMPL_VARIABLE(SecondaryColor_ptr, arg4);
 		fptr_glSecondaryColorPointerEXT(size,type, stride, (const GLvoid*)NUM2SIZET(arg4));
 	} else {
@@ -194,7 +194,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
 	end = (GLuint)NUM2UINT(arg3);
 	count = (GLsizei)NUM2UINT(arg4);
 	type = (GLenum)NUM2INT(arg5);
-	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
 		fptr_glDrawRangeElementsEXT(mode, start, end, count, type, (GLvoid *)NUM2SIZET(arg6));
 	} else {
 		VALUE data;
@@ -250,7 +250,7 @@ VALUE obj;
 	switch (rb_scan_args(argc, argv, "31", &args[0], &args[1], &args[2],&args[3])) {
 		default:
 		case 3:
-			if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+			if (CHECK_BUFFER_BINDING(GL_ELEMENT_ARRAY_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Element array buffer bound, but offsets array missing");
 			mode = (GLenum)NUM2INT(args[0]);
 			type = (GLenum)NUM2INT(args[1]);
@@ -271,7 +271,7 @@ VALUE obj;
 			xfree(indices);
 			break;
 		case 4:
-			if (!CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING))
+			if (!CHECK_BUFFER_BINDING(GL_ELEMENT_ARRAY_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Element array buffer not bound");
 			mode = (GLenum)NUM2INT(args[0]);
 			type = (GLenum)NUM2INT(args[1]);
@@ -327,7 +327,7 @@ VALUE obj,arg1,arg2,arg3;
 	LOAD_GL_FUNC(glFogCoordPointerEXT, "GL_EXT_secondary_color");
 	type = (GLenum)NUM2INT(arg1);
 	stride = (GLsizei)NUM2UINT(arg2);
-	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
 		SET_GLIMPL_VARIABLE(FogCoord_ptr, arg3);
 		fptr_glFogCoordPointerEXT(type, stride, (const GLvoid*)NUM2SIZET(arg3));
 	} else {
@@ -528,7 +528,7 @@ static VALUE gl_VertexAttribIPointerEXT(VALUE obj,VALUE arg1,VALUE arg2,VALUE ar
 	if (index>_MAX_VERTEX_ATTRIBS)
 		rb_raise(rb_eArgError, "Index too large, maximum allowed value '%i'",_MAX_VERTEX_ATTRIBS);
 
-	if (CheckBufferBinding(GL_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
 		SET_GLIMPL_VARIABLE(VertexAttrib_ptr[index], arg5);
 		fptr_glVertexAttribIPointerEXT(index,size,type,stride,(GLvoid *)NUM2SIZET(arg5));
 	} else {
@@ -648,7 +648,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
 	count = (GLsizei)NUM2UINT(arg2);
 	type = (GLenum)NUM2INT(arg3);
 	primcount = (GLsizei)NUM2INT(arg5);
-	if (CheckBufferBinding(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
 		fptr_glDrawElementsInstancedEXT(mode, count, type, (const GLvoid*)NUM2SIZET(arg4), primcount);
 	} else {
 		VALUE data;
@@ -721,165 +721,165 @@ GETTEXPARAMETER_VFUNC(GetTexParameterIivEXT,GLint,cond_GLBOOL2RUBY)
 GETTEXPARAMETER_VFUNC(GetTexParameterIuivEXT,GLuint,cond_GLBOOL2RUBY_U)
 #undef GETTEXPARAMETER_VFUNC
 
-void gl_init_functions_ext_ext(VALUE module)
+void gl_init_functions_ext_ext(VALUE klass)
 {
 /* #2 - GL_EXT_blend_color */
-	rb_define_module_function(module, "glBlendColorEXT", gl_BlendColorEXT, 4);
+	rb_define_method(klass, "glBlendColorEXT", gl_BlendColorEXT, 4);
 
 /* #3 - GL_EXT_polygon_offset */
-	rb_define_module_function(module, "glPolygonOffsetEXT", gl_PolygonOffsetEXT, 2);
+	rb_define_method(klass, "glPolygonOffsetEXT", gl_PolygonOffsetEXT, 2);
 
 /* #20 - GL_EXT_texture_object */
-	rb_define_module_function(module, "glGenTexturesEXT", gl_GenTexturesEXT, 1);
-	rb_define_module_function(module, "glDeleteTexturesEXT", gl_DeleteTexturesEXT, 1);
-	rb_define_module_function(module, "glBindTextureEXT", gl_BindTextureEXT, 2);
-	rb_define_module_function(module, "glPrioritizeTexturesEXT", gl_PrioritizeTexturesEXT, 2);
-	rb_define_module_function(module, "glAreTexturesResidentEXT", gl_AreTexturesResidentEXT, 1);
-	rb_define_module_function(module, "glIsTextureEXT", gl_IsTextureEXT, 1);
+	rb_define_method(klass, "glGenTexturesEXT", gl_GenTexturesEXT, 1);
+	rb_define_method(klass, "glDeleteTexturesEXT", gl_DeleteTexturesEXT, 1);
+	rb_define_method(klass, "glBindTextureEXT", gl_BindTextureEXT, 2);
+	rb_define_method(klass, "glPrioritizeTexturesEXT", gl_PrioritizeTexturesEXT, 2);
+	rb_define_method(klass, "glAreTexturesResidentEXT", gl_AreTexturesResidentEXT, 1);
+	rb_define_method(klass, "glIsTextureEXT", gl_IsTextureEXT, 1);
 
 /* #37 - GL_EXT_blend_minmax */
-	rb_define_module_function(module, "glBlendEquationEXT", gl_BlendEquationEXT, 1);
+	rb_define_method(klass, "glBlendEquationEXT", gl_BlendEquationEXT, 1);
 
 /* #54 - GL_EXT_point_parameters */
-	rb_define_module_function(module, "glPointParameterfEXT", gl_PointParameterfEXT, 2);
-	rb_define_module_function(module, "glPointParameterfvEXT", gl_PointParameterfvEXT, 2);
+	rb_define_method(klass, "glPointParameterfEXT", gl_PointParameterfEXT, 2);
+	rb_define_method(klass, "glPointParameterfvEXT", gl_PointParameterfvEXT, 2);
 
 /* #97 - GL_EXT_compiled_vertex_array */
-	rb_define_module_function(module, "glLockArraysEXT", gl_LockArraysEXT, 2);
-	rb_define_module_function(module, "glUnlockArraysEXT", gl_UnlockArraysEXT, 0);
+	rb_define_method(klass, "glLockArraysEXT", gl_LockArraysEXT, 2);
+	rb_define_method(klass, "glUnlockArraysEXT", gl_UnlockArraysEXT, 0);
 
 /* #112 - GL_EXT_draw_range_elements */
-	rb_define_module_function(module, "glDrawRangeElementsEXT", gl_DrawRangeElementsEXT, 6);
+	rb_define_method(klass, "glDrawRangeElementsEXT", gl_DrawRangeElementsEXT, 6);
 
 /* #145 - GL_EXT_secondary_color */
-	rb_define_module_function(module, "glSecondaryColor3bEXT", gl_SecondaryColor3bEXT, 3);
-	rb_define_module_function(module, "glSecondaryColor3dEXT", gl_SecondaryColor3dEXT, 3);
-	rb_define_module_function(module, "glSecondaryColor3fEXT", gl_SecondaryColor3fEXT, 3);
-	rb_define_module_function(module, "glSecondaryColor3iEXT", gl_SecondaryColor3iEXT, 3);
-	rb_define_module_function(module, "glSecondaryColor3sEXT", gl_SecondaryColor3sEXT, 3);
-	rb_define_module_function(module, "glSecondaryColor3ubEXT", gl_SecondaryColor3ubEXT, 3);
-	rb_define_module_function(module, "glSecondaryColor3uiEXT", gl_SecondaryColor3uiEXT, 3);
-	rb_define_module_function(module, "glSecondaryColor3usEXT", gl_SecondaryColor3usEXT, 3);
-	rb_define_module_function(module, "glSecondaryColor3bvEXT", gl_SecondaryColor3bvEXT, 1);
-	rb_define_module_function(module, "glSecondaryColor3dvEXT", gl_SecondaryColor3dvEXT, 1);
-	rb_define_module_function(module, "glSecondaryColor3fvEXT", gl_SecondaryColor3fvEXT, 1);
-	rb_define_module_function(module, "glSecondaryColor3ivEXT", gl_SecondaryColor3ivEXT, 1);
-	rb_define_module_function(module, "glSecondaryColor3svEXT", gl_SecondaryColor3svEXT, 1);
-	rb_define_module_function(module, "glSecondaryColor3ubvEXT", gl_SecondaryColor3ubvEXT, 1);
-	rb_define_module_function(module, "glSecondaryColor3uivEXT", gl_SecondaryColor3uivEXT, 1);
-	rb_define_module_function(module, "glSecondaryColor3usvEXT", gl_SecondaryColor3usvEXT, 1);
-	rb_define_module_function(module, "glSecondaryColorPointerEXT", gl_SecondaryColorPointerEXT, 4);
+	rb_define_method(klass, "glSecondaryColor3bEXT", gl_SecondaryColor3bEXT, 3);
+	rb_define_method(klass, "glSecondaryColor3dEXT", gl_SecondaryColor3dEXT, 3);
+	rb_define_method(klass, "glSecondaryColor3fEXT", gl_SecondaryColor3fEXT, 3);
+	rb_define_method(klass, "glSecondaryColor3iEXT", gl_SecondaryColor3iEXT, 3);
+	rb_define_method(klass, "glSecondaryColor3sEXT", gl_SecondaryColor3sEXT, 3);
+	rb_define_method(klass, "glSecondaryColor3ubEXT", gl_SecondaryColor3ubEXT, 3);
+	rb_define_method(klass, "glSecondaryColor3uiEXT", gl_SecondaryColor3uiEXT, 3);
+	rb_define_method(klass, "glSecondaryColor3usEXT", gl_SecondaryColor3usEXT, 3);
+	rb_define_method(klass, "glSecondaryColor3bvEXT", gl_SecondaryColor3bvEXT, 1);
+	rb_define_method(klass, "glSecondaryColor3dvEXT", gl_SecondaryColor3dvEXT, 1);
+	rb_define_method(klass, "glSecondaryColor3fvEXT", gl_SecondaryColor3fvEXT, 1);
+	rb_define_method(klass, "glSecondaryColor3ivEXT", gl_SecondaryColor3ivEXT, 1);
+	rb_define_method(klass, "glSecondaryColor3svEXT", gl_SecondaryColor3svEXT, 1);
+	rb_define_method(klass, "glSecondaryColor3ubvEXT", gl_SecondaryColor3ubvEXT, 1);
+	rb_define_method(klass, "glSecondaryColor3uivEXT", gl_SecondaryColor3uivEXT, 1);
+	rb_define_method(klass, "glSecondaryColor3usvEXT", gl_SecondaryColor3usvEXT, 1);
+	rb_define_method(klass, "glSecondaryColorPointerEXT", gl_SecondaryColorPointerEXT, 4);
 
 /* #148 - GL_EXT_multi_draw_arrays */
-	rb_define_module_function(module, "glMultiDrawArraysEXT", gl_MultiDrawArraysEXT, 3);
-	rb_define_module_function(module, "glMultiDrawElementsEXT", gl_MultiDrawElementsEXT, -1);
+	rb_define_method(klass, "glMultiDrawArraysEXT", gl_MultiDrawArraysEXT, 3);
+	rb_define_method(klass, "glMultiDrawElementsEXT", gl_MultiDrawElementsEXT, -1);
 
 /* #149 - GL_EXT_fog_coord */
-	rb_define_module_function(module, "glFogCoordfEXT", gl_FogCoordfEXT, 1);
-	rb_define_module_function(module, "glFogCoorddEXT", gl_FogCoorddEXT, 1);
-	rb_define_module_function(module, "glFogCoordfvEXT", gl_FogCoordfvEXT, 1);
-	rb_define_module_function(module, "glFogCoorddvEXT", gl_FogCoorddvEXT, 1);
-	rb_define_module_function(module, "glFogCoordPointerEXT", gl_FogCoordPointerEXT, 3);
+	rb_define_method(klass, "glFogCoordfEXT", gl_FogCoordfEXT, 1);
+	rb_define_method(klass, "glFogCoorddEXT", gl_FogCoorddEXT, 1);
+	rb_define_method(klass, "glFogCoordfvEXT", gl_FogCoordfvEXT, 1);
+	rb_define_method(klass, "glFogCoorddvEXT", gl_FogCoorddvEXT, 1);
+	rb_define_method(klass, "glFogCoordPointerEXT", gl_FogCoordPointerEXT, 3);
 
 /* #173 - GL_EXT_blend_func_separate */
-	rb_define_module_function(module, "glBlendFuncSeparateEXT", gl_BlendFuncSeparateEXT, 4);
+	rb_define_method(klass, "glBlendFuncSeparateEXT", gl_BlendFuncSeparateEXT, 4);
 
 /* #268 - GL_EXT_stencil_two_side */
-	rb_define_module_function(module, "glActiveStencilFaceEXT", gl_ActiveStencilFaceEXT, 1);
+	rb_define_method(klass, "glActiveStencilFaceEXT", gl_ActiveStencilFaceEXT, 1);
 
 /* #297 - GL_EXT_depth_bounds_test */
-	rb_define_module_function(module, "glDepthBoundsEXT", gl_DepthBoundsEXT, 2);
+	rb_define_method(klass, "glDepthBoundsEXT", gl_DepthBoundsEXT, 2);
 
 /* #299 - GL_EXT_blend_equation_separate */
-	rb_define_module_function(module, "glBlendEquationSeparateEXT", gl_BlendEquationSeparateEXT, 2);
+	rb_define_method(klass, "glBlendEquationSeparateEXT", gl_BlendEquationSeparateEXT, 2);
 
 /* #310 - GL_EXT_framebuffer_object */
-	rb_define_module_function(module, "glIsRenderbufferEXT", gl_IsRenderbufferEXT, 1);
-	rb_define_module_function(module, "glBindRenderbufferEXT", gl_BindRenderbufferEXT, 2);
-	rb_define_module_function(module, "glDeleteRenderbuffersEXT", gl_DeleteRenderbuffersEXT, 1);
-	rb_define_module_function(module, "glGenRenderbuffersEXT", gl_GenRenderbuffersEXT, 1);
-	rb_define_module_function(module, "glRenderbufferStorageEXT", gl_RenderbufferStorageEXT, 4);
-	rb_define_module_function(module, "glGetRenderbufferParameterivEXT", gl_GetRenderbufferParameterivEXT, 2);
-	rb_define_module_function(module, "glIsFramebufferEXT", gl_IsFramebufferEXT, 1);
-	rb_define_module_function(module, "glBindFramebufferEXT", gl_BindFramebufferEXT, 2);
-	rb_define_module_function(module, "glDeleteFramebuffersEXT", gl_DeleteFramebuffersEXT, 1);
-	rb_define_module_function(module, "glGenFramebuffersEXT", gl_GenFramebuffersEXT, 1);
-	rb_define_module_function(module, "glCheckFramebufferStatusEXT", gl_CheckFramebufferStatusEXT, 1);
-	rb_define_module_function(module, "glFramebufferTexture1DEXT", gl_FramebufferTexture1DEXT, 5);
-	rb_define_module_function(module, "glFramebufferTexture2DEXT", gl_FramebufferTexture2DEXT, 5);
-	rb_define_module_function(module, "glFramebufferTexture3DEXT", gl_FramebufferTexture3DEXT, 6);
-	rb_define_module_function(module, "glFramebufferRenderbufferEXT", gl_FramebufferRenderbufferEXT, 4);
-	rb_define_module_function(module, "glGetFramebufferAttachmentParameterivEXT", gl_GetFramebufferAttachmentParameterivEXT, 3);
-	rb_define_module_function(module, "glGenerateMipmapEXT", gl_GenerateMipmapEXT, 1);
+	rb_define_method(klass, "glIsRenderbufferEXT", gl_IsRenderbufferEXT, 1);
+	rb_define_method(klass, "glBindRenderbufferEXT", gl_BindRenderbufferEXT, 2);
+	rb_define_method(klass, "glDeleteRenderbuffersEXT", gl_DeleteRenderbuffersEXT, 1);
+	rb_define_method(klass, "glGenRenderbuffersEXT", gl_GenRenderbuffersEXT, 1);
+	rb_define_method(klass, "glRenderbufferStorageEXT", gl_RenderbufferStorageEXT, 4);
+	rb_define_method(klass, "glGetRenderbufferParameterivEXT", gl_GetRenderbufferParameterivEXT, 2);
+	rb_define_method(klass, "glIsFramebufferEXT", gl_IsFramebufferEXT, 1);
+	rb_define_method(klass, "glBindFramebufferEXT", gl_BindFramebufferEXT, 2);
+	rb_define_method(klass, "glDeleteFramebuffersEXT", gl_DeleteFramebuffersEXT, 1);
+	rb_define_method(klass, "glGenFramebuffersEXT", gl_GenFramebuffersEXT, 1);
+	rb_define_method(klass, "glCheckFramebufferStatusEXT", gl_CheckFramebufferStatusEXT, 1);
+	rb_define_method(klass, "glFramebufferTexture1DEXT", gl_FramebufferTexture1DEXT, 5);
+	rb_define_method(klass, "glFramebufferTexture2DEXT", gl_FramebufferTexture2DEXT, 5);
+	rb_define_method(klass, "glFramebufferTexture3DEXT", gl_FramebufferTexture3DEXT, 6);
+	rb_define_method(klass, "glFramebufferRenderbufferEXT", gl_FramebufferRenderbufferEXT, 4);
+	rb_define_method(klass, "glGetFramebufferAttachmentParameterivEXT", gl_GetFramebufferAttachmentParameterivEXT, 3);
+	rb_define_method(klass, "glGenerateMipmapEXT", gl_GenerateMipmapEXT, 1);
 
 /* #314 - GL_EXT_stencil_clear_tag */
-	rb_define_module_function(module, "glStencilClearTagEXT", gl_StencilClearTagEXT, 2);
+	rb_define_method(klass, "glStencilClearTagEXT", gl_StencilClearTagEXT, 2);
 
 /* #316 - GL_EXT_framebuffer_blit */
-	rb_define_module_function(module, "glBlitFramebufferEXT", gl_BlitFramebufferEXT, 10);
+	rb_define_method(klass, "glBlitFramebufferEXT", gl_BlitFramebufferEXT, 10);
 
 /* #317 - GL_EXT_framebuffer_multisample */
-	rb_define_module_function(module, "glRenderbufferStorageMultisampleEXT", gl_RenderbufferStorageMultisampleEXT, 5);
+	rb_define_method(klass, "glRenderbufferStorageMultisampleEXT", gl_RenderbufferStorageMultisampleEXT, 5);
 
 /* #319 - GL_EXT_timer_query */
-	rb_define_module_function(module, "glGetQueryObjecti64vEXT", gl_GetQueryObjecti64vEXT, 2);
-	rb_define_module_function(module, "glGetQueryObjectui64vEXT", gl_GetQueryObjectui64vEXT, 2);
+	rb_define_method(klass, "glGetQueryObjecti64vEXT", gl_GetQueryObjecti64vEXT, 2);
+	rb_define_method(klass, "glGetQueryObjectui64vEXT", gl_GetQueryObjectui64vEXT, 2);
 
 /* #320 - GL_EXT_gpu_program_parameters */
-	rb_define_module_function(module, "glProgramEnvParameters4fvEXT", gl_ProgramEnvParameters4fvEXT, 3);
-	rb_define_module_function(module, "glProgramLocalParameters4fvEXT", gl_ProgramLocalParameters4fvEXT, 3);
+	rb_define_method(klass, "glProgramEnvParameters4fvEXT", gl_ProgramEnvParameters4fvEXT, 3);
+	rb_define_method(klass, "glProgramLocalParameters4fvEXT", gl_ProgramLocalParameters4fvEXT, 3);
 
 /* #324 - GL_EXT_geometry_shader4 */
-	rb_define_module_function(module, "glProgramParameteriEXT", gl_ProgramParameteriEXT, 3);
+	rb_define_method(klass, "glProgramParameteriEXT", gl_ProgramParameteriEXT, 3);
 
 /* #326 - GL_EXT_gpu_shader4 */
-	rb_define_module_function(module, "glVertexAttribI1iEXT", gl_VertexAttribI1iEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI2iEXT", gl_VertexAttribI2iEXT, 3);
-	rb_define_module_function(module, "glVertexAttribI3iEXT", gl_VertexAttribI3iEXT, 4);
-	rb_define_module_function(module, "glVertexAttribI4iEXT", gl_VertexAttribI4iEXT, 5);
-	rb_define_module_function(module, "glVertexAttribI1uiEXT", gl_VertexAttribI1uiEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI2uiEXT", gl_VertexAttribI2uiEXT, 3);
-	rb_define_module_function(module, "glVertexAttribI3uiEXT", gl_VertexAttribI3uiEXT, 4);
-	rb_define_module_function(module, "glVertexAttribI4uiEXT", gl_VertexAttribI4uiEXT, 5);
-	rb_define_module_function(module, "glVertexAttribI1ivEXT", gl_VertexAttribI1ivEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI2ivEXT", gl_VertexAttribI2ivEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI3ivEXT", gl_VertexAttribI3ivEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI4ivEXT", gl_VertexAttribI4ivEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI1uivEXT", gl_VertexAttribI1uivEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI2uivEXT", gl_VertexAttribI2uivEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI3uivEXT", gl_VertexAttribI3uivEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI4uivEXT", gl_VertexAttribI4uivEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI4bvEXT", gl_VertexAttribI4bvEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI4svEXT", gl_VertexAttribI4svEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI4ubvEXT", gl_VertexAttribI4ubvEXT, 2);
-	rb_define_module_function(module, "glVertexAttribI4usvEXT", gl_VertexAttribI4usvEXT, 2);
-	rb_define_module_function(module, "glVertexAttribIPointerEXT", gl_VertexAttribIPointerEXT, 5);
-	rb_define_module_function(module, "glGetVertexAttribIivEXT", gl_GetVertexAttribIivEXT, 2);
-	rb_define_module_function(module, "glGetVertexAttribIuivEXT", gl_GetVertexAttribIuivEXT, 2);
-	rb_define_module_function(module, "glUniform1uiEXT", gl_Uniform1uiEXT, 2);
-	rb_define_module_function(module, "glUniform2uiEXT", gl_Uniform2uiEXT, 3);
-	rb_define_module_function(module, "glUniform3uiEXT", gl_Uniform3uiEXT, 4);
-	rb_define_module_function(module, "glUniform4uiEXT", gl_Uniform4uiEXT, 5);
-	rb_define_module_function(module, "glUniform1uivEXT", gl_Uniform1uivEXT, 2);
-	rb_define_module_function(module, "glUniform2uivEXT", gl_Uniform2uivEXT, 2);
-	rb_define_module_function(module, "glUniform3uivEXT", gl_Uniform3uivEXT, 2);
-	rb_define_module_function(module, "glUniform4uivEXT", gl_Uniform4uivEXT, 2);
-	rb_define_module_function(module, "glGetUniformuivEXT", gl_GetUniformuivEXT, 2);
-	rb_define_module_function(module, "glBindFragDataLocationEXT", gl_BindFragDataLocationEXT, 3);
-	rb_define_module_function(module, "glGetFragDataLocationEXT", gl_GetFragDataLocationEXT, 2);
+	rb_define_method(klass, "glVertexAttribI1iEXT", gl_VertexAttribI1iEXT, 2);
+	rb_define_method(klass, "glVertexAttribI2iEXT", gl_VertexAttribI2iEXT, 3);
+	rb_define_method(klass, "glVertexAttribI3iEXT", gl_VertexAttribI3iEXT, 4);
+	rb_define_method(klass, "glVertexAttribI4iEXT", gl_VertexAttribI4iEXT, 5);
+	rb_define_method(klass, "glVertexAttribI1uiEXT", gl_VertexAttribI1uiEXT, 2);
+	rb_define_method(klass, "glVertexAttribI2uiEXT", gl_VertexAttribI2uiEXT, 3);
+	rb_define_method(klass, "glVertexAttribI3uiEXT", gl_VertexAttribI3uiEXT, 4);
+	rb_define_method(klass, "glVertexAttribI4uiEXT", gl_VertexAttribI4uiEXT, 5);
+	rb_define_method(klass, "glVertexAttribI1ivEXT", gl_VertexAttribI1ivEXT, 2);
+	rb_define_method(klass, "glVertexAttribI2ivEXT", gl_VertexAttribI2ivEXT, 2);
+	rb_define_method(klass, "glVertexAttribI3ivEXT", gl_VertexAttribI3ivEXT, 2);
+	rb_define_method(klass, "glVertexAttribI4ivEXT", gl_VertexAttribI4ivEXT, 2);
+	rb_define_method(klass, "glVertexAttribI1uivEXT", gl_VertexAttribI1uivEXT, 2);
+	rb_define_method(klass, "glVertexAttribI2uivEXT", gl_VertexAttribI2uivEXT, 2);
+	rb_define_method(klass, "glVertexAttribI3uivEXT", gl_VertexAttribI3uivEXT, 2);
+	rb_define_method(klass, "glVertexAttribI4uivEXT", gl_VertexAttribI4uivEXT, 2);
+	rb_define_method(klass, "glVertexAttribI4bvEXT", gl_VertexAttribI4bvEXT, 2);
+	rb_define_method(klass, "glVertexAttribI4svEXT", gl_VertexAttribI4svEXT, 2);
+	rb_define_method(klass, "glVertexAttribI4ubvEXT", gl_VertexAttribI4ubvEXT, 2);
+	rb_define_method(klass, "glVertexAttribI4usvEXT", gl_VertexAttribI4usvEXT, 2);
+	rb_define_method(klass, "glVertexAttribIPointerEXT", gl_VertexAttribIPointerEXT, 5);
+	rb_define_method(klass, "glGetVertexAttribIivEXT", gl_GetVertexAttribIivEXT, 2);
+	rb_define_method(klass, "glGetVertexAttribIuivEXT", gl_GetVertexAttribIuivEXT, 2);
+	rb_define_method(klass, "glUniform1uiEXT", gl_Uniform1uiEXT, 2);
+	rb_define_method(klass, "glUniform2uiEXT", gl_Uniform2uiEXT, 3);
+	rb_define_method(klass, "glUniform3uiEXT", gl_Uniform3uiEXT, 4);
+	rb_define_method(klass, "glUniform4uiEXT", gl_Uniform4uiEXT, 5);
+	rb_define_method(klass, "glUniform1uivEXT", gl_Uniform1uivEXT, 2);
+	rb_define_method(klass, "glUniform2uivEXT", gl_Uniform2uivEXT, 2);
+	rb_define_method(klass, "glUniform3uivEXT", gl_Uniform3uivEXT, 2);
+	rb_define_method(klass, "glUniform4uivEXT", gl_Uniform4uivEXT, 2);
+	rb_define_method(klass, "glGetUniformuivEXT", gl_GetUniformuivEXT, 2);
+	rb_define_method(klass, "glBindFragDataLocationEXT", gl_BindFragDataLocationEXT, 3);
+	rb_define_method(klass, "glGetFragDataLocationEXT", gl_GetFragDataLocationEXT, 2);
 
 /* #327 - GL_EXT_draw_instanced */
-	rb_define_module_function(module, "glDrawArraysInstancedEXT", gl_DrawArraysInstancedEXT, 4);
-	rb_define_module_function(module, "glDrawElementsInstancedEXT", gl_DrawElementsInstancedEXT, 5);
+	rb_define_method(klass, "glDrawArraysInstancedEXT", gl_DrawArraysInstancedEXT, 4);
+	rb_define_method(klass, "glDrawElementsInstancedEXT", gl_DrawElementsInstancedEXT, 5);
 
 /* #330 - GL_EXT_texture_buffer_object */
-	rb_define_module_function(module, "glTexBufferEXT", gl_TexBufferEXT, 3);
+	rb_define_method(klass, "glTexBufferEXT", gl_TexBufferEXT, 3);
 
 /* #343 - GL_EXT_texture_integer */
-	rb_define_module_function(module, "glClearColorIiEXT", gl_ClearColorIiEXT, 4);
-	rb_define_module_function(module, "glClearColorIuiEXT", gl_ClearColorIuiEXT, 4);
-	rb_define_module_function(module, "glTexParameterIivEXT", gl_TexParameterIivEXT, 3);
-	rb_define_module_function(module, "glTexParameterIuivEXT", gl_TexParameterIuivEXT, 3);
-	rb_define_module_function(module, "glGetTexParameterIivEXT", gl_GetTexParameterIivEXT, 2);
-	rb_define_module_function(module, "glGetTexParameterIuivEXT", gl_GetTexParameterIuivEXT, 2);
+	rb_define_method(klass, "glClearColorIiEXT", gl_ClearColorIiEXT, 4);
+	rb_define_method(klass, "glClearColorIuiEXT", gl_ClearColorIuiEXT, 4);
+	rb_define_method(klass, "glTexParameterIivEXT", gl_TexParameterIivEXT, 3);
+	rb_define_method(klass, "glTexParameterIuivEXT", gl_TexParameterIuivEXT, 3);
+	rb_define_method(klass, "glGetTexParameterIivEXT", gl_GetTexParameterIivEXT, 2);
+	rb_define_method(klass, "glGetTexParameterIuivEXT", gl_GetTexParameterIuivEXT, 2);
 }

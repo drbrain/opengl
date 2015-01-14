@@ -138,7 +138,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	depth = (GLsizei)NUM2UINT(arg6);
 	border = (GLint)NUM2INT(arg7);
 	imagesize = (GLsizei)NUM2UINT(arg8);
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glCompressedTexImage3D(target,level,internalformat,width,height,depth,border,imagesize,(GLvoid *)NUM2SIZET(arg9));
 	} else {
 		if (TYPE(arg9) == T_STRING || TYPE(arg9) == T_ARRAY) {
@@ -180,7 +180,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
 	height = (GLsizei)NUM2UINT(arg5);
 	border = (GLint)NUM2INT(arg6);
 	imagesize = (GLsizei)NUM2UINT(arg7);
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glCompressedTexImage2D(target,level,internalformat,width,height,border,imagesize,(GLvoid *)NUM2SIZET(arg8));
 	} else {
 		if (TYPE(arg8) == T_STRING || TYPE(arg8) == T_ARRAY) {
@@ -220,7 +220,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	width = (GLsizei)NUM2UINT(arg4);
 	border = (GLint)NUM2INT(arg5);
 	imagesize = (GLsizei)NUM2UINT(arg6);
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glCompressedTexImage1D(target,level,internalformat,width,border,imagesize,(GLvoid *)NUM2SIZET(arg7));
 	} else {
 		if (TYPE(arg7) == T_STRING || TYPE(arg7) == T_ARRAY) {
@@ -268,7 +268,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11;
 	depth = (GLsizei)NUM2UINT(arg8);
 	format = (GLenum)NUM2INT(arg9);
 	imagesize = (GLsizei)NUM2UINT(arg10);
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glCompressedTexSubImage3D(target,level,xoffset,yoffset,zoffset,width,height,depth,format,imagesize,(GLvoid *)NUM2SIZET(arg11));
 	} else {
 		VALUE data;
@@ -306,7 +306,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
 	height = (GLsizei)NUM2UINT(arg6);
 	format = (GLenum)NUM2INT(arg7);
 	imagesize = (GLsizei)NUM2UINT(arg8);
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glCompressedTexSubImage2D(target,level,xoffset,yoffset,width,height,format,imagesize,(GLvoid *)NUM2SIZET(arg9));
 	} else {
 		VALUE data;
@@ -339,7 +339,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
 	width = (GLsizei)NUM2UINT(arg4);
 	format = (GLenum)NUM2INT(arg5);
 	imagesize = (GLsizei)NUM2UINT(arg6);
-	if (CheckBufferBinding(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
+	if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
 		fptr_glCompressedTexSubImage1D(target,level,xoffset,width,format,imagesize,(GLvoid *)NUM2SIZET(arg7));
 	} else {
 		VALUE data;
@@ -373,7 +373,7 @@ VALUE obj;
 	switch(numargs) {
 		default:
 		case 2:
-			if (CheckBufferBinding(GL_PIXEL_PACK_BUFFER_BINDING))
+			if (CHECK_BUFFER_BINDING(GL_PIXEL_PACK_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
 			glGetTexLevelParameteriv(target,lod,GL_TEXTURE_COMPRESSED_IMAGE_SIZE,&size); /* 1.0 function */
 			CHECK_GLERROR_FROM("glGetTexLevelParameteriv");
@@ -388,56 +388,56 @@ VALUE obj;
 	}
 }
 
-void gl_init_functions_1_3(VALUE module)
+void gl_init_functions_1_3(VALUE klass)
 {
-	rb_define_module_function(module, "glActiveTexture", gl_ActiveTexture, 1);
-	rb_define_module_function(module, "glClientActiveTexture", gl_ClientActiveTexture, 1);
-	rb_define_module_function(module, "glMultiTexCoord1d", gl_MultiTexCoord1d, 2);
-	rb_define_module_function(module, "glMultiTexCoord1f", gl_MultiTexCoord1f, 2);
-	rb_define_module_function(module, "glMultiTexCoord1i", gl_MultiTexCoord1i, 2);
-	rb_define_module_function(module, "glMultiTexCoord1s", gl_MultiTexCoord1s, 2);
-	rb_define_module_function(module, "glMultiTexCoord2d", gl_MultiTexCoord2d, 3);
-	rb_define_module_function(module, "glMultiTexCoord2f", gl_MultiTexCoord2f, 3);
-	rb_define_module_function(module, "glMultiTexCoord2i", gl_MultiTexCoord2i, 3);
-	rb_define_module_function(module, "glMultiTexCoord2s", gl_MultiTexCoord2s, 3);
-	rb_define_module_function(module, "glMultiTexCoord3d", gl_MultiTexCoord3d, 4);
-	rb_define_module_function(module, "glMultiTexCoord3f", gl_MultiTexCoord3f, 4);
-	rb_define_module_function(module, "glMultiTexCoord3i", gl_MultiTexCoord3i, 4);
-	rb_define_module_function(module, "glMultiTexCoord3s", gl_MultiTexCoord3s, 4);
-	rb_define_module_function(module, "glMultiTexCoord4d", gl_MultiTexCoord4d, 5);
-	rb_define_module_function(module, "glMultiTexCoord4f", gl_MultiTexCoord4f, 5);
-	rb_define_module_function(module, "glMultiTexCoord4i", gl_MultiTexCoord4i, 5);
-	rb_define_module_function(module, "glMultiTexCoord4s", gl_MultiTexCoord4s, 5);
-	rb_define_module_function(module, "glLoadTransposeMatrixf", gl_LoadTransposeMatrixf, 1);
-	rb_define_module_function(module, "glLoadTransposeMatrixd", gl_LoadTransposeMatrixd, 1);
-	rb_define_module_function(module, "glMultTransposeMatrixf", gl_MultTransposeMatrixf, 1);
-	rb_define_module_function(module, "glMultTransposeMatrixd", gl_MultTransposeMatrixd, 1);
-	rb_define_module_function(module, "glSampleCoverage", gl_SampleCoverage, 2);
-	rb_define_module_function(module, "glCompressedTexImage3D", gl_CompressedTexImage3D, 9);
-	rb_define_module_function(module, "glCompressedTexImage2D", gl_CompressedTexImage2D, 8);
-	rb_define_module_function(module, "glCompressedTexImage1D", gl_CompressedTexImage1D, 7);
-	rb_define_module_function(module, "glCompressedTexSubImage3D", gl_CompressedTexSubImage3D, 11);
-	rb_define_module_function(module, "glCompressedTexSubImage2D", gl_CompressedTexSubImage2D, 9);
-	rb_define_module_function(module, "glCompressedTexSubImage1D", gl_CompressedTexSubImage1D, 7);
-	rb_define_module_function(module, "glGetCompressedTexImage", gl_GetCompressedTexImage, -1);
+	rb_define_method(klass, "glActiveTexture", gl_ActiveTexture, 1);
+	rb_define_method(klass, "glClientActiveTexture", gl_ClientActiveTexture, 1);
+	rb_define_method(klass, "glMultiTexCoord1d", gl_MultiTexCoord1d, 2);
+	rb_define_method(klass, "glMultiTexCoord1f", gl_MultiTexCoord1f, 2);
+	rb_define_method(klass, "glMultiTexCoord1i", gl_MultiTexCoord1i, 2);
+	rb_define_method(klass, "glMultiTexCoord1s", gl_MultiTexCoord1s, 2);
+	rb_define_method(klass, "glMultiTexCoord2d", gl_MultiTexCoord2d, 3);
+	rb_define_method(klass, "glMultiTexCoord2f", gl_MultiTexCoord2f, 3);
+	rb_define_method(klass, "glMultiTexCoord2i", gl_MultiTexCoord2i, 3);
+	rb_define_method(klass, "glMultiTexCoord2s", gl_MultiTexCoord2s, 3);
+	rb_define_method(klass, "glMultiTexCoord3d", gl_MultiTexCoord3d, 4);
+	rb_define_method(klass, "glMultiTexCoord3f", gl_MultiTexCoord3f, 4);
+	rb_define_method(klass, "glMultiTexCoord3i", gl_MultiTexCoord3i, 4);
+	rb_define_method(klass, "glMultiTexCoord3s", gl_MultiTexCoord3s, 4);
+	rb_define_method(klass, "glMultiTexCoord4d", gl_MultiTexCoord4d, 5);
+	rb_define_method(klass, "glMultiTexCoord4f", gl_MultiTexCoord4f, 5);
+	rb_define_method(klass, "glMultiTexCoord4i", gl_MultiTexCoord4i, 5);
+	rb_define_method(klass, "glMultiTexCoord4s", gl_MultiTexCoord4s, 5);
+	rb_define_method(klass, "glLoadTransposeMatrixf", gl_LoadTransposeMatrixf, 1);
+	rb_define_method(klass, "glLoadTransposeMatrixd", gl_LoadTransposeMatrixd, 1);
+	rb_define_method(klass, "glMultTransposeMatrixf", gl_MultTransposeMatrixf, 1);
+	rb_define_method(klass, "glMultTransposeMatrixd", gl_MultTransposeMatrixd, 1);
+	rb_define_method(klass, "glSampleCoverage", gl_SampleCoverage, 2);
+	rb_define_method(klass, "glCompressedTexImage3D", gl_CompressedTexImage3D, 9);
+	rb_define_method(klass, "glCompressedTexImage2D", gl_CompressedTexImage2D, 8);
+	rb_define_method(klass, "glCompressedTexImage1D", gl_CompressedTexImage1D, 7);
+	rb_define_method(klass, "glCompressedTexSubImage3D", gl_CompressedTexSubImage3D, 11);
+	rb_define_method(klass, "glCompressedTexSubImage2D", gl_CompressedTexSubImage2D, 9);
+	rb_define_method(klass, "glCompressedTexSubImage1D", gl_CompressedTexSubImage1D, 7);
+	rb_define_method(klass, "glGetCompressedTexImage", gl_GetCompressedTexImage, -1);
 
 	/* Additional functions */
 
-	rb_define_module_function(module, "glMultiTexCoord", gl_MultiTexCoorddv, -1);
-	rb_define_module_function(module, "glMultiTexCoord1dv", gl_MultiTexCoorddv, -1);
-	rb_define_module_function(module, "glMultiTexCoord1fv", gl_MultiTexCoordfv, -1);
-	rb_define_module_function(module, "glMultiTexCoord1iv", gl_MultiTexCoordiv, -1);
-	rb_define_module_function(module, "glMultiTexCoord1sv", gl_MultiTexCoordsv, -1);
-	rb_define_module_function(module, "glMultiTexCoord2dv", gl_MultiTexCoorddv, -1);
-	rb_define_module_function(module, "glMultiTexCoord2fv", gl_MultiTexCoordfv, -1);
-	rb_define_module_function(module, "glMultiTexCoord2iv", gl_MultiTexCoordiv, -1);
-	rb_define_module_function(module, "glMultiTexCoord2sv", gl_MultiTexCoordsv, -1);
-	rb_define_module_function(module, "glMultiTexCoord3dv", gl_MultiTexCoorddv, -1);
-	rb_define_module_function(module, "glMultiTexCoord3fv", gl_MultiTexCoordfv, -1);
-	rb_define_module_function(module, "glMultiTexCoord3iv", gl_MultiTexCoordiv, -1);
-	rb_define_module_function(module, "glMultiTexCoord3sv", gl_MultiTexCoordsv, -1);
-	rb_define_module_function(module, "glMultiTexCoord4dv", gl_MultiTexCoorddv, -1);
-	rb_define_module_function(module, "glMultiTexCoord4fv", gl_MultiTexCoordfv, -1);
-	rb_define_module_function(module, "glMultiTexCoord4iv", gl_MultiTexCoordiv, -1);
-	rb_define_module_function(module, "glMultiTexCoord4sv", gl_MultiTexCoordsv, -1);
+	rb_define_method(klass, "glMultiTexCoord", gl_MultiTexCoorddv, -1);
+	rb_define_method(klass, "glMultiTexCoord1dv", gl_MultiTexCoorddv, -1);
+	rb_define_method(klass, "glMultiTexCoord1fv", gl_MultiTexCoordfv, -1);
+	rb_define_method(klass, "glMultiTexCoord1iv", gl_MultiTexCoordiv, -1);
+	rb_define_method(klass, "glMultiTexCoord1sv", gl_MultiTexCoordsv, -1);
+	rb_define_method(klass, "glMultiTexCoord2dv", gl_MultiTexCoorddv, -1);
+	rb_define_method(klass, "glMultiTexCoord2fv", gl_MultiTexCoordfv, -1);
+	rb_define_method(klass, "glMultiTexCoord2iv", gl_MultiTexCoordiv, -1);
+	rb_define_method(klass, "glMultiTexCoord2sv", gl_MultiTexCoordsv, -1);
+	rb_define_method(klass, "glMultiTexCoord3dv", gl_MultiTexCoorddv, -1);
+	rb_define_method(klass, "glMultiTexCoord3fv", gl_MultiTexCoordfv, -1);
+	rb_define_method(klass, "glMultiTexCoord3iv", gl_MultiTexCoordiv, -1);
+	rb_define_method(klass, "glMultiTexCoord3sv", gl_MultiTexCoordsv, -1);
+	rb_define_method(klass, "glMultiTexCoord4dv", gl_MultiTexCoorddv, -1);
+	rb_define_method(klass, "glMultiTexCoord4fv", gl_MultiTexCoordfv, -1);
+	rb_define_method(klass, "glMultiTexCoord4iv", gl_MultiTexCoordiv, -1);
+	rb_define_method(klass, "glMultiTexCoord4sv", gl_MultiTexCoordsv, -1);
 }

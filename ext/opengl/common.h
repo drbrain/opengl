@@ -86,7 +86,7 @@
 	glPixelStorei(GL_PACK_ROW_LENGTH, 0); \
 	glPixelStorei(GL_PACK_SKIP_IMAGES, 0); \
 	glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0); \
-	if (CheckVersionExtension("GL_SGIS_texture4D")) { \
+	if (CheckVersionExtension(obj, "GL_SGIS_texture4D")) { \
 		glPixelStorei(GL_PACK_SKIP_VOLUMES_SGIS, 0); \
 		glPixelStorei(GL_PACK_IMAGE_DEPTH_SGIS, 0); \
 	}
@@ -94,9 +94,13 @@
 #define RESTORE_PIXEL_STORE_MODE \
 	glPopClientAttrib();
 
-GLboolean CheckVersionExtension(const char *name);
-GLint CheckBufferBinding(GLint buffer);
+#define CHECK_BUFFER_BINDING(_buffer_) CheckBufferBinding(obj, (_buffer_))
+
+GLboolean CheckVersionExtension(VALUE self, const char *name);
+GLint CheckBufferBinding(VALUE self, GLint buffer);
 void *load_gl_function(const char *name, int raise);
+
+extern VALUE rb_cGlimpl;
 
 /* -------------------------------------------------------------------- */
 

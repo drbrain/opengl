@@ -35,32 +35,34 @@ void gl_init_functions_ext_nv(VALUE);
 void gl_init_buffer(VALUE);
 void gl_init_glimpl(VALUE);
 
-static int opengl_version[2]; /* major, minor */
-static char *opengl_extensions = NULL;
-
 /* Returns current OpenGL version as major, minor or 0,0 if
  * unknown (context not yet initialised etc.) The version is
  * cached for subsequent calls.
  */
-const int *GetOpenglVersion(void)
+const int *GetOpenglVersion(VALUE obj)
 {
-	if (opengl_version[0]==0) { /* not cached, query */
-		const char *vstr = (const char *) glGetString(GL_VERSION);
-		CHECK_GLERROR_FROM("glGetString");
-		if (vstr)
-			sscanf( vstr, "%d.%d", &opengl_version[0], &opengl_version[1] );
-	}
-	return opengl_version;
+  int *opengl_version = GET_GLIMPL_VARIABLE(opengl_version);
+  if (opengl_version[0]==0) { /* not cached, query */
+    const char *vstr = (const char *) glGetString(GL_VERSION);
+    CHECK_GLERROR_FROM("glGetString");
+    if (vstr){
+      int v0, v1;
+      sscanf( vstr, "%d.%d", &v0, &v1 );
+      SET_GLIMPL_VARIABLE(opengl_version[0], v0);
+      SET_GLIMPL_VARIABLE(opengl_version[1], v1);
+    }
+  }
+  return opengl_version;
 }
 
 /* Checks if OpenGL version is at least the same or higher than
  * major.minor
  */
-GLboolean CheckOpenglVersion(int major, int minor)
+GLboolean CheckOpenglVersion(VALUE obj, int major, int minor)
 {
 	const int *version;
 
-	version = GetOpenglVersion();
+	version = GetOpenglVersion(obj);
 
 	if (version[0]>major || (version[0]==major && version[1] >=minor))
 		return GL_TRUE;
@@ -72,32 +74,34 @@ GLboolean CheckOpenglVersion(int major, int minor)
  * if unknown (context not yet initialised etc.) The list is
  * cached for subsequent calls.
  */
-const char *GetOpenglExtensions(void)
+const char *GetOpenglExtensions(VALUE obj)
 {
-	if (opengl_extensions == NULL) {
-		const char *estr = (const char *) glGetString(GL_EXTENSIONS);
-		CHECK_GLERROR_FROM("glGetString");
-		if (estr) {
-			long len = strlen(estr);
-			opengl_extensions = ALLOC_N(GLchar,len+1+1); /* terminating null and added space */
-			strcpy(opengl_extensions,estr);
-			opengl_extensions[len] = ' '; /* add space char for easy searchs */
-			opengl_extensions[len+1] = '\0';
-		}
-	}
-	return opengl_extensions;
+  char *opengl_extensions = GET_GLIMPL_VARIABLE(opengl_extensions);;
+  if (opengl_extensions == NULL) {
+    const char *estr = (const char *) glGetString(GL_EXTENSIONS);
+    CHECK_GLERROR_FROM("glGetString");
+    if (estr) {
+      long len = strlen(estr);
+      opengl_extensions = ALLOC_N(GLchar,len+1+1); /* terminating null and added space */
+      strcpy(opengl_extensions,estr);
+      opengl_extensions[len] = ' '; /* add space char for easy searchs */
+      opengl_extensions[len+1] = '\0';
+      SET_GLIMPL_VARIABLE(opengl_extensions, opengl_extensions);
+    }
+  }
+  return opengl_extensions;
 }
 
 /* Checks if extension is supported by the current OpenGL implementation
  */
-GLboolean CheckExtension(const char *name)
+GLboolean CheckExtension(VALUE obj, const char *name)
 {
 	const char *extensions;
 	char *name_tmp;
 	long name_len;
 	GLboolean res;
 
-	extensions = GetOpenglExtensions();
+	extensions = GetOpenglExtensions(obj);
 
 	if(extensions==NULL)
 		return GL_FALSE;
@@ -120,7 +124,7 @@ GLboolean CheckExtension(const char *name)
 
 /* wrapper for CheckOpenglVersion and CheckExtension, also used by macros
  */
-GLboolean CheckVersionExtension(const char *name)
+GLboolean CheckVersionExtension(VALUE obj, const char *name)
 {
 	if (name && name[0] && name[0]>='0' && name[0]<='9') { /* GL version query */
 		int major,minor;
@@ -128,17 +132,16 @@ GLboolean CheckVersionExtension(const char *name)
 		if (sscanf( name, "%d.%d", &major, &minor ) != 2)
 				return GL_FALSE;
 
-		return (CheckOpenglVersion(major,minor));
+		return (CheckOpenglVersion(obj, major,minor));
 	} else {
-		return (CheckExtension(name));
+		return (CheckExtension(obj, name));
 	}
 }
 
 /* Checks if given OpenGL version or extension is available
  */
 static VALUE
-IsAvailable(obj,arg1)
-VALUE obj,arg1;
+IsAvailable(VALUE obj, VALUE arg1)
 {
 	char *name = NULL;
 	VALUE s;
@@ -147,7 +150,7 @@ VALUE obj,arg1;
 	s = rb_funcall(arg1, rb_intern("to_s"), 0);
 	name = RSTRING_PTR(s);
 
-	res = CheckVersionExtension(name);
+	res = CheckVersionExtension(obj, name);
 
 	return GLBOOL2RUBY(res);
 }
@@ -155,7 +158,7 @@ VALUE obj,arg1;
 /* Checks whether non-zero buffer of type $buffer is bound
  * - this affects several functions that pass data from/to OpenGL.
  */
-GLint CheckBufferBinding(GLint buffer)
+GLint CheckBufferBinding(VALUE obj, GLint buffer)
 {
 	GLint result = 0;
 
@@ -163,12 +166,12 @@ GLint CheckBufferBinding(GLint buffer)
 	switch(buffer) {
 		case GL_ARRAY_BUFFER_BINDING:
 		case GL_ELEMENT_ARRAY_BUFFER_BINDING:
-			if (!CheckOpenglVersion(1,5))
+			if (!CheckOpenglVersion(obj, 1,5))
 				return 0;
 			break;
 		case GL_PIXEL_PACK_BUFFER_BINDING:
 		case GL_PIXEL_UNPACK_BUFFER_BINDING:
-			if (!CheckOpenglVersion(2,1))
+			if (!CheckOpenglVersion(obj, 2,1))
 				return 0;
 			break;
 		default:
@@ -182,30 +185,30 @@ GLint CheckBufferBinding(GLint buffer)
 
 void Init_gl(VALUE module)
 {
-	gl_init_error(module);
-	gl_init_enums(module);
-	gl_init_functions_1_0__1_1(module);
-	gl_init_functions_1_2(module);
-	gl_init_functions_1_3(module);
-	gl_init_functions_1_4(module);
-	gl_init_functions_1_5(module);
-	gl_init_functions_2_0(module);
-	gl_init_functions_2_1(module);
-	gl_init_functions_3_0(module);
-	gl_init_functions_ext_3dfx(module);
-	gl_init_functions_ext_arb(module);
-	gl_init_functions_ext_ati(module);
-	gl_init_functions_ext_ext(module);
-	gl_init_functions_ext_gremedy(module);
-	gl_init_functions_ext_nv(module);
-	gl_init_buffer(module);
   gl_init_glimpl(module);
+	gl_init_error(rb_cGlimpl, module);
+	gl_init_enums(module);
+	gl_init_functions_1_0__1_1(rb_cGlimpl);
+	gl_init_functions_1_2(rb_cGlimpl);
+	gl_init_functions_1_3(rb_cGlimpl);
+	gl_init_functions_1_4(rb_cGlimpl);
+	gl_init_functions_1_5(rb_cGlimpl);
+	gl_init_functions_2_0(rb_cGlimpl);
+	gl_init_functions_2_1(rb_cGlimpl);
+	gl_init_functions_3_0(rb_cGlimpl);
+	gl_init_functions_ext_3dfx(rb_cGlimpl);
+	gl_init_functions_ext_arb(rb_cGlimpl);
+	gl_init_functions_ext_ati(rb_cGlimpl);
+	gl_init_functions_ext_ext(rb_cGlimpl);
+	gl_init_functions_ext_gremedy(rb_cGlimpl);
+	gl_init_functions_ext_nv(rb_cGlimpl);
+	gl_init_buffer(module);
 
 
-	rb_define_module_function(module, "is_available?", IsAvailable, 1);
-	rb_define_module_function(module, "is_supported?", IsAvailable, 1);
-	rb_define_module_function(module, "extension_available?", IsAvailable, 1);
-	rb_define_module_function(module, "extension_supported?", IsAvailable, 1);
-	rb_define_module_function(module, "version_available?", IsAvailable, 1);
-	rb_define_module_function(module, "version_supported?", IsAvailable, 1);
+	rb_define_method(rb_cGlimpl, "is_available?", IsAvailable, 1);
+	rb_define_method(rb_cGlimpl, "is_supported?", IsAvailable, 1);
+	rb_define_method(rb_cGlimpl, "extension_available?", IsAvailable, 1);
+	rb_define_method(rb_cGlimpl, "extension_supported?", IsAvailable, 1);
+	rb_define_method(rb_cGlimpl, "version_available?", IsAvailable, 1);
+	rb_define_method(rb_cGlimpl, "version_supported?", IsAvailable, 1);
 }
