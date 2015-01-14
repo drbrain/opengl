@@ -22,6 +22,8 @@ struct glimpl {
   int opengl_version[2]; /* major, minor */
   char *opengl_extensions;
 
+  void * (* load_gl_function)(const char *name,int raise);
+
   VALUE current_feed_buffer;
   VALUE current_sel_buffer;
   VALUE Vertex_ptr;

@@ -98,8 +98,6 @@
 
 GLboolean CheckVersionExtension(VALUE self, const char *name);
 GLint CheckBufferBinding(VALUE self, GLint buffer);
-void *load_gl_function(const char *name, int raise);
-
 extern VALUE rb_cGlimpl;
 
 /* -------------------------------------------------------------------- */

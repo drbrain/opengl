@@ -14,7 +14,7 @@
 VALUE rb_cGlimpl;
 VALUE g_default_glimpl;
 
-void *load_gl_function(const char *name,int raise)
+static void *load_gl_function(const char *name,int raise)
 {
         void *func_ptr = NULL;
 
@@ -84,6 +84,7 @@ static VALUE rb_glimpl_s_open(VALUE klass)
 
   this->error_checking = Qtrue;
   this->inside_begin_end = Qfalse;
+  this->load_gl_function = load_gl_function;
 
   return self;
 }
