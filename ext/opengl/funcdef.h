@@ -188,15 +188,7 @@ VALUE obj ARGLIST##_num_; \
 }
 
 #define GL_FUNC_STATIC(_num_,_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10) \
-	static VALUE \
-gl_##_name_(obj ARGLIST##_num_) \
-VALUE obj ARGLIST##_num_; \
-{ \
-	RETDECL_##_returntype_ \
-	RETSTAT_##_returntype_ gl##_name_(CALLCONV##_num_(targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10)); \
-	CHECK_GLERROR_FROM("gl" #_name_); \
-	return RETCONV_##_returntype_(ret) ; \
-}
+  GL_FUNC_LOAD(_num_,_name_,_returntype_,targ1,targ2,targ3,targ4,targ5,targ6,targ7,targ8,targ9,targ10,NULL)
 
 #define GL_FUNC_LOAD_0(_name_,_returntype_,_ver_) \
 	GL_FUNC_LOAD(0, _name_,_returntype_,0,0,0,0,0,0,0,0,0,0,_ver_)
