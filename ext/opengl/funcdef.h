@@ -32,24 +32,14 @@
  * then required or the required extension is not supported.
  */
 #define LOAD_GL_FUNC(_NAME_, _VEREXT_) \
-	do { \
-    const char *verext = (_VEREXT_); \
+  do { \
     fptr_##_NAME_ = GET_GLIMPL_VARIABLE(glfuncs._NAME_); \
-		if (fptr_##_NAME_==NULL) { \
-			if (verext && CheckVersionExtension(obj, verext) == GL_FALSE) { \
-				if (isdigit(verext[0])) { \
-					rb_raise(rb_eNotImpError, \
-						"OpenGL version %s is not available on this system",verext); \
-				} else { \
-					rb_raise(rb_eNotImpError, \
-						"Extension %s is not available on this system",verext); \
-				} \
-			} \
-			\
-			fptr_##_NAME_ = GET_GLIMPL_VARIABLE(load_gl_function)(#_NAME_, 1); \
-			SET_GLIMPL_VARIABLE(glfuncs._NAME_,fptr_##_NAME_); \
-		} \
-	} while (0)
+    if (fptr_##_NAME_==NULL){ \
+      if (_VEREXT_) EnsureVersionExtension(obj, (_VEREXT_)); \
+      fptr_##_NAME_ = GET_GLIMPL_VARIABLE(load_gl_function)(#_NAME_, 1); \
+      SET_GLIMPL_VARIABLE(glfuncs._NAME_,fptr_##_NAME_); \
+    } \
+  } while (0)
 
 #if defined(GLFUNC_MAGIC_START)
   #define DECL_GL_FUNC_PTR(_returntype_,_name_,_args_) \

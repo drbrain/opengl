@@ -207,9 +207,11 @@ gl_Enable1(struct gl_endisable_args *args)
 {
   long i;
   VALUE obj = args->obj;
+  DECL_GL_FUNC_PTR(void,glEnable,(GLenum cap));
 
+  LOAD_GL_FUNC(glEnable, NULL);
   for (i = 0; i < RARRAY_LEN(args->caps); i++) {
-    glEnable(CONV_GLenum(rb_ary_entry(args->caps, i)));
+    fptr_glEnable(CONV_GLenum(rb_ary_entry(args->caps, i)));
 
     CHECK_GLERROR_FROM("glEnable");
   }
@@ -233,9 +235,11 @@ gl_Disable1(struct gl_endisable_args *args)
 {
   long i;
   VALUE obj = args->obj;
+  DECL_GL_FUNC_PTR(void,glDisable,(GLenum cap));
 
+  LOAD_GL_FUNC(glDisable, NULL);
   for (i = 0; i < RARRAY_LEN(args->caps); i++) {
-    glDisable(CONV_GLenum(rb_ary_entry(args->caps, i)));
+    fptr_glDisable(CONV_GLenum(rb_ary_entry(args->caps, i)));
 
     CHECK_GLERROR_FROM("glDisable");
   }
@@ -318,8 +322,11 @@ gl_EnableClientState1(struct gl_client_state_args *args)
 {
   long i;
   VALUE obj = args->obj;
+  DECL_GL_FUNC_PTR(void,glEnableClientState,(GLenum cap));
+
+  LOAD_GL_FUNC(glEnableClientState, NULL);
   for (i = 0; i < RARRAY_LEN(args->ary); i++) {
-    glEnableClientState(CONV_GLenum(rb_ary_entry(args->ary, i)));
+    fptr_glEnableClientState(CONV_GLenum(rb_ary_entry(args->ary, i)));
 
     CHECK_GLERROR_FROM("glEnableClientState");
   }
@@ -343,8 +350,11 @@ gl_DisableClientState1(struct gl_client_state_args *args)
 {
   long i;
   VALUE obj = args->obj;
+  DECL_GL_FUNC_PTR(void,glDisableClientState,(GLenum cap));
+
+  LOAD_GL_FUNC(glDisableClientState, NULL);
   for (i = 0; i < RARRAY_LEN(args->ary); i++) {
-    glDisableClientState(CONV_GLenum(rb_ary_entry(args->ary, i)));
+    fptr_glDisableClientState(CONV_GLenum(rb_ary_entry(args->ary, i)));
 
     CHECK_GLERROR_FROM("glDisableClientState");
   }
@@ -425,7 +435,11 @@ struct gl_begin0_args {
 static VALUE
 gl_Begin0(struct gl_begin0_args *args)
 {
-  glBegin(args->mode);
+  VALUE obj = args->obj;
+  DECL_GL_FUNC_PTR(void,glBegin,(GLenum mode));
+
+  LOAD_GL_FUNC(glBegin, NULL);
+  fptr_glBegin(args->mode);
 
   if (rb_block_given_p())
     rb_yield(Qundef);
@@ -436,9 +450,12 @@ gl_Begin0(struct gl_begin0_args *args)
 static VALUE
 gl_End(VALUE obj)
 {
+  DECL_GL_FUNC_PTR(void,glEnd,(void));
+
+  LOAD_GL_FUNC(glEnd, NULL);
   SET_GLIMPL_VARIABLE(inside_begin_end, Qfalse);
 
-  glEnd();
+  fptr_glEnd();
 
   CHECK_GLERROR_FROM("glEnd");
 
@@ -463,7 +480,10 @@ gl_Begin(VALUE obj, VALUE mode)
 static VALUE
 gl_PopMatrix(VALUE obj)
 {
-  glPopMatrix();
+  DECL_GL_FUNC_PTR(void,glPopMatrix,(void));
+
+  LOAD_GL_FUNC(glPopMatrix, NULL);
+  fptr_glPopMatrix();
 
   CHECK_GLERROR_FROM("glPopMatrix");
 
@@ -473,7 +493,10 @@ gl_PopMatrix(VALUE obj)
 static VALUE
 gl_PushMatrix0(VALUE obj)
 {
-  glPushMatrix();
+  DECL_GL_FUNC_PTR(void,glPushMatrix,(void));
+
+  LOAD_GL_FUNC(glPushMatrix, NULL);
+  fptr_glPushMatrix();
 
   if (rb_block_given_p())
     rb_yield(Qnil);
@@ -486,22 +509,34 @@ gl_PushMatrix(VALUE obj)
 {
   if (rb_block_given_p())
     return rb_ensure(gl_PushMatrix0, obj, gl_PopMatrix, obj);
-  else
-    glPushMatrix();
+  else {
+    DECL_GL_FUNC_PTR(void,glPushMatrix,(void));
+    LOAD_GL_FUNC(glPushMatrix, NULL);
+    fptr_glPushMatrix();
+  }
 
   return Qnil;
 }
 
+struct gl_list_args {
+  VALUE obj;
+  VALUE list;
+  VALUE mode;
+};
+
 static VALUE
-gl_NewList0(VALUE args)
+gl_NewList0(struct gl_list_args *args)
 {
   GLuint list;
   GLenum mode;
+  VALUE obj = args->obj;
+  DECL_GL_FUNC_PTR(void,glNewList,(GLuint list, GLenum mode));
 
-  list = (GLuint)NUM2UINT(rb_ary_entry(args, 0));
-  mode = RUBY2GLENUM(rb_ary_entry(args, 1));
+  LOAD_GL_FUNC(glNewList, NULL);
+  list = (GLuint)NUM2UINT(args->list);
+  mode = RUBY2GLENUM(args->mode);
 
-  glNewList(list, mode);
+  fptr_glNewList(list, mode);
 
   if (rb_block_given_p())
     rb_yield(Qundef);
@@ -510,24 +545,25 @@ gl_NewList0(VALUE args)
 }
 
 static VALUE
-gl_EndList(VALUE self)
+gl_EndList(VALUE obj)
 {
-  glEndList();
+  DECL_GL_FUNC_PTR(void,glEndList,(void));
+
+  LOAD_GL_FUNC(glEndList, NULL);
+  fptr_glEndList();
 
   return Qnil;
 }
 
 static VALUE
-gl_NewList(VALUE self, VALUE list, VALUE mode)
+gl_NewList(VALUE obj, VALUE list, VALUE mode)
 {
-  VALUE args = rb_ary_new2(2);
-  rb_ary_push(args, list);
-  rb_ary_push(args, mode);
+  struct gl_list_args args = { obj, list, mode };
 
   if (rb_block_given_p())
-    return rb_ensure(gl_NewList0, args, gl_EndList, self);
+    return rb_ensure(gl_NewList0, (VALUE)&args, gl_EndList, obj);
   else
-    gl_NewList0(args);
+    gl_NewList0(&args);
 
   return Qnil;
 }
@@ -539,10 +575,13 @@ VALUE obj,arg1,arg2;
   GLsizei n;
   GLenum type;
   VALUE lists;
+  DECL_GL_FUNC_PTR(GLvoid,glCallLists,(GLsizei n, GLenum type, const GLvoid *lists));
+
+  LOAD_GL_FUNC(glCallLists, NULL);
   type = CONV_GLenum(arg1);
   lists = pack_array_or_pass_string(type,arg2);
   n = (GLsizei)RSTRING_LENINT(lists) / gltype_glformat_unit_size(type,1);
-  glCallLists(n, type, RSTRING_PTR(lists));
+  fptr_glCallLists(n, type, RSTRING_PTR(lists));
   CHECK_GLERROR_FROM("glCallLists");
   return Qnil;
 }
@@ -557,6 +596,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
   GLfloat yorig;
   GLfloat xmove;
   GLfloat ymove;
+  DECL_GL_FUNC_PTR(void,glBitmap,(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte *bitmap));
+
+  LOAD_GL_FUNC(glBitmap, NULL);
   width = (GLsizei)NUM2UINT(arg1);
   height = (GLsizei)NUM2UINT(arg2);
   xorig = (GLfloat)NUM2DBL(arg3);
@@ -564,7 +606,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
   xmove = (GLfloat)NUM2DBL(arg5);
   ymove = (GLfloat)NUM2DBL(arg6);
   if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glBitmap(width, height, xorig, yorig, xmove, ymove, (GLubyte *)NUM2SIZET(arg7));
+    fptr_glBitmap(width, height, xorig, yorig, xmove, ymove, (GLubyte *)NUM2SIZET(arg7));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg7);
@@ -572,7 +614,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
     if ((RSTRING_LEN(data)*8) < (width * height))
       rb_raise(rb_eArgError, "string length:%li", RSTRING_LEN(data));
 
-    glBitmap(width, height, xorig, yorig, xmove, ymove, (const GLubyte *)RSTRING_PTR(data));
+    fptr_glBitmap(width, height, xorig, yorig, xmove, ymove, (const GLubyte *)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glBitmap");
   return Qnil;
@@ -583,9 +625,12 @@ gl_EdgeFlagv(obj,arg1)
 VALUE obj,arg1;
 {
   GLboolean flag[1] = { GL_FALSE };
+  DECL_GL_FUNC_PTR(void,glEdgeFlagv,(const GLboolean *flag));
+
+  LOAD_GL_FUNC(glEdgeFlagv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cboolean(arg1,flag,1);
-  glEdgeFlagv(flag);
+  fptr_glEdgeFlagv(flag);
   CHECK_GLERROR_FROM("glEdgeFlagv");
   return Qnil;
 }
@@ -595,9 +640,12 @@ gl_Indexdv(obj,arg1)
 VALUE obj,arg1;
 {
   GLdouble c[1] = {0.0};
+  DECL_GL_FUNC_PTR(void,glIndexdv,(const GLdouble *c));
+
+  LOAD_GL_FUNC(glIndexdv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cdbl(arg1,c,1);
-  glIndexdv(c);
+  fptr_glIndexdv(c);
   CHECK_GLERROR_FROM("glIndexdv");
   return Qnil;
 }
@@ -607,9 +655,12 @@ gl_Indexfv(obj,arg1)
 VALUE obj,arg1;
 {
   GLfloat c[1] = { (GLfloat)0.0 };
+  DECL_GL_FUNC_PTR(void,glIndexfv,(const GLfloat *c));
+
+  LOAD_GL_FUNC(glIndexfv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cflt(arg1,c,1);
-  glIndexfv(c);
+  fptr_glIndexfv(c);
   CHECK_GLERROR_FROM("glIndexfv");
   return Qnil;
 }
@@ -619,9 +670,12 @@ gl_Indexiv(obj,arg1)
 VALUE obj,arg1;
 {
   GLint c[1] = {0};
+  DECL_GL_FUNC_PTR(void,glIndexiv,(const GLint *c));
+
+  LOAD_GL_FUNC(glIndexiv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cint(arg1,c,1);
-  glIndexiv(c);
+  fptr_glIndexiv(c);
   CHECK_GLERROR_FROM("glIndexiv");
   return Qnil;
 }
@@ -631,9 +685,12 @@ gl_Indexsv(obj,arg1)
 VALUE obj,arg1;
 {
   GLshort c[1] = {0};
+  DECL_GL_FUNC_PTR(void,glIndexsv,(const GLshort *c));
+
+  LOAD_GL_FUNC(glIndexsv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cshort(arg1,c,1);
-  glIndexsv(c);
+  fptr_glIndexsv(c);
   CHECK_GLERROR_FROM("glIndexsv");
   return Qnil;
 }
@@ -644,10 +701,13 @@ VALUE obj,arg1,arg2;
 {
   GLenum plane;
   GLdouble equation[4];
+  DECL_GL_FUNC_PTR(void,glClipPlane,(GLenum plane, const GLdouble *equation));
+
+  LOAD_GL_FUNC(glClipPlane, NULL);
   plane = (GLenum)NUM2INT(arg1);
   Check_Type(arg2,T_ARRAY);
   ary2cdbl(arg2, equation, 4);
-  glClipPlane(plane,equation);
+  fptr_glClipPlane(plane,equation);
   CHECK_GLERROR_FROM("glClipPlane");
   return Qnil;
 }
@@ -658,10 +718,13 @@ VALUE obj,arg1,arg2;
 {
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glFogfv,(GLenum pname, const GLfloat *params));
+
+  LOAD_GL_FUNC(glFogfv, NULL);
   pname = (GLenum)NUM2INT(arg1);
   Check_Type(arg2,T_ARRAY);
   ary2cflt(arg2,params,4);
-  glFogfv(pname,params);
+  fptr_glFogfv(pname,params);
   CHECK_GLERROR_FROM("glFogfv");
   return Qnil;
 }
@@ -672,10 +735,13 @@ VALUE obj,arg1,arg2;
 {
   GLenum pname;
   GLint params[4] = {0,0,0,0};
+  DECL_GL_FUNC_PTR(void,glFogiv,(GLenum pname, const GLint *params));
+
+  LOAD_GL_FUNC(glFogiv, NULL);
   pname = (GLenum)NUM2INT(arg1);
   Check_Type(arg2,T_ARRAY);
   ary2cint(arg2,params,4);
-  glFogiv(pname,params);
+  fptr_glFogiv(pname,params);
   CHECK_GLERROR_FROM("glFogiv");
   return Qnil;
 }
@@ -687,11 +753,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum light;
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glLightfv,(GLenum light, GLenum pname, const GLfloat *params));
+
+  LOAD_GL_FUNC(glLightfv, NULL);
   light = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cflt(arg3,params,4);
-  glLightfv(light,pname,params);
+  fptr_glLightfv(light,pname,params);
   CHECK_GLERROR_FROM("glLightfv");
   return Qnil;
 }
@@ -703,11 +772,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum light;
   GLenum pname;
   GLint params[4]={0,0,0,0};
+  DECL_GL_FUNC_PTR(void,glLightiv,(GLenum light, GLenum pname, const GLint *params));
+
+  LOAD_GL_FUNC(glLightiv, NULL);
   light = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cint(arg3,params,4);
-  glLightiv(light,pname,params);
+  fptr_glLightiv(light,pname,params);
   CHECK_GLERROR_FROM("glLightiv");
   return Qnil;
 }
@@ -718,10 +790,13 @@ VALUE obj,arg1,arg2;
 {
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glLightModelfv,(GLenum pname, const GLfloat *params));
+
+  LOAD_GL_FUNC(glLightModelfv, NULL);
   pname = (GLenum)NUM2INT(arg1);
   Check_Type(arg2,T_ARRAY);
   ary2cflt(arg2,params,4);
-  glLightModelfv(pname,params);
+  fptr_glLightModelfv(pname,params);
   CHECK_GLERROR_FROM("glLightModelfv");
   return Qnil;
 }
@@ -732,10 +807,13 @@ VALUE obj,arg1,arg2;
 {
   GLenum pname;
   GLint params[4] = {0,0,0,0};
+  DECL_GL_FUNC_PTR(void,glLightModeliv,(GLenum pname, const GLint *params));
+
+  LOAD_GL_FUNC(glLightModeliv, NULL);
   pname = (GLenum)NUM2INT(arg1);
   Check_Type(arg2,T_ARRAY);
   ary2cint(arg2,params,4);
-  glLightModeliv(pname,params);
+  fptr_glLightModeliv(pname,params);
   CHECK_GLERROR_FROM("glLightModeliv");
   return Qnil;
 }
@@ -748,11 +826,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum face;
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glMaterialfv,(GLenum face, GLenum pname, const GLfloat *params));
+
+  LOAD_GL_FUNC(glMaterialfv, NULL);
   face = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cflt(arg3,params,4);
-  glMaterialfv(face,pname,params);
+  fptr_glMaterialfv(face,pname,params);
   CHECK_GLERROR_FROM("glMaterialfv");
   return Qnil;
 }
@@ -764,11 +845,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum face;
   GLenum pname;
   GLint params[4] = {0,0,0,0};
+  DECL_GL_FUNC_PTR(void,glMaterialiv,(GLenum face, GLenum pname, const GLint *params));
+
+  LOAD_GL_FUNC(glMaterialiv, NULL);
   face = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cint(arg3,params,4);
-  glMaterialiv(face,pname,params);
+  fptr_glMaterialiv(face,pname,params);
   CHECK_GLERROR_FROM("glMaterialiv");
   return Qnil;
 }
@@ -777,15 +861,18 @@ static VALUE
 gl_PolygonStipple(obj,arg1)
 VALUE obj,arg1;
 {
+  DECL_GL_FUNC_PTR(void,glPolygonStipple,(const GLubyte *mask));
+
+  LOAD_GL_FUNC(glPolygonStipple, NULL);
   if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glPolygonStipple((GLubyte *)NUM2SIZET(arg1));
+    fptr_glPolygonStipple((GLubyte *)NUM2SIZET(arg1));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg1);
     if (RSTRING_LEN(data) < 128)
       rb_raise(rb_eArgError, "string length:%li", RSTRING_LEN(data));
 
-    glPolygonStipple((GLubyte *)RSTRING_PTR(data));
+    fptr_glPolygonStipple((GLubyte *)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glPolygonStipple");
   return Qnil;
@@ -799,11 +886,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum target;
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glTexParameterfv,(GLenum target, GLenum pname, const GLfloat *params));
+
+  LOAD_GL_FUNC(glTexParameterfv, NULL);
   target = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cflt(arg3,params,4);
-  glTexParameterfv(target,pname,params);
+  fptr_glTexParameterfv(target,pname,params);
   CHECK_GLERROR_FROM("glTexParameterfv");
   return Qnil;
 }
@@ -815,11 +905,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum target;
   GLenum pname;
   GLint params[4] = {0,0,0,0};
+  DECL_GL_FUNC_PTR(void,glTexParameteriv,(GLenum target, GLenum pname, const GLint *params));
+
+  LOAD_GL_FUNC(glTexParameteriv, NULL);
   target = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cint(arg3,params,4);
-  glTexParameteriv(target,pname,params);
+  fptr_glTexParameteriv(target,pname,params);
   CHECK_GLERROR_FROM("glTexParameteriv");
   return Qnil;
 }
@@ -836,6 +929,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
   GLenum format;
   GLenum type;
   const char *pixels;
+  DECL_GL_FUNC_PTR(void,glTexImage1D,(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLint border, GLenum format, GLenum type, const GLvoid *pixels));
+
+  LOAD_GL_FUNC(glTexImage1D, NULL);
   target = (GLenum)NUM2INT(arg1);
   level = (GLint)NUM2INT(arg2);
   components = (GLint)NUM2INT(arg3);
@@ -845,7 +941,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
   type = (GLenum)NUM2INT(arg7);
 
   if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glTexImage1D(target,level,components,width,border,format,type,(GLvoid *)NUM2SIZET(arg8));
+    fptr_glTexImage1D(target,level,components,width,border,format,type,(GLvoid *)NUM2SIZET(arg8));
     CHECK_GLERROR_FROM("glTexImage1D");
     return Qnil;
   }
@@ -858,7 +954,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8;
     CheckDataSize(type,format,width,data);
     pixels = RSTRING_PTR(data);
   }
-  glTexImage1D(target,level,components,width,border,format,type,pixels);
+  fptr_glTexImage1D(target,level,components,width,border,format,type,pixels);
   CHECK_GLERROR_FROM("glTexImage1D");
   return Qnil;
 }
@@ -876,6 +972,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
   GLenum format;
   GLenum type;
   const char *pixels;
+  DECL_GL_FUNC_PTR(void,glTexImage2D,(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels));
+
+  LOAD_GL_FUNC(glTexImage2D, NULL);
   target = (GLenum)NUM2INT(arg1);
   level = (GLint)NUM2INT(arg2);
   components = (GLint)NUM2INT(arg3);
@@ -886,7 +985,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
   type = (GLenum)NUM2INT(arg8);
 
   if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glTexImage2D(target,level,components,width,height,border,format,type,(GLvoid *)NUM2SIZET(arg9));
+    fptr_glTexImage2D(target,level,components,width,height,border,format,type,(GLvoid *)NUM2SIZET(arg9));
     CHECK_GLERROR_FROM("glTexImage2D");
     return Qnil;
   }
@@ -899,7 +998,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
     CheckDataSize(type,format,width*height,data);
     pixels = RSTRING_PTR(data);
   }
-  glTexImage2D(target,level,components,width,height,border,format,type,pixels);
+  fptr_glTexImage2D(target,level,components,width,height,border,format,type,pixels);
   CHECK_GLERROR_FROM("glTexImage2D");
   return Qnil;
 }
@@ -911,11 +1010,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum target;
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glTexEnvfv,(GLenum target, GLenum pname, const GLfloat *params));
+
+  LOAD_GL_FUNC(glTexEnvfv, NULL);
   target = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cflt(arg3,params,4);
-  glTexEnvfv(target,pname,params);
+  fptr_glTexEnvfv(target,pname,params);
   CHECK_GLERROR_FROM("glTexEnvfv");
   return Qnil;
 }
@@ -927,11 +1029,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum target;
   GLenum pname;
   GLint params[4] = {0,0,0,0};
+  DECL_GL_FUNC_PTR(void,glTexEnviv,(GLenum target, GLenum pname, const GLint *params));
+
+  LOAD_GL_FUNC(glTexEnviv, NULL);
   target = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cint(arg3,params,4);
-  glTexEnviv(target,pname,params);
+  fptr_glTexEnviv(target,pname,params);
   CHECK_GLERROR_FROM("glTexEnviv");
   return Qnil;
 }
@@ -944,11 +1049,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum coord;
   GLenum pname;
   GLdouble params[4] = {0.0,0.0,0.0,0.0};
+  DECL_GL_FUNC_PTR(void,glTexGendv,(GLenum coord, GLenum pname, const GLdouble *params));
+
+  LOAD_GL_FUNC(glTexGendv, NULL);
   coord = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cdbl(arg3,params,4);
-  glTexGendv(coord,pname,params);
+  fptr_glTexGendv(coord,pname,params);
   CHECK_GLERROR_FROM("glTexGendv");
   return Qnil;
 }
@@ -961,11 +1069,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum coord;
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glTexGenfv,(GLenum coord, GLenum pname, const GLfloat *params));
+
+  LOAD_GL_FUNC(glTexGenfv, NULL);
   coord = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cflt(arg3,params,4);
-  glTexGenfv(coord,pname,params);
+  fptr_glTexGenfv(coord,pname,params);
   CHECK_GLERROR_FROM("glTexGenfv");
   return Qnil;
 }
@@ -978,11 +1089,14 @@ VALUE obj,arg1,arg2,arg3;
   GLenum coord;
   GLenum pname;
   GLint params[4] = {0,0,0,0};
+  DECL_GL_FUNC_PTR(void,glTexGeniv,(GLenum coord, GLenum pname, const GLint *params));
+
+  LOAD_GL_FUNC(glTexGeniv, NULL);
   coord = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   Check_Type(arg3,T_ARRAY);
   ary2cint(arg3,params,4);
-  glTexGeniv(coord,pname,params);
+  fptr_glTexGeniv(coord,pname,params);
   CHECK_GLERROR_FROM("glTexGeniv");
   return Qnil;
 }
@@ -993,11 +1107,14 @@ VALUE obj,arg1,arg2;
   GLsizei size;
   GLenum type;
   VALUE current_feed_buffer;
+  DECL_GL_FUNC_PTR(void,glFeedbackBuffer,(GLsizei size, GLenum type, GLfloat *buffer));
+
+  LOAD_GL_FUNC(glFeedbackBuffer, NULL);
   size = (GLsizei)NUM2UINT(arg1);
   type = (GLenum)NUM2INT(arg2);
   current_feed_buffer = allocate_buffer_with_string(sizeof(GLfloat)*size);
   rb_str_freeze(current_feed_buffer);
-  glFeedbackBuffer(size, type, (GLfloat*)RSTRING_PTR(current_feed_buffer));
+  fptr_glFeedbackBuffer(size, type, (GLfloat*)RSTRING_PTR(current_feed_buffer));
   CHECK_GLERROR_FROM("glFeedbackBuffer");
   SET_GLIMPL_VARIABLE(current_feed_buffer, current_feed_buffer);
   return current_feed_buffer;
@@ -1009,10 +1126,13 @@ VALUE obj,arg1;
 {
   GLsizei size;
   VALUE current_sel_buffer;
+  DECL_GL_FUNC_PTR(void,glSelectBuffer,(GLsizei size, GLuint *buffer));
+
+  LOAD_GL_FUNC(glSelectBuffer, NULL);
   size = (GLsizei)NUM2UINT(arg1);
   current_sel_buffer = allocate_buffer_with_string(sizeof(GLuint)*size);
   rb_str_freeze(current_sel_buffer);
-  glSelectBuffer(size, (GLuint*)RSTRING_PTR(current_sel_buffer));
+  fptr_glSelectBuffer(size, (GLuint*)RSTRING_PTR(current_sel_buffer));
   CHECK_GLERROR_FROM("glSelectBuffer");
   SET_GLIMPL_VARIABLE(current_sel_buffer, current_sel_buffer);
   return current_sel_buffer;
@@ -1031,7 +1151,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
   GLdouble *points;
 
   VALUE work_ary;
+  DECL_GL_FUNC_PTR(void,glMap1d,(GLenum target, GLdouble u1, GLdouble u2, GLint stride, GLint order, const GLdouble *points));
 
+  LOAD_GL_FUNC(glMap1d, NULL);
   target = (GLenum)NUM2INT(arg1);
   u1 = (GLdouble)NUM2DBL(arg2);
   u2 = (GLdouble)NUM2DBL(arg3);
@@ -1040,7 +1162,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
   points = ALLOC_N(GLdouble, order*stride);
   work_ary = rb_funcall(arg6,rb_intern("flatten"),0);
   ary2cdbl(work_ary, points, order*stride);
-  glMap1d(target, u1, u2, stride, order, points);
+  fptr_glMap1d(target, u1, u2, stride, order, points);
   xfree(points);
   CHECK_GLERROR_FROM("glMap1d");
   return Qnil;
@@ -1058,7 +1180,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
   GLfloat *points;
 
   VALUE work_ary;
+  DECL_GL_FUNC_PTR(void,glMap1f,(GLenum target, GLfloat u1, GLfloat u2, GLint stride, GLint order, const GLfloat *points));
 
+  LOAD_GL_FUNC(glMap1f, NULL);
   target = (GLenum)NUM2INT(arg1);
   u1 = (GLfloat)NUM2DBL(arg2);
   u2 = (GLfloat)NUM2DBL(arg3);
@@ -1067,7 +1191,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6;
   points = ALLOC_N(GLfloat, order*stride);
   work_ary = rb_funcall(arg6,rb_intern("flatten"),0);
   ary2cflt(work_ary, points, order*stride);
-  glMap1f(target, u1, u2, stride, order, points);
+  fptr_glMap1f(target, u1, u2, stride, order, points);
   xfree(points);
   CHECK_GLERROR_FROM("glMap1f");
   return Qnil;
@@ -1089,7 +1213,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
   GLdouble *points;
 
   VALUE work_ary;
+  DECL_GL_FUNC_PTR(void,glMap2d,(GLenum target, GLdouble u1, GLdouble u2, GLint ustride, GLint uorder, GLdouble v1, GLdouble v2, GLint vstride, GLint vorder, const GLdouble *points));
 
+  LOAD_GL_FUNC(glMap2d, NULL);
   target = (GLenum)NUM2INT(arg1);
   u1 = (GLdouble)NUM2INT(arg2);
   u2 = (GLdouble)NUM2INT(arg3);
@@ -1102,7 +1228,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
   points = ALLOC_N(GLdouble, MAX(ustride*uorder, vstride*vorder));
   work_ary = rb_funcall(arg10,rb_intern("flatten"),0);
   ary2cdbl(work_ary, points, MAX(ustride*uorder, vstride*vorder));
-  glMap2d(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, points);
+  fptr_glMap2d(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, points);
   xfree(points);
   CHECK_GLERROR_FROM("glMap2d");
   return Qnil;
@@ -1124,7 +1250,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
   GLfloat *points;
 
   VALUE work_ary;
+  DECL_GL_FUNC_PTR(void,glMap2f,(GLenum target, GLfloat u1, GLfloat u2, GLint ustride, GLint uorder, GLfloat v1, GLfloat v2, GLint vstride, GLint vorder, const GLfloat *points));
 
+  LOAD_GL_FUNC(glMap2f, NULL);
   target = (GLenum)NUM2INT(arg1);
   u1 = (GLfloat)NUM2INT(arg2);
   u2 = (GLfloat)NUM2INT(arg3);
@@ -1137,7 +1265,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10;
   points = ALLOC_N(GLfloat, MAX(ustride*uorder, vstride*vorder));
   work_ary = rb_funcall(arg10,rb_intern("flatten"),0);
   ary2cflt(work_ary, points, MAX(ustride*uorder, vstride*vorder));
-  glMap2f(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, points);
+  fptr_glMap2f(target, u1, u2, ustride, uorder, v1, v2, vstride, vorder, points);
   xfree(points);
   CHECK_GLERROR_FROM("glMap2f");
   return Qnil;
@@ -1148,9 +1276,12 @@ gl_EvalCoord1dv(obj,arg1)
 VALUE obj,arg1;
 {
   GLdouble params[1] = {0.0};
+  DECL_GL_FUNC_PTR(void,glEvalCoord1dv,(const GLdouble *u));
+
+  LOAD_GL_FUNC(glEvalCoord1dv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cdbl(arg1,params,1);
-  glEvalCoord1dv(params);
+  fptr_glEvalCoord1dv(params);
   CHECK_GLERROR_FROM("glEvalCoord1dv");
   return Qnil;
 }
@@ -1160,9 +1291,12 @@ gl_EvalCoord1fv(obj,arg1)
 VALUE obj,arg1;
 {
   GLfloat params[1] = {(GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glEvalCoord1fv,(const GLfloat *u));
+
+  LOAD_GL_FUNC(glEvalCoord1fv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cflt(arg1,params,1);
-  glEvalCoord1fv(params);
+  fptr_glEvalCoord1fv(params);
   CHECK_GLERROR_FROM("glEvalCoord1fv");
   return Qnil;
 }
@@ -1172,9 +1306,12 @@ gl_EvalCoord2dv(obj,arg1)
 VALUE obj,arg1;
 {
   GLdouble params[2] = {0.0,0.0};
+  DECL_GL_FUNC_PTR(void,glEvalCoord2dv,(const GLdouble *u));
+
+  LOAD_GL_FUNC(glEvalCoord2dv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cdbl(arg1,params,2);
-  glEvalCoord2dv(params);
+  fptr_glEvalCoord2dv(params);
   CHECK_GLERROR_FROM("glEvalCoord2fv");
   return Qnil;
 }
@@ -1184,9 +1321,12 @@ gl_EvalCoord2fv(obj,arg1)
 VALUE obj,arg1;
 {
   GLfloat params[2] = {(GLfloat)0.0,(GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glEvalCoord2fv,(const GLfloat *u));
+
+  LOAD_GL_FUNC(glEvalCoord2fv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cflt(arg1,params,2);
-  glEvalCoord2fv(params);
+  fptr_glEvalCoord2fv(params);
   CHECK_GLERROR_FROM("glEvalCoord2fv");
   return Qnil;
 }
@@ -1203,6 +1343,8 @@ VALUE obj; \
   _vartype_ *values; \
   GLsizei size; \
   VALUE args[4]; \
+  DECL_GL_FUNC_PTR(void,glPixelMap##_type_##v,(GLenum map, GLsizei mapsize, const _vartype_ *values)); \
+  LOAD_GL_FUNC(glPixelMap##_type_##v, NULL); \
   switch(rb_scan_args(argc, argv, "21", &args[0], &args[1], &args[2])) { \
     default: \
     case 2: \
@@ -1213,7 +1355,7 @@ VALUE obj; \
       size = (int)RARRAY_LENINT(args[1]); \
       values = ALLOC_N(_vartype_,size); \
       _convert_(args[1],values,size); \
-      glPixelMap##_type_##v(map,size,values); \
+      fptr_glPixelMap##_type_##v(map,size,values); \
       xfree(values); \
       break; \
     case 3: \
@@ -1221,7 +1363,7 @@ VALUE obj; \
         rb_raise(rb_eArgError, "Pixel unpack buffer not bound"); \
       map = (GLenum)NUM2INT(args[0]);	 \
       size = (GLsizei)NUM2INT(args[1]); \
-      glPixelMap##_type_##v(map,size,(GLvoid *)NUM2SIZET(args[2])); \
+      fptr_glPixelMap##_type_##v(map,size,(GLvoid *)NUM2SIZET(args[2])); \
       break; \
   } \
   CHECK_GLERROR_FROM("glPixelMap" #_type_ "v"); \
@@ -1249,6 +1391,9 @@ VALUE obj;
   VALUE pixels;
   VALUE args[7];
   int numargs;
+  DECL_GL_FUNC_PTR(void,glReadPixels,(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels));
+
+  LOAD_GL_FUNC(glReadPixels, NULL);
   numargs = rb_scan_args(argc, argv, "61", &args[0], &args[1], &args[2], &args[3], &args[4], &args[5], &args[6]);
   x = (GLint)NUM2INT(args[0]);
   y = (GLint)NUM2INT(args[1]);
@@ -1264,7 +1409,7 @@ VALUE obj;
         rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
       pixels = allocate_buffer_with_string(GetDataSize(type,format,width*height));
       FORCE_PIXEL_STORE_MODE
-      glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING_PTR(pixels));
+      fptr_glReadPixels(x,y,width,height,format,type,(GLvoid*)RSTRING_PTR(pixels));
       RESTORE_PIXEL_STORE_MODE
       CHECK_GLERROR_FROM("glReadPixels");
       return pixels;
@@ -1273,7 +1418,7 @@ VALUE obj;
       if (!CHECK_BUFFER_BINDING(GL_PIXEL_PACK_BUFFER_BINDING))
         rb_raise(rb_eArgError, "Pixel pack buffer not bound");
       FORCE_PIXEL_STORE_MODE
-      glReadPixels(x,y,width,height,format,type,(GLvoid*)NUM2SIZET(args[6]));
+      fptr_glReadPixels(x,y,width,height,format,type,(GLvoid*)NUM2SIZET(args[6]));
       RESTORE_PIXEL_STORE_MODE
       CHECK_GLERROR_FROM("glReadPixels");
       return Qnil;
@@ -1290,18 +1435,21 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5;
   GLenum format;
   GLenum type;
   const char *pixels;
+  DECL_GL_FUNC_PTR(void,glDrawPixels,(GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels));
+
+  LOAD_GL_FUNC(glDrawPixels, NULL);
   width = (GLsizei)NUM2UINT(arg1);
   height = (GLsizei)NUM2UINT(arg2);
   format = (GLenum)NUM2INT(arg3);
   type = (GLenum)NUM2INT(arg4);
   if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glDrawPixels(width,height,format,type,(GLvoid *)NUM2SIZET(arg5));
+    fptr_glDrawPixels(width,height,format,type,(GLvoid *)NUM2SIZET(arg5));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg5);
     CheckDataSize(type,format,width*height,data);
     pixels = RSTRING_PTR(data);
-    glDrawPixels(width,height,format,type,pixels);
+    fptr_glDrawPixels(width,height,format,type,pixels);
   }
   CHECK_GLERROR_FROM("glDrawPixels");
   return Qnil;
@@ -1315,8 +1463,11 @@ VALUE obj,arg1;
   GLdouble equation[4] = {0.0,0.0,0.0,0.0};
   VALUE retary;
   int i;
+  DECL_GL_FUNC_PTR(void,glGetClipPlane,(GLenum plane, GLdouble *equation));
+
+  LOAD_GL_FUNC(glGetClipPlane, NULL);
   plane = (GLenum)NUM2INT(arg1);
-  glGetClipPlane(plane,equation);
+  fptr_glGetClipPlane(plane,equation);
   retary = rb_ary_new2(4);
   for(i=0;i<4;i++)
     rb_ary_push(retary, rb_float_new(equation[i]));
@@ -1334,6 +1485,8 @@ VALUE obj,arg1; \
   VALUE ary, ary2; \
   int i,j; \
   _type_ items[64];  \
+  DECL_GL_FUNC_PTR(void,glGet##_name_##v,(GLenum pname, _type_ *params)); \
+  LOAD_GL_FUNC(glGet##_name_##v, NULL); \
   pname = NUM2INT(arg1); \
   switch(pname) { \
   case GL_ACCUM_CLEAR_VALUE: \
@@ -1435,7 +1588,7 @@ VALUE obj,arg1; \
   case GL_PIXEL_TRANSFORM_2D_MATRIX_EXT: \
   case GL_MODELVIEW1_MATRIX_EXT: \
   case GL_CURRENT_MATRIX_NV: \
-    glGet##_name_##v(pname, items); \
+    fptr_glGet##_name_##v(pname, items); \
     ary = rb_ary_new2(4); \
     for (i = 0; i < 4; i++) { \
       ary2 = rb_ary_new2(4); \
@@ -1446,21 +1599,25 @@ VALUE obj,arg1; \
     CHECK_GLERROR_FROM("glGet" #_name_ "v"); \
     return ary; \
   case GL_POLYGON_STIPPLE: \
-    glGet##_name_##v(pname, items); \
+    fptr_glGet##_name_##v(pname, items); \
     CHECK_GLERROR_FROM("glGet" #_name_ "v"); \
     return rb_str_new((const char*)items, 32); \
   case GL_COMPRESSED_TEXTURE_FORMATS: \
-    glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &nitems); \
-    CHECK_GLERROR_FROM("glGetIntegerv"); \
-    if (nitems<=0||nitems>64) \
-      return INT2NUM(0); \
+    { \
+      DECL_GL_FUNC_PTR(void,glGetIntegerv,(GLenum pname, GLint *params)); \
+      LOAD_GL_FUNC(glGetIntegerv, NULL); \
+      fptr_glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &nitems); \
+      CHECK_GLERROR_FROM("glGetIntegerv"); \
+      if (nitems<=0||nitems>64) \
+        return INT2NUM(0); \
+    } \
     break; \
   default: /* size=1 */ \
-    glGet##_name_##v(pname, items); \
+    fptr_glGet##_name_##v(pname, items); \
     CHECK_GLERROR_FROM("glGet" #_name_ "v"); \
     return _conv_(items[0]); \
   } \
-  glGet##_name_##v(pname, items); \
+  fptr_glGet##_name_##v(pname, items); \
   ary = rb_ary_new2(nitems); \
   for (i = 0; i < nitems; i++) \
     rb_ary_push(ary, _conv_(items[i])); \
@@ -1484,6 +1641,9 @@ VALUE obj,arg1,arg2;
   GLenum pname;
   GLsizei size;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
+  DECL_GL_FUNC_PTR(void,glGetLightfv,(GLenum light, GLenum pname, GLfloat *params));
+
+  LOAD_GL_FUNC(glGetLightfv, NULL);
   light = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   switch(pname) {
@@ -1507,7 +1667,7 @@ VALUE obj,arg1,arg2;
       rb_raise(rb_eArgError, "unknown pname:%d",pname);
       break; /* not reached */
   }
-  glGetLightfv(light,pname,params);
+  fptr_glGetLightfv(light,pname,params);
   RET_ARRAY_OR_SINGLE("glGetLightfv", size, rb_float_new, params);
 }
 
@@ -1519,6 +1679,9 @@ VALUE obj,arg1,arg2;
   GLenum pname;
   GLsizei size;
   GLint params[4] = {0,0,0,0};
+  DECL_GL_FUNC_PTR(void,glGetLightiv,(GLenum light, GLenum pname, GLint *params));
+
+  LOAD_GL_FUNC(glGetLightiv, NULL);
   light = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   switch(pname) {
@@ -1542,7 +1705,7 @@ VALUE obj,arg1,arg2;
       rb_raise(rb_eArgError, "unknown pname:%d",pname);
       break; /* not reached */
   }
-  glGetLightiv(light,pname,params);
+  fptr_glGetLightiv(light,pname,params);
   RET_ARRAY_OR_SINGLE("glGetLightiv", size, INT2NUM, params);
 }
 
@@ -1558,6 +1721,8 @@ VALUE obj,arg1,arg2; \
   int size=0; \
   _type_ *points; \
   GLint order[2] = {0,0}; /* for GL_COEFF, [order] or [uorder,vorder] (MAP1/MAP2) */ \
+  DECL_GL_FUNC_PTR(void,gl##_name_,(GLenum target, GLenum query, _type_ *v)); \
+  LOAD_GL_FUNC(gl##_name_, NULL); \
   target = (GLenum)NUM2INT(arg1); \
   query = (GLenum)NUM2INT(arg2); \
   switch(target) { \
@@ -1587,19 +1752,23 @@ VALUE obj,arg1,arg2; \
     case GL_ORDER: size = dims;	break; \
     case GL_DOMAIN: size = dims*2; break; \
     case GL_COEFF: \
-      glGetMapiv(target,GL_ORDER,order); \
-      CHECK_GLERROR_FROM("glGetMapiv"); \
-      if (dims==1) \
-        size = order[0] * pointsize; \
-      else \
-        size = (order[0]*order[1]) * pointsize; \
+      { \
+        DECL_GL_FUNC_PTR(void,glGetMapiv,(GLenum target, GLenum query, GLint *v)); \
+        LOAD_GL_FUNC(glGetMapiv, NULL); \
+        fptr_glGetMapiv(target,GL_ORDER,order); \
+        CHECK_GLERROR_FROM("glGetMapiv"); \
+        if (dims==1) \
+          size = order[0] * pointsize; \
+        else \
+          size = (order[0]*order[1]) * pointsize; \
+      } \
       break; \
     default: \
       rb_raise(rb_eArgError, "unknown target:%d",target); \
       break; /* not reached */ \
   } \
   points = ALLOC_N(_type_,size); \
-  gl##_name_(target,query,points); \
+  fptr_gl##_name_(target,query,points); \
 \
   RET_ARRAY_OR_SINGLE_FREE("gl" #_name_, size, RETCONV_##_type_, points); \
 }
@@ -1617,6 +1786,9 @@ VALUE obj,arg1,arg2;
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
   int size;
+  DECL_GL_FUNC_PTR(void,glGetMaterialfv,(GLenum face, GLenum pname, GLfloat *params));
+
+  LOAD_GL_FUNC(glGetMaterialfv, NULL);
   face = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   switch(pname) {
@@ -1636,7 +1808,7 @@ VALUE obj,arg1,arg2;
       rb_raise(rb_eArgError, "unknown pname:%d",pname);
       break; /* not reached */
   }
-  glGetMaterialfv(face,pname,params);
+  fptr_glGetMaterialfv(face,pname,params);
   RET_ARRAY_OR_SINGLE("glGetMaterialfv", size, rb_float_new, params);
 }
 
@@ -1648,6 +1820,9 @@ VALUE obj,arg1,arg2;
   GLenum pname;
   GLint params[4] = {0,0,0,0};
   int size;
+  DECL_GL_FUNC_PTR(void,glGetMaterialiv,(GLenum face, GLenum pname, GLint *params));
+
+  LOAD_GL_FUNC(glGetMaterialiv, NULL);
   face = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   switch(pname) {
@@ -1667,7 +1842,7 @@ VALUE obj,arg1,arg2;
       rb_raise(rb_eArgError, "unknown pname:%d",pname);
       break; /* not reached */
   }
-  glGetMaterialiv(face,pname,params);
+  fptr_glGetMaterialiv(face,pname,params);
   RET_ARRAY_OR_SINGLE("glGetMaterialiv", size, INT2NUM, params);
 }
 
@@ -1683,6 +1858,8 @@ VALUE obj; \
   GLint size = 0; \
   _vartype_ *values; \
   VALUE args[2]; \
+  DECL_GL_FUNC_PTR(void,glGetPixelMap##_type_##v,(GLenum map, _vartype_ *values)); \
+  LOAD_GL_FUNC(glGetPixelMap##_type_##v, NULL); \
   switch (rb_scan_args(argc, argv, "11", &args[0], &args[1])) { \
     default: \
     case 1: \
@@ -1706,10 +1883,14 @@ VALUE obj; \
           rb_raise(rb_eArgError, "unknown map:%d",map); \
           break; \
       } \
-      glGetIntegerv(map_size,&size); \
+      { \
+        DECL_GL_FUNC_PTR(void,glGetIntegerv,(GLenum pname, GLint *params)); \
+        LOAD_GL_FUNC(glGetIntegerv, NULL); \
+        fptr_glGetIntegerv(map_size,&size); \
+      } \
       CHECK_GLERROR_FROM("glGetIntegerv"); \
       values = ALLOC_N(_vartype_,size); \
-      glGetPixelMap##_type_##v(map,values); \
+      fptr_glGetPixelMap##_type_##v(map,values); \
       RET_ARRAY_OR_SINGLE_FREE("glGetPixelMap" #_type_ "v", size, _convert_, \
           values); \
       break; \
@@ -1718,7 +1899,7 @@ VALUE obj; \
         rb_raise(rb_eArgError, "Pixel pack buffer not bound"); \
 \
       map = (GLenum)NUM2INT(args[0]); \
-      glGetPixelMap##_type_##v(map,(GLvoid*)NUM2SIZET(args[1])); \
+      fptr_glGetPixelMap##_type_##v(map,(GLvoid*)NUM2SIZET(args[1])); \
       CHECK_GLERROR_FROM("glGetPixelMap" #_type_ "v"); \
       return Qnil; \
   } \
@@ -1737,6 +1918,9 @@ VALUE obj;
 {
   VALUE args[1];
   GLubyte mask[128];
+  DECL_GL_FUNC_PTR(void,glGetPolygonStipple,(GLubyte *mask));
+
+  LOAD_GL_FUNC(glGetPolygonStipple, NULL);
   switch(rb_scan_args(argc, argv, "01", &args[0])) {
     default:
     case 0:
@@ -1744,14 +1928,14 @@ VALUE obj;
         rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
       memset(mask, 0x0, sizeof(GLubyte)*128);
       FORCE_PIXEL_STORE_MODE
-      glGetPolygonStipple(mask);
+      fptr_glGetPolygonStipple(mask);
       RESTORE_PIXEL_STORE_MODE
       CHECK_GLERROR_FROM("glGetPolygonStipple");
       return rb_str_new((const char*)mask, 128);
     case 1:
       if (!CHECK_BUFFER_BINDING(GL_PIXEL_PACK_BUFFER_BINDING))
         rb_raise(rb_eArgError, "Pixel pack buffer not bound");
-      glGetPolygonStipple((GLvoid *)NUM2SIZET(args[0]));
+      fptr_glGetPolygonStipple((GLvoid *)NUM2SIZET(args[0]));
       CHECK_GLERROR_FROM("glGetPolygonStipple");
       return Qnil;
   }
@@ -1763,8 +1947,11 @@ VALUE obj,arg1;
 {
   GLenum name;
   const GLubyte *ret;
+  DECL_GL_FUNC_PTR(const GLubyte *,glGetString,(GLenum name));
+
+  LOAD_GL_FUNC(glGetString, NULL);
   name = (GLenum)NUM2INT(arg1);
-  ret = glGetString(name);
+  ret = fptr_glGetString(name);
   CHECK_GLERROR_FROM("glGetString");
   return rb_str_new2((const char*)ret);
 }
@@ -1778,6 +1965,8 @@ VALUE obj,arg1,arg2; \
   GLenum pname; \
   _type_ params[4] = {(_type_)0.0, (_type_)0.0, (_type_)0.0, (_type_)0.0}; \
   int size; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum target, GLenum pname, _type_ *params)); \
+  LOAD_GL_FUNC(gl##_name_, NULL); \
   target = (GLenum)NUM2INT(arg1); \
   pname = (GLenum)NUM2INT(arg2); \
   switch(pname) { \
@@ -1794,7 +1983,7 @@ VALUE obj,arg1,arg2; \
       size = 1; \
       break; \
   } \
-  gl##_name_(target,pname,params); \
+  fptr_gl##_name_(target,pname,params); \
   RET_ARRAY_OR_SINGLE("gl" #_name_, size, RETCONV_##_type_, params); \
 }
 
@@ -1811,6 +2000,8 @@ VALUE obj,arg1,arg2; \
   GLenum pname; \
   _type_ params[4] = {(_type_)0.0, (_type_)0.0, (_type_)0.0, (_type_)0.0}; \
   int size; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_name_,(GLenum coord, GLenum pname, _type_ *params)); \
+  LOAD_GL_FUNC(gl##_name_, NULL); \
   coord = (GLenum)NUM2INT(arg1); \
   pname = (GLenum)NUM2INT(arg2); \
   switch(pname) { \
@@ -1822,7 +2013,7 @@ VALUE obj,arg1,arg2; \
       size = 1; \
       break; \
   } \
-  gl##_name_(coord,pname,params); \
+  fptr_gl##_name_(coord,pname,params); \
   RET_ARRAY_OR_SINGLE("gl" #_name_, size, RETCONV_##_type_, params); \
 }
 
@@ -1849,6 +2040,9 @@ VALUE obj;
   VALUE pixels;
   VALUE args[5];
   int numargs;
+  DECL_GL_FUNC_PTR(void,glGetTexImage,(GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels));
+
+  LOAD_GL_FUNC(glGetTexImage, NULL);
   numargs = rb_scan_args(argc, argv, "41", &args[0], &args[1], &args[2], &args[3], &args[4]);
   tex = (GLenum)NUM2INT(args[0]);
   lod = (GLint)NUM2INT(args[1]);
@@ -1857,55 +2051,59 @@ VALUE obj;
   switch(numargs) {
     default:
     case 4:
-      if (CHECK_BUFFER_BINDING(GL_PIXEL_PACK_BUFFER_BINDING))
-        rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
+      {
+        DECL_GL_FUNC_PTR(void,glGetTexLevelParameteriv,(GLenum target, GLint level, GLenum pname, GLint *params));
+        LOAD_GL_FUNC(glGetTexLevelParameteriv, NULL);
+        if (CHECK_BUFFER_BINDING(GL_PIXEL_PACK_BUFFER_BINDING))
+          rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
 
-      size = 1;
-      switch(tex) {
-        case GL_TEXTURE_4D_SGIS:
-          glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_4DSIZE_SGIS,&size4d);
-          size *= size4d;
-          /* fall through */
-        case GL_TEXTURE_3D:
-        case GL_TEXTURE_1D_STACK_MESAX:
-        case GL_TEXTURE_2D_STACK_MESAX:
-          glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_DEPTH,&depth);
-          size *= depth;
-          /* fall through */
-        case GL_TEXTURE_2D:
-        case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
-        case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
-        case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
-        case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
-        case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
-        case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
-        case GL_TEXTURE_RECTANGLE_ARB:
-        case GL_DETAIL_TEXTURE_2D_SGIS:
-          glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_HEIGHT,&height);
-          size *= height;
-          /* fall through */
-        case GL_TEXTURE_1D:
-          glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_WIDTH,&width);
-          size *= width;
-          break;
-        default:
-          rb_raise(rb_eArgError, "Target type not supported");
+        size = 1;
+        switch(tex) {
+          case GL_TEXTURE_4D_SGIS:
+            fptr_glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_4DSIZE_SGIS,&size4d);
+            size *= size4d;
+            /* fall through */
+          case GL_TEXTURE_3D:
+          case GL_TEXTURE_1D_STACK_MESAX:
+          case GL_TEXTURE_2D_STACK_MESAX:
+            fptr_glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_DEPTH,&depth);
+            size *= depth;
+            /* fall through */
+          case GL_TEXTURE_2D:
+          case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
+          case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
+          case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
+          case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
+          case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
+          case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
+          case GL_TEXTURE_RECTANGLE_ARB:
+          case GL_DETAIL_TEXTURE_2D_SGIS:
+            fptr_glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_HEIGHT,&height);
+            size *= height;
+            /* fall through */
+          case GL_TEXTURE_1D:
+            fptr_glGetTexLevelParameteriv(tex,lod,GL_TEXTURE_WIDTH,&width);
+            size *= width;
+            break;
+          default:
+            rb_raise(rb_eArgError, "Target type not supported");
+        }
+        CHECK_GLERROR_FROM("glGetTexLevelParameteriv");
+        pixels = allocate_buffer_with_string(GetDataSize(type,format,size));
+
+        FORCE_PIXEL_STORE_MODE
+        fptr_glGetTexImage(tex,lod,format,type,(GLvoid*)RSTRING_PTR(pixels));
+        RESTORE_PIXEL_STORE_MODE
+        CHECK_GLERROR_FROM("glGetTexImage");
+        return pixels;
       }
-      CHECK_GLERROR_FROM("glGetTexLevelParameteriv");
-      pixels = allocate_buffer_with_string(GetDataSize(type,format,size));
-
-      FORCE_PIXEL_STORE_MODE
-      glGetTexImage(tex,lod,format,type,(GLvoid*)RSTRING_PTR(pixels));
-      RESTORE_PIXEL_STORE_MODE
-      CHECK_GLERROR_FROM("glGetTexImage");
-      return pixels;
       break;
     case 5:
       if (!CHECK_BUFFER_BINDING(GL_PIXEL_PACK_BUFFER_BINDING))
         rb_raise(rb_eArgError, "Pixel pack buffer not bound");
 
       FORCE_PIXEL_STORE_MODE
-      glGetTexImage(tex,lod,format,type,(GLvoid*)NUM2SIZET(args[4]));
+      fptr_glGetTexImage(tex,lod,format,type,(GLvoid*)NUM2SIZET(args[4]));
       RESTORE_PIXEL_STORE_MODE
       CHECK_GLERROR_FROM("glGetTexImage");
     return Qnil;
@@ -1920,6 +2118,9 @@ VALUE obj,arg1,arg2;
   GLenum pname;
   GLfloat params[4] = {(GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0, (GLfloat)0.0};
   int size;
+  DECL_GL_FUNC_PTR(void,glGetTexParameterfv,(GLenum target, GLenum pname, GLfloat *params));
+
+  LOAD_GL_FUNC(glGetTexParameterfv, NULL);
   target = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   switch(pname) {
@@ -1933,7 +2134,7 @@ VALUE obj,arg1,arg2;
       size = 1;
       break;
   }
-  glGetTexParameterfv(target,pname,params);
+  fptr_glGetTexParameterfv(target,pname,params);
   RET_ARRAY_OR_SINGLE("glGetTexParameterfv", size, RETCONV_GLfloat, params);
 }
 
@@ -1945,6 +2146,9 @@ VALUE obj,arg1,arg2;
   GLenum pname;
   GLint params[4] = {0,0,0,0};
   int size;
+  DECL_GL_FUNC_PTR(void,glGetTexParameteriv,(GLenum target, GLenum pname, GLint *params));
+
+  LOAD_GL_FUNC(glGetTexParameteriv, NULL);
   target = (GLenum)NUM2INT(arg1);
   pname = (GLenum)NUM2INT(arg2);
   switch(pname) {
@@ -1958,7 +2162,7 @@ VALUE obj,arg1,arg2;
       size = 1;
       break;
   }
-  glGetTexParameteriv(target,pname,params);
+  fptr_glGetTexParameteriv(target,pname,params);
   RET_ARRAY_OR_SINGLE_BOOL("glGetTexParameteriv", size, cond_GLBOOL2RUBY,
       pname, params);
 }
@@ -1971,10 +2175,13 @@ VALUE obj,arg1,arg2,arg3;
   GLint level;
   GLenum pname;
   GLfloat params = (GLfloat)0.0;
+  DECL_GL_FUNC_PTR(void,glGetTexLevelParameterfv,(GLenum target, GLint level, GLenum pname, GLfloat *params));
+
+  LOAD_GL_FUNC(glGetTexLevelParameterfv, NULL);
   target = (GLenum)NUM2INT(arg1);
   level = (GLint)NUM2INT(arg2);
   pname = (GLenum)NUM2INT(arg3);
-  glGetTexLevelParameterfv(target,level,pname,&params);
+  fptr_glGetTexLevelParameterfv(target,level,pname,&params);
   CHECK_GLERROR_FROM("glGetTexLevelParameterfv");
   return RETCONV_GLfloat(params);
 }
@@ -1987,10 +2194,13 @@ VALUE obj,arg1,arg2,arg3;
   GLint level;
   GLenum pname;
   GLint params = 0;
+  DECL_GL_FUNC_PTR(void,glGetTexLevelParameteriv,(GLenum target, GLint level, GLenum pname, GLint *params));
+
+  LOAD_GL_FUNC(glGetTexLevelParameteriv, NULL);
   target = (GLenum)NUM2INT(arg1);
   level = (GLint)NUM2INT(arg2);
   pname = (GLenum)NUM2INT(arg3);
-  glGetTexLevelParameteriv(target,level,pname,&params);
+  fptr_glGetTexLevelParameteriv(target,level,pname,&params);
   CHECK_GLERROR_FROM("glGetTexLevelParameteriv");
   return cond_GLBOOL2RUBY(pname,params);
 }
@@ -2001,8 +2211,11 @@ gl_LoadMatrixf(obj,arg1)
 VALUE obj,arg1;
 {
   GLfloat m[4*4];
+  DECL_GL_FUNC_PTR(void,glLoadMatrixf,(const GLfloat *m));
+
+  LOAD_GL_FUNC(glLoadMatrixf, NULL);
   ary2cmatfloat(arg1, m, 4, 4);
-  glLoadMatrixf(m);
+  fptr_glLoadMatrixf(m);
   CHECK_GLERROR_FROM("glLoadMatrixf");
   return Qnil;
 }
@@ -2012,8 +2225,11 @@ gl_LoadMatrixd(obj,arg1)
 VALUE obj,arg1;
 {
   GLdouble m[4*4];
+  DECL_GL_FUNC_PTR(void,glLoadMatrixd,(const GLdouble *m));
+
+  LOAD_GL_FUNC(glLoadMatrixd, NULL);
   ary2cmatdouble(arg1, m, 4, 4);
-  glLoadMatrixd(m);
+  fptr_glLoadMatrixd(m);
   CHECK_GLERROR_FROM("glLoadMatrixd");
   return Qnil;
 }
@@ -2023,8 +2239,11 @@ gl_MultMatrixf(obj,arg1)
 VALUE obj,arg1;
 {
   GLfloat m[4*4];
+  DECL_GL_FUNC_PTR(void,glMultMatrixf,(const GLfloat *m));
+
+  LOAD_GL_FUNC(glMultMatrixf, NULL);
   ary2cmatfloat(arg1, m, 4, 4);
-  glMultMatrixf(m);
+  fptr_glMultMatrixf(m);
   CHECK_GLERROR_FROM("glMultMatrixf");
   return Qnil;
 }
@@ -2034,8 +2253,11 @@ gl_MultMatrixd(obj,arg1)
 VALUE obj,arg1;
 {
   GLdouble m[4*4];
+  DECL_GL_FUNC_PTR(void,glMultMatrixd,(const GLdouble *m));
+
+  LOAD_GL_FUNC(glMultMatrixd, NULL);
   ary2cmatdouble(arg1, m, 4, 4);
-  glMultMatrixd(m);
+  fptr_glMultMatrixd(m);
   CHECK_GLERROR_FROM("glMultMatrixd");
   return Qnil;
 }
@@ -2049,18 +2271,20 @@ VALUE obj, arg1, arg2, arg3, arg4; \
   GLint size; \
   GLenum type; \
   GLsizei stride; \
+  DECL_GL_FUNC_PTR(GLvoid,gl##_func_##Pointer,(GLint size, GLenum type, GLsizei stride, const GLvoid *ptr)); \
+  LOAD_GL_FUNC(gl##_func_##Pointer, NULL); \
   size = (GLint)NUM2INT(arg1); \
   type = (GLenum)NUM2INT(arg2); \
   stride = (GLsizei)NUM2UINT(arg3); \
   if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) { \
     SET_GLIMPL_VARIABLE(_func_##_ptr, arg4); \
-    gl##_func_##Pointer(size, type, stride, (const GLvoid*)NUM2SIZET(arg4)); \
+    fptr_gl##_func_##Pointer(size, type, stride, (const GLvoid*)NUM2SIZET(arg4)); \
   } else { \
     VALUE data; \
     data = pack_array_or_pass_string(type,arg4); \
     rb_str_freeze(data); \
     SET_GLIMPL_VARIABLE(_func_##_ptr, data); \
-    gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING_PTR(data)); \
+    fptr_gl##_func_##Pointer(size, type, stride, (const GLvoid*)RSTRING_PTR(data)); \
   } \
   CHECK_GLERROR_FROM("gl" #_func_ "Pointer"); \
   return Qnil; \
@@ -2079,15 +2303,18 @@ VALUE obj,arg1,arg2,arg3,arg4;
   GLenum mode;
   GLsizei count;
   GLenum type;
+  DECL_GL_FUNC_PTR(void,glDrawElements,(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices));
+
+  LOAD_GL_FUNC(glDrawElements, NULL);
   mode = (GLenum)NUM2INT(arg1);
   count = (GLsizei)NUM2UINT(arg2);
   type = (GLenum)NUM2INT(arg3);
   if (CHECK_BUFFER_BINDING(GL_ELEMENT_ARRAY_BUFFER_BINDING)) {
-    glDrawElements(mode, count, type, (const GLvoid*)NUM2SIZET(arg4));
+    fptr_glDrawElements(mode, count, type, (const GLvoid*)NUM2SIZET(arg4));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg4);
-    glDrawElements(mode, count, type, (const GLvoid*)RSTRING_PTR(data));
+    fptr_glDrawElements(mode, count, type, (const GLvoid*)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glDrawElements");
   return Qnil;
@@ -2098,16 +2325,19 @@ gl_EdgeFlagPointer(obj,arg1,arg2)
 VALUE obj,arg1,arg2;
 {
   GLsizei stride;
+  DECL_GL_FUNC_PTR(void,glEdgeFlagPointer,(GLsizei stride, const GLvoid *ptr));
+
+  LOAD_GL_FUNC(glEdgeFlagPointer, NULL);
   stride = (GLsizei)NUM2UINT(arg1);
   if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
     SET_GLIMPL_VARIABLE(EdgeFlag_ptr, arg2);
-    glEdgeFlagPointer(stride, (const GLvoid*) NUM2SIZET(arg2));
+    fptr_glEdgeFlagPointer(stride, (const GLvoid*) NUM2SIZET(arg2));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(GL_UNSIGNED_BYTE,arg2);
     rb_str_freeze(data);
     SET_GLIMPL_VARIABLE(EdgeFlag_ptr, data);
-    glEdgeFlagPointer(stride, (const GLvoid*)RSTRING_PTR(data));
+    fptr_glEdgeFlagPointer(stride, (const GLvoid*)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glEdgeFlagPointer");
   return Qnil;
@@ -2118,6 +2348,7 @@ gl_GetPointerv(obj,arg1)
 VALUE obj,arg1;
 {
   GLenum pname;
+
   pname = (GLenum)NUM2INT(arg1);
   switch (pname) {
     case GL_VERTEX_ARRAY_POINTER:
@@ -2153,16 +2384,19 @@ VALUE obj,arg1,arg2,arg3;
 {
   GLenum type;
   GLsizei stride;
+  DECL_GL_FUNC_PTR(void,glIndexPointer,(GLenum type, GLsizei stride, const GLvoid *ptr));
+
+  LOAD_GL_FUNC(glIndexPointer, NULL);
   type = (GLenum)NUM2INT(arg1);
   stride = (GLsizei)NUM2UINT(arg2);
   if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
     SET_GLIMPL_VARIABLE(Index_ptr, arg3);
-    glIndexPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
+    fptr_glIndexPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg3);
     SET_GLIMPL_VARIABLE(Index_ptr, data);
-    glIndexPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
+    fptr_glIndexPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glIndexPointer");
   return Qnil;
@@ -2175,12 +2409,15 @@ VALUE obj,arg1,arg2,arg3;
   GLenum format;
   GLsizei stride;
   VALUE data;
+  DECL_GL_FUNC_PTR(void,glInterleavedArrays,(GLenum format, GLsizei stride, const GLvoid *pointer));
+
+  LOAD_GL_FUNC(glInterleavedArrays, NULL);
   format = (GLenum)NUM2INT(arg1);
   stride = (GLsizei)NUM2UINT(arg2);
   /* FIXME: add support for GL_C4UB_V2F,GL_C4UB_V3F, GL_T2F_C4UB_V3 */
   data = pack_array_or_pass_string(GL_FLOAT,arg3);
   rb_str_freeze(data);
-  glInterleavedArrays(format, stride, (const GLvoid*)RSTRING_PTR(data));
+  fptr_glInterleavedArrays(format, stride, (const GLvoid*)RSTRING_PTR(data));
   CHECK_GLERROR_FROM("glInterleavedArrays");
   return Qnil;
 }
@@ -2191,17 +2428,20 @@ VALUE obj,arg1,arg2,arg3;
 {
   GLenum type;
   GLsizei stride;
+  DECL_GL_FUNC_PTR(void,glNormalPointer,(GLenum type, GLsizei stride, const GLvoid *ptr));
+
+  LOAD_GL_FUNC(glNormalPointer, NULL);
   type = (GLenum)NUM2INT(arg1);
   stride = (GLsizei)NUM2UINT(arg2);
   if (CHECK_BUFFER_BINDING(GL_ARRAY_BUFFER_BINDING)) {
     SET_GLIMPL_VARIABLE(Normal_ptr, arg3);
-    glNormalPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
+    fptr_glNormalPointer(type, stride, (const GLvoid*)NUM2SIZET(arg3));
   } else {
     VALUE data;
     data = pack_array_or_pass_string(type,arg3);
     rb_str_freeze(data);
     SET_GLIMPL_VARIABLE(Normal_ptr, data);
-    glNormalPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
+    fptr_glNormalPointer(type, stride, (const GLvoid*)RSTRING_PTR(data));
   }
   CHECK_GLERROR_FROM("glNormalPointer");
   return Qnil;
@@ -2219,6 +2459,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
   GLenum format;
   GLenum type;
   VALUE data;
+  DECL_GL_FUNC_PTR(void,glTexSubImage1D,(GLenum target, GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const GLvoid *pixels));
+
+  LOAD_GL_FUNC(glTexSubImage1D, NULL);
   target = (GLenum)NUM2INT(arg1);
   level = (GLint)NUM2INT(arg2);
   xoffset = (GLint)NUM2INT(arg3);
@@ -2227,7 +2470,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
   type = (GLenum)NUM2INT(arg6);
 
   if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glTexSubImage1D(target,level,xoffset,width,format,type,(GLvoid *)NUM2SIZET(arg7));
+    fptr_glTexSubImage1D(target,level,xoffset,width,format,type,(GLvoid *)NUM2SIZET(arg7));
     CHECK_GLERROR_FROM("glTexSubImage1D");
     return Qnil;
   }
@@ -2235,7 +2478,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7;
   data = pack_array_or_pass_string(type,arg7);
   CheckDataSize(type,format,width,data);
 
-  glTexSubImage1D(target,level,xoffset,width,format,type,RSTRING_PTR(data));
+  fptr_glTexSubImage1D(target,level,xoffset,width,format,type,RSTRING_PTR(data));
   CHECK_GLERROR_FROM("glTexSubImage1D");
   return Qnil;
 }
@@ -2253,6 +2496,9 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
   GLenum format;
   GLenum type;
   VALUE data;
+  DECL_GL_FUNC_PTR(void,glTexSubImage2D,(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels));
+
+  LOAD_GL_FUNC(glTexSubImage2D, NULL);
   target = (GLenum)NUM2INT(arg1);
   level = (GLint)NUM2INT(arg2);
   xoffset = (GLint)NUM2INT(arg3);
@@ -2263,7 +2509,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
   type = (GLenum)NUM2INT(arg8);
 
   if (CHECK_BUFFER_BINDING(GL_PIXEL_UNPACK_BUFFER_BINDING)) {
-    glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,(GLvoid *)NUM2SIZET(arg9));
+    fptr_glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,(GLvoid *)NUM2SIZET(arg9));
     CHECK_GLERROR_FROM("glTexSubImage2D");
     return Qnil;
   }
@@ -2271,7 +2517,7 @@ VALUE obj,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9;
   data = pack_array_or_pass_string(type,arg9);
   CheckDataSize(type,format,width*height,data);
 
-  glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,RSTRING_PTR(data));
+  fptr_glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,RSTRING_PTR(data));
   CHECK_GLERROR_FROM("glTexSubImage2D");
   return Qnil;
 }
@@ -2287,12 +2533,15 @@ VALUE obj,arg1;
   VALUE retary;
   VALUE ary;
   int i;
+  DECL_GL_FUNC_PTR(GLboolean,glAreTexturesResident,(GLsizei n, const GLuint *textures, GLboolean *residences));
+
+  LOAD_GL_FUNC(glAreTexturesResident, NULL);
   ary = rb_Array(arg1);
   size = (int)RARRAY_LENINT(ary);
   textures = ALLOC_N(GLuint,size);
   residences = ALLOC_N(GLboolean,size);
   ary2cuint(ary,textures,size);
-  r = glAreTexturesResident(size,textures,residences);
+  r = fptr_glAreTexturesResident(size,textures,residences);
   retary = rb_ary_new2(size);
   if (r==GL_TRUE) { /* all are resident */
     for(i=0;i<size;i++)
@@ -2317,6 +2566,9 @@ VALUE obj,arg1,arg2;
   GLuint *textures;
   GLclampf *priorities;
   GLsizei size;
+  DECL_GL_FUNC_PTR(void,glPrioritizeTextures,(GLsizei n, const GLuint *textures, const GLclampf *priorities));
+
+  LOAD_GL_FUNC(glPrioritizeTextures, NULL);
   Check_Type(arg1,T_ARRAY);
   Check_Type(arg2,T_ARRAY);
   if ((size = (GLsizei)RARRAY_LENINT(arg1)) != (GLsizei)RARRAY_LENINT(arg2))
@@ -2325,7 +2577,7 @@ VALUE obj,arg1,arg2;
   priorities = ALLOC_N(GLclampf,size);
   ary2cuint(arg1,textures,size);
   ary2cflt(arg2,priorities,size);
-  glPrioritizeTextures(size,textures,priorities);
+  fptr_glPrioritizeTextures(size,textures,priorities);
   xfree(textures);
   xfree(priorities);
   CHECK_GLERROR_FROM("glPrioritizeTextures");
@@ -2337,9 +2589,12 @@ gl_Indexubv(obj,arg1)
 VALUE obj,arg1;
 {
   GLubyte c[1] = {0};
+  DECL_GL_FUNC_PTR(void,glIndexubv,(const GLubyte *c));
+
+  LOAD_GL_FUNC(glIndexubv, NULL);
   Check_Type(arg1,T_ARRAY);
   ary2cubyte(arg1,c,1);
-  glIndexubv(c);
+  fptr_glIndexubv(c);
   CHECK_GLERROR_FROM("glIndexubv");
   return Qnil;
 }

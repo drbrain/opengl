@@ -144,6 +144,19 @@ GLboolean CheckVersionExtension(VALUE obj, const char *name)
 	}
 }
 
+void EnsureVersionExtension(VALUE obj, const char *verext)
+{
+  if (CheckVersionExtension(obj, verext) == GL_FALSE) {
+    if (isdigit(verext[0])) {
+      rb_raise(rb_eNotImpError,
+        "OpenGL version %s is not available on this system",verext);
+    } else {
+      rb_raise(rb_eNotImpError,
+        "Extension %s is not available on this system",verext);
+    }
+  }
+}
+
 /* Checks if given OpenGL version or extension is available
  */
 static VALUE

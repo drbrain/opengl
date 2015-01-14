@@ -375,7 +375,11 @@ VALUE obj;
 		case 2:
 			if (CHECK_BUFFER_BINDING(GL_PIXEL_PACK_BUFFER_BINDING))
 				rb_raise(rb_eArgError, "Pixel pack buffer bound, but offset argument missing");
-			glGetTexLevelParameteriv(target,lod,GL_TEXTURE_COMPRESSED_IMAGE_SIZE,&size); /* 1.0 function */
+      {
+        DECL_GL_FUNC_PTR(void,glGetTexLevelParameteriv,(GLenum target, GLint level, GLenum pname, GLint *params));
+        LOAD_GL_FUNC(glGetTexLevelParameteriv, NULL);
+        fptr_glGetTexLevelParameteriv(target,lod,GL_TEXTURE_COMPRESSED_IMAGE_SIZE,&size); /* 1.0 function */
+      }
 			CHECK_GLERROR_FROM("glGetTexLevelParameteriv");
 			data = allocate_buffer_with_string(size);
 			fptr_glGetCompressedTexImage(target,lod,(GLvoid*)RSTRING_PTR(data));

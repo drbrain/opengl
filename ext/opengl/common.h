@@ -79,24 +79,35 @@
   force them to defaults on each affected function call for
   correct size requirement calculations */
 #define FORCE_PIXEL_STORE_MODE \
-	glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT); \
-	glPixelStorei(GL_PACK_ALIGNMENT, 1); \
-	glPixelStorei(GL_PACK_SKIP_PIXELS, 0); \
-	glPixelStorei(GL_PACK_SKIP_ROWS, 0); \
-	glPixelStorei(GL_PACK_ROW_LENGTH, 0); \
-	glPixelStorei(GL_PACK_SKIP_IMAGES, 0); \
-	glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0); \
-	if (CheckVersionExtension(obj, "GL_SGIS_texture4D")) { \
-		glPixelStorei(GL_PACK_SKIP_VOLUMES_SGIS, 0); \
-		glPixelStorei(GL_PACK_IMAGE_DEPTH_SGIS, 0); \
-	}
+  { \
+    DECL_GL_FUNC_PTR(GLvoid,glPushClientAttrib,(GLbitfield)); \
+    DECL_GL_FUNC_PTR(GLvoid,glPixelStorei,(GLenum,GLint)); \
+    LOAD_GL_FUNC(glPushClientAttrib, NULL); \
+    LOAD_GL_FUNC(glPixelStorei, NULL); \
+    fptr_glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT); \
+    fptr_glPixelStorei(GL_PACK_ALIGNMENT, 1); \
+    fptr_glPixelStorei(GL_PACK_SKIP_PIXELS, 0); \
+    fptr_glPixelStorei(GL_PACK_SKIP_ROWS, 0); \
+    fptr_glPixelStorei(GL_PACK_ROW_LENGTH, 0); \
+    fptr_glPixelStorei(GL_PACK_SKIP_IMAGES, 0); \
+    fptr_glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0); \
+    if (CheckVersionExtension(obj, "GL_SGIS_texture4D")) { \
+      fptr_glPixelStorei(GL_PACK_SKIP_VOLUMES_SGIS, 0); \
+      fptr_glPixelStorei(GL_PACK_IMAGE_DEPTH_SGIS, 0); \
+    } \
+  }
 
 #define RESTORE_PIXEL_STORE_MODE \
-	glPopClientAttrib();
+  { \
+    DECL_GL_FUNC_PTR(GLvoid,glPopClientAttrib,(void)); \
+    LOAD_GL_FUNC(glPopClientAttrib, NULL); \
+    fptr_glPopClientAttrib(); \
+  }
 
 #define CHECK_BUFFER_BINDING(_buffer_) CheckBufferBinding(obj, (_buffer_))
 
 GLboolean CheckVersionExtension(VALUE self, const char *name);
+void EnsureVersionExtension(VALUE obj, const char *verext);
 GLint CheckBufferBinding(VALUE self, GLint buffer);
 extern VALUE rb_cGlimpl;
 
