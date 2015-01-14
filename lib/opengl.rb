@@ -52,3 +52,5 @@ module GL
     public( n )
   end
 end
+
+OpenGL = Gl
