@@ -88,7 +88,7 @@ file "ext/opengl/fptr_struct.h" => (cfiles + ["ext/opengl/funcdef.h"]) do |t|
     #endif
   EOT
 
-  IO.write(t.name, out) if IO.read(t.name) != out
+  File.write(t.name, out) unless File.exist?(t.name) && File.read(t.name) == out
 end
 
 task "ext/opengl/extconf.rb" => "ext/opengl/fptr_struct.h"
