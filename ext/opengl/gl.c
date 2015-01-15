@@ -35,6 +35,8 @@ void gl_init_functions_ext_nv(VALUE);
 void gl_init_buffer(VALUE);
 void gl_init_glimpl(VALUE);
 
+VALUE g_default_glimpl;
+
 /* Returns current OpenGL version as major, minor or 0,0 if
  * unknown (context not yet initialised etc.) The version is
  * cached for subsequent calls.
@@ -205,6 +207,22 @@ GLint CheckBufferBinding(VALUE obj, GLint buffer)
 	return result;
 }
 
+static VALUE
+rb_gl_s_get_default_implementation( VALUE module )
+{
+  return g_default_glimpl;
+}
+
+static VALUE
+rb_gl_s_set_default_implementation( VALUE module, VALUE glimpl )
+{
+  if(!rb_obj_is_kind_of(glimpl, rb_cGlimpl)){
+    rb_raise(rb_eArgError, "wrong argument type %s (expected kind of Gl::Implementation)", rb_obj_classname(glimpl));
+  }
+  g_default_glimpl = glimpl;
+  return glimpl;
+}
+
 void Init_gl(VALUE module)
 {
   gl_init_glimpl(module);
@@ -233,4 +251,11 @@ void Init_gl(VALUE module)
 	rb_define_method(rb_cGlimpl, "extension_supported?", IsAvailable, 1);
 	rb_define_method(rb_cGlimpl, "version_available?", IsAvailable, 1);
 	rb_define_method(rb_cGlimpl, "version_supported?", IsAvailable, 1);
+
+
+  rb_define_module_function(module, "default_implementation", rb_gl_s_get_default_implementation, 0);
+  rb_define_module_function(module, "default_implementation=", rb_gl_s_set_default_implementation, 1);
+
+  g_default_glimpl = rb_funcall(rb_cGlimpl, rb_intern("open"), 0);
+  rb_global_variable(&g_default_glimpl);
 }

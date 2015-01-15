@@ -12,7 +12,6 @@
 #endif
 
 VALUE rb_cGlimpl;
-VALUE g_default_glimpl;
 
 static void *load_gl_function(const char *name,int raise)
 {
@@ -94,22 +93,6 @@ static VALUE rb_glimpl_close(VALUE self)
   return self;
 }
 
-static VALUE
-rb_gl_s_get_default_implementation( VALUE module )
-{
-  return g_default_glimpl;
-}
-
-static VALUE
-rb_gl_s_set_default_implementation( VALUE module, VALUE glimpl )
-{
-  if(!rb_obj_is_kind_of(glimpl, rb_cGlimpl)){
-    rb_raise(rb_eArgError, "wrong argument type %s (expected kind of Gl::Implementation)", rb_obj_classname(glimpl));
-  }
-  g_default_glimpl = glimpl;
-  return glimpl;
-}
-
 void gl_init_glimpl(VALUE module)
 {
   rb_cGlimpl = rb_define_class_under(module, "Implementation", rb_cObject);
@@ -117,11 +100,4 @@ void gl_init_glimpl(VALUE module)
   rb_undef_alloc_func(rb_cGlimpl);
   rb_define_singleton_method(rb_cGlimpl, "open", rb_glimpl_s_open, 0);
   rb_define_method(rb_cGlimpl, "close", rb_glimpl_close, 0);
-
-
-  rb_define_module_function(module, "default_implementation", rb_gl_s_get_default_implementation, 0);
-  rb_define_module_function(module, "default_implementation=", rb_gl_s_set_default_implementation, 1);
-
-  g_default_glimpl = rb_funcall(rb_cGlimpl, rb_intern("open"), 0);
-  rb_global_variable(&g_default_glimpl);
 }
