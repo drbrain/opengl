@@ -256,6 +256,6 @@ void Init_gl(VALUE module)
   rb_define_module_function(module, "default_implementation", rb_gl_s_get_default_implementation, 0);
   rb_define_module_function(module, "default_implementation=", rb_gl_s_set_default_implementation, 1);
 
-  g_default_glimpl = rb_funcall(rb_cGlimpl, rb_intern("open"), 0);
+  g_default_glimpl = Qnil;
   rb_global_variable(&g_default_glimpl);
 }

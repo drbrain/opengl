@@ -27,9 +27,19 @@ rescue LoadError
   require 'opengl/opengl'
 end
 
+require 'opengl/implementation'
+
 module Gl
   BINDINGS_VERSION = '0.9.2'
   RUBY_OPENGL_VERSION = BINDINGS_VERSION
+
+  def self.default_implementation
+    if glimpl=super
+      glimpl
+    else
+      Gl.default_implementation = Gl::DEFAULT_IMPLEMENTATION.open
+    end
+  end
 
   meths = Gl::Implementation.instance_methods.select{|mn| mn=~/^gl/ }
   meths += %w[is_available? is_supported?
@@ -40,10 +50,10 @@ module Gl
 
   meths.each do |mn|
     define_singleton_method(mn) do |*args,&block|
-      Gl.default_implementation.send(mn, *args, &block)
+      default_implementation.send(mn, *args, &block)
     end
     define_method(mn) do |*args,&block|
-      Gl.default_implementation.send(mn, *args, &block)
+      default_implementation.send(mn, *args, &block)
     end
     private mn
   end

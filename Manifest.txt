@@ -119,6 +119,7 @@ ext/opengl/glimpl.h
 ext/opengl/opengl.c
 lib/gl.rb
 lib/opengl.rb
+lib/opengl/implementation.rb
 lib/opengl/test_case.rb
 test/dummy.xorg.conf
 test/test_gl.rb
@@ -134,6 +135,7 @@ test/test_gl_ext_ati.rb
 test/test_gl_ext_ext.rb
 test/test_gl_ext_gremedy.rb
 test/test_gl_ext_nv.rb
+test/test_glimpl.rb
 test/test_opengl_buffer.rb
 utils/README
 utils/enumgen.rb

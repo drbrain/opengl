@@ -22,7 +22,7 @@ struct glimpl {
   int opengl_version[2]; /* major, minor */
   char *opengl_extensions;
 
-  void * (* load_gl_function)(const char *name,int raise);
+  void * (* load_gl_function)(VALUE self, const char *name,int raise);
 
   VALUE current_feed_buffer;
   VALUE current_sel_buffer;
@@ -38,6 +38,9 @@ struct glimpl {
 
   VALUE error_checking;
   VALUE inside_begin_end;
+
+  void *dl;
+  void * (* fptr_GetProcAddress)(const char *name);
 };
 
 

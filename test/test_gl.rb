@@ -35,4 +35,11 @@ class TestGl < OpenGL::TestCase
       assert(false) # error not detected
     end
   end
+
+  def test_default_implementation
+    old_glimpl = Gl.default_implementation
+    Gl.default_implementation = Gl::DEFAULT_IMPLEMENTATION.open
+
+    refute_equal old_glimpl, Gl.default_implementation
+  end
 end

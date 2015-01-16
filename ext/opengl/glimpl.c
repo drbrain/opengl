@@ -13,43 +13,38 @@
 
 VALUE rb_cGlimpl;
 
-static void *load_gl_function(const char *name,int raise)
+static struct glimpl *
+rb_glimpl_struct( VALUE self )
 {
-        void *func_ptr = NULL;
+  return DATA_PTR(self);
+}
 
-#if defined(__APPLE__)
-        void *library = NULL;
-        library = dlopen("/System/Library/Frameworks/OpenGL.framework/Versions/Current/OpenGL", RTLD_LAZY | RTLD_LOCAL | RTLD_FIRST);
+static void *load_gl_function(VALUE self, const char *name, int raise)
+{
+  struct glimpl *this = rb_glimpl_struct(self);
+  void *func_ptr;
 
-        if (library == NULL)
-                rb_raise(rb_eRuntimeError,"Can't load OpenGL library for dynamic loading");
+  if( this->fptr_GetProcAddress ){
+    func_ptr = this->fptr_GetProcAddress(name);
 
-        func_ptr = dlsym(library, name);
+  } else {
+    func_ptr = dlsym(this->dl, name);
 
-        if(func_ptr == NULL)
-        {
-                /* prepend a '_' for the Unix C symbol mangling convention */
-                char *symbol_name = ALLOC_N(char, strlen(name) + 2);
-                symbol_name[0] = '_';
-                strcpy(symbol_name + 1, name);
-                func_ptr = dlsym(library, symbol_name);
-                xfree(symbol_name);
-        }
+    if(func_ptr == NULL)
+    {
+            /* prepend a '_' for the Unix C symbol mangling convention */
+            char *symbol_name = ALLOC_N(char, strlen(name) + 2);
+            symbol_name[0] = '_';
+            strcpy(symbol_name + 1, name);
+            func_ptr = dlsym(this->dl, symbol_name);
+            xfree(symbol_name);
+    }
+  }
 
-        dlclose(library);
+  if (func_ptr == NULL && raise == 1)
+    rb_raise(rb_eNotImpError,"Function %s is not available on this system",name);
 
-#elif HAVE_WGLGETPROCADDRESS
-        func_ptr = wglGetProcAddress((LPCSTR)name);
-#elif defined(GLX_VERSION_1_4)
-        func_ptr = glXGetProcAddress((const GLubyte *)name);
-#else
-        func_ptr = glXGetProcAddressARB((const GLubyte *)name);
-#endif
-
-        if (func_ptr == NULL && raise == 1)
-                rb_raise(rb_eNotImpError,"Function %s is not available on this system",name);
-
-        return func_ptr;
+  return func_ptr;
 }
 
 static void
@@ -74,23 +69,58 @@ rb_glimpl_mark( struct glimpl *this )
   }
 }
 
-static VALUE rb_glimpl_s_open(VALUE klass)
+static void rb_glimpl_free( struct glimpl *this )
+{
+  if(this->dl) dlclose(this->dl);
+  this->dl = NULL;
+  xfree(this);
+}
+
+static VALUE
+rb_glimpl_s_open(int argc, VALUE *argv, VALUE klass)
 {
   VALUE self;
   struct glimpl *this;
+  VALUE dl_name;
+  VALUE proc_address_function;
+  char *p_dl_name;
 
-  self = Data_Make_Struct( klass, struct glimpl, rb_glimpl_mark, -1, this );
+  rb_scan_args(argc, argv, "11", &dl_name, &proc_address_function);
+
+  p_dl_name = StringValueCStr(dl_name);
+
+  self = Data_Make_Struct( klass, struct glimpl, rb_glimpl_mark, rb_glimpl_free, this );
 
   this->error_checking = Qtrue;
   this->inside_begin_end = Qfalse;
   this->load_gl_function = load_gl_function;
+
+  this->dl = dlopen(p_dl_name, RTLD_LAZY | RTLD_LOCAL
+#if defined(RTLD_FIRST)
+    | RTLD_FIRST
+#endif
+  );
+  if (this->dl == NULL)
+    rb_raise(rb_eArgError,"Can't load OpenGL library %s", p_dl_name);
+
+  if( NIL_P(proc_address_function) ){
+    this->fptr_GetProcAddress = NULL;
+  } else {
+    char *p_proc_address_function = StringValueCStr(proc_address_function);
+    this->fptr_GetProcAddress = dlsym(this->dl, p_proc_address_function);
+    if (this->fptr_GetProcAddress == NULL)
+      rb_raise(rb_eNotImpError,"Function %s is not available on this system",p_proc_address_function);
+  }
 
   return self;
 }
 
 static VALUE rb_glimpl_close(VALUE self)
 {
-  return self;
+  struct glimpl *this = rb_glimpl_struct(self);
+  if(this->dl) dlclose(this->dl);
+  this->dl = NULL;
+  return Qnil;
 }
 
 void gl_init_glimpl(VALUE module)
@@ -98,6 +128,6 @@ void gl_init_glimpl(VALUE module)
   rb_cGlimpl = rb_define_class_under(module, "Implementation", rb_cObject);
 
   rb_undef_alloc_func(rb_cGlimpl);
-  rb_define_singleton_method(rb_cGlimpl, "open", rb_glimpl_s_open, 0);
+  rb_define_singleton_method(rb_cGlimpl, "open", rb_glimpl_s_open, -1);
   rb_define_method(rb_cGlimpl, "close", rb_glimpl_close, 0);
 }

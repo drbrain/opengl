@@ -36,7 +36,7 @@
     fptr_##_NAME_ = GET_GLIMPL_VARIABLE(glfuncs._NAME_); \
     if (fptr_##_NAME_==NULL){ \
       if (_VEREXT_) EnsureVersionExtension(obj, (_VEREXT_)); \
-      fptr_##_NAME_ = GET_GLIMPL_VARIABLE(load_gl_function)(#_NAME_, 1); \
+      fptr_##_NAME_ = GET_GLIMPL_VARIABLE(load_gl_function)(obj,#_NAME_, 1); \
       SET_GLIMPL_VARIABLE(glfuncs._NAME_,fptr_##_NAME_); \
     } \
   } while (0)
