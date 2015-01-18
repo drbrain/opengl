@@ -89,6 +89,7 @@ examples/misc/plane.rb
 examples/misc/readpixel.rb
 examples/misc/sdltest.rb
 examples/misc/trislam.rb
+ext/opengl/GL/gl.h
 ext/opengl/common.h
 ext/opengl/conv.h
 ext/opengl/extconf.rb
@@ -111,7 +112,6 @@ ext/opengl/gl-ext-ati.c
 ext/opengl/gl-ext-ext.c
 ext/opengl/gl-ext-gremedy.c
 ext/opengl/gl-ext-nv.c
-ext/opengl/gl-types.h
 ext/opengl/gl.c
 ext/opengl/gl_buffer.c
 ext/opengl/glimpl.c

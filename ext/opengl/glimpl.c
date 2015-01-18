@@ -7,10 +7,6 @@
 #include <windows.h>
 #endif
 
-#ifdef HAVE_GL_GLX_H
-#include <GL/glx.h>
-#endif
-
 VALUE rb_cGlimpl;
 
 static struct glimpl *

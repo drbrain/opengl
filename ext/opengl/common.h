@@ -23,26 +23,15 @@
 #define _COMMON_H_
 
 #include <ruby.h>
+
 #ifndef GLFUNC_MAGIC_START
 #include "extconf.h"
 #endif
 
 #include <ctype.h>
 
-#ifdef HAVE_OPENGL_GL_H
-#include <OpenGL/gl.h>
-#endif
+#include "GL/gl.h"
 
-#ifdef HAVE_GL_GL_H
-#include <GL/gl.h>
-#endif
-
-#if false
-#include <stdlib.h>
-#include <string.h>
-#endif
-
-#include "gl-types.h"
 #include "gl-enums.h"
 #include "gl-error.h"
 
@@ -56,12 +45,6 @@
 
 #ifndef CALLBACK
 #define CALLBACK
-#endif
-
-#ifdef HAVE_WINDOWS_H
-#define DLLEXPORT __declspec(dllexport)
-#else
-#define DLLEXPORT
 #endif
 
 /* these two macros are cast to a 32 bit type in the places they are used */

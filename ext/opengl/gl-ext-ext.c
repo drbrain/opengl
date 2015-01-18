@@ -415,8 +415,8 @@ static VALUE gl_##_name_(VALUE obj,VALUE arg1,VALUE arg2) \
 	return _conv_(NUM2INT(arg2),ret); \
 }
 
-GETQUERY_FUNC(GetQueryObjecti64vEXT,GLint64EXT,cond_GLBOOL2RUBY_LL)
-GETQUERY_FUNC(GetQueryObjectui64vEXT,GLuint64EXT,cond_GLBOOL2RUBY_ULL)
+GETQUERY_FUNC(GetQueryObjecti64vEXT,GLint64,cond_GLBOOL2RUBY_LL)
+GETQUERY_FUNC(GetQueryObjectui64vEXT,GLuint64,cond_GLBOOL2RUBY_ULL)
 #undef GETQUERY_FUNC
 
 
