@@ -1,6 +1,6 @@
-/* This file was genereated on 2013-02-27 15:05:34 +0100
-   source: http://www.opengl.org/registry/api/enum.spec
-   source: http://www.opengl.org/registry/api/enumext.spec
+/* This file was genereated on 2015-01-17 21:05:45 +0100
+   source: https://www.opengl.org/registry/oldspecs/enum.spec
+   source: https://www.opengl.org/registry/oldspecs/enumext.spec
 */
 
 #include "common.h"
@@ -92,6 +92,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_ALL_COMPLETED_NV", INT2NUM(GL_ALL_COMPLETED_NV));
 	rb_define_const(module, "GL_ALL_SHADER_BITS", INT2NUM(GL_ALL_SHADER_BITS));
 	rb_define_const(module, "GL_ALL_SHADER_BITS_EXT", INT2NUM(GL_ALL_SHADER_BITS_EXT));
+	rb_define_const(module, "GL_ALL_STATIC_DATA_IBM", INT2NUM(GL_ALL_STATIC_DATA_IBM));
 	rb_define_const(module, "GL_ALPHA", INT2NUM(GL_ALPHA));
 	rb_define_const(module, "GL_ALPHA12", INT2NUM(GL_ALPHA12));
 	rb_define_const(module, "GL_ALPHA12_EXT", INT2NUM(GL_ALPHA12_EXT));
@@ -1144,22 +1145,6 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_EVAL_BIT", INT2NUM(GL_EVAL_BIT));
 	rb_define_const(module, "GL_EVAL_FRACTIONAL_TESSELLATION_NV", INT2NUM(GL_EVAL_FRACTIONAL_TESSELLATION_NV));
 	rb_define_const(module, "GL_EVAL_TRIANGULAR_2D_NV", INT2NUM(GL_EVAL_TRIANGULAR_2D_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB0_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB0_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB10_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB10_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB11_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB11_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB12_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB12_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB13_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB13_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB14_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB14_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB15_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB15_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB1_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB1_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB2_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB2_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB3_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB3_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB4_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB4_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB5_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB5_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB6_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB6_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB7_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB7_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB8_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB8_NV));
-	rb_define_const(module, "GL_EVAL_VERTEX_ATRRIB9_NV", INT2NUM(GL_EVAL_VERTEX_ATRRIB9_NV));
 	rb_define_const(module, "GL_EVAL_VERTEX_ATTRIB0_NV", INT2NUM(GL_EVAL_VERTEX_ATTRIB0_NV));
 	rb_define_const(module, "GL_EVAL_VERTEX_ATTRIB10_NV", INT2NUM(GL_EVAL_VERTEX_ATTRIB10_NV));
 	rb_define_const(module, "GL_EVAL_VERTEX_ATTRIB11_NV", INT2NUM(GL_EVAL_VERTEX_ATTRIB11_NV));
@@ -1307,17 +1292,13 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_FOG_DENSITY", INT2NUM(GL_FOG_DENSITY));
 	rb_define_const(module, "GL_FOG_DISTANCE_MODE_NV", INT2NUM(GL_FOG_DISTANCE_MODE_NV));
 	rb_define_const(module, "GL_FOG_END", INT2NUM(GL_FOG_END));
-	rb_define_const(module, "GL_FOG_FACTOR_TO_ALPHA_SGIX", INT2NUM(GL_FOG_FACTOR_TO_ALPHA_SGIX));
 	rb_define_const(module, "GL_FOG_FUNC_POINTS_SGIS", INT2NUM(GL_FOG_FUNC_POINTS_SGIS));
 	rb_define_const(module, "GL_FOG_FUNC_SGIS", INT2NUM(GL_FOG_FUNC_SGIS));
-	rb_define_const(module, "GL_FOG_GEN_MODE_NV", INT2NUM(GL_FOG_GEN_MODE_NV));
 	rb_define_const(module, "GL_FOG_HINT", INT2NUM(GL_FOG_HINT));
 	rb_define_const(module, "GL_FOG_INDEX", INT2NUM(GL_FOG_INDEX));
 	rb_define_const(module, "GL_FOG_MODE", INT2NUM(GL_FOG_MODE));
 	rb_define_const(module, "GL_FOG_OFFSET_SGIX", INT2NUM(GL_FOG_OFFSET_SGIX));
 	rb_define_const(module, "GL_FOG_OFFSET_VALUE_SGIX", INT2NUM(GL_FOG_OFFSET_VALUE_SGIX));
-	rb_define_const(module, "GL_FOG_SCALE_SGIX", INT2NUM(GL_FOG_SCALE_SGIX));
-	rb_define_const(module, "GL_FOG_SCALE_VALUE_SGIX", INT2NUM(GL_FOG_SCALE_VALUE_SGIX));
 	rb_define_const(module, "GL_FOG_SPECULAR_TEXTURE_WIN", INT2NUM(GL_FOG_SPECULAR_TEXTURE_WIN));
 	rb_define_const(module, "GL_FOG_START", INT2NUM(GL_FOG_START));
 	rb_define_const(module, "GL_FONT_ASCENDER_BIT_NV", INT2NUM(GL_FONT_ASCENDER_BIT_NV));
@@ -1970,6 +1951,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_MAGNITUDE_BIAS_NV", INT2NUM(GL_MAGNITUDE_BIAS_NV));
 	rb_define_const(module, "GL_MAGNITUDE_SCALE_NV", INT2NUM(GL_MAGNITUDE_SCALE_NV));
 	rb_define_const(module, "GL_MAJOR_VERSION", INT2NUM(GL_MAJOR_VERSION));
+	rb_define_const(module, "GL_MALI_PROGRAM_BINARY_ARM", INT2NUM(GL_MALI_PROGRAM_BINARY_ARM));
 	rb_define_const(module, "GL_MALI_SHADER_BINARY_ARM", INT2NUM(GL_MALI_SHADER_BINARY_ARM));
 	rb_define_const(module, "GL_MANUAL_GENERATE_MIPMAP", INT2NUM(GL_MANUAL_GENERATE_MIPMAP));
 	rb_define_const(module, "GL_MAP1_BINORMAL_EXT", INT2NUM(GL_MAP1_BINORMAL_EXT));
@@ -2308,7 +2290,6 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_MAX_PROGRAM_TEMPORARIES_ARB", INT2NUM(GL_MAX_PROGRAM_TEMPORARIES_ARB));
 	rb_define_const(module, "GL_MAX_PROGRAM_TEXEL_OFFSET", INT2NUM(GL_MAX_PROGRAM_TEXEL_OFFSET));
 	rb_define_const(module, "GL_MAX_PROGRAM_TEXEL_OFFSET_NV", INT2NUM(GL_MAX_PROGRAM_TEXEL_OFFSET_NV));
-	rb_define_const(module, "GL_MAX_PROGRAM_TEXTURE_GATHER_COMPONENTS", INT2NUM(GL_MAX_PROGRAM_TEXTURE_GATHER_COMPONENTS));
 	rb_define_const(module, "GL_MAX_PROGRAM_TEXTURE_GATHER_COMPONENTS_ARB", INT2NUM(GL_MAX_PROGRAM_TEXTURE_GATHER_COMPONENTS_ARB));
 	rb_define_const(module, "GL_MAX_PROGRAM_TEXTURE_GATHER_OFFSET", INT2NUM(GL_MAX_PROGRAM_TEXTURE_GATHER_OFFSET));
 	rb_define_const(module, "GL_MAX_PROGRAM_TEXTURE_GATHER_OFFSET_ARB", INT2NUM(GL_MAX_PROGRAM_TEXTURE_GATHER_OFFSET_ARB));
@@ -2507,7 +2488,6 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_MODELVIEW8_ARB", INT2NUM(GL_MODELVIEW8_ARB));
 	rb_define_const(module, "GL_MODELVIEW9_ARB", INT2NUM(GL_MODELVIEW9_ARB));
 	rb_define_const(module, "GL_MODELVIEW_MATRIX", INT2NUM(GL_MODELVIEW_MATRIX));
-	rb_define_const(module, "GL_MODELVIEW_MATRIX1_EXT", INT2NUM(GL_MODELVIEW_MATRIX1_EXT));
 	rb_define_const(module, "GL_MODELVIEW_MATRIX_FLOAT_AS_INT_BITS_OES", INT2NUM(GL_MODELVIEW_MATRIX_FLOAT_AS_INT_BITS_OES));
 	rb_define_const(module, "GL_MODELVIEW_PROJECTION_NV", INT2NUM(GL_MODELVIEW_PROJECTION_NV));
 	rb_define_const(module, "GL_MODELVIEW_STACK_DEPTH", INT2NUM(GL_MODELVIEW_STACK_DEPTH));
@@ -3453,6 +3433,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_RGBA8UI", INT2NUM(GL_RGBA8UI));
 	rb_define_const(module, "GL_RGBA8UI_EXT", INT2NUM(GL_RGBA8UI_EXT));
 	rb_define_const(module, "GL_RGBA8_EXT", INT2NUM(GL_RGBA8_EXT));
+	rb_define_const(module, "GL_RGBA8_OES", INT2NUM(GL_RGBA8_OES));
 	rb_define_const(module, "GL_RGBA8_SNORM", INT2NUM(GL_RGBA8_SNORM));
 	rb_define_const(module, "GL_RGBA_DXT5_S3TC", INT2NUM(GL_RGBA_DXT5_S3TC));
 	rb_define_const(module, "GL_RGBA_FLOAT16_APPLE", INT2NUM(GL_RGBA_FLOAT16_APPLE));
@@ -3832,6 +3813,7 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_STATIC_DRAW_ARB", INT2NUM(GL_STATIC_DRAW_ARB));
 	rb_define_const(module, "GL_STATIC_READ", INT2NUM(GL_STATIC_READ));
 	rb_define_const(module, "GL_STATIC_READ_ARB", INT2NUM(GL_STATIC_READ_ARB));
+	rb_define_const(module, "GL_STATIC_VERTEX_ARRAY_IBM", INT2NUM(GL_STATIC_VERTEX_ARRAY_IBM));
 	rb_define_const(module, "GL_STENCIL", INT2NUM(GL_STENCIL));
 	rb_define_const(module, "GL_STENCIL_ATTACHMENT", INT2NUM(GL_STENCIL_ATTACHMENT));
 	rb_define_const(module, "GL_STENCIL_ATTACHMENT_EXT", INT2NUM(GL_STENCIL_ATTACHMENT_EXT));
@@ -4336,8 +4318,8 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_TEXT_FRAGMENT_SHADER_ATI", INT2NUM(GL_TEXT_FRAGMENT_SHADER_ATI));
 	rb_define_const(module, "GL_TIMEOUT_EXPIRED", INT2NUM(GL_TIMEOUT_EXPIRED));
 	rb_define_const(module, "GL_TIMEOUT_EXPIRED_APPLE", INT2NUM(GL_TIMEOUT_EXPIRED_APPLE));
-	rb_define_const(module, "GL_TIMEOUT_IGNORED", LL2NUM(GL_TIMEOUT_IGNORED));
-	rb_define_const(module, "GL_TIMEOUT_IGNORED_APPLE", LL2NUM(GL_TIMEOUT_IGNORED_APPLE));
+	rb_define_const(module, "GL_TIMEOUT_IGNORED", INT2NUM(GL_TIMEOUT_IGNORED));
+	rb_define_const(module, "GL_TIMEOUT_IGNORED_APPLE", INT2NUM(GL_TIMEOUT_IGNORED_APPLE));
 	rb_define_const(module, "GL_TIMESTAMP", INT2NUM(GL_TIMESTAMP));
 	rb_define_const(module, "GL_TIME_ELAPSED", INT2NUM(GL_TIME_ELAPSED));
 	rb_define_const(module, "GL_TIME_ELAPSED_EXT", INT2NUM(GL_TIME_ELAPSED_EXT));
@@ -4425,7 +4407,6 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_TRIANGLE_STRIP_ADJACENCY_EXT", INT2NUM(GL_TRIANGLE_STRIP_ADJACENCY_EXT));
 	rb_define_const(module, "GL_TRIANGULAR_NV", INT2NUM(GL_TRIANGULAR_NV));
 	rb_define_const(module, "GL_TYPE", INT2NUM(GL_TYPE));
-	rb_define_const(module, "GL_TYPE_RGBA_FLOAT_ATI", INT2NUM(GL_TYPE_RGBA_FLOAT_ATI));
 	rb_define_const(module, "GL_UNDEFINED_APPLE", INT2NUM(GL_UNDEFINED_APPLE));
 	rb_define_const(module, "GL_UNDEFINED_VERTEX", INT2NUM(GL_UNDEFINED_VERTEX));
 	rb_define_const(module, "GL_UNIFORM", INT2NUM(GL_UNIFORM));
@@ -4579,7 +4560,6 @@ void gl_init_enums(VALUE module)
 	rb_define_const(module, "GL_UNSIGNED_INT_VEC4", INT2NUM(GL_UNSIGNED_INT_VEC4));
 	rb_define_const(module, "GL_UNSIGNED_INT_VEC4_EXT", INT2NUM(GL_UNSIGNED_INT_VEC4_EXT));
 	rb_define_const(module, "GL_UNSIGNED_INVERT_NV", INT2NUM(GL_UNSIGNED_INVERT_NV));
-	rb_define_const(module, "GL_UNSIGNED_NEGATE_NV", INT2NUM(GL_UNSIGNED_NEGATE_NV));
 	rb_define_const(module, "GL_UNSIGNED_NORMALIZED", INT2NUM(GL_UNSIGNED_NORMALIZED));
 	rb_define_const(module, "GL_UNSIGNED_NORMALIZED_ARB", INT2NUM(GL_UNSIGNED_NORMALIZED_ARB));
 	rb_define_const(module, "GL_UNSIGNED_NORMALIZED_EXT", INT2NUM(GL_UNSIGNED_NORMALIZED_EXT));

@@ -84,8 +84,8 @@ end
 # main
 begin
   gl_enums = {:c => "../ext/opengl/gl-enums.c",:h => "../ext/opengl/gl-enums.h",
-    :sources => ["http://www.opengl.org/registry/api/enum.spec",
-    "http://www.opengl.org/registry/api/enumext.spec"],
+    :sources => ["https://www.opengl.org/registry/oldspecs/enum.spec",
+    "https://www.opengl.org/registry/oldspecs/enumext.spec"],
     :prefix => "GL_"
   }
 
