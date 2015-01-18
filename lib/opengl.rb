@@ -30,7 +30,7 @@ end
 require 'opengl/implementation'
 
 module Gl
-  BINDINGS_VERSION = '0.9.2'
+  BINDINGS_VERSION = '0.10.0'
   RUBY_OPENGL_VERSION = BINDINGS_VERSION
 
   def self.default_implementation
