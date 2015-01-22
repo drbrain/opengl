@@ -84,26 +84,27 @@ rb_glimpl_struct( VALUE self )
 static void *load_gl_function(VALUE self, const char *name, int raise)
 {
   struct glimpl *this = rb_glimpl_struct(self);
-  void *func_ptr;
+  void *func_ptr = NULL;
 
-  if( this->fptr_GetProcAddress ){
+  if(this->fptr_GetProcAddress){
     func_ptr = this->fptr_GetProcAddress(name);
-
-  } else {
-    func_ptr = gl_load_symbol(this->dl, name, 0);
-
-    if(func_ptr == NULL)
-    {
-            /* prepend a '_' for the Unix C symbol mangling convention */
-            char *symbol_name = ALLOC_N(char, strlen(name) + 2);
-            symbol_name[0] = '_';
-            strcpy(symbol_name + 1, name);
-            func_ptr = gl_load_symbol(this->dl, symbol_name, 0);
-            xfree(symbol_name);
-    }
   }
 
-  if (func_ptr == NULL && raise == 1)
+  if(func_ptr == NULL){
+    func_ptr = gl_load_symbol(this->dl, name, 0);
+  }
+
+  if(func_ptr == NULL)
+  {
+    /* prepend a '_' for the Unix C symbol mangling convention */
+    char *symbol_name = ALLOC_N(char, strlen(name) + 2);
+    symbol_name[0] = '_';
+    strcpy(symbol_name + 1, name);
+    func_ptr = gl_load_symbol(this->dl, symbol_name, 0);
+    xfree(symbol_name);
+  }
+
+  if(func_ptr == NULL && raise == 1)
     rb_raise(rb_eNotImpError,"Function %s is not available on this system",name);
 
   return func_ptr;
