@@ -2,7 +2,7 @@ require 'opengl/test_case'
 
 class TestGlimpl < OpenGL::TestCase
   def test_dl_load_error
-    assert_raises(ArgumentError){ Gl::Implementation.open("not exist") }
+    assert_raises(LoadError){ Gl::Implementation.open("not exist") }
   end
 
   def test_GetProcAddress_error

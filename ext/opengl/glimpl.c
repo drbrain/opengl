@@ -20,7 +20,7 @@ static void *gl_load_library(const char *name)
 #endif
   );
   if (dl == NULL)
-    rb_raise(rb_eArgError,"Can't load OpenGL library %s: %s", name, dlerror());
+    rb_raise(rb_eLoadError,"Can't load OpenGL library %s: %s", name, dlerror());
 
 #elif defined(HAVE_WINDOWS_H)
   dl = LoadLibrary(name);
@@ -29,7 +29,7 @@ static void *gl_load_library(const char *name)
     FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_MAX_WIDTH_MASK,
                 NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                 (LPTSTR)&error_text, sizeof(error_text), NULL);
-    rb_raise(rb_eArgError,"Can't load OpenGL library %s: %s", name, error_text);
+    rb_raise(rb_eLoadError,"Can't load OpenGL library %s: %s", name, error_text);
   }
 #else
 #error No loading mechanism available
