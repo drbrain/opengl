@@ -33,14 +33,6 @@ module Gl
   BINDINGS_VERSION = '0.10.0'
   RUBY_OPENGL_VERSION = BINDINGS_VERSION
 
-  def self.default_implementation
-    if glimpl=super
-      glimpl
-    else
-      Gl.default_implementation = Gl::DEFAULT_IMPLEMENTATION.open
-    end
-  end
-
   meths = Gl::Implementation.instance_methods.select{|mn| mn=~/^gl/ }
   meths += %w[is_available? is_supported?
               extension_available? extension_supported?
