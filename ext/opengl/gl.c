@@ -208,7 +208,7 @@ GLint CheckBufferBinding(VALUE obj, GLint buffer)
 }
 
 static VALUE
-rb_gl_s_get_default_implementation( VALUE module )
+rb_gl_s_get_implementation( VALUE module )
 {
   if( NIL_P(g_default_glimpl) ){
     VALUE rb_cGlimpl = rb_const_get(module, rb_intern("DEFAULT_IMPLEMENTATION"));
@@ -218,7 +218,7 @@ rb_gl_s_get_default_implementation( VALUE module )
 }
 
 static VALUE
-rb_gl_s_set_default_implementation( VALUE module, VALUE glimpl )
+rb_gl_s_set_implementation( VALUE module, VALUE glimpl )
 {
   if(!rb_obj_is_kind_of(glimpl, rb_cGlimpl)){
     rb_raise(rb_eArgError, "wrong argument type %s (expected kind of Gl::Implementation)", rb_obj_classname(glimpl));
@@ -257,8 +257,8 @@ void Init_gl(VALUE module)
 	rb_define_method(rb_cGlimpl, "version_supported?", IsAvailable, 1);
 
 
-  rb_define_module_function(module, "default_implementation", rb_gl_s_get_default_implementation, 0);
-  rb_define_module_function(module, "default_implementation=", rb_gl_s_set_default_implementation, 1);
+  rb_define_module_function(module, "implementation", rb_gl_s_get_implementation, 0);
+  rb_define_module_function(module, "implementation=", rb_gl_s_set_implementation, 1);
 
   g_default_glimpl = Qnil;
   rb_global_variable(&g_default_glimpl);

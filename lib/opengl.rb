@@ -42,10 +42,10 @@ module Gl
 
   meths.each do |mn|
     define_singleton_method(mn) do |*args,&block|
-      default_implementation.send(mn, *args, &block)
+      implementation.send(mn, *args, &block)
     end
     define_method(mn) do |*args,&block|
-      default_implementation.send(mn, *args, &block)
+      implementation.send(mn, *args, &block)
     end
     private mn
   end
