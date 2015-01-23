@@ -211,7 +211,7 @@ static VALUE
 rb_gl_s_get_implementation( VALUE module )
 {
   if( NIL_P(g_default_glimpl) ){
-    VALUE rb_cGlimpl = rb_const_get(module, rb_intern("DEFAULT_IMPLEMENTATION"));
+    VALUE rb_cGlimpl = rb_const_get(module, rb_intern("DefaultImplementation"));
     g_default_glimpl = rb_funcall(rb_cGlimpl, rb_intern("open"), 0);
   }
   return g_default_glimpl;

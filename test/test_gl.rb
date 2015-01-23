@@ -38,7 +38,7 @@ class TestGl < OpenGL::TestCase
 
   def test_implementation
     old_glimpl = Gl.implementation
-    Gl.implementation = Gl::DEFAULT_IMPLEMENTATION.open
+    Gl.implementation = Gl::DefaultImplementation.open
 
     refute_equal old_glimpl, Gl.implementation
   end

@@ -8,7 +8,7 @@ module Gl
       end
     end
 
-    Gl::DEFAULT_IMPLEMENTATION = ImplementationWindows
+    Gl::DefaultImplementation = ImplementationWindows
 
   elsif RUBY_PLATFORM =~ /darwin/i
     class ImplementationOSX < Implementation
@@ -18,7 +18,7 @@ module Gl
       end
     end
 
-    Gl::DEFAULT_IMPLEMENTATION = ImplementationOSX
+    Gl::DefaultImplementation = ImplementationOSX
 
   else
     class ImplementationGLX < Implementation
@@ -32,7 +32,7 @@ module Gl
       end
     end
 
-    Gl::DEFAULT_IMPLEMENTATION = ImplementationGLX
+    Gl::DefaultImplementation = ImplementationGLX
 
   end
 end
