@@ -20,8 +20,8 @@
 /* #208 - GL_3DFX_tbuffer */
 GL_FUNC_LOAD_1(TbufferMask3DFX,GLvoid, GLuint, "GL_3DFX_tbuffer")
 
-void gl_init_functions_ext_3dfx(VALUE module)
+void gl_init_functions_ext_3dfx(VALUE klass)
 {
 /* #208 - GL_3DFX_tbuffer */
-	rb_define_module_function(module, "glTbufferMask3DFX", gl_TbufferMask3DFX, 1);
+	rb_define_method(klass, "glTbufferMask3DFX", gl_TbufferMask3DFX, 1);
 }
