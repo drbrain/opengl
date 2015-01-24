@@ -500,7 +500,7 @@ void main() {
     glUseProgramObjectARB(program)
 
     assert_equal 2, glGetAttribLocationARB(program, "test")
-    assert_equal [1, GL_FLOAT_VEC4, "gl_Vertex"], glGetActiveAttribARB(program, 1)
+    assert_equal [1, GL_FLOAT_VEC4, "gl_Vertex"], glGetActiveAttribARB(program, 0)
 
     glDeleteObjectARB(vs)
     glDeleteObjectARB(program)
