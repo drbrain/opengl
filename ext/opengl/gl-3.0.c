@@ -23,7 +23,6 @@
 	GL_NV_half_float
 
 	GL_EXT_transform_feedback
-	GL_APPLE_vertex_array_object --> ARB_vertex_array_object
 
 	-- New commands in OpenGL 3.0:
 
@@ -393,6 +392,13 @@ GL_FUNC_LOAD_2(Enablei,GLvoid, GLenum,GLuint, "3.0")
 GL_FUNC_LOAD_2(Disablei,GLvoid, GLenum,GLuint, "3.0")
 GL_FUNC_LOAD_2(IsEnabledi,GLvoid, GLenum,GLuint, "3.0")
 
+/*  GL_APPLE_vertex_array_object --> ARB_vertex_array_object */
+GL_FUNC_GENOBJECTS_LOAD(GenVertexArrays, "3.0");
+GL_FUNC_DELETEOBJECTS_LOAD(DeleteVertexArrays, "3.0");
+GL_FUNC_LOAD_1(BindVertexArray,GLvoid, GLuint, "3.0");
+GL_FUNC_LOAD_1(IsVertexArray,GLboolean, GLuint, "3.0");
+
+
 void gl_init_functions_3_0(VALUE klass)
 {
 	/* GL_NV_conditional_render */
@@ -488,4 +494,9 @@ void gl_init_functions_3_0(VALUE klass)
 	rb_define_method(klass, "glEnablei", gl_Enablei, 2);
 	rb_define_method(klass, "glDisablei", gl_Disablei, 2);
 	rb_define_method(klass, "glIsEnabledi", gl_IsEnabledi, 2);
+
+  rb_define_method(klass, "glBindVertexArray", gl_BindVertexArray, 1);
+  rb_define_method(klass, "glDeleteVertexArrays", gl_DeleteVertexArrays, 1);
+  rb_define_method(klass, "glGenVertexArrays", gl_GenVertexArrays, 1);
+  rb_define_method(klass, "glIsVertexArray", gl_IsVertexArray, 1);
 }
