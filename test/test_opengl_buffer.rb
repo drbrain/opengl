@@ -108,8 +108,10 @@ class TestOpenGLBuffer < OpenGL::TestCase
     buffer = glGenBuffers(1).first
 
     glBindBuffer GL_ARRAY_BUFFER, buffer
+    glBufferData GL_ARRAY_BUFFER, 5, 'hello', GL_STREAM_READ
 
     buf = OpenGL::Buffer.map GL_ARRAY_BUFFER, GL_READ_WRITE
+    buf.unmap
 
     e = assert_raises ArgumentError do
       buf.write 'hello'
