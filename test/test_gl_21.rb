@@ -328,12 +328,12 @@ void main() {
 
     buffers = glGenBuffers(1)
     glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 4*4*4*3, nil, GL_STREAM_READ)
+    glBufferData(GL_PIXEL_PACK_BUFFER, 4*4*4*3, nil, GL_STREAM_READ)
     glReadPixels(0, 0, 4, 4, GL_RGB, GL_FLOAT, 0)
 
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+    data = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY)
     assert_equal(image, data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+    glUnmapBuffer(GL_PIXEL_PACK_BUFFER)
 
     glDeleteBuffers(buffers)
   end
@@ -341,33 +341,33 @@ void main() {
   def test_pixelpack_pixelmap
     buffers = glGenBuffers(1)
     glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 4*4, nil, GL_STREAM_READ)
+    glBufferData(GL_PIXEL_PACK_BUFFER, 4*4, nil, GL_STREAM_READ)
 
     # fv
     glPixelMapfv(GL_PIXEL_MAP_I_TO_I, [1, 2, 3, 4])
     glGetPixelMapfv(GL_PIXEL_MAP_I_TO_I, 0)
 
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+    data = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY)
     assert_equal([1, 2, 3, 4].pack("f*"), data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+    glUnmapBuffer(GL_PIXEL_PACK_BUFFER)
 
     # uiv
     glPixelMapuiv(GL_PIXEL_MAP_I_TO_I, [5, 6, 7, 8])
     glGetPixelMapuiv(GL_PIXEL_MAP_I_TO_I, 0)
 
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+    data = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY)
     assert_equal([5, 6, 7, 8].pack("I*"), data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+    glUnmapBuffer(GL_PIXEL_PACK_BUFFER)
 
     # usv
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 4*2, nil, GL_STREAM_READ)
+    glBufferData(GL_PIXEL_PACK_BUFFER, 4*2, nil, GL_STREAM_READ)
 
     glPixelMapusv(GL_PIXEL_MAP_I_TO_I, [9, 10, 11, 12])
     glGetPixelMapusv(GL_PIXEL_MAP_I_TO_I, 0)
 
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+    data = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY)
     assert_equal([9, 10, 11, 12].pack("S*"), data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+    glUnmapBuffer(GL_PIXEL_PACK_BUFFER)
 
     glDeleteBuffers(buffers)
   end
@@ -377,14 +377,14 @@ void main() {
 
     buffers = glGenBuffers(1)
     glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 128, nil, GL_STREAM_READ)
+    glBufferData(GL_PIXEL_PACK_BUFFER, 128, nil, GL_STREAM_READ)
 
     glPolygonStipple(stipple.pack("c*"))
     glGetPolygonStipple(0)
 
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+    data = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY)
     assert_equal(stipple.pack("c*"), data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+    glUnmapBuffer(GL_PIXEL_PACK_BUFFER)
 
     glDeleteBuffers(buffers)
   end
@@ -397,14 +397,14 @@ void main() {
 
     buffers = glGenBuffers(1)
     glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, 16*3*4, nil, GL_STREAM_READ)
+    glBufferData(GL_PIXEL_PACK_BUFFER, 16*3*4, nil, GL_STREAM_READ)
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, 4, 4, 0, GL_RGB, GL_FLOAT, image)
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, 0)
 
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+    data = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY)
     assert_equal(image, data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+    glUnmapBuffer(GL_PIXEL_PACK_BUFFER)
 
     glDeleteBuffers(buffers)
     glDeleteTextures(textures)
@@ -421,14 +421,14 @@ void main() {
 
     buffers = glGenBuffers(1)
     glBindBuffer(GL_PIXEL_PACK_BUFFER, buffers[0])
-    glBufferData(GL_PIXEL_PACK_BUFFER_ARB, image.size, nil, GL_STREAM_READ)
+    glBufferData(GL_PIXEL_PACK_BUFFER, image.size, nil, GL_STREAM_READ)
 
     glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 2, 2, 0, 16, image)
     glGetCompressedTexImage(GL_TEXTURE_2D, 0, 0)
 
-    data = glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY)
+    data = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY)
     assert_equal(image, data)
-    glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB)
+    glUnmapBuffer(GL_PIXEL_PACK_BUFFER)
 
     glDeleteBuffers(buffers)
     glDeleteTextures(textures)
