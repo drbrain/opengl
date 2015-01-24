@@ -134,7 +134,7 @@ void main() {
   end
 
   def test_pixelunpack_bitmap
-    skip("Segfaults on Mesa until upstream fixes it")
+    skip("Segfaults on Mesa before 10") if glGetString(GL::VERSION)=~/Mesa (\d+)\.(\d+)\.(\d+)/ && $1.to_i<10
     glOrtho(0, WINDOW_SIZE, 0, WINDOW_SIZE, 0, -1)
 
     bitmap = [ 0x55 ] * 8 # 64 bits (8x8 bitmap), stipple pattern
