@@ -66,7 +66,8 @@ file "ext/opengl/fptr_struct.h" => (cfiles + ["ext/opengl/funcdef.h"]) do |t|
   funcs = cfiles.map do |cfile|
     args = RbConfig::CONFIG['CC'], "-E", cfile,
         "-DGLFUNC_MAGIC_START=glfunc-", "-DGLFUNC_MAGIC_END=-glfunc",
-        "-I#{RbConfig::CONFIG['rubyhdrdir']}", "-I#{RbConfig::CONFIG['rubyarchhdrdir']}"
+        "-I#{RbConfig::CONFIG['rubyhdrdir']}", "-I#{RbConfig::CONFIG['rubyarchhdrdir']}",
+        "-Iext/opengl"
 
     puts args.join(" ")
 
