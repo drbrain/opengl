@@ -99,6 +99,8 @@ end
 
 task "ext/opengl/extconf.rb" => "ext/opengl/fptr_struct.h"
 
+ENV['RUBY_CC_VERSION'] ||= '1.9.3:2.0.0:2.1.6:2.2.2'
+
 # To reduce the gem file size strip mingw32 dlls before packaging
 ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|
   task "tmp/x86-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so" do |t|
@@ -108,4 +110,10 @@ ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|
   task "tmp/x64-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so" do |t|
     sh "x86_64-w64-mingw32-strip -S tmp/x64-mingw32/stage/lib/opengl/#{ruby_version[/^\d+\.\d+/]}/opengl.so"
   end
+end
+
+desc "Build windows binary gems per rake-compiler-dock."
+task "gem:windows" do
+  require "rake_compiler_dock"
+  RakeCompilerDock.sh "rake cross native gem MAKE='nice make -j`nproc`' RUBY_CC_VERSION=#{ENV['RUBY_CC_VERSION']}"
 end
