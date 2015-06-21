@@ -41,6 +41,11 @@ hoe = Hoe.spec 'opengl' do
   }
   spec_extras[:files] = File.read_utf("Manifest.txt").split(/\r?\n\r?/)
   spec_extras[:files] << "ext/opengl/fptr_struct.h"
+
+  self.clean_globs += [
+    "ext/opengl/fptr_struct.h",
+    "lib/opengl/[0-9].[0-9]",
+  ]
 end
 
 Rake::ExtensionTask.new 'opengl', hoe.spec do |ext|
