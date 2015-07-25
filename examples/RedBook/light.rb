@@ -5,6 +5,8 @@ require 'glu'
 require 'glut'
 require 'mathn'
 
+include Gl, Glu, Glut
+
 def init
   @fullscreen = false
   @xrot = 0
