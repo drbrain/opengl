@@ -15,54 +15,30 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require 'hoe'
+require 'bundler/gem_tasks'
 require 'rake/extensiontask'
 
-hoe = Hoe.spec 'opengl' do
-  developer 'Eric Hodel', 'drbrain@segment7.net'
-  developer 'Lars Kanis',  'lars@greiz-reinsdorf.de'
-  developer 'Blaž Hrastnik', 'speed.the.bboy@gmail.com'
-  developer 'Alain Hoang', ''
-  developer 'Jan Dvorak',  ''
-  developer 'Minh Thu Vo', ''
-  developer 'James Adam',  ''
+spec = Gem::Specification.load('opengl.gemspec')
 
-  self.readme_file = 'README.rdoc'
-  self.history_file = 'History.rdoc'
-  self.extra_rdoc_files = FileList['*.rdoc']
-
-  extra_dev_deps << ['rake-compiler', '~> 0.9', '>= 0.9.1']
-  extra_dev_deps << ['glu', '~> 8.1']
-  extra_dev_deps << ['glut', '~> 8.1']
-
-  self.spec_extras = {
-    :extensions            => %w[ext/opengl/extconf.rb],
-    :required_ruby_version => '>= 1.9.2',
-  }
-  spec_extras[:files] = File.read_utf("Manifest.txt").split(/\r?\n\r?/)
-  spec_extras[:files] << "ext/opengl/fptr_struct.h"
-
-  self.clean_globs += [
-    "ext/opengl/fptr_struct.h",
-    "lib/opengl/[0-9].[0-9]",
-  ]
-end
-
-Rake::ExtensionTask.new 'opengl', hoe.spec do |ext|
+Rake::ExtensionTask.new 'opengl', spec do |ext|
   ext.lib_dir = 'lib/opengl'
 
   ext.cross_compile = true
   ext.cross_platform = ['x86-mingw32', 'x64-mingw32']
 end
 
-task :test => :compile
+task :gem => :build
+task :test => :compile do
+  sh "ruby -w -W2 -I. -Ilib -e \"#{Dir["test/test_*.rb"].map{|f| "require '#{f}';"}.join}\" -- -v"
+end
+
 
 # defines columns in the HTML extension list
 GLEXT_VERSIONS = %w[svn 0.60 0.50]
 
 desc 'Generate supported extension list.'
 task :gen_glext_list do
-	sh "./utils/extlistgen.rb", "doc/extensions.txt.in", "doc/extensions.txt", *GLEXT_VERSIONS
+  sh "./utils/extlistgen.rb", "doc/extensions.txt.in", "doc/extensions.txt", *GLEXT_VERSIONS
 end
 
 cfiles = Dir["ext/opengl/*.c"]
@@ -98,6 +74,9 @@ file "ext/opengl/fptr_struct.h" => (cfiles + ["ext/opengl/funcdef.h"]) do |t|
 end
 
 task "ext/opengl/extconf.rb" => "ext/opengl/fptr_struct.h"
+task :build => "ext/opengl/extconf.rb"
+
+CLEAN.include "ext/opengl/fptr_struct.h"
 
 ENV['RUBY_CC_VERSION'] ||= '1.9.3:2.0.0:2.1.6:2.2.2'
 
