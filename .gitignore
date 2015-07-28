@@ -4,4 +4,3 @@
 /lib/opengl/*.bundle
 /pkg
 /tmp
-ext/opengl/fptr_struct.h
