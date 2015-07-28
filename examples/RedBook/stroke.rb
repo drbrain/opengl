@@ -107,12 +107,12 @@ def myinit
 
   base = glGenLists(128)
   glListBase(base)
-  glNewList(base+'A'[0], GL_COMPILE); drawLetter(Adata); glEndList()
-  glNewList(base+'E'[0], GL_COMPILE); drawLetter(Edata); glEndList()
-  glNewList(base+'P'[0], GL_COMPILE); drawLetter(Pdata); glEndList()
-  glNewList(base+'R'[0], GL_COMPILE); drawLetter(Rdata); glEndList()
-  glNewList(base+'S'[0], GL_COMPILE); drawLetter(Sdata); glEndList()
-  glNewList(base+' '[0], GL_COMPILE); glTranslate(8.0, 0.0, 0.0); glEndList()
+  glNewList(base+'A'.ord, GL_COMPILE); drawLetter(Adata); glEndList()
+  glNewList(base+'E'.ord, GL_COMPILE); drawLetter(Edata); glEndList()
+  glNewList(base+'P'.ord, GL_COMPILE); drawLetter(Pdata); glEndList()
+  glNewList(base+'R'.ord, GL_COMPILE); drawLetter(Rdata); glEndList()
+  glNewList(base+'S'.ord, GL_COMPILE); drawLetter(Sdata); glEndList()
+  glNewList(base+' '.ord, GL_COMPILE); glTranslate(8.0, 0.0, 0.0); glEndList()
 end
 
 $test1 = "A SPARE SERAPE APPEARS AS"

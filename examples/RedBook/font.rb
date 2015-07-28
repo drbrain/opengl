@@ -82,14 +82,14 @@ def makeRasterFont
 
   $fontOffset = glGenLists(128)
   i = 0
-  j = ?A
+  j = ?A.ord
   for i in 0...26
     glNewList($fontOffset + j, GL_COMPILE)
     glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, $letters[i].pack("C*"))
     glEndList()
     j+=1
   end
-  glNewList($fontOffset + ' '[0], GL_COMPILE)
+  glNewList($fontOffset + ' '.ord, GL_COMPILE)
   glBitmap(8, 13, 0.0, 2.0, 10.0, 0.0, $space.pack("C*"))
   glEndList()
 end
