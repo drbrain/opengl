@@ -28,26 +28,7 @@ gems.
 == Requirements
 
 * Ruby 1.9.2+
-  *  see {0.7}[https://github.com/larskanis/opengl/tree/0.7] for Ruby 1.8.x compatible branch
-* OpenGL development files installed
-
-== Tests
-
-Note that the tests have the adverse effect of testing the underlying OpenGL
-implementation, so depending on your GL provider, drivers or OS, the tests may
-fail, crash, or not run at all, without affecting your ability to use the bindings.
-
-Tests require both glut and glu gem.
-
-With our test suite, we were able to uncover and help fix upstream mesa bugs:
-
-* {#61026}[https://bugs.freedesktop.org/show_bug.cgi?id=61026] glBitmap segfault
-* {#61003}[https://bugs.freedesktop.org/show_bug.cgi?id=61003] gluSurface with Nurbs spits out debug code
-* {#61395}[https://bugs.freedesktop.org/show_bug.cgi?id=61395] glEdgeFlag can't be set to false
-
-Whenever a test or example fails, it should be quickly ported into a simple C
-test program, so we can determine whether it's a bug in the bindings or the
-OpenGL implementation.
+* OpenGL runtime libraries installed
 
 == Install
 
@@ -57,25 +38,41 @@ OpenGL implementation.
 
 After checking out the source, run:
 
-  $ rake newb
+  bundle install
 
-This task will install any missing dependencies, run the tests/specs,
-and generate the RDoc.
+This will install missing dependencies.
+
+== Tests
+
+Run the tests with:
+
+  rake test
+
+Note that the tests have the adverse effect of testing the underlying OpenGL implementation, so depending on your GL provider, drivers or OS, the tests may fail, crash, or not run at all, without affecting your ability to use the bindings.
+
+Tests require both glut and glu gem.
+
+With our test suite, we were able to uncover and help fix upstream mesa bugs:
+
+* {#61026}[https://bugs.freedesktop.org/show_bug.cgi?id=61026] glBitmap segfault
+* {#61003}[https://bugs.freedesktop.org/show_bug.cgi?id=61003] gluSurface with Nurbs spits out debug code
+* {#61395}[https://bugs.freedesktop.org/show_bug.cgi?id=61395] glEdgeFlag can't be set to false
+
+Whenever a test or example fails, it should be quickly ported into a simple C test program, so we can determine whether it's a bug in the bindings or the OpenGL implementation.
 
 == Cross compiling for Windows
 
-Using rake-compiler a cross compiled opengl gem can be build in a
-{rake-compiler-dev-box}[https://github.com/tjschuck/rake-compiler-dev-box]
-the win32 platform. There are no runtime dependencies to any but the
-standard Windows DLLs. Use the standard package_win32_fat_binary
-script.
+A cross compiled opengl gem can be build per {rake-compiler-dock}[https://github.com/rake-compiler/rake-compiler-dock] for the Windows platform.
+There are no runtime dependencies to any but the standard Windows DLLs.
+Run <tt>rake gem:windows</tt> and find the gem files in the +pkg+ directory.
 
 == License
 
 (The MIT License)
 
-Copyright (c) Blaž Hrastnik (current maintainer)
-Copyright (c) Eric Hodel    (current maintainer)
+Copyright (c) Lars Kanis    (current maintainer)
+Copyright (c) Blaž Hrastnik (contributor)
+Copyright (c) Eric Hodel    (previous maintainer)
 Copyright (c) Alain Hoang   (previous maintainer)
 Copyright (c) Jan Dvorak    (contributor)
 Copyright (c) Minh Thu Vo   (contributor)
