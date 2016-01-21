@@ -78,7 +78,7 @@ task :build => "ext/opengl/extconf.rb"
 
 CLEAN.include "ext/opengl/fptr_struct.h"
 
-ENV['RUBY_CC_VERSION'] ||= '1.9.3:2.0.0:2.1.6:2.2.2'
+ENV['RUBY_CC_VERSION'] ||= '2.3.0:2.2.2:2.1.6:2.0.0:1.9.3'
 
 # To reduce the gem file size strip mingw32 dlls before packaging
 ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|
