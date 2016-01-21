@@ -28,11 +28,9 @@ rescue LoadError
 end
 
 require 'opengl/implementation'
+require 'opengl/bindings_version'
 
 module Gl
-  BINDINGS_VERSION = '0.10.0'
-  RUBY_OPENGL_VERSION = BINDINGS_VERSION
-
   meths = Gl::Implementation.instance_methods.select{|mn| mn=~/^gl/ }
   meths += %w[is_available? is_supported?
               extension_available? extension_supported?
