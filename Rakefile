@@ -99,5 +99,5 @@ end
 desc "Build windows binary gems per rake-compiler-dock."
 task "gem:windows" do
   require "rake_compiler_dock"
-  RakeCompilerDock.sh "rake cross native gem MAKE='nice make -j`nproc`' RUBY_CC_VERSION=#{ENV['RUBY_CC_VERSION']}"
+  RakeCompilerDock.sh "rake cross native gem MAKE='nice make -j`nproc`'"
 end
