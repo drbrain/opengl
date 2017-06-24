@@ -43,7 +43,7 @@
 
 #if defined(GLFUNC_MAGIC_START)
   #define DECL_GL_FUNC_PTR(_returntype_,_name_,_args_) \
-    GLFUNC_MAGIC_START _returntype_ (APIENTRY * _name_)_args_ GLFUNC_MAGIC_END
+    GLFUNC_MAGIC_START _returntype_ (GLFUNC_MAGIC_APIENTRY * _name_)_args_ GLFUNC_MAGIC_END
 #else
   #define DECL_GL_FUNC_PTR(_returntype_,_name_,_args_) \
     _returntype_ (APIENTRY * fptr_##_name_)_args_ = NULL

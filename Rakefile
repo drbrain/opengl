@@ -47,13 +47,14 @@ fptrfiles.each do |cfile, fptrfile|
   file fptrfile => [cfile, "ext/opengl/funcdef.h"] do |t|
     args = RbConfig::CONFIG['CC'], "-E", cfile,
         "-DGLFUNC_MAGIC_START=glfunc-", "-DGLFUNC_MAGIC_END=-glfunc",
+        "-DGLFUNC_MAGIC_APIENTRY=-glfunc-apientry-",
         "-I#{RbConfig::CONFIG['rubyhdrdir']}", "-I#{RbConfig::CONFIG['rubyarchhdrdir']}",
         "-Iext/opengl"
 
     puts args.join(" ")
 
     func = IO.popen(args) do |i|
-      i.read.scan(/glfunc- (.*?) -glfunc/).map{|m| "#{m[0]};\n" }.join
+      i.read.scan(/glfunc- (.*?) -glfunc/).map{|m| "#{m[0].gsub("-glfunc-apientry-", "APIENTRY")};\n" }.join
     end
     File.write(t.name, func)
   end
