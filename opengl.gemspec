@@ -24,10 +24,9 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = Gem::Requirement.new(">= 1.9.2")
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
-  spec.add_development_dependency 'minitest', '~> 5.3.0'
-  spec.add_development_dependency 'rake-compiler', '~> 0.9.1'
-  spec.add_development_dependency 'rake-compiler-dock', '~> 0.5.0'
+  spec.add_development_dependency 'minitest', '~> 5.3'
+  spec.add_development_dependency 'rake-compiler', '~> 1.0'
+  spec.add_development_dependency 'rake-compiler-dock', '~> 0.6.0'
   spec.add_development_dependency 'glu', '~> 8.1'
   spec.add_development_dependency 'glut', '~> 8.1'
 end
-
