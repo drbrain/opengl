@@ -1,3 +1,18 @@
+=== 0.10.0 / YYYY-MM-DD
+
+* Add binaries for RubyInstaller up to 2.4 in Windows gems.
+* Make RedBook examples compatible with Ruby 2.0+.
+* Replace hoe by bundler and add some release automatisms.
+* Use GL_PIXEL_PACK_BUFFER instead of _ARB version.
+* Add OpenGL-3.0 vertex array functions.
+* Ship gl.h and glext.h with the gem, which are taken from the Mesa sources.
+* Update gl-enums to the latest version based on enum.spec.
+* Move linking of the OpenGL library from build time to run time.
+  This allowes loading of GL implementations that are not integrated into
+  the OS (like OSMesa on Windows) or to load several implementations
+  into the Ruby process at the same time.
+* Remove OpenGL::VERSION in favour of OpenGL::BINDINGS_VERSION and GL::BINDINGS_VERSION.
+
 === 0.9.2 / 2015-01-05
 
 * Fix compatibility with Ruby-2.2.0.
