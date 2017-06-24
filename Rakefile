@@ -15,7 +15,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require 'bundler/gem_tasks'
+require 'bundler'
+require 'bundler/gem_helper'
 require 'rake/extensiontask'
 
 class OpenglGemHelper < Bundler::GemHelper
