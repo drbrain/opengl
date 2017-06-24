@@ -40,7 +40,7 @@ struct glimpl {
   VALUE inside_begin_end;
 
   void *dl;
-  void * (* fptr_GetProcAddress)(const char *name);
+  void * (APIENTRY * fptr_GetProcAddress)(const char *name);
 };
 
 
