@@ -42,9 +42,9 @@ task :gen_glext_list do
 end
 
 cfiles = Dir["ext/opengl/*.c"]
-file "ext/opengl/fptr_struct.h" => (cfiles + ["ext/opengl/funcdef.h"]) do |t|
-
-  funcs = cfiles.map do |cfile|
+fptrfiles = cfiles.map{|cf| [cf, "#{cf}.fptr"] }
+fptrfiles.each do |cfile, fptrfile|
+  file fptrfile => [cfile, "ext/opengl/funcdef.h"] do |t|
     args = RbConfig::CONFIG['CC'], "-E", cfile,
         "-DGLFUNC_MAGIC_START=glfunc-", "-DGLFUNC_MAGIC_END=-glfunc",
         "-I#{RbConfig::CONFIG['rubyhdrdir']}", "-I#{RbConfig::CONFIG['rubyarchhdrdir']}",
@@ -52,17 +52,22 @@ file "ext/opengl/fptr_struct.h" => (cfiles + ["ext/opengl/funcdef.h"]) do |t|
 
     puts args.join(" ")
 
-    IO.popen(args) do |i|
-      i.read.scan(/glfunc- (.*?) -glfunc/).map{|m| "#{m[0]};\n" }
+    func = IO.popen(args) do |i|
+      i.read.scan(/glfunc- (.*?) -glfunc/).map{|m| "#{m[0]};\n" }.join
     end
+    File.write(t.name, func)
   end
+end
 
+multitask "ext/opengl/fptr_struct.h" => fptrfiles.map(&:last) do |t|
   out = <<-EOT
     #ifndef _FPTR_STRUCT_H_
     #define _FPTR_STRUCT_H_
     struct glfunc_ptrs {
   EOT
-  funcs.flatten.uniq.each do |func|
+  t.prerequisites.map do |f|
+    File.readlines(f)
+  end.flatten.uniq.each do |func|
     out << func
   end
   out << <<-EOT
