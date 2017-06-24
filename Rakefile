@@ -41,7 +41,7 @@ task :gen_glext_list do
   sh "./utils/extlistgen.rb", "doc/extensions.txt.in", "doc/extensions.txt", *GLEXT_VERSIONS
 end
 
-cfiles = Dir["ext/opengl/*.c"]
+cfiles = Dir["ext/opengl/*.c"].sort
 fptrfiles = cfiles.map{|cf| [cf, "#{cf}.fptr"] }
 fptrfiles.each do |cfile, fptrfile|
   file fptrfile => [cfile, "ext/opengl/funcdef.h"] do |t|
@@ -59,6 +59,7 @@ fptrfiles.each do |cfile, fptrfile|
     File.write(t.name, func)
   end
 end
+CLEAN.include *fptrfiles.map(&:last)
 
 multitask "ext/opengl/fptr_struct.h" => fptrfiles.map(&:last) do |t|
   out = <<-EOT
