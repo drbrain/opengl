@@ -7,6 +7,11 @@ email  :: mailto:ruby-opengl-devel@rubyforge.org
 
 {<img src="https://travis-ci.org/larskanis/opengl.png?branch=master" alt="Build Status" />}[https://travis-ci.org/larskanis/opengl]
 
+**Attention**: This project is in maintenance mode.
+It might receive bug fixes or adjustments for new Ruby versions, but no new features (like support for newer OpenGL versions).
+The recommended migration path is to use {opengl-binding}[https://github.com/vaiorabbit/ruby-opengl].
+It makes use of the Khronos XML API registry, so that it's more up-to-date and easier to maintain but it uses a different Ruby-API than this project.
+
 == Description
 
 An OpenGL wrapper for Ruby. opengl contains bindings for OpenGL.
@@ -19,6 +24,7 @@ gems.
 == Features and Problems
 
 * available for Windows, Linux and OS X
+* supports OpenGL up to 3.0 - please move to {opengl-bindings}[https://github.com/vaiorabbit/ruby-opengl] for more recent OpenGL versions
 
 == Synopsis
 
